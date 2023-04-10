@@ -19,4 +19,9 @@ module Environment =
 
     type BreakableWall = {Color: Color; Location: Point}
 
+    type EnvironmentObject = 
+        | Wall
+        | BreakableWall
+        | Door
+
     
