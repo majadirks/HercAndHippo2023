@@ -1,0 +1,6 @@
+Hippo
+Player
+Archer
+Turtle
+
+Level - how do we add all this stuff? Supertype? Interface?
