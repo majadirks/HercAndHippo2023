@@ -14,7 +14,7 @@ module LevelObject =
         | EnvironmentObject of HercAndHippoLib.Environment.EnvironmentObject
 
     // need to be able to add environment, enemies, player, objects, etc...
-    type Level(levelId: int, levelName: string, gravity: float, timeLimit: int, visibility: Visibility, rowCount: int, colCount: int) = 
+    type Level(levelId: int, levelName: string, gravity: float, timeLimit: int, visibility: Visibility, rowCount: int, colCount: int, objects: LevelObject list) = 
         member this.LevelId = levelId
         member this.LevelName = levelName
         member this.Gravity = gravity
@@ -22,5 +22,5 @@ module LevelObject =
         member this.Visibility = visibility
         member this.RowCount = rowCount
         member this.ColCount = colCount
-
+        member this.LevelObjects = objects
 
