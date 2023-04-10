@@ -6,7 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="Motion.fs" />
+	  <Compile Include="Motion.fs" />
+	  <Compile Include="Environment.fs" />
+	  <Compile Include="Goodies.fs" />
+	  <Compile Include="Level.fs" />
   </ItemGroup>
 
 </Project>
