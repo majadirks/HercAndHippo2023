@@ -1,9 +1,6 @@
 ﻿namespace HercAndHippoLib
 module Level =
-    open Goodies
-
-module LevelObject =
-    
+        
     type Visibility =
         | Clear
         | Foggy // see where you've been
