@@ -29,5 +29,5 @@ module Motion =
         X = Convert.ToInt32(ProjectileMotionX(startLocation.X, startVelocity.X, time))
         Y = Convert.ToInt32(ProjectileMotionY(gravity, startLocation.Y, startVelocity.Y, time))
         }
-            
+
         
