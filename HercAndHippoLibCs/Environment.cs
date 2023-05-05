@@ -15,7 +15,7 @@ namespace HercAndHippoLibCs
         public Location(int col, int row)  
             => (Col, Row) = (Min(Max(0,col), Console.BufferWidth - 1), Min(Max(0,row), Console.BufferHeight - 1));
   
-        public static implicit operator Location((int col, int row) tuple) => new Location(tuple.col, tuple.row);
+        public static implicit operator Location((int col, int row) tuple) => new(tuple.col, tuple.row);
     }
     public enum Color { Red, Orange, Yellow, Green, Blue, Purple, Black, White }
     public enum Direction { North, East, South, West }

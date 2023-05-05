@@ -17,7 +17,7 @@ namespace HercAndHippoLibCs
             W       W
             W   P   W
             WWWWWWWWW */
-        private static List<IDisplayable> wallsObjects = new()
+        private static readonly List<IDisplayable> wallsObjects = new()
         {
             new Wall(Color.Yellow, (1,1)),
             new Wall(Color.Yellow, (2,1)),
