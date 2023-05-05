@@ -5,22 +5,13 @@ Level level = TestLevels.WallsLevel;
 ConsoleKeyInfo keyInfo = default;
 while (true)
 {
-    keyInfo = Console.ReadKey();
-    // Update cyclable objects (eg move player, enemies, etc)
-    level = RefreshCyclables(level, keyInfo);
+    level = level.RefreshCyclables(keyInfo);
     if (keyInfo.KeyChar == 'q') break;
     keyInfo = default;
     // Display objects in level
     RefreshDisplay(level, level);
     ShowMessage("Press 'q' to quit...");
-}
-
-Level RefreshCyclables(Level level, ConsoleKeyInfo keyInfo)
-{
-    IEnumerable<ICyclable> toCycle = level.LevelObjects.Where(disp => disp is ICyclable cylable).Select(c => (ICyclable)c);
-    foreach (ICyclable c in toCycle)
-        level = c.Cycle(level, keyInfo);
-    return level;
+    keyInfo = Console.ReadKey();
 }
 
 void RefreshDisplay(Level oldState, Level newState)

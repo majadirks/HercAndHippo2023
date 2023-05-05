@@ -10,6 +10,16 @@
         public IDisplayable? ObjectAt(Location location) => Displayables.AsParallel().Where(d => d.Location.Equals(location)).FirstOrDefault();
         public Level Without(IDisplayable toRemove) => this with { Displayables = Displayables.Where(d => !d.Equals(toRemove)) };
         public Level AddObject(IDisplayable toAdd) => this with { Displayables = Displayables.Append(toAdd) };
+
+        public Level RefreshCyclables(ConsoleKeyInfo keyInfo)
+        {
+            Level newState = this;
+            IEnumerable<ICyclable> toCycle = LevelObjects.Where(disp => disp is ICyclable cylable).Select(c => (ICyclable)c);
+            foreach (ICyclable c in toCycle)
+                newState = c.Cycle(newState, keyInfo);
+            return newState;
+        }
+
     }
 
     public static class TestLevels

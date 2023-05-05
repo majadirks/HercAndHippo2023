@@ -19,6 +19,7 @@ namespace HercAndHippoLibCs
 
         public static implicit operator Location((int col, int row) tuple) => new(tuple.col, tuple.row);
         public override string ToString() => $"(col {Col}, row {Row})";
+        public Location With(int? col = null, int? row = null) => new(col: col ?? Col, row: row ?? Row);
     }
     public enum Color { Red, Yellow, Green, Blue, Purple, Black, White }
     public enum Direction { North, East, South, West, Seek, Flee }
