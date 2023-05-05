@@ -13,11 +13,11 @@ namespace HercAndHippoLibCs
         public readonly int Col { get; init; }
         public readonly int Row { get; init; }
         public Location(int col, int row)  
-            => (Col, Row) = (Min(Max(0,col), Console.BufferWidth - 1), Min(Max(0,row), Console.BufferHeight - 1));
+            => (Col, Row) = (Min(Max(0,col), Console.BufferWidth - 3), Min(Max(0,row), Console.BufferHeight - 3));
   
         public static implicit operator Location((int col, int row) tuple) => new(tuple.col, tuple.row);
     }
-    public enum Color { Red, Orange, Yellow, Green, Blue, Purple, Black, White }
+    public enum Color { Red, Yellow, Green, Blue, Purple, Black, White }
     public enum Direction { North, East, South, West }
     public readonly struct EmptySpace { };
     public record Wall(Color Color, Location Location) : IDisplayable;

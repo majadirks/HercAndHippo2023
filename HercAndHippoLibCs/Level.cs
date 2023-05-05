@@ -7,6 +7,8 @@ namespace HercAndHippoLibCs
         public int MaxRow => Math.Min(Console.BufferHeight - 1, Displayables.Select(d => d.Location.Row).Max());
         public int MaxCol => Math.Max(Console.BufferWidth - 1, Displayables.Select(d => d.Location.Col).Max());
         public Location Corner => (MaxRow, MaxCol);
+
+        // The following seem evil... don't love the design choice of relying on a Level object being tightly coupled to a Player object
         public Player FindPlayer() => (Player) Displayables.Where(d => d is Player p).Single();
         public Level WithPlayer(Player newPlayer) => this with { Displayables = Displayables.Where(d => d is not Player p).Append(newPlayer) };
     }
