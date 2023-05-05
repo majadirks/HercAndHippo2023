@@ -6,8 +6,8 @@ namespace HercAndHippoLibCs
         public Location Location { get; } 
         public Color Color { get; }
     }
-    public interface IShootable<T> { public Mortal<T> OnShot(Direction shotFrom); }
-    public interface IColorful<T> { public Color Color { get; } }
+    public interface IShootable { public Level OnShot(Level level, Direction shotFrom); }
+    public interface ITouchable { public Level OnTouch(Level level, Direction touchedFrom); };
     public readonly struct Location
     {
         public readonly int Col { get; init; }
@@ -20,11 +20,15 @@ namespace HercAndHippoLibCs
     public enum Color { Red, Yellow, Green, Blue, Purple, Black, White }
     public enum Direction { North, East, South, West }
     public readonly struct EmptySpace { };
-    public record Wall(Color Color, Location Location) : IDisplayable;
-
-    public record BreakableWall(Color Color, Location Location) : IDisplayable, IShootable<BreakableWall>
+    public record Wall(Color Color, Location Location) : IDisplayable, ITouchable
     {
-        public Mortal<BreakableWall> OnShot(Direction shotFrom) => new EmptySpace();
+        public Level OnTouch(Level level, Direction touchedFrom) => level;
     }
-    public record Door(Color Color, Location Location) : IDisplayable; // dies when correct key is used
+
+    public record BreakableWall(Color Color, Location Location) : IDisplayable, IShootable, ITouchable
+    {
+        public Level OnShot(Level level, Direction shotFrom) => level.Without(this);
+        public Level OnTouch(Level level, Direction touchedFrom) => level;
+    }
+    public record Door(Color Color, Location Location) : IDisplayable; // TODO: dies when correct key is used
 }

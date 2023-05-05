@@ -11,6 +11,20 @@ namespace HercAndHippoLibCs
         // The following seem evil... don't love the design choice of relying on a Level object being tightly coupled to a Player object
         public Player FindPlayer() => (Player) Displayables.Where(d => d is Player p).Single();
         public Level WithPlayer(Player newPlayer) => this with { Displayables = Displayables.Where(d => d is not Player p).Append(newPlayer) };
+    
+        public IEnumerable<IDisplayable> ObjectAt(Location location) => Displayables.Where(d => d.Location.Equals(location));
+        public Level Without(IDisplayable toRemove) => this with { Displayables = Displayables.Where(d => !d.Equals(toRemove)) };
+
+        public Level Handle(ConsoleKeyInfo keyInfo)
+            => keyInfo.Key switch
+            {
+                ConsoleKey.LeftArrow => FindPlayer().MoveLeft(this),
+                ConsoleKey.RightArrow => FindPlayer().MoveRight(this),
+                ConsoleKey.UpArrow => FindPlayer().MoveUp(this),
+                ConsoleKey.DownArrow => FindPlayer().MoveDown(this),
+                _ => this // No update for unknown key
+            };
+
     }
 
     public static class TestLevels

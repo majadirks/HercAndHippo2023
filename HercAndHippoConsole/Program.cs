@@ -5,8 +5,7 @@ ConsoleKeyInfo keyInfo = default;
 while (keyInfo == default || keyInfo.KeyChar != 'q')
 {
     Console.Clear();
-    Player player = level.FindPlayer();
-    level = level.WithPlayer(player.Handle(keyInfo));
+    level = level.Handle(keyInfo);
     // Display objects in level
     IEnumerable<IDisplayable> toDisplay 
         = level

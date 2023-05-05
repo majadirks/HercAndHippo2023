@@ -40,26 +40,25 @@ namespace HercAndHippoLibCs
         public override int GetHashCode() => this.HealthAmt.GetHashCode();
     }
 
-    public record Player(Location Location, Health Health) : IDisplayable, IShootable<Player>
+    public record Player(Location Location, Health Health) : IDisplayable, IShootable
     {
         public Color Color => Color.Blue;
-        public Mortal<Player> OnShot(Direction shotFrom) 
-            => Health - 5 > 0 ? new Player(Location, Health - 5) : new EmptySpace();
+        public Level OnShot(Level level, Direction shotFrom) 
+            => level.WithPlayer(this with { Health = Health - 5 });
 
-        public Player MoveLeft() => this with { Location = (Location.Col - 1, Location.Row) };
-        public Player MoveRight() => this with { Location = (Location.Col + 1, Location.Row) };
-        public Player MoveUp() => this with { Location = (Location.Col, Location.Row - 1) };
-        public Player MoveDown() => this with { Location = (Location.Col, Location.Row + 1) };
+        private Level TryMoveTo(Location newLocation, Direction approachFrom, Level curState)
+        => curState.ObjectAt(newLocation).FirstOrDefault() switch
+            {
+                ITouchable touchableAtLocation => touchableAtLocation.OnTouch(curState, approachFrom),
+                _ => curState.WithPlayer(this with { Location = newLocation })
+            };
+          
+        public Level MoveLeft(Level level) => TryMoveTo((Location.Col - 1, Location.Row), approachFrom: Direction.East, curState: level);
+        public Level MoveRight(Level level) => TryMoveTo((Location.Col + 1, Location.Row), Direction.West, curState: level);
+        public Level MoveUp(Level level) => TryMoveTo((Location.Col, Location.Row - 1), Direction.South, curState: level);
+        public Level MoveDown(Level level) => TryMoveTo((Location.Col, Location.Row + 1), Direction.North, curState: level);
 
-        public Player Handle(ConsoleKeyInfo keyInfo)
-        => keyInfo.Key switch
-        {
-            ConsoleKey.LeftArrow => MoveLeft(),
-            ConsoleKey.RightArrow => MoveRight(),
-            ConsoleKey.UpArrow => MoveUp(),
-            ConsoleKey.DownArrow => MoveDown(),
-            _ => this // No update for unknown key
-        };
+
     }
 
 
