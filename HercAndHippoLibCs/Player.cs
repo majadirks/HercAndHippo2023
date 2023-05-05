@@ -24,7 +24,7 @@ namespace HercAndHippoLibCs
             HealthAmt = health;
         }
         private static bool IsValid(int health) => MIN_HEALTH <= health && health <= MAX_HEALTH;
-        public static Health operator -(Health health, int subtrahend) => Math.Max(0, health.HealthAmt - subtrahend);
+        public static Health operator -(Health health, int subtrahend) => Math.Max(MIN_HEALTH, health.HealthAmt - subtrahend);
         public static Health operator +(Health health,int addend) => Math.Min(MAX_HEALTH, health.HealthAmt + addend);
        
         public static bool operator >(Health health, int comparandum) => health.HealthAmt > comparandum;
@@ -38,9 +38,40 @@ namespace HercAndHippoLibCs
 
         public override bool Equals(object? obj) => obj is Health other && other.HealthAmt == this.HealthAmt;
         public override int GetHashCode() => this.HealthAmt.GetHashCode();
+        public override string ToString() => $"Health: {HealthAmt}";
     }
 
-    public record Player(Location Location, Health Health) : IDisplayable, IShootable
+    public readonly struct AmmoCount
+    {
+        private const int MIN_AMMO = 0;
+        private const int DEFAULT_STARTING_AMMO = 0;
+        private readonly int AmmoAmt { get; init; }
+        public AmmoCount(int ammo = DEFAULT_STARTING_AMMO)
+        {
+            if (!IsValid(ammo))
+                throw new ArgumentException($"Invalid ammo value {ammo}; must be nonnegative");
+            AmmoAmt = ammo;
+        }
+        private static bool IsValid(int ammo) => MIN_AMMO <= ammo;
+        public static AmmoCount operator -(AmmoCount ammo, int subtrahend) => Math.Max(MIN_AMMO, ammo.AmmoAmt - subtrahend);
+        public static AmmoCount operator +(AmmoCount ammo, int addend) => ammo.AmmoAmt + addend;
+
+        public static bool operator >(AmmoCount ammo, int comparandum) => ammo.AmmoAmt > comparandum;
+        public static bool operator >=(AmmoCount ammo, int comparandum) => ammo.AmmoAmt >= comparandum;
+        public static bool operator <(AmmoCount ammo, int comparandum) => ammo.AmmoAmt < comparandum;
+        public static bool operator <=(AmmoCount ammo, int comparandum) => ammo.AmmoAmt <= comparandum;
+        public static bool operator ==(AmmoCount ammo, int comparandm) => ammo.AmmoAmt == comparandm;
+        public static bool operator !=(AmmoCount ammo, int comparandm) => ammo.AmmoAmt != comparandm;
+
+        public static implicit operator AmmoCount(int ammo) => new(ammo);
+        public static implicit operator int(AmmoCount ac) => ac.AmmoAmt;
+
+        public override bool Equals(object? obj) => obj is AmmoCount other && other.AmmoAmt == this.AmmoAmt;
+        public override int GetHashCode() => this.AmmoAmt.GetHashCode();
+        public override string ToString() => $"Ammo Count: {AmmoAmt}";
+    }
+
+    public record Player(Location Location, Health Health, AmmoCount Ammo) : IDisplayable, IShootable
     {
         public Color Color => Color.Blue;
         public Level OnShot(Level level, Direction shotFrom) 
@@ -58,7 +89,7 @@ namespace HercAndHippoLibCs
         public Level MoveUp(Level level) => TryMoveTo((Location.Col, Location.Row - 1), Direction.South, curState: level);
         public Level MoveDown(Level level) => TryMoveTo((Location.Col, Location.Row + 1), Direction.North, curState: level);
 
-
+        public override string ToString() => $"Player at location {Location} with {Health}, {Ammo}";
     }
 
 

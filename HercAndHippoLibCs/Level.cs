@@ -11,7 +11,7 @@ namespace HercAndHippoLibCs
         // The following seem evil... don't love the design choice of relying on a Level object being tightly coupled to a Player object
         public Player FindPlayer() => (Player) Displayables.Where(d => d is Player p).Single();
         public Level WithPlayer(Player newPlayer) => this with { Displayables = Displayables.Where(d => d is not Player p).Append(newPlayer) };
-    
+
         public IEnumerable<IDisplayable> ObjectAt(Location location) => Displayables.Where(d => d.Location.Equals(location));
         public Level Without(IDisplayable toRemove) => this with { Displayables = Displayables.Where(d => !d.Equals(toRemove)) };
 
@@ -46,10 +46,11 @@ namespace HercAndHippoLibCs
             new Wall(Color.Green, (9,1)),
 
             new Wall(Color.Yellow, (1,2)),
+            new Ammo((2,2), Count: 5),
             new Wall(Color.Green, (9,2)),
 
             new Wall(Color.Yellow, (1,3)),
-            new Player((4,3), 100),
+            new Player((4,3), Health: 100, Ammo: 0),
             new BreakableWall(Color.Green, (9,3)),
             new Door(Color.Purple, (10,3)),
 

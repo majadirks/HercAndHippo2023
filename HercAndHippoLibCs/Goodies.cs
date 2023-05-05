@@ -1,10 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace HercAndHippoLibCs
 {
+    public record Ammo(Location Location, AmmoCount Count) : IDisplayable, ITouchable
+    {
+        public Color Color => Color.Green;
 
+        public Level OnTouch(Level level, Direction touchedFrom)
+        {
+            Player player = level.FindPlayer();
+            return level
+                .Without(this)
+                .WithPlayer(player with 
+                { 
+                    Location= this.Location, 
+                    Ammo = player.Ammo + Count 
+                });
+        }
+    }
 }

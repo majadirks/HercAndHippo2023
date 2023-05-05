@@ -45,10 +45,16 @@ ConsoleColor GetColor(IDisplayable displayable)
 string DisplayString(IDisplayable displayable)
     => displayable switch
     {
+        // Environment
         Wall _ => "█",
         BreakableWall _ => "▓",
         Door _ => "D",
         Player _ => "☺",
+
+        // Goodies
+        Ammo _ => "ä",
+
+        // Unknown
         _ => "?"
     };
 
