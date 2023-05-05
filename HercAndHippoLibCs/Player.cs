@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Numerics;
-using System.Reflection.Emit;
-using System.Reflection.Metadata;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Net.Http.Headers;
 
 namespace HercAndHippoLibCs
 {
@@ -71,25 +62,91 @@ namespace HercAndHippoLibCs
         public override string ToString() => $"Ammo Count: {AmmoAmt}";
     }
 
-    public record Player(Location Location, Health Health, AmmoCount Ammo) : IDisplayable, IShootable
+    public record Player(Location Location, Health Health, AmmoCount AmmoCount) : IDisplayable, IShootable, ICyclable, ITouchable
     {
         public Color Color => Color.Blue;
-        public Level OnShot(Level level, Direction shotFrom) 
+        public Level OnShot(Level level, Direction shotFrom, Bullet shotBy) 
             => level.WithPlayer(this with { Health = Health - 5 });
 
         private Level TryMoveTo(Location newLocation, Direction approachFrom, Level curState)
-        => curState.ObjectAt(newLocation).FirstOrDefault() switch
+        => curState.ObjectAt(newLocation) switch
             {
-                ITouchable touchableAtLocation => touchableAtLocation.OnTouch(curState, approachFrom),
+                ITouchable touchableAtLocation => touchableAtLocation.OnTouch(curState, approachFrom, this),
                 _ => curState.WithPlayer(this with { Location = newLocation })
             };
-          
+
+        public bool IsDead => Health == 0;
         public Level MoveLeft(Level level) => TryMoveTo((Location.Col - 1, Location.Row), approachFrom: Direction.East, curState: level);
         public Level MoveRight(Level level) => TryMoveTo((Location.Col + 1, Location.Row), Direction.West, curState: level);
         public Level MoveUp(Level level) => TryMoveTo((Location.Col, Location.Row - 1), Direction.South, curState: level);
         public Level MoveDown(Level level) => TryMoveTo((Location.Col, Location.Row + 1), Direction.North, curState: level);
 
-        public override string ToString() => $"Player at location {Location} with {Health}, {Ammo}";
+        public Level Shoot(Level level, Direction whither)
+        {
+            if (AmmoCount == 0) return level;
+            int col = Location.Col;
+            int row = Location.Row;
+            int bulletStartCol = whither switch
+            {
+                Direction.East => col + 1,
+                Direction.West => col - 1,
+                Direction.North => col,
+                Direction.South => col,
+                _ => throw new NotImplementedException(),
+            };
+            int bulletStartRow = whither switch
+            {
+                Direction.North => row - 1,
+                Direction.South => row + 1,
+                Direction.East => row,
+                Direction.West => row,
+                _ => throw new NotImplementedException()
+            };
+
+            level = level
+                .AddObject(new Bullet((bulletStartCol, bulletStartRow), whither))
+                .WithPlayer(this with { AmmoCount = AmmoCount - 1 });
+            return level;
+        }
+
+        public Level Cycle(Level level, ConsoleKeyInfo keyInfo)
+        {
+            // Shift key pressed (shoot)
+            if ((keyInfo.Modifiers & ConsoleModifiers.Shift) != 0)
+            {
+                return keyInfo.Key switch
+                {
+                    ConsoleKey.LeftArrow => Shoot(level, Direction.West),
+                    ConsoleKey.RightArrow => Shoot(level, Direction.East),
+                    ConsoleKey.UpArrow => Shoot(level, Direction.North),
+                    ConsoleKey.DownArrow => Shoot(level, Direction.South),
+                    _ => level // No update for unknown key
+                };
+            }
+            // No shift key; move player
+            return keyInfo.Key switch
+            {
+                ConsoleKey.LeftArrow => MoveLeft(level),
+                ConsoleKey.RightArrow => MoveRight(level),
+                ConsoleKey.UpArrow => MoveUp(level),
+                ConsoleKey.DownArrow => MoveDown(level),
+                _ => level // No update for unknown key
+            };
+        }
+
+        //private Level TryShootAt(Location newLocation, Direction approachFrom, Level curState)
+        //    => curState.ObjectAt(newLocation) switch
+        //    {
+        //        ITouchable touchableAtLocation => touchableAtLocation.OnTouch(curState, approachFrom),
+        //        _ => curState.WithPlayer(this with { Location = newLocation })
+        //    };
+
+        public override string ToString() => $"Player at location {Location} with {Health}, {AmmoCount}";
+
+        public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy)
+        {
+            throw new NotImplementedException();
+        }
     }
 
 

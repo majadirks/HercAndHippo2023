@@ -1,38 +1,19 @@
-﻿using System.Linq;
-
-namespace HercAndHippoLibCs
+﻿namespace HercAndHippoLibCs
 {
-    public record Level(IEnumerable<IDisplayable> Displayables)
+    public record Level(Player Player, IEnumerable<IDisplayable> Displayables)
     {
+        public IEnumerable<IDisplayable> LevelObjects => Displayables.Append(Player);
         public int MaxRow => Math.Min(Console.BufferHeight - 1, Displayables.Select(d => d.Location.Row).Max());
         public int MaxCol => Math.Max(Console.BufferWidth - 1, Displayables.Select(d => d.Location.Col).Max());
         public Location Corner => (MaxRow, MaxCol);
-
-        // The following seem evil... don't love the design choice of relying on a Level object being tightly coupled to a Player object
-        public Player FindPlayer() => (Player) Displayables.Where(d => d is Player p).Single();
-        public Level WithPlayer(Player newPlayer) => this with { Displayables = Displayables.Where(d => d is not Player p).Append(newPlayer) };
-
-        public IEnumerable<IDisplayable> ObjectAt(Location location) => Displayables.Where(d => d.Location.Equals(location));
+        public Level WithPlayer(Player player) => this with { Player = player };
+        public IDisplayable? ObjectAt(Location location) => Displayables.AsParallel().Where(d => d.Location.Equals(location)).FirstOrDefault();
         public Level Without(IDisplayable toRemove) => this with { Displayables = Displayables.Where(d => !d.Equals(toRemove)) };
-
-        public Level Handle(ConsoleKeyInfo keyInfo)
-            => keyInfo.Key switch
-            {
-                ConsoleKey.LeftArrow => FindPlayer().MoveLeft(this),
-                ConsoleKey.RightArrow => FindPlayer().MoveRight(this),
-                ConsoleKey.UpArrow => FindPlayer().MoveUp(this),
-                ConsoleKey.DownArrow => FindPlayer().MoveDown(this),
-                _ => this // No update for unknown key
-            };
-
+        public Level AddObject(IDisplayable toAdd) => this with { Displayables = Displayables.Append(toAdd) };
     }
 
     public static class TestLevels
     {
-        /*  WWWWWWWWW
-            W       W
-            W   P   W
-            WWWWWWWWW */
         private static readonly List<IDisplayable> wallsObjects = new()
         {
             new Wall(Color.Yellow, (1,1)),
@@ -50,7 +31,6 @@ namespace HercAndHippoLibCs
             new Wall(Color.Green, (9,2)),
 
             new Wall(Color.Yellow, (1,3)),
-            new Player((4,3), Health: 100, Ammo: 0),
             new BreakableWall(Color.Green, (9,3)),
             new Door(Color.Purple, (10,3)),
 
@@ -65,7 +45,8 @@ namespace HercAndHippoLibCs
             new Wall(Color.Green, (9,4))
         };
 
-        public static readonly Level WallsLevel = new(wallsObjects);
+        public static readonly Level WallsLevel = new(Player: new Player((4,3), Health: 100, AmmoCount: 0),
+            Displayables: wallsObjects);
     }
 
 
