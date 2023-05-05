@@ -134,19 +134,15 @@ namespace HercAndHippoLibCs
             };
         }
 
-        //private Level TryShootAt(Location newLocation, Direction approachFrom, Level curState)
-        //    => curState.ObjectAt(newLocation) switch
-        //    {
-        //        ITouchable touchableAtLocation => touchableAtLocation.OnTouch(curState, approachFrom),
-        //        _ => curState.WithPlayer(this with { Location = newLocation })
-        //    };
-
         public override string ToString() => $"Player at location {Location} with {Health}, {AmmoCount}";
 
         public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy)
         {
             throw new NotImplementedException();
         }
+
+        public string ConsoleDisplayString => IsDead ? "RIP" : "☺";
+
     }
 
 

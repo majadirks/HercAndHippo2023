@@ -2,5 +2,4 @@
 
 - Fix motion (don't wait for key press)
 - Try to fix flicker by updating at regular interval
-- Move display strings into IDisplayable
 - Update level (cycling) using aggregate

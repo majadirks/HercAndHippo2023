@@ -13,6 +13,9 @@ namespace HercAndHippoLibCs
                     Location = this.Location, 
                     AmmoCount = level.Player.AmmoCount + Count 
                 });
-        
+
+        public string ConsoleDisplayString => "ä";
+
+
     }
 }

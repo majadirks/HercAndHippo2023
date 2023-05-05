@@ -8,6 +8,7 @@
             => touchedBy is IShootable shootable ?
             shootable.OnShot(level, shotFrom: touchedFrom.Mirror(), shotBy: this).Without(this) :
             level.Without(this);
+        public string ConsoleDisplayString => "*";
 
     }
 }

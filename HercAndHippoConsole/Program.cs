@@ -32,7 +32,7 @@ void WriteDisplayable(IDisplayable displayable)
 {
     Console.SetCursorPosition(displayable.Location.Col, displayable.Location.Row);
     Console.ForegroundColor = GetColor(displayable);
-    Console.Write(DisplayString(displayable));
+    Console.Write(displayable.ConsoleDisplayString);
 }
 
 ConsoleColor GetColor(IDisplayable displayable)
@@ -47,21 +47,3 @@ ConsoleColor GetColor(IDisplayable displayable)
         Color.White => ConsoleColor.White,
         _ => ConsoleColor.White
     };
-
-string DisplayString(IDisplayable displayable)
-    => displayable switch
-    {
-        // Environment
-        Wall _ => "█",
-        BreakableWall _ => "▓",
-        Door _ => "D",
-        Player p => p.IsDead ? "RIP" : "☺",
-
-        // Goodies
-        Ammo _ => "ä",
-        Bullet _ => "*",
-
-        // Unknown
-        _ => "?"
-    };
-

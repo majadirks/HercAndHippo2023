@@ -6,6 +6,7 @@ namespace HercAndHippoLibCs
     {
         public Location Location { get; }
         public Color Color { get; }
+    public string ConsoleDisplayString { get; }
     }
     public interface IShootable { public Level OnShot(Level level, Direction shotFrom, Bullet shotBy); }
     public interface ITouchable { public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy); };
@@ -40,12 +41,18 @@ namespace HercAndHippoLibCs
     public record Wall(Color Color, Location Location) : IDisplayable, ITouchable
     {
         public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy) => level;
+        public string ConsoleDisplayString => "█";
     }
 
     public record BreakableWall(Color Color, Location Location) : IDisplayable, IShootable, ITouchable
     {
         public Level OnShot(Level level, Direction shotFrom, Bullet shotBy) => level.Without(this).Without(shotBy);
         public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy) => level;
+        public string ConsoleDisplayString => "▓";
     }
-    public record Door(Color Color, Location Location) : IDisplayable; // TODO: dies when correct key is used
+    public record Door(Color Color, Location Location) : IDisplayable
+    {
+        // TODO: dies when correct key is used
+        public string ConsoleDisplayString => "D";
+    }; 
 }
