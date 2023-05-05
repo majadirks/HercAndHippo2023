@@ -6,26 +6,39 @@ ConsoleKeyInfo keyInfo = default;
 while (true)
 {
     keyInfo = Console.ReadKey();
-
-    Console.Clear();
     // Update cyclable objects (eg move player, enemies, etc)
-    IEnumerable<ICyclable> toCycle = level.LevelObjects.Where(disp => disp is ICyclable cylable).Select(c => (ICyclable)c);
-    foreach (ICyclable c in toCycle) 
-        level = c.Cycle(level, keyInfo);
+    level = RefreshCyclables(level, keyInfo);
     if (keyInfo.KeyChar == 'q') break;
     keyInfo = default;
-
     // Display objects in level
-    IEnumerable<IDisplayable> toDisplay = level.LevelObjects.OrderBy(d => d.Color).ThenBy(d => d.Location.Row).ThenBy(d => d.Location.Col);
+    RefreshDisplay(level, level);
+    ShowMessage("Press 'q' to quit...");
+}
+
+Level RefreshCyclables(Level level, ConsoleKeyInfo keyInfo)
+{
+    IEnumerable<ICyclable> toCycle = level.LevelObjects.Where(disp => disp is ICyclable cylable).Select(c => (ICyclable)c);
+    foreach (ICyclable c in toCycle)
+        level = c.Cycle(level, keyInfo);
+    return level;
+}
+
+void RefreshDisplay(Level oldState, Level newState)
+{
+    // ToDo : logic to check if refresh is needed
+    Console.Clear();
+    IEnumerable<IDisplayable> toDisplay = newState.LevelObjects.OrderBy(d => d.Color).ThenBy(d => d.Location.Row).ThenBy(d => d.Location.Col);
     foreach (IDisplayable displayable in toDisplay)
     {
         WriteDisplayable(displayable);
     }
+}
 
+void ShowMessage(string message)
+{
     Console.SetCursorPosition(1, Console.BufferHeight - 2);
     Console.ForegroundColor = ConsoleColor.White;
-    Console.WriteLine("Press 'q' to quit...");
-    
+    Console.WriteLine(message);
 }
 
 void WriteDisplayable(IDisplayable displayable)
