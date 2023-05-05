@@ -3,8 +3,6 @@
 Level level = TestLevels.WallsLevel;
 ConsoleKeyInfo keyInfo = default;
 
-
-
 while (keyInfo == default || keyInfo.KeyChar != 'q')
 {
     Console.Clear();
@@ -13,7 +11,7 @@ while (keyInfo == default || keyInfo.KeyChar != 'q')
     foreach (IDisplayable displayable in level.Displayables.OrderBy(d => d.Color).ThenBy(d => d.Location.Row).ThenBy(d => d.Location.Col))
     {
         Console.SetCursorPosition(displayable.Location.Col, displayable.Location.Row);
-        Console.ForegroundColor = (displayable.Color switch
+        Console.ForegroundColor = displayable.Color switch
         {
             Color.Red => ConsoleColor.Red,
             Color.Yellow => ConsoleColor.Yellow,
@@ -23,14 +21,17 @@ while (keyInfo == default || keyInfo.KeyChar != 'q')
             Color.Black => ConsoleColor.Black,
             Color.White => ConsoleColor.White,
             _ => ConsoleColor.White
-        }) ;
-        Console.WriteLine(displayable switch
+        } ;
+        Console.Write(displayable switch
         {
             Wall _ => "█",
+            BreakableWall _ => "▓",
+            Door _ => "D",
             Player _ => "☺",
             _ => "?"
         });
     }
+
     Console.SetCursorPosition(1, Console.BufferHeight - 2);
     Console.ForegroundColor = ConsoleColor.White;
     Console.WriteLine("Press 'q' to quit...");

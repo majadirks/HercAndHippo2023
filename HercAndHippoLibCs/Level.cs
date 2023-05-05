@@ -29,14 +29,15 @@ namespace HercAndHippoLibCs
             new Wall(Color.Yellow, (6,1)),
             new Wall(Color.Yellow, (7,1)),
             new Wall(Color.Yellow, (8,1)),
-            new Wall(Color.Yellow, (9,1)),
+            new Wall(Color.Green, (9,1)),
 
             new Wall(Color.Yellow, (1,2)),
-            new Wall(Color.Yellow, (9,2)),
+            new Wall(Color.Green, (9,2)),
 
             new Wall(Color.Yellow, (1,3)),
             new Player((4,3), 100),
-            new Wall(Color.Yellow, (9,3)),
+            new BreakableWall(Color.Green, (9,3)),
+            new Door(Color.Purple, (10,3)),
 
             new Wall(Color.Yellow, (1,4)),
             new Wall(Color.Yellow, (2,4)),
@@ -46,7 +47,7 @@ namespace HercAndHippoLibCs
             new Wall(Color.Yellow, (6,4)),
             new Wall(Color.Yellow, (7,4)),
             new Wall(Color.Yellow, (8,4)),
-            new Wall(Color.Yellow, (9,4))
+            new Wall(Color.Green, (9,4))
         };
 
         public static readonly Level WallsLevel = new(wallsObjects);
