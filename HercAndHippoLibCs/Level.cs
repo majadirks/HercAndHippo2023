@@ -2,7 +2,12 @@
 
 namespace HercAndHippoLibCs
 {
-    public record Level(Location PlayerStart, IEnumerable<IDisplayable> Displayables);
+    public record Level(Location PlayerStart, IEnumerable<IDisplayable> Displayables)
+    {
+        public int MaxRow => Displayables.Select(d => d.Location.Row).Max();
+        public int MaxCol => Displayables.Select(d => d.Location.Col).Max();
+        public Location Corner => (MaxRow, MaxCol);
+    }
 
     public static class TestLevels
     {
@@ -39,7 +44,7 @@ namespace HercAndHippoLibCs
             new Wall(Color.Yellow, (9,4))
         };
 
-        public static readonly Level WallsLevel = new(PlayerStart: (1, 4), wallsObjects);
+        public static readonly Level WallsLevel = new(PlayerStart: (4, 3), wallsObjects);
     }
 
 }
