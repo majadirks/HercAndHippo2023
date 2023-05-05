@@ -1,4 +1,5 @@
-﻿namespace HercAndHippoLibCs
+﻿using static System.Math;
+namespace HercAndHippoLibCs
 {
     public interface IDisplayable 
     { 
@@ -7,8 +8,13 @@
     }
     public interface IShootable<T> { public Mortal<T> OnShot(Direction shotFrom); }
     public interface IColorful<T> { public Color Color { get; } }
-    public record Location(int Col, int Row)
+    public readonly struct Location
     {
+        public readonly int Col { get; init; }
+        public readonly int Row { get; init; }
+        public Location(int col, int row)  
+            => (Col, Row) = (Min(Max(0,col), Console.BufferWidth - 1), Min(Max(0,row), Console.BufferHeight - 1));
+  
         public static implicit operator Location((int col, int row) tuple) => new Location(tuple.col, tuple.row);
     }
     public enum Color { Red, Orange, Yellow, Green, Blue, Purple, Black, White }

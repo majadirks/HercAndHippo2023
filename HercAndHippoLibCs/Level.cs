@@ -1,12 +1,14 @@
-﻿using System;
+﻿using System.Linq;
 
 namespace HercAndHippoLibCs
 {
-    public record Level(Location PlayerStart, IEnumerable<IDisplayable> Displayables)
+    public record Level(IEnumerable<IDisplayable> Displayables)
     {
-        public int MaxRow => Displayables.Select(d => d.Location.Row).Max();
-        public int MaxCol => Displayables.Select(d => d.Location.Col).Max();
+        public int MaxRow => Math.Min(Console.BufferHeight - 1, Displayables.Select(d => d.Location.Row).Max());
+        public int MaxCol => Math.Max(Console.BufferWidth - 1, Displayables.Select(d => d.Location.Col).Max());
         public Location Corner => (MaxRow, MaxCol);
+        public Player FindPlayer() => (Player) Displayables.Where(d => d is Player p).Single();
+        public Level WithPlayer(Player newPlayer) => this with { Displayables = Displayables.Where(d => d is not Player p).Append(newPlayer) };
     }
 
     public static class TestLevels
@@ -31,6 +33,7 @@ namespace HercAndHippoLibCs
             new Wall(Color.Yellow, (9,2)),
 
             new Wall(Color.Yellow, (1,3)),
+            new Player((4,3), 100),
             new Wall(Color.Yellow, (9,3)),
 
             new Wall(Color.Yellow, (1,4)),
@@ -44,7 +47,8 @@ namespace HercAndHippoLibCs
             new Wall(Color.Yellow, (9,4))
         };
 
-        public static readonly Level WallsLevel = new(PlayerStart: (4, 3), wallsObjects);
+        public static readonly Level WallsLevel = new(wallsObjects);
     }
+
 
 }

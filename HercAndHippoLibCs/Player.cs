@@ -42,7 +42,13 @@ namespace HercAndHippoLibCs
     {
         public Color Color => Color.Blue;
         public Mortal<Player> OnShot(Direction shotFrom) 
-            => Health - 5 > 0 ? new Player(Location, Health - 5) : new EmptySpace();     
+            => Health - 5 > 0 ? new Player(Location, Health - 5) : new EmptySpace();
+
+        public Player MoveLeft() => this with { Location = (Location.Col - 1, Location.Row) };
+        public Player MoveRight() => this with { Location = (Location.Col + 1, Location.Row) };
+        public Player MoveUp() => this with { Location = (Location.Col, Location.Row - 1) };
+        public Player MoveDown() => this with { Location = (Location.Col, Location.Row + 1) };
     }
+
 
 }
