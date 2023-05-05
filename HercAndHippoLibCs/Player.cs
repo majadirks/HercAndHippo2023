@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Numerics;
+using System.Reflection.Emit;
 using System.Reflection.Metadata;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -48,6 +50,16 @@ namespace HercAndHippoLibCs
         public Player MoveRight() => this with { Location = (Location.Col + 1, Location.Row) };
         public Player MoveUp() => this with { Location = (Location.Col, Location.Row - 1) };
         public Player MoveDown() => this with { Location = (Location.Col, Location.Row + 1) };
+
+        public Player Handle(ConsoleKeyInfo keyInfo)
+        => keyInfo.Key switch
+        {
+            ConsoleKey.LeftArrow => MoveLeft(),
+            ConsoleKey.RightArrow => MoveRight(),
+            ConsoleKey.UpArrow => MoveUp(),
+            ConsoleKey.DownArrow => MoveDown(),
+            _ => this // No update for unknown key
+        };
     }
 
 
