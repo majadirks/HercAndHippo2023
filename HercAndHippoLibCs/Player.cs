@@ -64,7 +64,7 @@ namespace HercAndHippoLibCs
 
     public record Player(Location Location, Health Health, AmmoCount AmmoCount) : IDisplayable, IShootable, ICyclable, ITouchable
     {
-        public Color Color => Color.Blue;
+        public ConsoleColor Color => ConsoleColor.Blue;
         public Level OnShot(Level level, Direction shotFrom, Bullet shotBy) 
             => level.WithPlayer(this with { Health = Health - 5 });
 

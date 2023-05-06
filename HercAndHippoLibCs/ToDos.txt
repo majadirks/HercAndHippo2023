@@ -1,6 +1,3 @@
-- ICyclable: allow Program to update ("cycle") objects polymoprhically
-
-- Fix motion (don't wait for key press)
-- Try to fix flicker by updating at regular interval
+- Reorganize
 - Logic to remove objects that are beyond the bounds of the level (eg bullets).
 	- Improve bullet behavior; they get stuck at screen edges

@@ -64,19 +64,6 @@ void ShowMessage(string message)
 void WriteDisplayable(IDisplayable displayable)
 {
     Console.SetCursorPosition(displayable.Location.Col, displayable.Location.Row);
-    Console.ForegroundColor = GetColor(displayable);
+    Console.ForegroundColor = displayable.Color;
     Console.Write(displayable.ConsoleDisplayString);
 }
-
-ConsoleColor GetColor(IDisplayable displayable)
-=> displayable.Color switch
-    {
-        Color.Red => ConsoleColor.Red,
-        Color.Yellow => ConsoleColor.Yellow,
-        Color.Green => ConsoleColor.Green,
-        Color.Blue => ConsoleColor.Blue,
-        Color.Purple => ConsoleColor.Magenta,
-        Color.Black => ConsoleColor.Black,
-        Color.White => ConsoleColor.White,
-        _ => ConsoleColor.White
-    };

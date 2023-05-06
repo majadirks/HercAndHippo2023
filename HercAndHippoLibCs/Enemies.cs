@@ -4,7 +4,7 @@ namespace HercAndHippoLibCs
 {
     public record Bullet(Location Location, Direction Whither) : IDisplayable, ICyclable
     {
-        public Color Color => Color.White;
+        public ConsoleColor Color => ConsoleColor.White;
 
         /// <summary>
         /// When the level cycles, bullet moves in the direction it's currently heading.
