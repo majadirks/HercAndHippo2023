@@ -47,7 +47,7 @@
         private Level MoveDown(Level level) => TryMoveTo((Location.Col, Location.Row + 1), Direction.North, curState: level);
         private Level Shoot(Level level, Direction whither)
         {
-            if (HasAmmo) return level;
+            if (!HasAmmo) return level;
             int col = Location.Col;
             int row = Location.Row;
             int bulletStartCol = whither switch
