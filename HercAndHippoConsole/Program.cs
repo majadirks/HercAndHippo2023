@@ -1,6 +1,9 @@
 ﻿using HercAndHippoLibCs;
-using System.Linq;
+using System.Diagnostics;
 
+const int REFRESH_RATE = 20;
+
+Stopwatch sw = new();
 Level curState = TestLevels.WallsLevel;
 ConsoleKeyInfo keyInfo = default;
 bool firstRender = true;
@@ -19,16 +22,35 @@ while (true)
     ShowMessage("Press 'q' to quit...");
     if (Console.KeyAvailable) 
         keyInfo = Console.ReadKey();
+    sw.Reset();
 }
 
 void RefreshDisplay(Level oldState, Level newState, bool forceRefresh)
 {
+    if (forceRefresh) Console.Clear();
     if (!forceRefresh && newState.HasSameStateAs(oldState)) return;
-    Console.Clear();
-    IEnumerable<IDisplayable> toDisplay = newState.LevelObjects.OrderBy(d => d.Color).ThenBy(d => d.Location.Row).ThenBy(d => d.Location.Col);
+    ClearOld(oldState, newState);
+    ShowNew(oldState, newState, forceRefresh);
+}
+
+void ShowNew(Level oldState, Level newState, bool forceRefresh)
+{
+    IEnumerable<IDisplayable> toDisplay = newState.LevelObjects
+        .Where(obj => forceRefresh || !oldState.LevelObjects.Contains(obj))
+        .OrderBy(d => d.Color).ThenBy(d => d.Location.Row).ThenBy(d => d.Location.Col);
     foreach (IDisplayable displayable in toDisplay)
     {
         WriteDisplayable(displayable);
+    }
+}
+
+void ClearOld(Level oldState, Level newState)
+{
+    foreach (IDisplayable toRemove in oldState.LevelObjects.Where(obj => !newState.LevelObjects.Contains(obj)))
+    {
+        Console.SetCursorPosition(toRemove.Location.Col, toRemove.Location.Row);
+        Console.ForegroundColor = ConsoleColor.Black;
+        Console.Write(' ');
     }
 }
 
