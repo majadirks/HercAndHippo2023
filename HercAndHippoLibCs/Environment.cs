@@ -15,7 +15,7 @@
         public Level OnShot(Level level, Direction shotFrom, Bullet shotBy) => level.Without(this).Without(shotBy);
         public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy) => level;    
     }
-    public record Door(ConsoleColor Color, Location Location) : IDisplayable, IShootable, ITouchable
+    public record Door(ConsoleColor Color, Location Location) : IDisplayable, IShootable
     {
         // TODO: dies when correct key is used
         public string ConsoleDisplayString => "D";
