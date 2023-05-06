@@ -28,7 +28,7 @@ while (true)
 void RefreshDisplay(Level oldState, Level newState, bool forceRefresh)
 {
     if (forceRefresh) Console.Clear();
-    //if (!forceRefresh && newState.HasSameStateAs(oldState)) return;
+    if (!forceRefresh && newState.HasSameStateAs(oldState)) return;
     ClearOld(oldState, newState);
     ShowNew(oldState, newState, forceRefresh);
 }
