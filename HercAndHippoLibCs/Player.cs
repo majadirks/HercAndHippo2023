@@ -1,6 +1,6 @@
 ﻿namespace HercAndHippoLibCs
 {
-    public record Player(Location Location, Health Health, AmmoCount AmmoCount, IEnumerable<ITakeable> Inventory) 
+    public record Player(Location Location, Health Health, AmmoCount AmmoCount, HashSet<ITakeable> Inventory) 
         : IDisplayable, IShootable, ICyclable, ITouchable
     {
         public string ConsoleDisplayString => HasHealth ? "☺" : "RIP";
@@ -91,7 +91,7 @@
                 .WithPlayer(this with { AmmoCount = AmmoCount - 1 });
             return level;
         }
-        public Player Take(ITakeable toTake) => this with { Inventory = Inventory.Append(toTake) };
+        public Player Take(ITakeable toTake) => this with { Inventory = new(Inventory) { toTake } };
         public bool Has<T>(ConsoleColor color) => Inventory.Where(item => item.MatchesColor<T>(color)).Any();
 
         /// <summary>
@@ -101,7 +101,7 @@
         public (ITakeable item, Player newPlayerState) DropItem<T>(ConsoleColor color)
         { 
             ITakeable item = Inventory.Where(item => item.MatchesColor<T>(color)).First();
-            Player newPlayerState = this with { Inventory = Inventory.Where(item => !item.MatchesColor<T>(color)) };
+            Player newPlayerState = this with { Inventory = Inventory.Where(item => !item.MatchesColor<T>(color)).ToHashSet() };
             return (item, newPlayerState);
         }
     }
