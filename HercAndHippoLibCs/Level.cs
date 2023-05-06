@@ -47,7 +47,6 @@
                 new BreakableWall(ConsoleColor.Green, (9,3)),
                 new Door(ConsoleColor.Magenta, (10,3)),
                 
-
                 new Wall(ConsoleColor.Yellow, (1,4)),
                 new Wall(ConsoleColor.Yellow, (2,4)),
                 new Wall(ConsoleColor.Yellow, (3,4)),
@@ -65,6 +64,4 @@
                 new Ammo((5,10), Count: 20)
             });
     }
-
-
 }

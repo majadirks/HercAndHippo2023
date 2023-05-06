@@ -61,7 +61,6 @@ namespace HercAndHippoLibCs
             }
             return nextState; 
         }
-        
         private Level MoveLeft(Level level) => TryMoveTo((Location.Col - 1, Location.Row), approachFrom: Direction.East, curState: level);
         private Level MoveRight(Level level) => TryMoveTo((Location.Col + 1, Location.Row), Direction.West, curState: level);
         private Level MoveUp(Level level) => TryMoveTo((Location.Col, Location.Row - 1), Direction.South, curState: level);
@@ -124,7 +123,6 @@ namespace HercAndHippoLibCs
         public bool HasHealth => HealthAmt > 0;
         public static Health operator -(Health health, int subtrahend) => Math.Max(MIN_HEALTH, health.HealthAmt - subtrahend);
         public static Health operator +(Health health,int addend) => Math.Min(MAX_HEALTH, health.HealthAmt + addend);
-
         public static implicit operator Health(int health) => new(health);
         public override string ToString() => $"Health: {HealthAmt}";
     }
@@ -138,7 +136,6 @@ namespace HercAndHippoLibCs
         public bool HasAmmo => AmmoAmt > 0;
         public static AmmoCount operator -(AmmoCount ammo, int subtrahend) => Max(MIN_AMMO, ammo.AmmoAmt - subtrahend);
         public static AmmoCount operator +(AmmoCount ammo, int addend) => ammo.AmmoAmt + addend;
-
         public static implicit operator AmmoCount(int ammo) => new(ammo);
         public static implicit operator int(AmmoCount ac) => ac.AmmoAmt;
         public override string ToString() => $"Ammo Count: {AmmoAmt}";

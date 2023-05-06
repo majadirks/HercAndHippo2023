@@ -1,13 +1,11 @@
 ﻿namespace HercAndHippoLibCs
-{
-   
+{ 
     public record Wall(ConsoleColor Color, Location Location) : IDisplayable, ITouchable, IShootable
     {
         public string ConsoleDisplayString => "█";
         public Level OnShot(Level level, Direction shotFrom, Bullet shotBy) => Behaviors.NoReaction(level);
         public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy) => Behaviors.NoReaction(level);
     }
-
     public record BreakableWall(ConsoleColor Color, Location Location) : IDisplayable, IShootable, ITouchable
     {
         public string ConsoleDisplayString => "▓";

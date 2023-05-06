@@ -27,7 +27,6 @@
             return nextState;
         }
 
-
         private Location NextLocation 
             => Whither switch
                 {

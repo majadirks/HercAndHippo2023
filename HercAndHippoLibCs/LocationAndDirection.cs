@@ -41,6 +41,5 @@ namespace HercAndHippoLibCs
                 Direction.Flee => Direction.Seek,
                 _ => throw new NotSupportedException()
             };
-
     }
 }
