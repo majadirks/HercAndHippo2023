@@ -19,12 +19,12 @@
         public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy)
         {
             Player player = level.Player;
-            Level stateWherePlayerHasKeyInInventory = player.Take(level, this).WithPlayer(player with { Location = this.Location });
+            Level stateWherePlayerHasKeyInInventory = level.WithPlayer(player.Take(this) with { Location = this.Location });
             Level reactToKeyBeingTakenState = OnTake(stateWherePlayerHasKeyInInventory);
             return reactToKeyBeingTakenState;
         }
         public Level OnTake(Level level) => level.Without(this); // Die after being taken
-        public Level OnShot(Level level, Direction shotFrom, Bullet shotBy) => OnShotBehaviors.AllowBulletToPass(this, level, shotBy);
+        public Level OnShot(Level level, Direction shotFrom, Bullet shotBy) => Behaviors.AllowBulletToPass(this, level, shotBy);
     }
 
 }

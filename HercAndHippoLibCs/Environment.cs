@@ -4,29 +4,33 @@
     public record Wall(ConsoleColor Color, Location Location) : IDisplayable, ITouchable, IShootable
     {
         public string ConsoleDisplayString => "█";
-        public Level OnShot(Level level, Direction shotFrom, Bullet shotBy) => OnShotBehaviors.StopBullet(level); // Cannot shoot through a wall
-        public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy) => level; // Cannot pass through a wall
+        public Level OnShot(Level level, Direction shotFrom, Bullet shotBy) => Behaviors.NoReaction(level);
+        public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy) => Behaviors.NoReaction(level);
     }
 
     public record BreakableWall(ConsoleColor Color, Location Location) : IDisplayable, IShootable, ITouchable
     {
         public string ConsoleDisplayString => "▓";
-        public Level OnShot(Level level, Direction shotFrom, Bullet shotBy) => OnShotBehaviors.DieAndStopBullet(this, level, shotBy);
-        public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy) => level;    
+        public Level OnShot(Level level, Direction shotFrom, Bullet shotBy) => Behaviors.DieAndStopBullet(this, level, shotBy);
+        public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy) => Behaviors.NoReaction(level);    
     }
-    public record Door(ConsoleColor Color, Location Location) : IDisplayable, IShootable //, ITouchable
+    public record Door(ConsoleColor Color, Location Location) : IDisplayable, IShootable, ITouchable
     {
         public string ConsoleDisplayString => "D";
-        public Level OnShot(Level level, Direction shotFrom, Bullet shotBy) => OnShotBehaviors.StopBullet(level); // Cannot shoot through a door
+        public Level OnShot(Level level, Direction shotFrom, Bullet shotBy) => Behaviors.NoReaction(level); // Cannot shoot through a door
 
-        //public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy)
-        //    => touchedBy switch
-        //        Player p => p.HasInventoryItem(
-        //    }
-        //{
-        //    // ToDo: if touchedBy is not player, return level (like wall)
-        //    // If touchedBy is player without matching key, act as wall
-        //    // If touchedBy is player with key, remove key from player and die.
-        //    throw new NotImplementedException();
+        public Level OnTouch(Level level, Direction _, ITouchable touchedBy)
+            => touchedBy switch
+            {
+                Player p => p.Has<Key>(Color) ? TakeKeyDieAndAllowPassage(level, p) : Behaviors.NoReaction(level),
+                _ => Behaviors.NoReaction(level)
+            };
+
+        private Level TakeKeyDieAndAllowPassage(Level level, Player player)
+        {
+            (ITakeable _, Player newPlayerState) = player.DropItem<Key>(Color);
+            Level newState = Behaviors.DieAndAllowPassage(level, this, newPlayerState);
+            return newState;
+        }
     }
 }

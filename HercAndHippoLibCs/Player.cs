@@ -91,10 +91,27 @@
                 .WithPlayer(this with { AmmoCount = AmmoCount - 1 });
             return level;
         }
-        public Level Take(Level level, ITakeable toTake) 
-            => level.WithPlayer(this with { Inventory = Inventory.Append(toTake) });
-        //public bool HasInventoryItem(Type type, ConsoleColor color) => Inventory.Contains(toQuery);
+        public Player Take(ITakeable toTake) => this with { Inventory = Inventory.Append(toTake) };
+        public bool Has<T>(ConsoleColor color) => Inventory.Where(item => item.MatchesColor<T>(color)).Any();
+
+        /// <summary>
+        /// If a player has an item in their inventory matching the specified type and color, return the first match of that item
+        /// and a player with all matches removed from their inventory. 
+        /// </summary>
+        public (ITakeable item, Player newPlayerState) DropItem<T>(ConsoleColor color)
+        { 
+            ITakeable item = Inventory.Where(item => item.MatchesColor<T>(color)).First();
+            Player newPlayerState = this with { Inventory = Inventory.Where(item => !item.MatchesColor<T>(color)) };
+            return (item, newPlayerState);
+        }
     }
+
+    public static class InventoryExtensions
+    {
+        ///<summary>Returns true if an ITakeable is of the given type and color</summary> 
+        public static bool MatchesColor<T>(this ITakeable item, ConsoleColor color) => item is T && item.Color == color;
+    }
+
     public readonly struct Health
     {
         private const int MIN_HEALTH = 0;
