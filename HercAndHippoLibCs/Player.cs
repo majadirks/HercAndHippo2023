@@ -96,7 +96,7 @@
 
         /// <summary>
         /// If a player has an item in their inventory matching the specified type and color, return the first match of that item
-        /// and a player with all matches removed from their inventory. 
+        /// and a player with all matches removed from their inventory. Throws an exception if there are no matches.
         /// </summary>
         public (ITakeable item, Player newPlayerState) DropItem<T>(ConsoleColor color)
         { 
