@@ -1,22 +1,26 @@
 ﻿using HercAndHippoLibCs;
 using System.Linq;
 
-Level level = TestLevels.WallsLevel;
+Level curState = TestLevels.WallsLevel;
 ConsoleKeyInfo keyInfo = default;
+bool firstRender = true;
+
 while (true)
 {
-    level = level.RefreshCyclables(keyInfo);
+    Level newState = curState.RefreshCyclables(keyInfo);
     if (keyInfo.KeyChar == 'q') break;
     keyInfo = default;
-    // Display objects in level
-    RefreshDisplay(level, level);
+    RefreshDisplay(curState, newState, firstRender);
+    firstRender = false;
+    curState = newState;
     ShowMessage("Press 'q' to quit...");
-    keyInfo = Console.ReadKey();
+    if (Console.KeyAvailable) 
+        keyInfo = Console.ReadKey();
 }
 
-void RefreshDisplay(Level oldState, Level newState)
+void RefreshDisplay(Level oldState, Level newState, bool forceRefresh)
 {
-    // ToDo : logic to check if refresh is needed
+    if (!forceRefresh && newState.HasSameStateAs(oldState)) return;
     Console.Clear();
     IEnumerable<IDisplayable> toDisplay = newState.LevelObjects.OrderBy(d => d.Color).ThenBy(d => d.Location.Row).ThenBy(d => d.Location.Col);
     foreach (IDisplayable displayable in toDisplay)

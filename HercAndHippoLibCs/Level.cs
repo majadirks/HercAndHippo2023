@@ -14,15 +14,9 @@
             => LevelObjects.Where(disp => disp is ICyclable cylable)
             .Select(c => (ICyclable)c)
             .Aggregate(seed: this, func: (oldState, nextCyclable) => nextCyclable.Cycle(oldState, keyInfo));
-
-        public bool StateIsUnchanged(Level otherState)
-        {
-            int myObjCount = LevelObjects.Count();
-            int otherObjCount = otherState.LevelObjects.Count();
-            if (myObjCount != otherObjCount) return false;
-            return LevelObjects.Zip(otherState.LevelObjects).All(zipped => zipped.First.Equals(zipped.Second));
-        }
-
+        public bool HasSameStateAs(Level otherState)
+            => LevelObjects.Count() == otherState.LevelObjects.Count() &&
+               LevelObjects.Zip(otherState.LevelObjects).All(zipped => zipped.First.Equals(zipped.Second));
     }
 
     public static class TestLevels
@@ -58,7 +52,8 @@
             new Wall(Color.Green, (9,4))
         };
 
-        public static readonly Level WallsLevel = new(Player: new Player((4,3), Health: 100, AmmoCount: 0),
+        public static readonly Level WallsLevel = new(
+            Player: new Player((4,3), Health: 100, AmmoCount: 0),
             Displayables: wallsObjects);
     }
 
