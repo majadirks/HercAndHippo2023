@@ -7,11 +7,13 @@ Stopwatch sw = new();
 Level curState = TestLevels.WallsLevel;
 ConsoleKeyInfo keyInfo = default;
 bool firstRender = true;
+sw.Start();
 
 while (true)
 {
-    sw.Start();
-    while (sw.ElapsedMilliseconds < REFRESH_RATE);   
+    while (sw.ElapsedMilliseconds < REFRESH_RATE);
+    sw.Restart();
+
     Level newState = curState.RefreshCyclables(keyInfo);
     if (keyInfo.KeyChar == 'q') break;
     keyInfo = default;
@@ -20,8 +22,7 @@ while (true)
     curState = newState;
     ShowMessage("Use arrow keys to move, shift + arrow keys to shoot, 'q' to quit.");
     if (Console.KeyAvailable) 
-        keyInfo = Console.ReadKey();
-    sw.Reset();
+        keyInfo = Console.ReadKey();  
 }
 
 void RefreshDisplay(Level oldState, Level newState, bool forceRefresh)
