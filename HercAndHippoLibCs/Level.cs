@@ -10,14 +10,17 @@
         public IDisplayable? ObjectAt(Location location) => Displayables.AsParallel().Where(d => d.Location.Equals(location)).FirstOrDefault();
         public Level Without(IDisplayable toRemove) => this with { Displayables = Displayables.Where(d => !d.Equals(toRemove)) };
         public Level AddObject(IDisplayable toAdd) => this with { Displayables = Displayables.Append(toAdd) };
-
         public Level RefreshCyclables(ConsoleKeyInfo keyInfo)
+            => LevelObjects.Where(disp => disp is ICyclable cylable)
+            .Select(c => (ICyclable)c)
+            .Aggregate(seed: this, func: (oldState, nextCyclable) => nextCyclable.Cycle(oldState, keyInfo));
+
+        public bool StateIsUnchanged(Level otherState)
         {
-            Level newState = this;
-            IEnumerable<ICyclable> toCycle = LevelObjects.Where(disp => disp is ICyclable cylable).Select(c => (ICyclable)c);
-            foreach (ICyclable c in toCycle)
-                newState = c.Cycle(newState, keyInfo);
-            return newState;
+            int myObjCount = LevelObjects.Count();
+            int otherObjCount = otherState.LevelObjects.Count();
+            if (myObjCount != otherObjCount) return false;
+            return LevelObjects.Zip(otherState.LevelObjects).All(zipped => zipped.First.Equals(zipped.Second));
         }
 
     }
