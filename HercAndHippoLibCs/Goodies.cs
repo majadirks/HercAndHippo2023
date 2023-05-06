@@ -13,7 +13,7 @@
                                 });
     }
 
-    public record Key(Location Location, ConsoleColor Color) : IDisplayable, ITouchable, ITakeable, IShootable
+    public record Key(ConsoleColor Color, Location Location) : IDisplayable, ITouchable, ITakeable, IShootable
     {
         public string ConsoleDisplayString => "&";
         public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy)
