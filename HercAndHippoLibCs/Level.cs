@@ -40,12 +40,13 @@
                 new Wall(ConsoleColor.Yellow, (1,2)),
                 new Ammo((2,2), Count: 5),
                 new Key(ConsoleColor.Magenta, (7,2)),
-                new Wall(ConsoleColor.Green, (9,2)),
+                new BreakableWall(ConsoleColor.Green, (9,2)),
+                new Door(ConsoleColor.Cyan, (10,2)),
 
                 new Wall(ConsoleColor.Yellow, (1,3)),
                 new BreakableWall(ConsoleColor.Green, (9,3)),
                 new Door(ConsoleColor.Magenta, (10,3)),
-                new Door(ConsoleColor.Cyan, (11,3)),
+                
 
                 new Wall(ConsoleColor.Yellow, (1,4)),
                 new Wall(ConsoleColor.Yellow, (2,4)),
