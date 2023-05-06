@@ -33,7 +33,12 @@
                 _ => level // No update for unknown key
             };
         }
-        public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy) => throw new NotImplementedException();
+        public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy)
+            => touchedBy switch
+            {
+                Bullet shotBy => OnShot(level, touchedFrom.Mirror(), (Bullet)shotBy),
+                _ => level
+            };
         private Level TryMoveTo(Location newLocation, Direction approachFrom, Level curState)
             => curState.ObjectAt(newLocation) switch
                 {

@@ -39,7 +39,9 @@ void ShowNew(Level oldState, Level newState, bool forceRefresh)
         .OrderBy(d => d.Color).ThenBy(d => d.Location.Row).ThenBy(d => d.Location.Col);
     foreach (IDisplayable displayable in toDisplay)
     {
-        WriteDisplayable(displayable);
+        Console.SetCursorPosition(displayable.Location.Col, displayable.Location.Row);
+        Console.ForegroundColor = displayable.Color;
+        Console.Write(displayable.ConsoleDisplayString);
     }
 }
 
@@ -58,11 +60,4 @@ void ShowMessage(string message)
     Console.SetCursorPosition(1, Console.BufferHeight - 2);
     Console.ForegroundColor = ConsoleColor.White;
     Console.WriteLine(message);
-}
-
-void WriteDisplayable(IDisplayable displayable)
-{
-    Console.SetCursorPosition(displayable.Location.Col, displayable.Location.Row);
-    Console.ForegroundColor = displayable.Color;
-    Console.Write(displayable.ConsoleDisplayString);
 }
