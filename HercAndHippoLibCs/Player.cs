@@ -129,20 +129,14 @@ namespace HercAndHippoLibCs
         public override string ToString() => $"Health: {HealthAmt}";
     }
 
-    public readonly struct AmmoCount
+    public record AmmoCount
     {
         private const int MIN_AMMO = 0;
         private const int DEFAULT_STARTING_AMMO = 0;
-        private readonly int AmmoAmt { get; init; }
-        public AmmoCount(int ammo = DEFAULT_STARTING_AMMO)
-        {
-            if (!IsValid(ammo))
-                throw new ArgumentException($"Invalid ammo value {ammo}; must be nonnegative");
-            AmmoAmt = ammo;
-        }
+        private int AmmoAmt { get; init; }
+        public AmmoCount(int ammo = DEFAULT_STARTING_AMMO) => AmmoAmt = Max(MIN_AMMO, ammo);
         public bool HasAmmo => AmmoAmt > 0;
-        private static bool IsValid(int ammo) => MIN_AMMO <= ammo;
-        public static AmmoCount operator -(AmmoCount ammo, int subtrahend) => Math.Max(MIN_AMMO, ammo.AmmoAmt - subtrahend);
+        public static AmmoCount operator -(AmmoCount ammo, int subtrahend) => Max(MIN_AMMO, ammo.AmmoAmt - subtrahend);
         public static AmmoCount operator +(AmmoCount ammo, int addend) => ammo.AmmoAmt + addend;
 
         public static implicit operator AmmoCount(int ammo) => new(ammo);
