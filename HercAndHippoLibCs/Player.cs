@@ -1,6 +1,4 @@
-﻿using System.Net.Http.Headers;
-
-namespace HercAndHippoLibCs
+﻿namespace HercAndHippoLibCs
 {
     public record Player(Location Location, Health Health, AmmoCount AmmoCount) : IDisplayable, IShootable, ICyclable, ITouchable
     {
@@ -10,6 +8,7 @@ namespace HercAndHippoLibCs
         public Level OnShot(Level level, Direction shotFrom, Bullet shotBy)
             => level.WithPlayer(this with { Health = Health - 5 });
         public bool HasHealth => Health.HasHealth;
+        public bool HasAmmo => AmmoCount.HasAmmo;
         public Level Cycle(Level level, ConsoleKeyInfo keyInfo)
         {
             // Shift key pressed (shoot)
@@ -48,7 +47,7 @@ namespace HercAndHippoLibCs
         private Level MoveDown(Level level) => TryMoveTo((Location.Col, Location.Row + 1), Direction.North, curState: level);
         private Level Shoot(Level level, Direction whither)
         {
-            if (AmmoCount == 0) return level;
+            if (HasAmmo) return level;
             int col = Location.Col;
             int row = Location.Row;
             int bulletStartCol = whither switch
@@ -90,18 +89,8 @@ namespace HercAndHippoLibCs
         private static bool IsValid(int health) => MIN_HEALTH <= health && health <= MAX_HEALTH;
         public static Health operator -(Health health, int subtrahend) => Math.Max(MIN_HEALTH, health.HealthAmt - subtrahend);
         public static Health operator +(Health health,int addend) => Math.Min(MAX_HEALTH, health.HealthAmt + addend);
-       
-        public static bool operator >(Health health, int comparandum) => health.HealthAmt > comparandum;
-        public static bool operator >=(Health health, int comparandum) => health.HealthAmt >= comparandum;
-        public static bool operator <(Health health, int comparandum) => health.HealthAmt < comparandum;
-        public static bool operator <=(Health health, int comparandum) => health.HealthAmt <= comparandum;
-        public static bool operator ==(Health health, int comparandm) => health.HealthAmt == comparandm;
-        public static bool operator !=(Health health, int comparandm) => health.HealthAmt != comparandm;
 
         public static implicit operator Health(int health) => new(health);
-
-        public override bool Equals(object? obj) => obj is Health other && other.HealthAmt == this.HealthAmt;
-        public override int GetHashCode() => this.HealthAmt.GetHashCode();
         public override string ToString() => $"Health: {HealthAmt}";
     }
 
@@ -116,22 +105,13 @@ namespace HercAndHippoLibCs
                 throw new ArgumentException($"Invalid ammo value {ammo}; must be nonnegative");
             AmmoAmt = ammo;
         }
+        public bool HasAmmo => AmmoAmt > 0;
         private static bool IsValid(int ammo) => MIN_AMMO <= ammo;
         public static AmmoCount operator -(AmmoCount ammo, int subtrahend) => Math.Max(MIN_AMMO, ammo.AmmoAmt - subtrahend);
         public static AmmoCount operator +(AmmoCount ammo, int addend) => ammo.AmmoAmt + addend;
 
-        public static bool operator >(AmmoCount ammo, int comparandum) => ammo.AmmoAmt > comparandum;
-        public static bool operator >=(AmmoCount ammo, int comparandum) => ammo.AmmoAmt >= comparandum;
-        public static bool operator <(AmmoCount ammo, int comparandum) => ammo.AmmoAmt < comparandum;
-        public static bool operator <=(AmmoCount ammo, int comparandum) => ammo.AmmoAmt <= comparandum;
-        public static bool operator ==(AmmoCount ammo, int comparandm) => ammo.AmmoAmt == comparandm;
-        public static bool operator !=(AmmoCount ammo, int comparandm) => ammo.AmmoAmt != comparandm;
-
         public static implicit operator AmmoCount(int ammo) => new(ammo);
         public static implicit operator int(AmmoCount ac) => ac.AmmoAmt;
-
-        public override bool Equals(object? obj) => obj is AmmoCount other && other.AmmoAmt == this.AmmoAmt;
-        public override int GetHashCode() => this.AmmoAmt.GetHashCode();
         public override string ToString() => $"Ammo Count: {AmmoAmt}";
     }
 }

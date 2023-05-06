@@ -3,9 +3,6 @@
     public record Level(Player Player, IEnumerable<IDisplayable> Displayables)
     {
         public IEnumerable<IDisplayable> LevelObjects => Displayables.Append(Player);
-        public int MaxRow => Math.Min(Console.BufferHeight - 1, LevelObjects.Select(d => d.Location.Row).Max());
-        public int MaxCol => Math.Max(Console.BufferWidth - 1, LevelObjects.Select(d => d.Location.Col).Max());
-        public Location Corner => (MaxRow, MaxCol);
         public Level WithPlayer(Player player) => this with { Player = player };
         public IDisplayable? ObjectAt(Location location) => LevelObjects.AsParallel().Where(d => d.Location.Equals(location)).FirstOrDefault();
         public Level Without(IDisplayable toRemove) => this with { Displayables = Displayables.Where(d => !d.Equals(toRemove)) };

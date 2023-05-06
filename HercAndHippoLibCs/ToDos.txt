@@ -1,3 +1,4 @@
+- Door / key
 - Status bar
 - Implement and test "seek" behavior for bullet
 - Unit tests

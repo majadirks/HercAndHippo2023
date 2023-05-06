@@ -1,6 +1,4 @@
-﻿using System.Reflection.Emit;
-
-namespace HercAndHippoLibCs
+﻿namespace HercAndHippoLibCs
 {
     public record Bullet(Location Location, Direction Whither) : IDisplayable, ICyclable
     {
