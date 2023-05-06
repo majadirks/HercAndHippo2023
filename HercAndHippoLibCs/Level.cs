@@ -4,7 +4,7 @@
     {
         public IEnumerable<IDisplayable> LevelObjects => Displayables.Append(Player);
         public Level WithPlayer(Player player) => this with { Player = player };
-        public IEnumerable<IDisplayable> ObjectsAt(Location location) => LevelObjects.AsParallel().Where(d => d.Location.Equals(location));
+        public IEnumerable<IDisplayable> ObjectsAt(Location location) => LevelObjects.Where(d => d.Location.Equals(location));
         public Level Without(IDisplayable toRemove) => this with { Displayables = Displayables.Where(d => !d.Equals(toRemove)) };
         public Level AddObject(IDisplayable toAdd) => this with { Displayables = Displayables.Append(toAdd) };
         public Level RefreshCyclables(ConsoleKeyInfo keyInfo)
