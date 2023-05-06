@@ -36,7 +36,7 @@
         public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy)
             => touchedBy switch
             {
-                Bullet shotBy => OnShot(level, touchedFrom.Mirror(), (Bullet)shotBy),
+                Bullet shotBy => OnShot(level, touchedFrom.Mirror(), shotBy),
                 _ => level
             };
         private Level TryMoveTo(Location newLocation, Direction approachFrom, Level curState)
