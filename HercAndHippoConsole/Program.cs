@@ -11,15 +11,14 @@ bool firstRender = true;
 while (true)
 {
     sw.Start();
-    while (sw.ElapsedMilliseconds < REFRESH_RATE);
-    
+    while (sw.ElapsedMilliseconds < REFRESH_RATE);   
     Level newState = curState.RefreshCyclables(keyInfo);
     if (keyInfo.KeyChar == 'q') break;
     keyInfo = default;
     RefreshDisplay(curState, newState, firstRender);
     firstRender = false;
     curState = newState;
-    ShowMessage("Press 'q' to quit...");
+    ShowMessage("Use arrow keys to move, shift + arrow keys to shoot, 'q' to quit.");
     if (Console.KeyAvailable) 
         keyInfo = Console.ReadKey();
     sw.Reset();
