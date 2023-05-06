@@ -41,11 +41,25 @@
                 _ => level
             };
         private Level TryMoveTo(Location newLocation, Direction approachFrom, Level curState)
-            => curState.ObjectAt(newLocation) switch
+        {
+            Level nextState = curState;
+            var objectsAt = curState.ObjectsAt(newLocation);
+
+            // If no obstacles, move
+            if (!objectsAt.Any()) return curState.WithPlayer(this with { Location = newLocation });
+
+            // Otherwise, call the touch methods for any touchables and move over all else
+            foreach (IDisplayable obj in curState.ObjectsAt(newLocation))
+            {
+                nextState = obj switch
                 {
                     ITouchable touchableAtLocation => touchableAtLocation.OnTouch(curState, approachFrom, this),
-                    _ => curState.WithPlayer(this with { Location = newLocation })
+                    _ => nextState.WithPlayer(this with { Location = newLocation })
                 };
+            }
+            return nextState; 
+        }
+        
         private Level MoveLeft(Level level) => TryMoveTo((Location.Col - 1, Location.Row), approachFrom: Direction.East, curState: level);
         private Level MoveRight(Level level) => TryMoveTo((Location.Col + 1, Location.Row), Direction.West, curState: level);
         private Level MoveUp(Level level) => TryMoveTo((Location.Col, Location.Row - 1), Direction.South, curState: level);

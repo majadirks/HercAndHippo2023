@@ -13,7 +13,7 @@
                                 });
     }
 
-    public record Key(Location Location, ConsoleColor Color) : IDisplayable, ITouchable, ITakeable
+    public record Key(Location Location, ConsoleColor Color) : IDisplayable, ITouchable, ITakeable, IShootable
     {
         public string ConsoleDisplayString => "&";
         public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy)
@@ -24,6 +24,9 @@
             return reactToKeyBeingTakenState;
         }
         public Level OnTake(Level level) => level.Without(this); // Die after being taken
+
+        public Level OnShot(Level level, Direction shotFrom, Bullet shotBy) // ToDo: Bullet should pass through and this should then display again
+            => level.Without(shotBy).AddObject(shotBy with { Location = this.Location });
     }
 
 }

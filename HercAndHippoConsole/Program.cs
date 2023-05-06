@@ -32,10 +32,10 @@ void RefreshDisplay(Level oldState, Level newState, bool forceRefresh)
     ShowNew(oldState, newState, forceRefresh);
 }
 
-void ShowNew(Level oldState, Level newState, bool forceRefresh)
+void ShowNew(Level oldState, Level newState, bool forceRefresh) // ToDo: Need to re-show things that were previously overlapped (eg bullet passing over key)
 {
     IEnumerable<IDisplayable> toDisplay = newState.LevelObjects
-        .Where(obj => forceRefresh || !oldState.LevelObjects.Contains(obj))
+        .Where(obj => forceRefresh || !oldState.LevelObjects.Contains(obj) || oldState.ObjectsAt(obj.Location).Count() > 1)
         .OrderBy(d => d.Color).ThenBy(d => d.Location.Row).ThenBy(d => d.Location.Col);
     foreach (IDisplayable displayable in toDisplay)
     {

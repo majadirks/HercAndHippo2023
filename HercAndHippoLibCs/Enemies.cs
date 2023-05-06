@@ -6,13 +6,27 @@
         public ConsoleColor Color => ConsoleColor.White;
         /// <summary>When the level cycles, a bullet moves in the direction it's currently heading.</summary>
         public Level Cycle(Level curState, ConsoleKeyInfo keyInfo)
-            => curState.ObjectAt(NextLocation) switch
+        {
+            Level nextState = curState;
+            var objectsAt = curState.ObjectsAt(NextLocation);
+
+            // If no obstacles, move
+            if (!objectsAt.Any()) return curState.Without(this).AddObject(this with { Location = NextLocation });
+
+            // Otherwise, call the OnShot method for any objects encountered, or keep moving if none is defined
+            foreach (IDisplayable obj in objectsAt)
+            {
+                nextState = obj switch
                 {
                     // If there is an IShootable in the new location, call its OnShot method
                     IShootable shootableAtLocation => shootableAtLocation.OnShot(curState, shotFrom: Whither.Mirror(), shotBy: this).Without(this),
                     // Otherwise bullet keeps moving
-                    _ => curState.Without(this).AddObject(this with { Location = NextLocation })
+                    _ => nextState.Without(this).AddObject(this with { Location = NextLocation })
                 };
+            }
+            return nextState;
+        }
+
 
         private Location NextLocation 
             => Whither switch

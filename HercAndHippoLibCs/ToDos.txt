@@ -1,4 +1,7 @@
 - Door / key
+- Bullet should pass through and this should then display again
+	- Abstract out this behavior as a strategy
+- In refresh logic, need to re-show things that were previously overlapped (eg bullet passing over key)
 - Status bar
 - Implement and test "seek" behavior for bullet
 - Unit tests
