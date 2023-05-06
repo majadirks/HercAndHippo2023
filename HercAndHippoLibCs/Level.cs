@@ -19,7 +19,7 @@
     public static class TestLevels
     {
         public static readonly Level WallsLevel = new(
-            Player: new Player((4,3), Health: 100, AmmoCount: 0),
+            Player: new Player((4,3), Health: 100, AmmoCount: 0, Inventory: new HashSet<ITakeable>()),
             Displayables: new IDisplayable[]
             {
                 new Wall(ConsoleColor.Yellow, (1,1)),
@@ -34,6 +34,7 @@
 
                 new Wall(ConsoleColor.Yellow, (1,2)),
                 new Ammo((2,2), Count: 5),
+                new Key((7,2), Color: ConsoleColor.Magenta),
                 new Wall(ConsoleColor.Green, (9,2)),
 
                 new Wall(ConsoleColor.Yellow, (1,3)),

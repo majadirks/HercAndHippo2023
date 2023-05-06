@@ -10,7 +10,6 @@ namespace HercAndHippoLibCs
         public static implicit operator Column(int col) => new(col);
         public static implicit operator int(Column col) => col.colNum;
         public override string ToString() => $"{colNum}";
-
         public int CompareTo(Column? other) => colNum.CompareTo(other?.colNum);
     }
     public record Row : IComparable<Row>

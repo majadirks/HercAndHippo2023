@@ -1,6 +1,7 @@
 ﻿namespace HercAndHippoLibCs
 {
-    public record Player(Location Location, Health Health, AmmoCount AmmoCount) : IDisplayable, IShootable, ICyclable, ITouchable
+    public record Player(Location Location, Health Health, AmmoCount AmmoCount, IEnumerable<ITakeable> Inventory) 
+        : IDisplayable, IShootable, ICyclable, ITouchable
     {
         public string ConsoleDisplayString => HasHealth ? "☺" : "RIP";
         public ConsoleColor Color => ConsoleColor.Blue;
@@ -45,7 +46,6 @@
                     ITouchable touchableAtLocation => touchableAtLocation.OnTouch(curState, approachFrom, this),
                     _ => curState.WithPlayer(this with { Location = newLocation })
                 };
-   
         private Level MoveLeft(Level level) => TryMoveTo((Location.Col - 1, Location.Row), approachFrom: Direction.East, curState: level);
         private Level MoveRight(Level level) => TryMoveTo((Location.Col + 1, Location.Row), Direction.West, curState: level);
         private Level MoveUp(Level level) => TryMoveTo((Location.Col, Location.Row - 1), Direction.South, curState: level);
@@ -77,6 +77,8 @@
                 .WithPlayer(this with { AmmoCount = AmmoCount - 1 });
             return level;
         }
+        public Level Take(Level level, ITakeable toTake) 
+            => level.WithPlayer(this with { Inventory = Inventory.Append(toTake) }); // to do: compose OnTake
     }
     public readonly struct Health
     {
