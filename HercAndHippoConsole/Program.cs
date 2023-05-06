@@ -10,7 +10,7 @@ bool firstRender = true;
 
 // Just for kicks,  record the gameplay for playback at the end.
 // initialize history stack with 5 minutes' worth of history
-Stack<Level> history = new(1000 / REFRESH_RATE * 60 * 5);
+Stack<Level> history = new(capacity: 1000 / REFRESH_RATE * 60 * 5);
 
 Level curState = TestLevels.WallsLevel;
 Level newState = curState;
@@ -33,8 +33,6 @@ while (true)
 }
 
 // Play back the recording in reverse
-curState = history.Peek();
-newState = history.Peek();
 while (history.Any())
 {
     while (sw.ElapsedMilliseconds < REFRESH_RATE / 5) ;
@@ -43,6 +41,8 @@ while (history.Any())
     RefreshDisplay(curState, newState, forceRefresh: false);
     curState = newState;
 }
+
+// Helper Methods
 
 void RefreshDisplay(Level oldState, Level newState, bool forceRefresh)
 {
