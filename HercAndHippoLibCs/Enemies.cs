@@ -40,4 +40,14 @@
                     _ => throw new NotImplementedException()
                 };
     }
+
+    public static class OnShotBehaviors
+    {
+        public static Level DieAndStopBullet(IDisplayable shot, Level level, Bullet shotBy) => level.Without(shot).Without(shotBy);
+        public static Level StopBullet(Level level) => level;
+        public static Level AllowBulletToPass(IDisplayable shot, Level level, Bullet shotBy)
+            => level.Without(shotBy).AddObject(shotBy with { Location = shot.Location });
+    }
+
+
 }

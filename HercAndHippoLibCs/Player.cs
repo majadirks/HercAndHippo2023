@@ -92,7 +92,8 @@
             return level;
         }
         public Level Take(Level level, ITakeable toTake) 
-            => level.WithPlayer(this with { Inventory = Inventory.Append(toTake) }); // to do: compose OnTake
+            => level.WithPlayer(this with { Inventory = Inventory.Append(toTake) });
+        //public bool HasInventoryItem(Type type, ConsoleColor color) => Inventory.Contains(toQuery);
     }
     public readonly struct Health
     {

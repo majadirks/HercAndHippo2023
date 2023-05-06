@@ -24,9 +24,7 @@
             return reactToKeyBeingTakenState;
         }
         public Level OnTake(Level level) => level.Without(this); // Die after being taken
-
-        public Level OnShot(Level level, Direction shotFrom, Bullet shotBy) // ToDo: Bullet should pass through and this should then display again
-            => level.Without(shotBy).AddObject(shotBy with { Location = this.Location });
+        public Level OnShot(Level level, Direction shotFrom, Bullet shotBy) => OnShotBehaviors.AllowBulletToPass(this, level, shotBy);
     }
 
 }
