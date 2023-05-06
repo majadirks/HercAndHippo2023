@@ -17,7 +17,7 @@
             .Select(c => (ICyclable)c)
             .Aggregate(seed: this, func: (state, nextCyclable) => nextCyclable.Cycle(state, keyInfo));
         public bool HasSameStateAs(Level otherState)
-            => LevelObjects().Count() == otherState.LevelObjects().Count() &&
+            => LevelObjects().Count == otherState.LevelObjects().Count &&
                LevelObjects().Zip(otherState.LevelObjects()).All(zipped => zipped.First.Equals(zipped.Second));
     }
 

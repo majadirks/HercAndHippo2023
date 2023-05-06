@@ -1,4 +1,6 @@
-﻿namespace HercAndHippoLibCs
+﻿using static System.Math;
+
+namespace HercAndHippoLibCs
 {
     public record Player(Location Location, Health Health, AmmoCount AmmoCount, HashSet<ITakeable> Inventory) 
         : IDisplayable, IShootable, ICyclable, ITouchable
@@ -112,20 +114,14 @@
         public static bool MatchesColor<T>(this ITakeable item, ConsoleColor color) => item is T && item.Color == color;
     }
 
-    public readonly struct Health
+    public record Health
     {
         private const int MIN_HEALTH = 0;
         private const int MAX_HEALTH = 200;
         private const int DEFAULT_STARTING_HEALTH = 100;
-        private readonly int HealthAmt { get; init; }
-        public Health(int health = DEFAULT_STARTING_HEALTH)
-        {
-            if (!IsValid(health)) 
-                throw new ArgumentException($"Invalid health value {health} (must be between {MIN_HEALTH} and {MAX_HEALTH}");
-            HealthAmt = health;
-        }
+        private int HealthAmt { get; init; }
+        public Health(int health = DEFAULT_STARTING_HEALTH) => HealthAmt = Min(Max(health, MIN_HEALTH), MAX_HEALTH);
         public bool HasHealth => HealthAmt > 0;
-        private static bool IsValid(int health) => MIN_HEALTH <= health && health <= MAX_HEALTH;
         public static Health operator -(Health health, int subtrahend) => Math.Max(MIN_HEALTH, health.HealthAmt - subtrahend);
         public static Health operator +(Health health,int addend) => Math.Min(MAX_HEALTH, health.HealthAmt + addend);
 
