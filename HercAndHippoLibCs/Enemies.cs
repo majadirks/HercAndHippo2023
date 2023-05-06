@@ -17,10 +17,10 @@
         private Location NextLocation 
             => Whither switch
                 {
-                    Direction.North => this.Location.With(row: this.Location.Row - 1),
-                    Direction.South => this.Location.With(row: this.Location.Row + 1),
-                    Direction.East => this.Location.With(col: this.Location.Col + 1),
-                    Direction.West => this.Location.With(col: this.Location.Col - 1),
+                    Direction.North => Location with { Row = Location.Row - 1 },
+                    Direction.South => Location with { Row = Location.Row + 1},
+                    Direction.East => Location with { Col = Location.Col + 1},
+                    Direction.West => Location with { Col = Location.Col - 1},
                     Direction.Seek => throw new NotImplementedException(), // todo
                     Direction.Flee => throw new NotImplementedException(), // todo
                     _ => throw new NotImplementedException()

@@ -1,17 +1,32 @@
-﻿using static System.Math;
+﻿using System.Runtime.CompilerServices;
+using static System.Math;
 
 namespace HercAndHippoLibCs
 {
-    public readonly struct Location
+    public record Column : IComparable<Column>
     {
-        public readonly int Col { get; init; }
-        public readonly int Row { get; init; }
-        public Location(int col, int row)
-            => (Col, Row) = (Min(Max(0, col), Console.BufferWidth - 3), Min(Max(0, row), Console.BufferHeight - 3));
+        private readonly int colNum;
+        public Column(int col) => colNum = Min(Max(0, col), Console.BufferWidth - 3);
+        public static implicit operator Column(int col) => new(col);
+        public static implicit operator int(Column col) => col.colNum;
+        public override string ToString() => $"{colNum}";
 
+        public int CompareTo(Column? other) => colNum.CompareTo(other?.colNum);
+    }
+    public record Row : IComparable<Row>
+    {
+        private readonly int rowNum;
+        public Row(int row) => rowNum = Min(Max(0, row), Console.BufferHeight - 3);
+        public static implicit operator Row(int row) => new(row);
+        public static implicit operator int(Row row) => row.rowNum;
+        public override string ToString() => $"{rowNum}";
+        public int CompareTo(Row? other) => rowNum.CompareTo(other?.rowNum);
+    }
+
+    public record Location(Column Col, Row Row)
+    {
         public static implicit operator Location((int col, int row) tuple) => new(tuple.col, tuple.row);
         public override string ToString() => $"(col {Col}, row {Row})";
-        public Location With(int? col = null, int? row = null) => new(col: col ?? Col, row: row ?? Row);
     }
     public enum Direction { North, East, South, West, Seek, Flee }
     public static class DirectionExtensions
