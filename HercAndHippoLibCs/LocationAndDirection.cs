@@ -6,7 +6,13 @@ namespace HercAndHippoLibCs
     public record Column : IComparable<Column>
     {
         public static int MinCol => 1;
-        public static int MaxCol => Console.BufferWidth - 3;
+        public static int MaxCol
+        {
+            get {
+                    try { return Console.BufferWidth - 3; }
+                    catch (IOException) { return 128; } // Console not available, eg when running test project
+                }
+        }
         private readonly int colNum;
         public Column(int col) => colNum = Min(Max(MinCol, col), MaxCol);
         public static implicit operator Column(int col) => new(col);
@@ -17,7 +23,14 @@ namespace HercAndHippoLibCs
     public record Row : IComparable<Row>
     {
         public static int MinRow => 1;
-        public static int MaxRow => Console.BufferHeight - 3;
+        public static int MaxRow
+        {
+            get
+            {
+                try { return Console.BufferHeight - 3; }
+                catch (IOException) { return 128; } // Console not available, eg when running test project
+            }
+        }
         private readonly int rowNum;
         public Row(int row) => rowNum = Min(Max(MinRow, row), MaxRow);
         public static implicit operator Row(int row) => new(row);
