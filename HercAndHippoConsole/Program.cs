@@ -55,7 +55,7 @@ void RefreshDisplay(Level oldState, Level newState, bool forceRefresh)
 
 void ShowNew(Level oldState, Level newState, bool forceRefresh)
 {
-    IEnumerable<IDisplayable> toDisplay = newState.LevelObjects()
+    IEnumerable<IDisplayable> toDisplay = newState.LevelObjects
         .OrderBy(d => d.Color).ThenBy(d => d.Location.Row).ThenBy(d => d.Location.Col);
     foreach (IDisplayable displayable in toDisplay)
     {
@@ -67,7 +67,7 @@ void ShowNew(Level oldState, Level newState, bool forceRefresh)
 
 void ClearOld(Level oldState, Level newState)
 {
-    foreach (IDisplayable toRemove in oldState.LevelObjects().Where(obj => !newState.LevelObjects().Contains(obj)))
+    foreach (IDisplayable toRemove in oldState.LevelObjects.Where(obj => !newState.LevelObjects.Contains(obj)))
     {
         Console.SetCursorPosition(toRemove.Location.Col, toRemove.Location.Row);
         Console.ForegroundColor = ConsoleColor.Black;

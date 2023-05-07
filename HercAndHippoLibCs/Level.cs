@@ -7,24 +7,24 @@ namespace HercAndHippoLibCs
         public Player Player { get; private init; }
         private HashSet<IDisplayable> Displayables { get; init; }
         public Level(Player player, HashSet<IDisplayable> displayables) => (Player, Displayables) = (player, displayables);
-        public HashSet<IDisplayable> LevelObjects() => Displayables.AddObject(Player);   
+        public HashSet<IDisplayable> LevelObjects => Displayables.AddObject(Player);   
         public Level WithPlayer(Player player) => this with { Player = player };
-        public IEnumerable<IDisplayable> ObjectsAt(Location location) => LevelObjects().Where(d => d.Location.Equals(location));
+        public IEnumerable<IDisplayable> ObjectsAt(Location location) => LevelObjects.Where(d => d.Location.Equals(location));
         public Level Without(IDisplayable toRemove) => this with { Displayables = Displayables.RemoveObject(toRemove) };
         public Level AddObject(IDisplayable toAdd) => this with { Displayables = Displayables.AddObject(toAdd) };
         public Level Replace(IDisplayable toReplace, IDisplayable toAdd) => this.Without(toReplace).AddObject(toAdd);
         public Level RefreshCyclables(ConsoleKeyInfo keyInfo)
-            => LevelObjects().Where(disp => disp is ICyclable cylable)
+            => LevelObjects.Where(disp => disp is ICyclable cylable)
             .Select(c => (ICyclable)c)
             .Aggregate(seed: this, func: (state, nextCyclable) => nextCyclable.Cycle(state, keyInfo));
         private bool HasSameStateAs(Level otherState)
-            => LevelObjects().Count == otherState.LevelObjects().Count &&
-               LevelObjects().Zip(otherState.LevelObjects()).All(zipped => zipped.First.Equals(zipped.Second));
+            => LevelObjects.Count == otherState.LevelObjects.Count &&
+               LevelObjects.Zip(otherState.LevelObjects).All(zipped => zipped.First.Equals(zipped.Second));
         public bool Contains(IDisplayable obj) => Displayables.Contains(obj);
         public override bool Equals([NotNullWhen(true)] object? obj) => obj is Level other && other.HasSameStateAs(this);
         public static bool operator ==(Level left, Level right) => left.Equals(right);
         public static bool operator !=(Level left, Level right) => !(left == right);
-        public override int GetHashCode() => LevelObjects().GetHashCode();
+        public override int GetHashCode() => LevelObjects.GetHashCode();
         public override string ToString() => $"Level with Player at {Player.Location}; Object count = {Displayables.Count}.";
     }
 

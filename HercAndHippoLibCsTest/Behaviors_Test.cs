@@ -50,5 +50,33 @@ namespace HercAndHippoLibCsTest
             // Assert
             Assert.AreEqual(expectedNextState, actualNextState);
         }
+
+        [TestMethod]
+        public void AllowBulletToPass_Test()
+        {
+            // Arrange
+            Bullet bulletAboveKey = new((3, 2), Direction.South);
+            Key key = new(ConsoleColor.Green, (3, 3));
+            Level level = new(player: new((5, 5), Health: 100, AmmoCount: 5, Inventory: new()),
+                displayables: new() { bulletAboveKey, key });
+
+            Bullet bulletOverlappingKey = bulletAboveKey with { Location = key.Location };
+            Level expectedSecondState = level.Replace(bulletAboveKey, bulletOverlappingKey);
+
+            Bullet bulletPastKey = bulletOverlappingKey with { Location = (3, 4) };
+            Level expectedThirdState = expectedSecondState.Replace(bulletOverlappingKey, bulletPastKey);
+
+            // Act
+            Level actualSecondState = Behaviors.AllowBulletToPass(key, level, bulletAboveKey);
+            Level actualThirdState = actualSecondState.RefreshCyclables(default);
+            // Assert
+            Assert.AreEqual(expectedSecondState, actualSecondState);
+            Assert.AreEqual(expectedThirdState, actualThirdState);
+        }
+
+        [TestMethod]
+        public void DieAndAllowPassage_Test()
+        {
+        }
     }
 }
