@@ -15,7 +15,7 @@ namespace HercAndHippoLibCs
         public Level Replace(IDisplayable toReplace, IDisplayable toAdd) => this.Without(toReplace).AddObject(toAdd);
         public Level RefreshCyclables(ConsoleKeyInfo keyInfo)
             => LevelObjects.Where(disp => disp is ICyclable cylable)
-            .Select(c => (ICyclable)c)
+            .Cast<ICyclable>()
             .Aggregate(seed: this, func: (state, nextCyclable) => nextCyclable.Cycle(state, keyInfo));
         private bool HasSameStateAs(Level otherState)
             => LevelObjects.Count == otherState.LevelObjects.Count &&
