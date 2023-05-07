@@ -1,11 +1,13 @@
-﻿namespace HercAndHippoLibCs
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace HercAndHippoLibCs
 {
-    public record Level
+    public readonly struct Level
     {
         public Player Player { get; private init; }
         private HashSet<IDisplayable> Displayables { get; init; }
         public Level(Player player, HashSet<IDisplayable> displayables) => (Player, Displayables) = (player, displayables);
-        public HashSet<IDisplayable> LevelObjects() => new(Displayables) { Player  };   
+        public HashSet<IDisplayable> LevelObjects() => Displayables.AddObject(Player);   
         public Level WithPlayer(Player player) => this with { Player = player };
         public IEnumerable<IDisplayable> ObjectsAt(Location location) => LevelObjects().Where(d => d.Location.Equals(location));
         public Level Without(IDisplayable toRemove) => this with { Displayables = Displayables.RemoveObject(toRemove) };
@@ -15,11 +17,15 @@
             => LevelObjects().Where(disp => disp is ICyclable cylable)
             .Select(c => (ICyclable)c)
             .Aggregate(seed: this, func: (state, nextCyclable) => nextCyclable.Cycle(state, keyInfo));
-        public bool HasSameStateAs(Level otherState)
+        private bool HasSameStateAs(Level otherState)
             => LevelObjects().Count == otherState.LevelObjects().Count &&
                LevelObjects().Zip(otherState.LevelObjects()).All(zipped => zipped.First.Equals(zipped.Second));
         public bool Contains(IDisplayable obj) => Displayables.Contains(obj);
- 
+        public override bool Equals([NotNullWhen(true)] object? obj) => obj is Level other && other.HasSameStateAs(this);
+        public static bool operator ==(Level left, Level right) => left.Equals(right);
+        public static bool operator !=(Level left, Level right) => !(left == right);
+        public override int GetHashCode() => LevelObjects().GetHashCode();
+        public override string ToString() => $"Level with Player at {Player.Location}; Object count = {Displayables.Count}.";
     }
 
     public static class HashSetExtensions

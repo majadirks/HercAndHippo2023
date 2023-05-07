@@ -47,7 +47,7 @@ while (history.Any())
 void RefreshDisplay(Level oldState, Level newState, bool forceRefresh)
 {
     if (forceRefresh) Console.Clear();
-    if (!forceRefresh && newState.HasSameStateAs(oldState)) return;
+    if (!forceRefresh && newState == oldState) return;
     ClearOld(oldState, newState);
     ShowNew(oldState, newState, forceRefresh);
     history.Push(newState);

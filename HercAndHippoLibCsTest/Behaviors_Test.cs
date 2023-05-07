@@ -14,31 +14,41 @@ namespace HercAndHippoLibCsTest
             Level initialState = new(
                 player: new((1, 1), Health: 100, AmmoCount: 5, Inventory: new()),
                 displayables: new()  { bullet, breakableWall });
-            Level expectedEndingState = initialState.Without(bullet).Without(breakableWall);
+            Level expectedNextState = initialState.Without(bullet).Without(breakableWall);
             // Act
-            Level actualEndingState = Behaviors.DieAndStopBullet(breakableWall, initialState, bullet);
+            Level actualNextState = Behaviors.DieAndStopBullet(breakableWall, initialState, bullet);
             // Assert
-            Assert.IsTrue(expectedEndingState.HasSameStateAs(actualEndingState));
+            Assert.AreEqual(expectedNextState, actualNextState);
         }
 
         [TestMethod]
         public void NoReaction_Test()
         {
-
             // Arrange
             Level level = new(player: new((2, 3), Health: 100, AmmoCount: 5, Inventory: new()),
                 displayables: new()
                 {
-                    new BreakableWall(ConsoleColor.Green, (1,2)),
-                    new BreakableWall(ConsoleColor.Green, (2,2)),
-                    new BreakableWall(ConsoleColor.Green, (3,2)),
-                    new BreakableWall(ConsoleColor.Green, (1,3)),
-                    new BreakableWall(ConsoleColor.Green, (3,3))
+                    new BreakableWall(ConsoleColor.Green, (3,3)),
                 });
             // Act
             Level nextState = Behaviors.NoReaction(level);
             // Assert
-            Assert.IsTrue(level.HasSameStateAs(nextState));
+            Assert.AreEqual(level, nextState);
+        }
+
+        [TestMethod]
+        public void StopBullet_Test()
+        {
+            // Arrange
+            Bullet bullet = new((3, 2), Direction.South);
+            Wall wall = new(ConsoleColor.Green, (3, 3));
+            Level level = new(player: new((2, 3), Health: 100, AmmoCount: 5, Inventory: new()),
+                displayables: new() {bullet, wall});
+            Level expectedNextState = level.Without(bullet);
+            // Act
+            Level actualNextState = Behaviors.StopBullet(level, bullet);
+            // Assert
+            Assert.AreEqual(expectedNextState, actualNextState);
         }
     }
 }
