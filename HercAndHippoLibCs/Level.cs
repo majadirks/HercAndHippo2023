@@ -1,17 +1,15 @@
 ﻿namespace HercAndHippoLibCs
 {
-    public record Level(Player Player, HashSet<IDisplayable> Displayables)
+    public record Level
     {
+        public Player Player { get; private init; }
+        private HashSet<IDisplayable> Displayables { get; init; }
+        public Level(Player player, HashSet<IDisplayable> displayables) => (Player, Displayables) = (player, displayables);
         public HashSet<IDisplayable> LevelObjects() => new(Displayables) { Player  };   
         public Level WithPlayer(Player player) => this with { Player = player };
         public IEnumerable<IDisplayable> ObjectsAt(Location location) => LevelObjects().Where(d => d.Location.Equals(location));
-        public Level Without(IDisplayable toRemove)
-        {
-            HashSet<IDisplayable> removed = new(Displayables);
-            removed.Remove(toRemove);
-            return this with { Displayables = removed };
-        }
-        public Level AddObject(IDisplayable toAdd) => this with { Displayables = new(Displayables) { toAdd } };
+        public Level Without(IDisplayable toRemove) => this with { Displayables = Displayables.RemoveObject(toRemove) };
+        public Level AddObject(IDisplayable toAdd) => this with { Displayables = Displayables.AddObject(toAdd) };
         public Level Replace(IDisplayable toReplace, IDisplayable toAdd) => this.Without(toReplace).AddObject(toAdd);
         public Level RefreshCyclables(ConsoleKeyInfo keyInfo)
             => LevelObjects().Where(disp => disp is ICyclable cylable)
@@ -20,13 +18,26 @@
         public bool HasSameStateAs(Level otherState)
             => LevelObjects().Count == otherState.LevelObjects().Count &&
                LevelObjects().Zip(otherState.LevelObjects()).All(zipped => zipped.First.Equals(zipped.Second));
+        public bool Contains(IDisplayable obj) => Displayables.Contains(obj);
+ 
+    }
+
+    public static class HashSetExtensions
+    {
+        public static HashSet<T> AddObject<T>(this HashSet<T> collection, T toAdd) => new(collection) { toAdd };
+        public static HashSet<T> RemoveObject<T>(this HashSet<T> collection, T toRemove)
+        {
+            HashSet<T> removed = new(collection);
+            removed.Remove(toRemove);
+            return removed;
+        }
     }
 
     public static class TestLevels
     {
         public static readonly Level WallsLevel = new(
-            Player: new Player((4, 3), Health: 100, AmmoCount: 0, Inventory: new HashSet<ITakeable>()),
-            Displayables: new HashSet<IDisplayable>
+            player: new Player((4, 3), Health: 100, AmmoCount: 0, Inventory: new HashSet<ITakeable>()),
+            displayables: new HashSet<IDisplayable>
             {
                 new Wall(ConsoleColor.Yellow, (1,1)),
                 new Wall(ConsoleColor.Yellow, (2,1)),

@@ -14,7 +14,7 @@
                 .Aggregate(seed: curState, func: (state, shot) => shot.OnShot(state, shotFrom: Whither.Mirror(), shotBy: this));
 
             // Continue moving in current direction if it hasn't been stopped
-            Level bulletMoved = nextState.Displayables.Contains(this) ?
+            Level bulletMoved = nextState.Contains(this) ?
                 nextState.Replace(this, this with { Location = NextLocation }) : // If bullet wasn't stopped, continue
                 nextState; // If bullet was stopped, don't regenerate it
 
