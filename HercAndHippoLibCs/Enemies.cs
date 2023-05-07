@@ -13,7 +13,7 @@
                 .Cast<IShootable>()
                 .Aggregate(seed: curState, func: (state, shot) => shot.OnShot(state, shotFrom: Whither.Mirror(), shotBy: this));
 
-            // Continue moving in current direction
+            // Continue moving in current direction if it hasn't been stopped
             Level bulletMoved = nextState.Displayables.Contains(this) ?
                 nextState.Without(this).AddObject(this with { Location = NextLocation }) : // If bullet wasn't stopped, continue
                 nextState; // If bullet was stopped, don't regenerate it
@@ -24,17 +24,18 @@
             return bulletMoved;
         }
 
-        private Location NextLocation 
+        private Location NextLocation
             => Whither switch
-                {
-                    Direction.North => Location with { Row = Location.Row - 1 },
-                    Direction.South => Location with { Row = Location.Row + 1},
-                    Direction.East => Location with { Col = Location.Col + 1},
-                    Direction.West => Location with { Col = Location.Col - 1},
-                    Direction.Seek => throw new NotImplementedException(), // todo
-                    Direction.Flee => throw new NotImplementedException(), // todo
-                    _ => throw new NotImplementedException()
-                };
+            {
+                Direction.North => Location with { Row = Location.Row - 1 },
+                Direction.South => Location with { Row = Location.Row + 1 },
+                Direction.East => Location with { Col = Location.Col + 1 },
+                Direction.West => Location with { Col = Location.Col - 1 },
+                Direction.Seek => throw new NotImplementedException(), // todo
+                Direction.Flee => throw new NotImplementedException(), // todo
+                _ => throw new NotImplementedException()
+            };
     }
+
 
 }
