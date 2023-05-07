@@ -15,10 +15,10 @@ namespace HercAndHippoLibCs
         public Level Cycle(Level level, ActionInput actionInput)
          => actionInput switch
          {
-             ActionInput.MoveWest => MoveLeft(level),
-             ActionInput.MoveEast => MoveRight(level),
-             ActionInput.MoveNorth => MoveUp(level),
-             ActionInput.MoveSouth => MoveDown(level),
+             ActionInput.MoveWest => TryMoveTo((Location.Col - 1, Location.Row), approachFrom: Direction.East, curState: level),
+             ActionInput.MoveEast => TryMoveTo((Location.Col + 1, Location.Row), approachFrom: Direction.West, curState: level),
+             ActionInput.MoveNorth => TryMoveTo((Location.Col, Location.Row - 1), approachFrom: Direction.South, curState: level),
+             ActionInput.MoveSouth => TryMoveTo((Location.Col, Location.Row + 1), approachFrom: Direction.North, curState: level),
              ActionInput.ShootNorth => Shoot(level, Direction.North),
              ActionInput.ShootSouth => Shoot(level, Direction.South),
              ActionInput.ShootWest => Shoot(level, Direction.West),
@@ -50,10 +50,6 @@ namespace HercAndHippoLibCs
             }
             return nextState; 
         }
-        private Level MoveLeft(Level level) => TryMoveTo((Location.Col - 1, Location.Row), approachFrom: Direction.East, curState: level);
-        private Level MoveRight(Level level) => TryMoveTo((Location.Col + 1, Location.Row), Direction.West, curState: level);
-        private Level MoveUp(Level level) => TryMoveTo((Location.Col, Location.Row - 1), Direction.South, curState: level);
-        private Level MoveDown(Level level) => TryMoveTo((Location.Col, Location.Row + 1), Direction.North, curState: level);
         private Level Shoot(Level level, Direction whither)
         {
             if (!HasAmmo) return level;
