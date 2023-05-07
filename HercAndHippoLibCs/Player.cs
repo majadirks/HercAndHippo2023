@@ -12,30 +12,42 @@ namespace HercAndHippoLibCs
             => level.WithPlayer(this with { Health = Health - 5 });
         public bool HasHealth => Health.HasHealth;
         public bool HasAmmo => AmmoCount.HasAmmo;
-        public Level Cycle(Level level, ConsoleKeyInfo keyInfo)
-        {
-            // Shift key pressed (shoot)
-            if ((keyInfo.Modifiers & ConsoleModifiers.Shift) != 0)
-            {
-                return keyInfo.Key switch
-                {
-                    ConsoleKey.LeftArrow => Shoot(level, Direction.West),
-                    ConsoleKey.RightArrow => Shoot(level, Direction.East),
-                    ConsoleKey.UpArrow => Shoot(level, Direction.North),
-                    ConsoleKey.DownArrow => Shoot(level, Direction.South),
-                    _ => level // No update for unknown key
-                };
-            }
-            // No shift key; move player
-            return keyInfo.Key switch
-            {
-                ConsoleKey.LeftArrow => MoveLeft(level),
-                ConsoleKey.RightArrow => MoveRight(level),
-                ConsoleKey.UpArrow => MoveUp(level),
-                ConsoleKey.DownArrow => MoveDown(level),
-                _ => level // No update for unknown key
-            };
-        }
+        public Level Cycle(Level level, ActionInput actionInput)
+         => actionInput switch
+         {
+             ActionInput.MoveWest => MoveLeft(level),
+             ActionInput.MoveEast => MoveRight(level),
+             ActionInput.MoveNorth => MoveUp(level),
+             ActionInput.MoveSouth => MoveDown(level),
+             ActionInput.ShootNorth => Shoot(level, Direction.North),
+             ActionInput.ShootSouth => Shoot(level, Direction.South),
+             ActionInput.ShootWest => Shoot(level, Direction.West),
+             ActionInput.ShootEast => Shoot(level, Direction.East),
+             _ => Behaviors.NoReaction(level)
+         };
+            
+            //// Shift key pressed (shoot)
+            //if ((keyInfo.Modifiers & ConsoleModifiers.Shift) != 0)
+            //{
+            //    return keyInfo.Key switch
+            //    {
+            //        ConsoleKey.LeftArrow => Shoot(level, Direction.West),
+            //        ConsoleKey.RightArrow => Shoot(level, Direction.East),
+            //        ConsoleKey.UpArrow => Shoot(level, Direction.North),
+            //        ConsoleKey.DownArrow => Shoot(level, Direction.South),
+            //        _ => level // No update for unknown key
+            //    };
+            //}
+            //// No shift key; move player
+            //return keyInfo.Key switch
+            //{
+            //    ConsoleKey.LeftArrow => MoveLeft(level),
+            //    ConsoleKey.RightArrow => MoveRight(level),
+            //    ConsoleKey.UpArrow => MoveUp(level),
+            //    ConsoleKey.DownArrow => MoveDown(level),
+            //    _ => level // No update for unknown key
+            //};
+        
         public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy)
             => touchedBy switch
             {

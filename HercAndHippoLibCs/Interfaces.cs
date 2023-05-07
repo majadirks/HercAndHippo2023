@@ -8,6 +8,6 @@
     }
     public interface IShootable { public Level OnShot(Level level, Direction shotFrom, Bullet shotBy); }
     public interface ITouchable { public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy); }
-    public interface ICyclable { Level Cycle(Level level, ConsoleKeyInfo keyInfo); }
+    public interface ICyclable { Level Cycle(Level level, ActionInput actionInput); }
     public interface ITakeable { Level OnTake(Level level); ConsoleColor Color { get; } }
 }

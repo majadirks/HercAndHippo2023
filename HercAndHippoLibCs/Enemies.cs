@@ -5,7 +5,7 @@
         public string ConsoleDisplayString => "*";
         public ConsoleColor Color => ConsoleColor.White;
         /// <summary>When the level cycles, a bullet moves in the direction it's currently heading.</summary>
-        public Level Cycle(Level curState, ConsoleKeyInfo keyInfo)
+        public Level Cycle(Level curState, ActionInput actionInput)
         {
             Level nextState = curState
                 .ObjectsAt(Location)

@@ -1,4 +1,5 @@
 ﻿using HercAndHippoLibCs;
+using HercAndHippoConsole;
 using System.Diagnostics;
 
 const int REFRESH_RATE = 20;
@@ -21,7 +22,7 @@ while (true)
     while (sw.ElapsedMilliseconds < REFRESH_RATE);
     sw.Restart();
 
-    newState = curState.RefreshCyclables(keyInfo);
+    newState = curState.RefreshCyclables(keyInfo.ToActionInput());
     if (keyInfo.KeyChar == 'q') break;
     keyInfo = default;
     RefreshDisplay(curState, newState, firstRender);
