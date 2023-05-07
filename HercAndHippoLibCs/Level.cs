@@ -12,6 +12,7 @@
             return this with { Displayables = removed };
         }
         public Level AddObject(IDisplayable toAdd) => this with { Displayables = new(Displayables) { toAdd } };
+        public Level Replace(IDisplayable toReplace, IDisplayable toAdd) => this.Without(toReplace).AddObject(toAdd);
         public Level RefreshCyclables(ConsoleKeyInfo keyInfo)
             => LevelObjects().Where(disp => disp is ICyclable cylable)
             .Select(c => (ICyclable)c)

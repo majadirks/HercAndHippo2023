@@ -15,7 +15,7 @@
 
             // Continue moving in current direction if it hasn't been stopped
             Level bulletMoved = nextState.Displayables.Contains(this) ?
-                nextState.Without(this).AddObject(this with { Location = NextLocation }) : // If bullet wasn't stopped, continue
+                nextState.Replace(this, this with { Location = NextLocation }) : // If bullet wasn't stopped, continue
                 nextState; // If bullet was stopped, don't regenerate it
 
             // If reached screen boundary, die 
