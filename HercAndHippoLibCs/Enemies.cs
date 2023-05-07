@@ -7,24 +7,21 @@
         /// <summary>When the level cycles, a bullet moves in the direction it's currently heading.</summary>
         public Level Cycle(Level curState, ConsoleKeyInfo keyInfo)
         {
-            Level nextState = curState;
-            var objectsAt = curState.ObjectsAt(NextLocation);
+            Level nextState = curState
+                .ObjectsAt(Location)
+                .Where(obj => obj is IShootable shot)
+                .Cast<IShootable>()
+                .Aggregate(seed: curState, func: (state, shot) => shot.OnShot(state, shotFrom: Whither.Mirror(), shotBy: this));
 
-            // If no obstacles, move
-            if (!objectsAt.Any()) return curState.Without(this).AddObject(this with { Location = NextLocation });
+            // Continue moving in current direction
+            Level bulletMoved = nextState.Displayables.Contains(this) ?
+                nextState.Without(this).AddObject(this with { Location = NextLocation }) : // If bullet wasn't stopped, continue
+                nextState; // If bullet was stopped, don't regenerate it
 
-            // Otherwise, call the OnShot method for any objects encountered, or keep moving if none is defined
-            foreach (IDisplayable obj in objectsAt)
-            {
-                nextState = obj switch
-                {
-                    // If there is an IShootable in the new location, call its OnShot method
-                    IShootable shootableAtLocation => shootableAtLocation.OnShot(curState, shotFrom: Whither.Mirror(), shotBy: this).Without(this),
-                    // Otherwise bullet keeps moving
-                    _ => nextState.Without(this).AddObject(this with { Location = NextLocation })
-                };
-            }
-            return nextState;
+            // If reached screen boundary, die 
+            if (Location.Row == Row.MinRow || Location.Row == Row.MaxRow || Location.Col == Column.MinCol || Location.Col == Column.MaxCol)
+                bulletMoved = bulletMoved.Without(this);
+            return bulletMoved;
         }
 
         private Location NextLocation 

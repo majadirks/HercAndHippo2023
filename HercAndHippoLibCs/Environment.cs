@@ -3,7 +3,7 @@
     public record Wall(ConsoleColor Color, Location Location) : IDisplayable, ITouchable, IShootable
     {
         public string ConsoleDisplayString => "█";
-        public Level OnShot(Level level, Direction shotFrom, Bullet shotBy) => Behaviors.NoReaction(level);
+        public Level OnShot(Level level, Direction shotFrom, Bullet shotBy) => Behaviors.StopBullet(level,shotBy);
         public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy) => Behaviors.NoReaction(level);
     }
     public record BreakableWall(ConsoleColor Color, Location Location) : IDisplayable, IShootable, ITouchable
@@ -15,7 +15,7 @@
     public record Door(ConsoleColor Color, Location Location) : IDisplayable, IShootable, ITouchable
     {
         public string ConsoleDisplayString => "D";
-        public Level OnShot(Level level, Direction shotFrom, Bullet shotBy) => Behaviors.NoReaction(level); // Cannot shoot through a door
+        public Level OnShot(Level level, Direction shotFrom, Bullet shotBy) => Behaviors.StopBullet(level,shotBy); // Cannot shoot through a door
         public Level OnTouch(Level level, Direction _, ITouchable touchedBy)
             => touchedBy switch
             {

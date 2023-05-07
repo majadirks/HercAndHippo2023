@@ -35,7 +35,7 @@ while (true)
 // Play back the recording in reverse
 while (history.Any())
 {
-    while (sw.ElapsedMilliseconds < REFRESH_RATE / 5) ;
+    while (sw.ElapsedMilliseconds < REFRESH_RATE / 10) ;
     sw.Restart();
     newState = history.Pop();
     RefreshDisplay(curState, newState, forceRefresh: false);
