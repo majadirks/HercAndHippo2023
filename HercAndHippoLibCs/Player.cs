@@ -25,29 +25,6 @@ namespace HercAndHippoLibCs
              ActionInput.ShootEast => Shoot(level, Direction.East),
              _ => Behaviors.NoReaction(level)
          };
-            
-            //// Shift key pressed (shoot)
-            //if ((keyInfo.Modifiers & ConsoleModifiers.Shift) != 0)
-            //{
-            //    return keyInfo.Key switch
-            //    {
-            //        ConsoleKey.LeftArrow => Shoot(level, Direction.West),
-            //        ConsoleKey.RightArrow => Shoot(level, Direction.East),
-            //        ConsoleKey.UpArrow => Shoot(level, Direction.North),
-            //        ConsoleKey.DownArrow => Shoot(level, Direction.South),
-            //        _ => level // No update for unknown key
-            //    };
-            //}
-            //// No shift key; move player
-            //return keyInfo.Key switch
-            //{
-            //    ConsoleKey.LeftArrow => MoveLeft(level),
-            //    ConsoleKey.RightArrow => MoveRight(level),
-            //    ConsoleKey.UpArrow => MoveUp(level),
-            //    ConsoleKey.DownArrow => MoveDown(level),
-            //    _ => level // No update for unknown key
-            //};
-        
         public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy)
             => touchedBy switch
             {
