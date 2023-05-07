@@ -1,10 +1,4 @@
-- Bullet can pass through wall if shot from an adjacent Location; fix this.
-  - Similarly, cannot break a breakable wall from an adjacent location.
-- Performance profiler: Figure out why everything gets so slow as the number of objects increases
 - Status bar
 - Implement and test "seek" behavior for bullet
 - Unit tests
-- Logic to remove objects that are beyond the bounds of the level (eg bullets).
-	- Improve bullet behavior; they get stuck at screen edges
-	- Really weird behavior if player goes to edge
 	
