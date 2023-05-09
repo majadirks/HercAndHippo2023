@@ -59,11 +59,11 @@ void RefreshDisplay(Level oldState, Level newState, bool forceRefresh)
     if (forceRefresh) Console.Clear();
     if (!forceRefresh && newState == oldState) return;
     ClearOld(oldState, newState, forceRefresh);
-    ShowNew(oldState, newState, forceRefresh);
+    ShowNew(oldState, newState);
     history.Push(newState);
 }
 
-void ShowNew(Level oldState, Level newState, bool forceRefresh)
+void ShowNew(Level oldState, Level newState)
 {
     IEnumerable<IDisplayable> toDisplay = newState.LevelObjects
         .OrderBy(d => d.Color).ThenBy(d => d.Location.Row).ThenBy(d => d.Location.Col);
