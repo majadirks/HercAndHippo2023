@@ -2,7 +2,7 @@
 using HercAndHippoConsole;
 using System.Diagnostics;
 
-const int REFRESH_RATE = 20;
+const int REFRESH_INTERVAL_MS = 20;
 const int MESSAGE_MARGIN = 3;
 const int VIEW_MARGIN = 2;
 const int HISTORY_SPEEDUP_FACTOR = 10;
@@ -14,7 +14,7 @@ bool forceRefresh = true;
 
 // Just for kicks,  record the gameplay for playback at the end.
 // initialize history stack with 5 minutes' worth of history
-Stack<Level> history = new(capacity: 1000 / REFRESH_RATE * 60 * 5);
+Stack<Level> history = new(capacity: 1000 * 60 * 5 / REFRESH_INTERVAL_MS);
 
 Level curState = TestLevels.WallsLevel;
 Level newState = curState;
@@ -25,7 +25,7 @@ int bufferWidth = Console.BufferWidth;
 sw.Start();
 while (true)
 {
-    while (sw.ElapsedMilliseconds < REFRESH_RATE);
+    while (sw.ElapsedMilliseconds < REFRESH_INTERVAL_MS);
     sw.Restart();
 
     newState = curState.RefreshCyclables(keyInfo.ToActionInput());
@@ -42,7 +42,7 @@ while (true)
 // Play back the recording in reverse
 while (history.Any())
 {
-    while (sw.ElapsedMilliseconds < REFRESH_RATE / HISTORY_SPEEDUP_FACTOR) ;
+    while (sw.ElapsedMilliseconds < REFRESH_INTERVAL_MS / HISTORY_SPEEDUP_FACTOR) ;
     sw.Restart();
     newState = history.Pop();
     RefreshDisplay(curState, newState, forceRefresh: false);
@@ -50,7 +50,6 @@ while (history.Any())
 }
 
 // Helper Methods
-
 (bool changed, int BufferHeight, int BufferWidth) BufferSizeChanged(int bufferHeight, int bufferWidth)
 {
     bool changed = bufferHeight != Console.BufferHeight || bufferWidth != Console.BufferWidth;
