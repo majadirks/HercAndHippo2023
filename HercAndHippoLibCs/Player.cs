@@ -33,13 +33,12 @@ namespace HercAndHippoLibCs
             };
         private Level TryMoveTo(Location newLocation, Direction approachFrom, Level curState)
         {
-            Level nextState = curState;
-            var objectsAt = curState.ObjectsAt(newLocation);
-
             // If no obstacles, move
-            if (!objectsAt.Any()) return curState.WithPlayer(this with { Location = newLocation });
+            if (!curState.ObjectsAt(newLocation).Any()) 
+                return curState.WithPlayer(this with { Location = newLocation });
 
-            // Otherwise, call the touch methods for any touchables and move over all else
+            // Otherwise, call the touch methods for any ITouchables and move over all else
+            Level nextState = curState;
             foreach (IDisplayable obj in curState.ObjectsAt(newLocation))
             {
                 nextState = obj switch

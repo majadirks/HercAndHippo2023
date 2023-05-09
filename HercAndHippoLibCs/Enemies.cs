@@ -19,7 +19,7 @@
                 nextState; // If bullet was stopped, don't regenerate it
 
             // If reached screen boundary, die 
-            if (Location.Row == Row.MinRow || Location.Row == Row.MaxRow || Location.Col == Column.MinCol || Location.Col == Column.MaxCol)
+            if (Location.Row == Row.MIN_ROW || Location.Row == Row.MAX_ROW || Location.Col == Column.MIN_COL || Location.Col == Column.MAX_COL)
                 bulletMoved = bulletMoved.Without(this);
             return bulletMoved;
         }
