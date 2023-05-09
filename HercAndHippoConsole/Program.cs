@@ -3,6 +3,9 @@ using HercAndHippoConsole;
 using System.Diagnostics;
 
 const int REFRESH_RATE = 20;
+const int MESSAGE_MARGIN = 3;
+const int VIEW_MARGIN = 2;
+const int HISTORY_SPEEDUP_FACTOR = 10;
 
 Stopwatch sw = new();
 
@@ -39,7 +42,7 @@ while (true)
 // Play back the recording in reverse
 while (history.Any())
 {
-    while (sw.ElapsedMilliseconds < REFRESH_RATE / 10) ;
+    while (sw.ElapsedMilliseconds < REFRESH_RATE / HISTORY_SPEEDUP_FACTOR) ;
     sw.Restart();
     newState = history.Pop();
     RefreshDisplay(curState, newState, forceRefresh: false);
@@ -82,13 +85,13 @@ void ClearOld(Level oldState, Level newState, bool forceRefresh)
 }
 
 void ShowMessage(string message) 
-    => WriteIfInView(1, Console.BufferHeight - 3, ConsoleColor.White, message);
+    => WriteIfInView(1, Console.BufferHeight - MESSAGE_MARGIN, ConsoleColor.White, message);
 
 void WriteIfInView(int col, int row, ConsoleColor color, string msg)
 {
-    int maxCol = Console.BufferWidth - 2;
-    int maxRow = Console.BufferHeight - 2;
-    if (row > maxRow || col > maxCol) return;
+    int maxCol = Console.BufferWidth - VIEW_MARGIN;
+    int maxRow = Console.BufferHeight - VIEW_MARGIN;
+    if (row > maxRow || col > maxCol) return; // Out-of-view, so don't write anything
     Console.SetCursorPosition(col, row);
     Console.ForegroundColor = color;
     Console.WriteLine(msg);
