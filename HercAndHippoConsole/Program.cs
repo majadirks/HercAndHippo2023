@@ -78,7 +78,6 @@ void RefreshDisplay(IDisplayable[,] oldDisplay, IDisplayable[,] newDisplay, bool
     int maxRow = (forceRefresh? Console.BufferHeight : bufferHeight) - VIEW_MARGIN;
     bool InView(int col, int row) => col + 1 < Console.BufferWidth - VIEW_MARGIN && row + 1 < Console.BufferHeight - VIEW_MARGIN;
 
-    {
     for (int row = 0; row < maxRow; row++)
     {
         for (int col = 0; col < maxCol; col++)
