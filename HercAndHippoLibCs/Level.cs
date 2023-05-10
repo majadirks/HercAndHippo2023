@@ -5,8 +5,11 @@ namespace HercAndHippoLibCs
     public readonly struct Level
     {
         public Player Player { get; private init; }
+        public readonly int Width { get; private init; }
+        public readonly int Height { get; private init; }
         private HashSet<IDisplayable> Displayables { get; init; }
-        public Level(Player player, HashSet<IDisplayable> displayables) => (Player, Displayables) = (player, displayables);
+        public Level(Player player, HashSet<IDisplayable> displayables) 
+            => (Player, Displayables, Width, Height) = (player, displayables, GetWidth(displayables) , GetHeight(displayables));
         public HashSet<IDisplayable> LevelObjects => Displayables.AddObject(Player);   
         public Level WithPlayer(Player player) => this with { Player = player };
         public IEnumerable<IDisplayable> ObjectsAt(Location location) => LevelObjects.Where(d => d.Location.Equals(location));
@@ -26,6 +29,9 @@ namespace HercAndHippoLibCs
         public static bool operator !=(Level left, Level right) => !(left == right);
         public override int GetHashCode() => LevelObjects.GetHashCode();
         public override string ToString() => $"Level with Player at {Player.Location}; Object count = {Displayables.Count}.";
+
+        private static int GetWidth(HashSet<IDisplayable> ds) => ds.Select(d => d.Location.Col).Max() ?? 0;
+        private static int GetHeight(HashSet<IDisplayable> ds) => ds.Select(d => d.Location.Row).Max() ?? 0;
     }
 
     public static class HashSetExtensions
