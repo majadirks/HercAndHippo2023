@@ -12,6 +12,8 @@ Stopwatch sw = new();
 
 ConsoleKeyInfo keyInfo = default;
 bool forceRefresh = true;
+bool playerMoved = false;
+bool bufferSizeChanged = false;
 
 // Just for kicks,  record the gameplay for playback at the end.
 // initialize history stack with 5 minutes' worth of history
@@ -21,7 +23,10 @@ Level curState = TestLevels.WallsLevel;
 Level newState = curState;
 
 int bufferHeight = Console.BufferHeight;
-int bufferWidth = Console.BufferWidth;  
+int bufferWidth = Console.BufferWidth;
+
+Column playerCol = curState.Player.Location.Col;
+Row playerRow = curState.Player.Location.Row;
 
 sw.Start();
 while (true)
@@ -33,7 +38,9 @@ while (true)
     if (keyInfo.KeyChar == 'q') break;
     keyInfo = default;
     RefreshDisplay(curState, newState, forceRefresh);
-    (forceRefresh, bufferHeight, bufferWidth)  = BufferSizeChanged(bufferHeight, bufferWidth);
+    (bufferSizeChanged, bufferHeight, bufferWidth)  = BufferSizeChanged(bufferHeight, bufferWidth);
+    (playerMoved, playerCol, playerRow) = PlayerMoved(newState, playerCol, playerRow);
+    forceRefresh = bufferSizeChanged || playerMoved;
     curState = newState;
     ShowMessage("Use arrow keys to move, shift + arrow keys to shoot, 'q' to quit.");
     if (Console.KeyAvailable) 
@@ -57,10 +64,19 @@ while (history.Any())
     return (changed, Console.BufferHeight, Console.BufferWidth);
 }
 
+(bool playerMoved, Column newCol, Row newRow) PlayerMoved(Level state, Column playerCol, Row playerRow)
+{
+    Column newCol = state.Player.Location.Col;
+    Row newRow = state.Player.Location.Row;
+    bool moved = playerCol != newCol || playerRow != newRow;
+    return (moved, newCol, newRow);
+}
+
 void RefreshDisplay(Level oldState, Level newState, bool forceRefresh)
 {
     if (forceRefresh) Console.Clear();
     if (!forceRefresh && newState == oldState) return;
+    ShowNew(oldState, newState);
     ClearOld(oldState, newState, forceRefresh);
     ShowNew(oldState, newState);
     history.Push(newState);
@@ -82,7 +98,7 @@ void ShowNew(Level oldState, Level newState)
 
 void ClearOld(Level oldState, Level newState, bool forceRefresh)
 {
-    foreach (IDisplayable toRemove in oldState.LevelObjects) //.Where(obj => forceRefresh || !newState.LevelObjects.Contains(obj)))
+    foreach (IDisplayable toRemove in oldState.LevelObjects.Where(obj => forceRefresh || !newState.LevelObjects.Contains(obj)))
     {
         int colOffset = ColOffset(col: toRemove.Location.Col, playerCol: oldState.Player.Location.Col);
         int rowOffset = RowOffset(row: toRemove.Location.Row, playerRow: oldState.Player.Location.Row);
