@@ -1,9 +1,8 @@
 ﻿using HercAndHippoLibCs;
 using HercAndHippoConsole;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
 
-const int REFRESH_INTERVAL_MS = 20;
+const int REFRESH_INTERVAL_MS = 10;
 const int MESSAGE_MARGIN = 4;
 const int VIEW_MARGIN = 2;
 const int HISTORY_SPEEDUP_FACTOR = 10;
@@ -38,7 +37,7 @@ while (true)
     keyInfo = default;
 
     // Display current state
-    RefreshDisplay(displayState, newState, forceRefresh);
+    RefreshDisplay(displayState, newState, forceRefresh, bufferWidth, bufferHeight);
 
     //  Decide if we need to refresh
     (bufferSizeChanged, bufferHeight, bufferWidth)  = BufferSizeChanged(bufferHeight, bufferWidth);
@@ -62,9 +61,9 @@ while (history.Any())
     while (sw.ElapsedMilliseconds < REFRESH_INTERVAL_MS / HISTORY_SPEEDUP_FACTOR) ;
     sw.Restart();
     newState = history.Pop();
-    RefreshDisplay(displayState, newState, forceRefresh: false);
+    RefreshDisplay(displayState, newState, forceRefresh: false, bufferWidth, bufferHeight);
     curState = newState;
-    displayState = DisplayData(curState, Console.BufferWidth - VIEW_MARGIN, Console.BufferHeight - VIEW_MARGIN);
+    displayState = DisplayData(curState, bufferHeight - VIEW_MARGIN, bufferHeight - VIEW_MARGIN);
 }
 
 // Helper Methods
@@ -74,27 +73,28 @@ while (history.Any())
     return (changed, Console.BufferHeight, Console.BufferWidth);
 }
 
-void RefreshDisplay(IDisplayable[,] oldDisplay, Level newState, bool forceRefresh)
+void RefreshDisplay(IDisplayable[,] oldDisplay, Level newState, bool forceRefresh, int bufferWidth, int bufferHeight)
 {
-    // ToDo: fix potential bugs here when console changes size
-    int maxCol() => Console.BufferWidth - VIEW_MARGIN;
-    int maxRow() => Console.BufferHeight - VIEW_MARGIN;
-    IDisplayable[,] newDisplay = DisplayData(newState, maxCol(), maxRow());
-    for (int col = 0; col < maxCol(); col++)
+    int maxCol = (forceRefresh? Console.BufferWidth : bufferWidth) - VIEW_MARGIN;
+    int maxRow = (forceRefresh? Console.BufferHeight : bufferHeight) - VIEW_MARGIN;
+    bool InView(int col, int row) => col + 1 < Console.BufferWidth - VIEW_MARGIN && row + 1 < Console.BufferHeight - VIEW_MARGIN;
+
+    IDisplayable[,] newDisplay = DisplayData(newState, maxCol, maxRow);
+    for (int col = 0; col < maxCol; col++)
     {
-        for (int row = 0; row < maxRow(); row++)
+        for (int row = 0; row < maxRow; row++)
         {
             IDisplayable oldDisp = oldDisplay[col, row];
             IDisplayable newDisp = newDisplay[col, row];
-            if (newDisp == default && oldDisp != default)
+            if ((forceRefresh || (newDisp == default && oldDisp != default)) && 
+                InView(col, row))
             {
-                // Something used to be here, but now nothing is here, so clear the spot
-                Console.SetCursorPosition(col + 1, row + 1);
-                Console.ForegroundColor = ConsoleColor.Black;
-                Console.Write(" ");
- 
+                    // Something used to be here, but now nothing is here, so clear the spot
+                    Console.SetCursorPosition(col + 1, row + 1);
+                    Console.ForegroundColor = ConsoleColor.Black;
+                    Console.Write(" ");
             }
-            if (oldDisp != newDisp && newDisp != default)
+            if (oldDisp != newDisp && newDisp != default && InView(col, row))
             {
                 // There is something here that wasn't here before, so show it.
                 IDisplayable toDisp = newDisplay[col, row];
