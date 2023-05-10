@@ -4,8 +4,8 @@ using System.Diagnostics;
 using static System.Math;
 
 const int REFRESH_INTERVAL_MS = 20;
-const int MESSAGE_MARGIN = 4;
-const int VIEW_MARGIN = 2;
+const int MESSAGE_MARGIN = 3;
+const int VIEW_MARGIN = 4;
 
 Stopwatch sw = new();
 
@@ -61,7 +61,7 @@ void RefreshDisplay(IDisplayable[,] oldDisplay, IDisplayable[,] newDisplay, bool
 {
     int maxCol = (forceRefresh? Console.BufferWidth : bufferWidth) - VIEW_MARGIN;
     int maxRow = (forceRefresh? Console.BufferHeight : bufferHeight) - VIEW_MARGIN;
-    bool InView(int col, int row) => col + 1 < Console.BufferWidth - VIEW_MARGIN && row + 1 < Console.BufferHeight - VIEW_MARGIN;
+    bool InView(int col, int row) => col < Console.BufferWidth - VIEW_MARGIN && row < Console.BufferHeight - VIEW_MARGIN;
 
     for (int row = 0; row < maxRow; row++)
     {
@@ -73,30 +73,27 @@ void RefreshDisplay(IDisplayable[,] oldDisplay, IDisplayable[,] newDisplay, bool
                 InView(col, row))
             {
                 // Something is here that wasn't here before, so show it
-                Console.SetCursorPosition(col + 1, row + 1);
+                Console.SetCursorPosition(col, row);
                 Console.ForegroundColor = newDisp.Color;
                 Console.Write(newDisp.ConsoleDisplayString);
             }
             if ((newDisp == default && (forceRefresh || oldDisp != default)) &&
-                InView(col,row))
+                InView(col, row))
             {
                 // Something used to be here, but now nothing is here, so clear the spot
-                Console.SetCursorPosition(col + 1, row + 1);
+                Console.SetCursorPosition(col, row);
                 Console.ForegroundColor = ConsoleColor.Black;
                 Console.Write(" ");
             }
-        }
-        
+        }      
     }
 }
 
 IDisplayable[,] DisplayData(Level state, int bufferWidth, int bufferHeight) 
 {
     IDisplayable[,] ToShow = new IDisplayable[bufferWidth, bufferHeight];
-
-    Column minCol = 1;
-    Row minRow = 1;
-
+    Column minCol = 2;
+    Row minRow = 2;
     Column screenCenterCol = (bufferWidth - VIEW_MARGIN) / 2;
     Row screenCenterRow = (bufferHeight - VIEW_MARGIN) / 2;
 
@@ -107,9 +104,9 @@ IDisplayable[,] DisplayData(Level state, int bufferWidth, int bufferHeight)
     {      
         Column writeCol = screenCenterCol + toShow.Location.Col - logicalCenterCol;
         Row writeRow = screenCenterRow + toShow.Location.Row - logicalCenterRow;
-        if (writeCol >= minCol && writeCol <= bufferWidth && writeRow >= minRow && writeRow <= bufferHeight)
+        if (writeCol >= minCol && writeCol < bufferWidth && writeRow >= minRow && writeRow < bufferHeight)
         {
-            ToShow[writeCol - 1, writeRow - 1] = toShow;
+            ToShow[writeCol, writeRow] = toShow;
         }
     }
     return ToShow;
