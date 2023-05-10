@@ -32,6 +32,7 @@ while (true)
     sw.Restart();
 
     // Parse key input
+    if (Console.KeyAvailable) keyInfo = Console.ReadKey();
     if (keyInfo.KeyChar == 'q') break;
     newState = curState.RefreshCyclables(keyInfo.ToActionInput());
     keyInfo = default;
@@ -51,8 +52,7 @@ while (true)
     ShowMessage("Use arrow keys to move, shift + arrow keys to shoot, 'q' to quit.");
     
     // Parse next keystroke
-    if (Console.KeyAvailable) 
-        keyInfo = Console.ReadKey();  
+    
 }
 
 // Play back the recording in reverse
