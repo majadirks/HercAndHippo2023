@@ -1,6 +1,7 @@
 ﻿using HercAndHippoLibCs;
 using HercAndHippoConsole;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 const int REFRESH_INTERVAL_MS = 20;
 const int MESSAGE_MARGIN = 3;
@@ -71,27 +72,52 @@ void ShowNew(Level oldState, Level newState)
         .OrderBy(d => d.Color).ThenBy(d => d.Location.Row).ThenBy(d => d.Location.Col);
     foreach (IDisplayable displayable in toDisplay)
     {
-        WriteIfInView(displayable.Location.Col, displayable.Location.Row, displayable.Color, displayable.ConsoleDisplayString);
+        int colOffset = ColOffset(col: displayable.Location.Col, playerCol: newState.Player.Location.Col);
+        int rowOffset = RowOffset(row: displayable.Location.Row, playerRow: newState.Player.Location.Row);
+        PutString(col: displayable.Location.Col, row:displayable.Location.Row, 
+            colOffset: colOffset, rowOffset: rowOffset,
+            color: displayable.Color, msg: displayable.ConsoleDisplayString);
     }
 }
 
 void ClearOld(Level oldState, Level newState, bool forceRefresh)
 {
-    foreach (IDisplayable toRemove in oldState.LevelObjects.Where(obj => forceRefresh || !newState.LevelObjects.Contains(obj)))
+    foreach (IDisplayable toRemove in oldState.LevelObjects) //.Where(obj => forceRefresh || !newState.LevelObjects.Contains(obj)))
     {
-        WriteIfInView(toRemove.Location.Col, toRemove.Location.Row, ConsoleColor.Black, " ");
+        int colOffset = ColOffset(col: toRemove.Location.Col, playerCol: oldState.Player.Location.Col);
+        int rowOffset = RowOffset(row: toRemove.Location.Row, playerRow: oldState.Player.Location.Row);
+        PutString(col: toRemove.Location.Col, row: toRemove.Location.Row,
+                  colOffset: colOffset, rowOffset: rowOffset,
+                  color: ConsoleColor.Black, msg: " ") ;
     }
 }
 
-void ShowMessage(string message) 
-    => WriteIfInView(1, Console.BufferHeight - MESSAGE_MARGIN, ConsoleColor.White, message);
-
-void WriteIfInView(int col, int row, ConsoleColor color, string msg)
+void ShowMessage(string message)
 {
+    Console.SetCursorPosition(1, Console.BufferHeight - MESSAGE_MARGIN);
+    Console.ForegroundColor = ConsoleColor.White;
+    Console.WriteLine(message);
+}
+
+void PutString(int col, int row, int colOffset, int rowOffset, ConsoleColor color, string msg)
+{
+    int minCol = 1;
+    int minRow = 1;
+
+    int midCol = Console.BufferWidth / 2;
+    int midRow = Console.BufferHeight / 2;
+    
     int maxCol = Console.BufferWidth - VIEW_MARGIN;
     int maxRow = Console.BufferHeight - VIEW_MARGIN;
-    if (row > maxRow || col > maxCol) return; // Out-of-view, so don't write anything
-    Console.SetCursorPosition(col, row);
+
+    int writeCol = midCol + colOffset;
+    int writeRow = midRow + rowOffset;
+
+    if (writeRow > maxRow || writeRow < minRow || writeCol > maxCol || writeCol < minCol) return; // Out-of-view, so don't write anything
+    Console.SetCursorPosition(writeCol, writeRow);
     Console.ForegroundColor = color;
     Console.WriteLine(msg);
 }
+
+int ColOffset(int col, int playerCol) => col - playerCol;
+int RowOffset(int row, int playerRow) =>  row - playerRow;
