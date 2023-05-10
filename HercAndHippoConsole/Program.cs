@@ -77,22 +77,23 @@ void RefreshDisplay(IDisplayable[,] oldDisplay, IDisplayable[,] newDisplay, bool
     int maxCol = (forceRefresh? Console.BufferWidth : bufferWidth) - VIEW_MARGIN;
     int maxRow = (forceRefresh? Console.BufferHeight : bufferHeight) - VIEW_MARGIN;
     bool InView(int col, int row) => col + 1 < Console.BufferWidth - VIEW_MARGIN && row + 1 < Console.BufferHeight - VIEW_MARGIN;
-    for (int col = 0; col < maxCol; col++)
+
     {
-        for (int row = 0; row < maxRow; row++)
+    for (int row = 0; row < maxRow; row++)
+    {
+        for (int col = 0; col < maxCol; col++)
         {
             IDisplayable oldDisp = oldDisplay[col, row];
             IDisplayable newDisp = newDisplay[col, row];
             if (oldDisp != newDisp && newDisp != default && InView(col, row))
             {
-                // There is something here that wasn't here before, so show it.
-                IDisplayable toDisp = newDisplay[col, row];
+                // Something is here that wasn't here before, so show it
                 Console.SetCursorPosition(col + 1, row + 1);
-                Console.ForegroundColor = toDisp.Color;
-                Console.WriteLine(toDisp.ConsoleDisplayString);
+                Console.ForegroundColor = newDisp.Color;
+                Console.Write(newDisp.ConsoleDisplayString);
             }
-            else if ((forceRefresh || (newDisp == default && oldDisp != default)) && 
-                InView(col, row))
+            if ((forceRefresh || (newDisp == default && oldDisp != default)) &&
+                InView(col,row))
             {
                 // Something used to be here, but now nothing is here, so clear the spot
                 Console.SetCursorPosition(col + 1, row + 1);
@@ -100,6 +101,7 @@ void RefreshDisplay(IDisplayable[,] oldDisplay, IDisplayable[,] newDisplay, bool
                 Console.Write(" ");
             }
         }
+        
     }
 }
 
