@@ -2,7 +2,7 @@
 using HercAndHippoConsole;
 using System.Diagnostics;
 
-const int REFRESH_INTERVAL_MS = 10;
+const int REFRESH_INTERVAL_MS = 20;
 const int MESSAGE_MARGIN = 4;
 const int VIEW_MARGIN = 2;
 const int HISTORY_SPEEDUP_FACTOR = 10;
@@ -19,8 +19,8 @@ Stack<Level> history = new(capacity: 1000 * 60 * 5 / REFRESH_INTERVAL_MS);
 
 Level curState = TestLevels.WallsLevel;
 Level newState;
-IDisplayable[,] displayState = new IDisplayable[Console.BufferWidth - VIEW_MARGIN, Console.BufferHeight - VIEW_MARGIN]; // DisplayData(curState, Console.BufferWidth - VIEW_MARGIN, Console.BufferHeight - VIEW_MARGIN);
-
+IDisplayable[,] oldDisplay = new IDisplayable[Console.BufferWidth - VIEW_MARGIN, Console.BufferHeight - VIEW_MARGIN]; // DisplayData(curState, Console.BufferWidth - VIEW_MARGIN, Console.BufferHeight - VIEW_MARGIN);
+IDisplayable[,] newDisplay = oldDisplay;
 int bufferHeight = Console.BufferHeight;
 int bufferWidth = Console.BufferWidth;
 
@@ -37,34 +37,33 @@ while (true)
     newState = curState.RefreshCyclables(keyInfo.ToActionInput());
     keyInfo = default;
 
-    // Display current state
-    RefreshDisplay(displayState, newState, forceRefresh, bufferWidth, bufferHeight);
-
     //  Decide if we need to refresh
-    (bufferSizeChanged, bufferHeight, bufferWidth)  = BufferSizeChanged(bufferHeight, bufferWidth);
+    (bufferSizeChanged, bufferHeight, bufferWidth) = BufferSizeChanged(bufferHeight, bufferWidth);
     forceRefresh = bufferSizeChanged;
+
+    // Display current state
+    oldDisplay = DisplayData(curState, bufferWidth, bufferHeight);
+    newDisplay = DisplayData(newState, bufferWidth, bufferHeight);
+    RefreshDisplay(oldDisplay, newDisplay, forceRefresh, bufferWidth, bufferHeight);
+
+    ShowMessage("Use arrow keys to move, shift + arrow keys to shoot, 'q' to quit.");
 
     // Update current state to new state
     curState = newState;
     history.Push(newState);
-    displayState = DisplayData(curState, Console.BufferWidth - VIEW_MARGIN, Console.BufferHeight - VIEW_MARGIN);
 
-    ShowMessage("Use arrow keys to move, shift + arrow keys to shoot, 'q' to quit.");
-    
-    // Parse next keystroke
-    
 }
 
 // Play back the recording in reverse
-while (history.Any())
-{
-    while (sw.ElapsedMilliseconds < REFRESH_INTERVAL_MS / HISTORY_SPEEDUP_FACTOR) ;
-    sw.Restart();
-    newState = history.Pop();
-    RefreshDisplay(displayState, newState, forceRefresh: false, bufferWidth, bufferHeight);
-    curState = newState;
-    displayState = DisplayData(curState, bufferHeight - VIEW_MARGIN, bufferHeight - VIEW_MARGIN);
-}
+//while (history.Any())
+//{
+//    while (sw.ElapsedMilliseconds < REFRESH_INTERVAL_MS / HISTORY_SPEEDUP_FACTOR) ;
+//    sw.Restart();
+//    newState = history.Pop();
+//    RefreshDisplay(oldDisplay, newState, forceRefresh: false, bufferWidth, bufferHeight);
+//    curState = newState;
+//    oldDisplay = DisplayData(curState, bufferHeight - VIEW_MARGIN, bufferHeight - VIEW_MARGIN);
+//}
 
 // Helper Methods
 (bool changed, int BufferHeight, int BufferWidth) BufferSizeChanged(int bufferHeight, int bufferWidth)
@@ -73,27 +72,17 @@ while (history.Any())
     return (changed, Console.BufferHeight, Console.BufferWidth);
 }
 
-void RefreshDisplay(IDisplayable[,] oldDisplay, Level newState, bool forceRefresh, int bufferWidth, int bufferHeight)
+void RefreshDisplay(IDisplayable[,] oldDisplay, IDisplayable[,] newDisplay, bool forceRefresh, int bufferWidth, int bufferHeight)
 {
     int maxCol = (forceRefresh? Console.BufferWidth : bufferWidth) - VIEW_MARGIN;
     int maxRow = (forceRefresh? Console.BufferHeight : bufferHeight) - VIEW_MARGIN;
     bool InView(int col, int row) => col + 1 < Console.BufferWidth - VIEW_MARGIN && row + 1 < Console.BufferHeight - VIEW_MARGIN;
-
-    IDisplayable[,] newDisplay = DisplayData(newState, maxCol, maxRow);
     for (int col = 0; col < maxCol; col++)
     {
         for (int row = 0; row < maxRow; row++)
         {
             IDisplayable oldDisp = oldDisplay[col, row];
             IDisplayable newDisp = newDisplay[col, row];
-            if ((forceRefresh || (newDisp == default && oldDisp != default)) && 
-                InView(col, row))
-            {
-                    // Something used to be here, but now nothing is here, so clear the spot
-                    Console.SetCursorPosition(col + 1, row + 1);
-                    Console.ForegroundColor = ConsoleColor.Black;
-                    Console.Write(" ");
-            }
             if (oldDisp != newDisp && newDisp != default && InView(col, row))
             {
                 // There is something here that wasn't here before, so show it.
@@ -101,29 +90,37 @@ void RefreshDisplay(IDisplayable[,] oldDisplay, Level newState, bool forceRefres
                 Console.SetCursorPosition(col + 1, row + 1);
                 Console.ForegroundColor = toDisp.Color;
                 Console.WriteLine(toDisp.ConsoleDisplayString);
-            } 
+            }
+            else if ((forceRefresh || (newDisp == default && oldDisp != default)) && 
+                InView(col, row))
+            {
+                // Something used to be here, but now nothing is here, so clear the spot
+                Console.SetCursorPosition(col + 1, row + 1);
+                Console.ForegroundColor = ConsoleColor.Black;
+                Console.Write(" ");
+            }
         }
     }
 }
 
-IDisplayable[,] DisplayData(Level state, int maxCol, int maxRow) 
+IDisplayable[,] DisplayData(Level state, int bufferWidth, int bufferHeight) 
 {
-    IDisplayable[,] ToShow = new IDisplayable[maxCol, maxRow];
+    IDisplayable[,] ToShow = new IDisplayable[bufferWidth, bufferHeight];
     int playerRow = state.Player.Location.Row;
     int playerCol = state.Player.Location.Col;
 
     int minCol = 1;
     int minRow = 1;
 
-    int midCol = maxCol / 2;
-    int midRow = maxRow / 2;
+    int midCol = (bufferWidth - VIEW_MARGIN)/ 2;
+    int midRow = (bufferHeight - VIEW_MARGIN) / 2;
 
     foreach (IDisplayable toShow in state.LevelObjects)
     {
         int writeCol = midCol + toShow.Location.Col - playerCol;
         int writeRow = midRow + toShow.Location.Row - playerRow;
 
-        if (writeCol >= minCol && writeCol <= maxCol && writeRow >= minRow && writeRow <= maxRow)
+        if (writeCol >= minCol && writeCol <= bufferWidth && writeRow >= minRow && writeRow <= bufferHeight)
         {
             ToShow[writeCol - 1, writeRow - 1] = toShow;
         }
