@@ -31,7 +31,7 @@ namespace HercAndHippoLibCs
         public static implicit operator Location((int col, int row) tuple) => new(tuple.col, tuple.row);
         public override string ToString() => $"(col {Col}, row {Row})";
     }
-    public enum Direction { North, East, South, West, Seek, Flee }
+    public enum Direction { Idle, North, East, South, West, Seek, Flee }
     public static class DirectionExtensions
     {
         public static Direction Mirror(this Direction toMirror)

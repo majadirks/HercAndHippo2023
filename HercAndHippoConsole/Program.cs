@@ -1,20 +1,23 @@
 ﻿using HercAndHippoLibCs;
 using HercAndHippoConsole;
+using static HercAndHippoConsole.Constants;
+using static HercAndHippoConsole.DisplayLogic;
 using System.Diagnostics;
-using static System.Math;
 
-const int REFRESH_INTERVAL_MS = 20;
 const int MESSAGE_MARGIN = 3;
-const int VIEW_MARGIN = 4;
+const int REFRESH_INTERVAL_MS = 20;
 
 Stopwatch sw = new();
-
+TransitionStatus oldTransitionStatus = TransitionStatus.Default;
+TransitionStatus newTransitionStatus;
 ConsoleKeyInfo keyInfo = default;
 bool forceRefresh;
 bool bufferSizeChanged;
 
 Level oldState = TestLevels.WallsLevel;
-IDisplayable[,] oldDisplay = DisplayData(oldState, Console.BufferWidth, Console.BufferHeight);
+Location oldLogicalCenter = oldState.Player.Location;
+Location newLogicalCenter;
+IDisplayable[,] oldDisplay = DisplayData(oldState, oldLogicalCenter, oldTransitionStatus, Console.BufferWidth, Console.BufferHeight);
 Level newState;
 IDisplayable[,] newDisplay;
 int bufferHeight = Console.BufferHeight;
@@ -38,15 +41,22 @@ while (true)
     (bufferSizeChanged, bufferHeight, bufferWidth) = BufferSizeChanged(bufferHeight, bufferWidth);
     forceRefresh = bufferSizeChanged;
 
+    // Check if we need to move the focus of the screen
+    (newTransitionStatus, newLogicalCenter) = oldTransitionStatus
+        .UpdateTriggerRadius(bufferWidth, bufferHeight)
+        .UpdateDirection(newState.Player.Location, oldLogicalCenter);
+        
     // Display current state
-    oldDisplay = DisplayData(oldState, bufferWidth, bufferHeight);
-    newDisplay = DisplayData(newState, bufferWidth, bufferHeight);
+    oldDisplay = DisplayData(oldState, oldLogicalCenter, oldTransitionStatus, bufferWidth, bufferHeight);
+    newDisplay = DisplayData(newState, newLogicalCenter, newTransitionStatus, bufferWidth, bufferHeight);
     RefreshDisplay(oldDisplay, newDisplay, forceRefresh, bufferWidth, bufferHeight);
 
     ShowMessage("Use arrow keys to move, shift + arrow keys to shoot, 'q' to quit.");
 
     // Update current state to new state
     oldState = newState;
+    oldLogicalCenter = newLogicalCenter;
+    oldTransitionStatus = newTransitionStatus;
 }
 
 
@@ -56,6 +66,8 @@ while (true)
     bool changed = bufferHeight != Console.BufferHeight || bufferWidth != Console.BufferWidth;
     return (changed, Console.BufferHeight, Console.BufferWidth);
 }
+
+
 
 void RefreshDisplay(IDisplayable[,] oldDisplay, IDisplayable[,] newDisplay, bool forceRefresh, int bufferWidth, int bufferHeight)
 {
@@ -89,28 +101,6 @@ void RefreshDisplay(IDisplayable[,] oldDisplay, IDisplayable[,] newDisplay, bool
     }
 }
 
-IDisplayable[,] DisplayData(Level state, int bufferWidth, int bufferHeight) 
-{
-    IDisplayable[,] ToShow = new IDisplayable[bufferWidth, bufferHeight];
-    Column minCol = 2;
-    Row minRow = 2;
-    Column screenCenterCol = (bufferWidth - VIEW_MARGIN) / 2;
-    Row screenCenterRow = (bufferHeight - VIEW_MARGIN) / 2;
-
-    Column logicalCenterCol = Max(Min(state.Player.Location.Col, bufferWidth - screenCenterCol), minCol);
-    Row logicalCenterRow = Max(Min(state.Player.Location.Row, bufferHeight- screenCenterRow), minRow);
-        
-    foreach (IDisplayable toShow in state.LevelObjects)
-    {      
-        Column writeCol = screenCenterCol + toShow.Location.Col - logicalCenterCol;
-        Row writeRow = screenCenterRow + toShow.Location.Row - logicalCenterRow;
-        if (writeCol >= minCol && writeCol < bufferWidth && writeRow >= minRow && writeRow < bufferHeight)
-        {
-            ToShow[writeCol, writeRow] = toShow;
-        }
-    }
-    return ToShow;
-}
 
 void ShowMessage(string message)
 {
