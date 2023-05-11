@@ -1,4 +1,5 @@
 ﻿using HercAndHippoLibCs;
+using static HercAndHippoConsole.Constants;
 using static HercAndHippoConsole.DisplayLogic;
 using static System.Math;
 
@@ -22,8 +23,10 @@ namespace HercAndHippoConsole
             Location logicalCenter = GetLogicalCenter(previousLogicalCenter, Default);
             Direction newVert;
             Direction newHoriz;
+
+
             int verticalDist = Abs(playerLocation.Row - logicalCenter.Row);
-            if (verticalDist > VertRadius)
+            if (verticalDist > VertRadius || previousLogicalCenter.Row < MIN_ROW)
             {
                 if (playerLocation.Row > logicalCenter.Row)
                 {
@@ -42,7 +45,7 @@ namespace HercAndHippoConsole
             }
 
             int horizDist = Abs(playerLocation.Col - logicalCenter.Col);
-            if (horizDist > HorizRadius)
+            if (horizDist > HorizRadius || previousLogicalCenter.Col < MIN_COL)
             {
                 if (playerLocation.Col > logicalCenter.Col)
                 {
