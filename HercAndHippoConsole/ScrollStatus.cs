@@ -11,7 +11,12 @@ namespace HercAndHippoConsole
         public readonly bool InVerticalTransition = Vertical != Direction.Idle;
         public readonly bool InHorizontalTransition = Horizontal != Direction.Idle;
         public static readonly ScrollStatus Default = new(Direction.Idle, Direction.Idle, 100, 100, (1,1));
-        public ScrollStatus UpdateTriggerRadius(BufferStats bufferStats)
+        
+        public ScrollStatus Update(Location playerLocation, BufferStats bufferStats)
+            =>this.UpdateTriggerRadius(bufferStats)
+            .DoScroll(playerLocation, bufferStats);
+        
+        private ScrollStatus UpdateTriggerRadius(BufferStats bufferStats)
         {
             // Round these down (versus Convert.ToInt32, which uses banker's rounding).
             // This makes scrolling more aggressive on smaller displays.
@@ -31,7 +36,7 @@ namespace HercAndHippoConsole
             return (logicalCenterCol, logicalCenterRow);
         }
 
-        public ScrollStatus DoScroll(Location playerLocation, BufferStats bufferStats)
+        private ScrollStatus DoScroll(Location playerLocation, BufferStats bufferStats)
         {
             Location logicalCenter = NextLogicalCenter();
             Direction newVert;

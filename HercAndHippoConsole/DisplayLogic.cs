@@ -55,7 +55,7 @@ namespace HercAndHippoConsole
             // Rather than using the cached maxCol and maxRow values calculated above,
             // the following method recalculates the buffer width and height when it is needed
             // to prevent attempting to set the cursor position to an offscreen location (which throws an exception).
-            bool InView(int col, int row) => col < Console.BufferWidth - VIEW_MARGIN && row < Console.BufferHeight - VIEW_MARGIN;
+            static bool InView(int col, int row) => col < Console.BufferWidth - VIEW_MARGIN && row < Console.BufferHeight - VIEW_MARGIN;
 
             for (int row = 0; row < maxRow; row++)
             {

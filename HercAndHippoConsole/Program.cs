@@ -33,9 +33,8 @@ while (true)
     keyInfo = default;
 
     // Check if we need to move the focus of the screen
-    scrollStatus = scrollStatus
-        .UpdateTriggerRadius(bufferStats)
-        .DoScroll(state.Player.Location, bufferStats);
+    scrollStatus = scrollStatus.Update(state.Player.Location, bufferStats);
+
         
     // Display current state
     displayPlan.RefreshDisplay(state, scrollStatus, bufferStats);
@@ -45,7 +44,7 @@ while (true)
 
 
 // Helper Methods
-void ShowMessage(string message)
+static void ShowMessage(string message)
 {
     Console.SetCursorPosition(1, Console.BufferHeight - MESSAGE_MARGIN);
     Console.ForegroundColor = ConsoleColor.White;
