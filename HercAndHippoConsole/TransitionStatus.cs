@@ -7,14 +7,15 @@ namespace HercAndHippoConsole
 {
     internal record TransitionStatus(Direction Horizontal, Direction Vertical, int HorizRadius, int VertRadius)
     {
-        public const double RADIUS_RATIO = 0.375;
+        public const double HORIZONTAL_RADIUS_RATIO = 0.1;
+        public const double VERTICAL_RADIUS_RATIO = 0.3;
         public readonly bool InVerticalTransition = Vertical != Direction.Idle;
         public readonly bool InHorizontalTransition = Horizontal != Direction.Idle;
         public static readonly TransitionStatus Default = new(Direction.Idle, Direction.Idle, 100, 100);
         public TransitionStatus UpdateTriggerRadius(int bufferWidth, int bufferHeight)
         {
-            int newHorizRadius = Convert.ToInt32(bufferWidth * RADIUS_RATIO);
-            int newVertRadius = Convert.ToInt32(bufferHeight * RADIUS_RATIO);
+            int newHorizRadius = Convert.ToInt32(bufferWidth * HORIZONTAL_RADIUS_RATIO);
+            int newVertRadius = Convert.ToInt32(bufferHeight * VERTICAL_RADIUS_RATIO);
             return this with { HorizRadius = newHorizRadius, VertRadius = newVertRadius };
         }
 
