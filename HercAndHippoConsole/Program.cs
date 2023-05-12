@@ -9,16 +9,14 @@ const int REFRESH_INTERVAL_MS = 20;
 
 Stopwatch sw = new();
 ConsoleKeyInfo keyInfo = default;
-bool bufferSizeChanged;
 
 Level state = TestLevels.WallsLevel;
 ScrollStatus scrollStatus = ScrollStatus.Default with { LogicalCenter = state.Player.Location };
-IDisplayable[,] oldDisplay = DisplayData(state, scrollStatus, Console.BufferWidth, Console.BufferHeight);
+BufferStats bufferStats = new(BufferSizeChanged: true, BufferWidth: Console.BufferWidth, BufferHeight: Console.BufferHeight);
+IDisplayable[,] oldDisplay = DisplayData(state, scrollStatus, bufferStats);
 IDisplayable[,] newDisplay;
-int bufferHeight = Console.BufferHeight;
-int bufferWidth = Console.BufferWidth;
 
-RefreshDisplay(oldDisplay, oldDisplay, forceRefresh: true, bufferWidth: bufferWidth, bufferHeight: bufferHeight);
+RefreshDisplay(oldDisplay, oldDisplay, bufferStats);
 sw.Start();
 while (true)
 {
@@ -26,8 +24,8 @@ while (true)
     sw.Restart();
 
     // Check if buffer size changed
-    (bufferSizeChanged, bufferHeight, bufferWidth) = BufferSizeChanged(bufferHeight, bufferWidth);
-    oldDisplay = DisplayData(state, scrollStatus, bufferWidth, bufferHeight);
+    bufferStats = bufferStats.Update();
+    oldDisplay = DisplayData(state, scrollStatus, bufferStats);
 
     // React to any key input
     if (Console.KeyAvailable) keyInfo = Console.ReadKey();
@@ -35,32 +33,27 @@ while (true)
     state = state.RefreshCyclables(keyInfo.ToActionInput());
     keyInfo = default;
 
-
-
     // Check if we need to move the focus of the screen
     scrollStatus = scrollStatus
-        .UpdateTriggerRadius(bufferWidth, bufferHeight)
-        .DoScroll(state.Player.Location, bufferWidth, bufferHeight);
+        .UpdateTriggerRadius(bufferStats)
+        .DoScroll(state.Player.Location, bufferStats);
         
     // Display current state
-    newDisplay = DisplayData(state, scrollStatus, bufferWidth, bufferHeight);
-    RefreshDisplay(oldDisplay, newDisplay, forceRefresh: bufferSizeChanged, bufferWidth: bufferWidth, bufferHeight: bufferHeight);
+    newDisplay = DisplayData(state, scrollStatus, bufferStats);
+    RefreshDisplay(oldDisplay, newDisplay, bufferStats);
 
     ShowMessage("Use arrow keys to move, shift + arrow keys to shoot, 'q' to quit.");    
 }
 
+
 // Helper Methods
-(bool changed, int BufferHeight, int BufferWidth) BufferSizeChanged(int bufferHeight, int bufferWidth)
+void RefreshDisplay(IDisplayable[,] oldDisplay, IDisplayable[,] newDisplay, BufferStats bufferStats)
 {
-    bool changed = bufferHeight != Console.BufferHeight || bufferWidth != Console.BufferWidth;
-    return (changed, Console.BufferHeight, Console.BufferWidth);
-}
+    bool forceRefresh = bufferStats.BufferSizeChanged;
 
-void RefreshDisplay(IDisplayable[,] oldDisplay, IDisplayable[,] newDisplay, bool forceRefresh, int bufferWidth, int bufferHeight)
-{
-    int maxCol = (forceRefresh? Console.BufferWidth : bufferWidth) - VIEW_MARGIN;
-    int maxRow = (forceRefresh? Console.BufferHeight : bufferHeight) - VIEW_MARGIN;
-
+    int maxCol = (forceRefresh ? Console.BufferWidth : bufferStats.BufferWidth) - VIEW_MARGIN;
+    int maxRow = (forceRefresh ? Console.BufferHeight : bufferStats.BufferHeight) - VIEW_MARGIN;
+    ;
     // Rather than using the cached maxCol and maxRow values calculated above,
     // the following method recalculates the buffer width and height when it is needed
     // to prevent attempting to set the cursor position to an offscreen location (which throws an exception).

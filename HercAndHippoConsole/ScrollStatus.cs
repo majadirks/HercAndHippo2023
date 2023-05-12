@@ -11,12 +11,12 @@ namespace HercAndHippoConsole
         public readonly bool InVerticalTransition = Vertical != Direction.Idle;
         public readonly bool InHorizontalTransition = Horizontal != Direction.Idle;
         public static readonly ScrollStatus Default = new(Direction.Idle, Direction.Idle, 100, 100, (1,1));
-        public ScrollStatus UpdateTriggerRadius(int bufferWidth, int bufferHeight)
+        public ScrollStatus UpdateTriggerRadius(BufferStats bufferStats)
         {
             // Round these down (versus Convert.ToInt32, which uses banker's rounding).
             // This makes scrolling more aggressive on smaller displays.
-            int newHorizRadius = (int) (bufferWidth * HORIZONTAL_RADIUS_RATIO);
-            int newVertRadius = (int) (bufferHeight * VERTICAL_RADIUS_RATIO);
+            int newHorizRadius = (int) (bufferStats.BufferWidth * HORIZONTAL_RADIUS_RATIO);
+            int newVertRadius = (int) (bufferStats.BufferHeight * VERTICAL_RADIUS_RATIO);
             return this with { HorizRadius = newHorizRadius, VertRadius = newVertRadius };
         }
 
@@ -31,7 +31,7 @@ namespace HercAndHippoConsole
             return (logicalCenterCol, logicalCenterRow);
         }
 
-        public ScrollStatus DoScroll(Location playerLocation, int bufferWidth, int bufferHeight)
+        public ScrollStatus DoScroll(Location playerLocation, BufferStats bufferStats)
         {
             Location logicalCenter = NextLogicalCenter();
             Direction newVert;
@@ -39,7 +39,7 @@ namespace HercAndHippoConsole
 
 
             int verticalDist = Abs(playerLocation.Row - logicalCenter.Row);
-            if (verticalDist > VertRadius || logicalCenter.Row < MIN_ROW || logicalCenter.Row > bufferHeight)
+            if (verticalDist > VertRadius || logicalCenter.Row < MIN_ROW || logicalCenter.Row > bufferStats.BufferHeight)
             {
                 if (playerLocation.Row > logicalCenter.Row)
                 {
@@ -58,7 +58,7 @@ namespace HercAndHippoConsole
             }
 
             int horizDist = Abs(playerLocation.Col - logicalCenter.Col);
-            if (horizDist > HorizRadius || logicalCenter.Col < MIN_COL || logicalCenter.Col > bufferWidth)
+            if (horizDist > HorizRadius || logicalCenter.Col < MIN_COL || logicalCenter.Col > bufferStats.BufferWidth)
             {
                 if (playerLocation.Col > logicalCenter.Col)
                 {
