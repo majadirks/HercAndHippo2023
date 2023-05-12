@@ -1,6 +1,5 @@
 ﻿using HercAndHippoLibCs;
 using HercAndHippoConsole;
-using static HercAndHippoConsole.Constants;
 using static HercAndHippoConsole.DisplayPlan;
 using System.Diagnostics;
 
