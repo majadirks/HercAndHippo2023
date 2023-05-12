@@ -8,16 +8,14 @@ const int MESSAGE_MARGIN = 3;
 const int REFRESH_INTERVAL_MS = 20;
 
 Stopwatch sw = new();
-TransitionStatus oldTransitionStatus = TransitionStatus.Default;
-TransitionStatus newTransitionStatus;
 ConsoleKeyInfo keyInfo = default;
 bool forceRefresh;
 bool bufferSizeChanged;
 
 Level oldState = TestLevels.WallsLevel;
 Location oldLogicalCenter = oldState.Player.Location;
-Location newLogicalCenter;
-IDisplayable[,] oldDisplay = DisplayData(oldState, oldLogicalCenter, oldTransitionStatus, Console.BufferWidth, Console.BufferHeight);
+TransitionStatus transitionStatus = TransitionStatus.Default with { LogicalCenter = oldLogicalCenter };
+IDisplayable[,] oldDisplay = DisplayData(oldState, transitionStatus, Console.BufferWidth, Console.BufferHeight);
 Level newState;
 IDisplayable[,] newDisplay;
 int bufferHeight = Console.BufferHeight;
@@ -31,6 +29,8 @@ while (true)
     while (sw.ElapsedMilliseconds < REFRESH_INTERVAL_MS);
     sw.Restart();
 
+    oldDisplay = DisplayData(oldState, transitionStatus, bufferWidth, bufferHeight);
+
     // Parse key input
     if (Console.KeyAvailable) keyInfo = Console.ReadKey();
     if (keyInfo.KeyChar == 'q') break;
@@ -42,21 +42,19 @@ while (true)
     forceRefresh = bufferSizeChanged;
 
     // Check if we need to move the focus of the screen
-    (newTransitionStatus, newLogicalCenter) = oldTransitionStatus
+    transitionStatus = transitionStatus
         .UpdateTriggerRadius(bufferWidth, bufferHeight)
         .UpdateDirection(newState.Player.Location, oldLogicalCenter);
         
     // Display current state
-    oldDisplay = DisplayData(oldState, oldLogicalCenter, oldTransitionStatus, bufferWidth, bufferHeight);
-    newDisplay = DisplayData(newState, newLogicalCenter, newTransitionStatus, bufferWidth, bufferHeight);
+    newDisplay = DisplayData(newState, transitionStatus, bufferWidth, bufferHeight);
     RefreshDisplay(oldDisplay, newDisplay, forceRefresh, bufferWidth, bufferHeight);
 
     ShowMessage("Use arrow keys to move, shift + arrow keys to shoot, 'q' to quit.");
 
     // Update current state to new state
     oldState = newState;
-    oldLogicalCenter = newLogicalCenter;
-    oldTransitionStatus = newTransitionStatus;
+    
 }
 
 
