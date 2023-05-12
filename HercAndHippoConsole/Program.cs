@@ -13,10 +13,10 @@ ConsoleKeyInfo keyInfo = default;
 Level state = TestLevels.WallsLevel;
 ScrollStatus scrollStatus = ScrollStatus.Default with { LogicalCenter = state.Player.Location };
 BufferStats bufferStats = new(BufferSizeChanged: true, BufferWidth: Console.BufferWidth, BufferHeight: Console.BufferHeight);
-DisplayPlan oldDisplay = CreateDisplayPlan(state, scrollStatus, bufferStats);
-DisplayPlan newDisplay;
+DisplayPlan displayPlan = CreateDisplayPlan(state, scrollStatus, bufferStats);
 
-oldDisplay.RefreshDisplay(oldDisplay, bufferStats);
+
+displayPlan.RefreshDisplay(state, scrollStatus, bufferStats);
 sw.Start();
 while (true)
 {
@@ -25,7 +25,7 @@ while (true)
 
     // Check if buffer size changed
     bufferStats = bufferStats.Refresh();
-    oldDisplay = CreateDisplayPlan(state, scrollStatus, bufferStats);
+    displayPlan = CreateDisplayPlan(state, scrollStatus, bufferStats);
 
     // React to any key input
     if (Console.KeyAvailable) keyInfo = Console.ReadKey();
@@ -39,8 +39,7 @@ while (true)
         .DoScroll(state.Player.Location, bufferStats);
         
     // Display current state
-    newDisplay = CreateDisplayPlan(state, scrollStatus, bufferStats);
-    oldDisplay.RefreshDisplay(newDisplay, bufferStats);
+    displayPlan.RefreshDisplay(state, scrollStatus, bufferStats);
 
     ShowMessage("Use arrow keys to move, shift + arrow keys to shoot, 'q' to quit.");    
 }

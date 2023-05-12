@@ -14,8 +14,7 @@ namespace HercAndHippoConsole
     }
 
     internal record DisplayPlan(IDisplayable[,] PlanArray)
-    {
-         
+    {    
         public static Location GetScreenCenter(int bufferWidth, int bufferHeight)
             => ((bufferWidth - VIEW_MARGIN) / 2, (bufferHeight - VIEW_MARGIN) / 2);
 
@@ -42,8 +41,9 @@ namespace HercAndHippoConsole
             return new DisplayPlan(PlanArray: ToShow);
         }
 
-        public void RefreshDisplay(DisplayPlan newDisplayPlan, BufferStats bufferStats)
+        public void RefreshDisplay(Level state, ScrollStatus scrollStatus, BufferStats bufferStats)
         {
+            DisplayPlan newDisplayPlan = CreateDisplayPlan(state, scrollStatus, bufferStats);
             bool forceRefresh = bufferStats.BufferSizeChanged;
 
             var oldDisplay = this.PlanArray;
@@ -82,7 +82,5 @@ namespace HercAndHippoConsole
                 }
             }
         }
-
-
     }
 }
