@@ -1,6 +1,5 @@
 ﻿using HercAndHippoLibCs;
 using static HercAndHippoConsole.Constants;
-using static System.Math;
 
 namespace HercAndHippoConsole
 {
@@ -9,7 +8,7 @@ namespace HercAndHippoConsole
         public static Location GetScreenCenter(int bufferWidth, int bufferHeight)
             => ((bufferWidth - VIEW_MARGIN) / 2, (bufferHeight - VIEW_MARGIN) / 2);
 
-        public static IDisplayable[,] DisplayData(Level state, TransitionStatus transitionStatus, int bufferWidth, int bufferHeight)
+        public static IDisplayable[,] DisplayData(Level state, ScrollStatus transitionStatus, int bufferWidth, int bufferHeight)
         {
             IDisplayable[,] ToShow = new IDisplayable[bufferWidth, bufferHeight];
 

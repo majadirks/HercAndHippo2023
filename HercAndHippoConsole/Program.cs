@@ -14,8 +14,8 @@ bool bufferSizeChanged;
 
 Level oldState = TestLevels.WallsLevel;
 Location oldLogicalCenter = oldState.Player.Location;
-TransitionStatus transitionStatus = TransitionStatus.Default with { LogicalCenter = oldLogicalCenter };
-IDisplayable[,] oldDisplay = DisplayData(oldState, transitionStatus, Console.BufferWidth, Console.BufferHeight);
+ScrollStatus scrollStatus = ScrollStatus.Default with { LogicalCenter = oldLogicalCenter };
+IDisplayable[,] oldDisplay = DisplayData(oldState, scrollStatus, Console.BufferWidth, Console.BufferHeight);
 Level newState;
 IDisplayable[,] newDisplay;
 int bufferHeight = Console.BufferHeight;
@@ -29,7 +29,7 @@ while (true)
     while (sw.ElapsedMilliseconds < REFRESH_INTERVAL_MS);
     sw.Restart();
 
-    oldDisplay = DisplayData(oldState, transitionStatus, bufferWidth, bufferHeight);
+    oldDisplay = DisplayData(oldState, scrollStatus, bufferWidth, bufferHeight);
 
     // Parse key input
     if (Console.KeyAvailable) keyInfo = Console.ReadKey();
@@ -42,12 +42,12 @@ while (true)
     forceRefresh = bufferSizeChanged;
 
     // Check if we need to move the focus of the screen
-    transitionStatus = transitionStatus
+    scrollStatus = scrollStatus
         .UpdateTriggerRadius(bufferWidth, bufferHeight)
-        .UpdateDirection(newState.Player.Location, oldLogicalCenter);
+        .DoScroll(newState.Player.Location, oldLogicalCenter);
         
     // Display current state
-    newDisplay = DisplayData(newState, transitionStatus, bufferWidth, bufferHeight);
+    newDisplay = DisplayData(newState, scrollStatus, bufferWidth, bufferHeight);
     RefreshDisplay(oldDisplay, newDisplay, forceRefresh, bufferWidth, bufferHeight);
 
     ShowMessage("Use arrow keys to move, shift + arrow keys to shoot, 'q' to quit.");

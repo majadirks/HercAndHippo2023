@@ -5,17 +5,19 @@ using static System.Math;
 
 namespace HercAndHippoConsole
 {
-    internal record TransitionStatus(Direction Horizontal, Direction Vertical, int HorizRadius, int VertRadius, Location LogicalCenter)
+    internal record ScrollStatus(Direction Horizontal, Direction Vertical, int HorizRadius, int VertRadius, Location LogicalCenter)
     {
-        public const double HORIZONTAL_RADIUS_RATIO = 0.1;
-        public const double VERTICAL_RADIUS_RATIO = 0.3;
+        public const double HORIZONTAL_RADIUS_RATIO = 0.1;  // Fairly small; small motion around center triggers left/right scroll
+        public const double VERTICAL_RADIUS_RATIO = 0.3; // Larger; can get close to top or bottom of screen before up/down scroll kicks in
         public readonly bool InVerticalTransition = Vertical != Direction.Idle;
         public readonly bool InHorizontalTransition = Horizontal != Direction.Idle;
-        public static readonly TransitionStatus Default = new(Direction.Idle, Direction.Idle, 100, 100, (1,1));
-        public TransitionStatus UpdateTriggerRadius(int bufferWidth, int bufferHeight)
+        public static readonly ScrollStatus Default = new(Direction.Idle, Direction.Idle, 100, 100, (1,1));
+        public ScrollStatus UpdateTriggerRadius(int bufferWidth, int bufferHeight)
         {
-            int newHorizRadius = Convert.ToInt32(bufferWidth * HORIZONTAL_RADIUS_RATIO);
-            int newVertRadius = Convert.ToInt32(bufferHeight * VERTICAL_RADIUS_RATIO);
+            // Round these down (versus Convert.ToInt32, which uses banker's rounding).
+            // This makes scrolling more aggressive on smaller displays.
+            int newHorizRadius = (int) (bufferWidth * HORIZONTAL_RADIUS_RATIO);
+            int newVertRadius = (int) (bufferHeight * VERTICAL_RADIUS_RATIO);
             return this with { HorizRadius = newHorizRadius, VertRadius = newVertRadius };
         }
 
@@ -30,7 +32,7 @@ namespace HercAndHippoConsole
             return (logicalCenterCol, logicalCenterRow);
         }
 
-        public TransitionStatus UpdateDirection(Location playerLocation, Location previousLogicalCenter)
+        public ScrollStatus DoScroll(Location playerLocation, Location previousLogicalCenter)
         {
             Location logicalCenter = NextLogicalCenter();
             Direction newVert;
