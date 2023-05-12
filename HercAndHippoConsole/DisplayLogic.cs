@@ -17,16 +17,15 @@ namespace HercAndHippoConsole
 
             foreach (IDisplayable toShow in state.LevelObjects)
             {
-                Location writeLocation = screenCenter - logicalCenter + toShow.Location;
-                Column writeCol = writeLocation.Col;
-                Row writeRow = writeLocation.Row;
-                if (writeCol >= MIN_COL && writeCol < bufferWidth - VIEW_MARGIN && writeRow >= MIN_ROW && writeRow < bufferHeight - VIEW_MARGIN)
+                // Note that these are ints, not instances of the Column/Row type.
+                // If writeCol and writeRow were column/row respectively,
+                // we would use the "max out" addition logic, which
+                int writeCol = screenCenter.Col - logicalCenter.Col + toShow.Location.Col; 
+                int writeRow = screenCenter.Row - logicalCenter.Row + toShow.Location.Row;
+                if (writeCol >= MIN_COL && writeCol < bufferWidth - VIEW_MARGIN && 
+                    writeRow >= MIN_ROW && writeRow < bufferHeight - VIEW_MARGIN)
                 {
                     ToShow[writeCol, writeRow] = toShow;
-                    if (toShow is Bullet b)
-                    {
-                        ;
-                    }
                 }
             }
             return ToShow;
