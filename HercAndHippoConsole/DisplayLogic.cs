@@ -15,13 +15,11 @@ namespace HercAndHippoConsole
 
     internal record DisplayPlan(IDisplayable[,] PlanArray)
     {
-        public static DisplayPlan CreateDisplayPlan(Level state, ScrollStatus scrollStatus, BufferStats bufferStats)
-            => UpdateDisplayPlan(state, scrollStatus, bufferStats);
-            
+         
         public static Location GetScreenCenter(int bufferWidth, int bufferHeight)
             => ((bufferWidth - VIEW_MARGIN) / 2, (bufferHeight - VIEW_MARGIN) / 2);
 
-        public static DisplayPlan UpdateDisplayPlan(Level state, ScrollStatus scrollStatus, BufferStats bufferStats)
+        public static DisplayPlan CreateDisplayPlan(Level state, ScrollStatus scrollStatus, BufferStats bufferStats)
         {
             IDisplayable[,] ToShow = new IDisplayable[bufferStats.BufferWidth, bufferStats.BufferHeight];
 
