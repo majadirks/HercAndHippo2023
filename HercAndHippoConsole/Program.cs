@@ -9,7 +9,6 @@ const int REFRESH_INTERVAL_MS = 20;
 
 Stopwatch sw = new();
 ConsoleKeyInfo keyInfo = default;
-bool forceRefresh;
 bool bufferSizeChanged;
 
 Level state = TestLevels.WallsLevel;
@@ -26,6 +25,8 @@ while (true)
     while (sw.ElapsedMilliseconds < REFRESH_INTERVAL_MS);
     sw.Restart();
 
+    // Check if buffer size changed
+    (bufferSizeChanged, bufferHeight, bufferWidth) = BufferSizeChanged(bufferHeight, bufferWidth);
     oldDisplay = DisplayData(state, scrollStatus, bufferWidth, bufferHeight);
 
     // React to any key input
@@ -34,9 +35,7 @@ while (true)
     state = state.RefreshCyclables(keyInfo.ToActionInput());
     keyInfo = default;
 
-    //  Decide if we need to refresh
-    (bufferSizeChanged, bufferHeight, bufferWidth) = BufferSizeChanged(bufferHeight, bufferWidth);
-    forceRefresh = bufferSizeChanged;
+
 
     // Check if we need to move the focus of the screen
     scrollStatus = scrollStatus
@@ -45,7 +44,7 @@ while (true)
         
     // Display current state
     newDisplay = DisplayData(state, scrollStatus, bufferWidth, bufferHeight);
-    RefreshDisplay(oldDisplay, newDisplay, forceRefresh, bufferWidth, bufferHeight);
+    RefreshDisplay(oldDisplay, newDisplay, forceRefresh: bufferSizeChanged, bufferWidth: bufferWidth, bufferHeight: bufferHeight);
 
     ShowMessage("Use arrow keys to move, shift + arrow keys to shoot, 'q' to quit.");    
 }
