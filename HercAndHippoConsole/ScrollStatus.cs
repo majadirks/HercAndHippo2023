@@ -1,6 +1,5 @@
 ﻿using HercAndHippoLibCs;
 using static HercAndHippoConsole.Constants;
-using static HercAndHippoConsole.DisplayLogic;
 using static System.Math;
 
 namespace HercAndHippoConsole
@@ -32,7 +31,7 @@ namespace HercAndHippoConsole
             return (logicalCenterCol, logicalCenterRow);
         }
 
-        public ScrollStatus DoScroll(Location playerLocation, Location previousLogicalCenter)
+        public ScrollStatus DoScroll(Location playerLocation, Location previousLogicalCenter, int bufferWidth, int bufferHeight)
         {
             Location logicalCenter = NextLogicalCenter();
             Direction newVert;
@@ -40,7 +39,7 @@ namespace HercAndHippoConsole
 
 
             int verticalDist = Abs(playerLocation.Row - logicalCenter.Row);
-            if (verticalDist > VertRadius || previousLogicalCenter.Row < MIN_ROW)
+            if (verticalDist > VertRadius || previousLogicalCenter.Row < MIN_ROW || previousLogicalCenter.Row > bufferHeight)
             {
                 if (playerLocation.Row > logicalCenter.Row)
                 {
@@ -59,7 +58,7 @@ namespace HercAndHippoConsole
             }
 
             int horizDist = Abs(playerLocation.Col - logicalCenter.Col);
-            if (horizDist > HorizRadius || previousLogicalCenter.Col < MIN_COL)
+            if (horizDist > HorizRadius || previousLogicalCenter.Col < MIN_COL || previousLogicalCenter.Col > bufferWidth)
             {
                 if (playerLocation.Col > logicalCenter.Col)
                 {

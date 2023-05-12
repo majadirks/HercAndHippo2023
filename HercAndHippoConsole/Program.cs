@@ -44,7 +44,7 @@ while (true)
     // Check if we need to move the focus of the screen
     scrollStatus = scrollStatus
         .UpdateTriggerRadius(bufferWidth, bufferHeight)
-        .DoScroll(newState.Player.Location, oldLogicalCenter);
+        .DoScroll(newState.Player.Location, oldLogicalCenter, bufferWidth, bufferHeight);
         
     // Display current state
     newDisplay = DisplayData(newState, scrollStatus, bufferWidth, bufferHeight);
