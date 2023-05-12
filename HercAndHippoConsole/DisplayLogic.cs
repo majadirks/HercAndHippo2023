@@ -41,5 +41,48 @@ namespace HercAndHippoConsole
             }
             return new DisplayPlan(PlanArray: ToShow);
         }
+
+        public void RefreshDisplay(DisplayPlan newDisplayPlan, BufferStats bufferStats)
+        {
+            bool forceRefresh = bufferStats.BufferSizeChanged;
+
+            var oldDisplay = this.PlanArray;
+            var newDisplay = newDisplayPlan.PlanArray;
+
+            int maxCol = (forceRefresh ? Console.BufferWidth : bufferStats.BufferWidth) - VIEW_MARGIN;
+            int maxRow = (forceRefresh ? Console.BufferHeight : bufferStats.BufferHeight) - VIEW_MARGIN;
+
+            // Rather than using the cached maxCol and maxRow values calculated above,
+            // the following method recalculates the buffer width and height when it is needed
+            // to prevent attempting to set the cursor position to an offscreen location (which throws an exception).
+            bool InView(int col, int row) => col < Console.BufferWidth - VIEW_MARGIN && row < Console.BufferHeight - VIEW_MARGIN;
+
+            for (int row = 0; row < maxRow; row++)
+            {
+                for (int col = 0; col < maxCol; col++)
+                {
+                    IDisplayable oldDisp = oldDisplay[col, row];
+                    IDisplayable newDisp = newDisplay[col, row];
+                    if ((newDisp != default && (forceRefresh || (oldDisp != newDisp))) &&
+                        InView(col, row))
+                    {
+                        // Something is here that wasn't here before, so show it
+                        Console.SetCursorPosition(col, row);
+                        Console.ForegroundColor = newDisp.Color;
+                        Console.Write(newDisp.ConsoleDisplayString);
+                    }
+                    if ((newDisp == default && (forceRefresh || oldDisp != default)) &&
+                        InView(col, row))
+                    {
+                        // Something used to be here, but now nothing is here, so clear the spot
+                        Console.SetCursorPosition(col, row);
+                        Console.ForegroundColor = ConsoleColor.Black;
+                        Console.Write(" ");
+                    }
+                }
+            }
+        }
+
+
     }
 }
