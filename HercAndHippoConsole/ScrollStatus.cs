@@ -10,7 +10,7 @@ namespace HercAndHippoConsole
         public const double VERTICAL_RADIUS_RATIO = 0.3; // Larger; can get close to top or bottom of screen before up/down scroll kicks in
         public readonly bool InVerticalTransition = Vertical != Direction.Idle;
         public readonly bool InHorizontalTransition = Horizontal != Direction.Idle;
-        public static readonly ScrollStatus Default = new(Direction.Idle, Direction.Idle, 100, 100, (1,1));
+        public static ScrollStatus Default(Location playerLocation) => new(Direction.Idle, Direction.Idle, 100, 100, playerLocation);
         
         public ScrollStatus Update(Location playerLocation, BufferStats bufferStats)
             =>this.UpdateTriggerRadius(bufferStats)

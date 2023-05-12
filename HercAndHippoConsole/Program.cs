@@ -10,7 +10,7 @@ const int REFRESH_INTERVAL_MS = 20;
 Stopwatch sw = new();
 ConsoleKeyInfo keyInfo = default;
 Level state = TestLevels.WallsLevel;
-ScrollStatus scrollStatus = ScrollStatus.Default with { LogicalCenter = state.Player.Location };
+ScrollStatus scrollStatus = ScrollStatus.Default(state.Player.Location);
 BufferStats bufferStats = new(BufferSizeChanged: true, BufferWidth: Console.BufferWidth, BufferHeight: Console.BufferHeight);
 DisplayPlan displayPlan = CreateDisplayPlan(state, scrollStatus, bufferStats);
 
