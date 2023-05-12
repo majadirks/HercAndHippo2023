@@ -16,13 +16,12 @@ namespace HercAndHippoConsole
     internal record DisplayPlan(IDisplayable[,] PlanArray)
     {
         public static DisplayPlan CreateDisplayPlan(Level state, ScrollStatus scrollStatus, BufferStats bufferStats)
-            => new DisplayPlan(new IDisplayable[bufferStats.BufferWidth, bufferStats.BufferHeight])
-                    .UpdateDisplayPlan(state, scrollStatus, bufferStats);
+            => UpdateDisplayPlan(state, scrollStatus, bufferStats);
             
         public static Location GetScreenCenter(int bufferWidth, int bufferHeight)
             => ((bufferWidth - VIEW_MARGIN) / 2, (bufferHeight - VIEW_MARGIN) / 2);
 
-        public DisplayPlan UpdateDisplayPlan(Level state, ScrollStatus scrollStatus, BufferStats bufferStats)
+        public static DisplayPlan UpdateDisplayPlan(Level state, ScrollStatus scrollStatus, BufferStats bufferStats)
         {
             IDisplayable[,] ToShow = new IDisplayable[bufferStats.BufferWidth, bufferStats.BufferHeight];
 
@@ -33,7 +32,7 @@ namespace HercAndHippoConsole
             {
                 // Note that these are ints, not instances of the Column/Row type.
                 // If writeCol and writeRow were column/row respectively,
-                // we would use the "max out" addition logic, which
+                // we would use the "max out" addition logic, which isn't what we want.
                 int writeCol = screenCenter.Col - logicalCenter.Col + toShow.Location.Col; 
                 int writeRow = screenCenter.Row - logicalCenter.Row + toShow.Location.Row;
                 if (writeCol >= MIN_COL && writeCol < bufferStats.BufferWidth - VIEW_MARGIN && 
@@ -42,7 +41,7 @@ namespace HercAndHippoConsole
                     ToShow[writeCol, writeRow] = toShow;
                 }
             }
-            return this with { PlanArray = ToShow };
+            return new DisplayPlan(PlanArray: ToShow);
         }
     }
 }
