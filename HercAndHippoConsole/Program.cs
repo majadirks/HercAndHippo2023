@@ -1,7 +1,7 @@
 ﻿using HercAndHippoLibCs;
 using HercAndHippoConsole;
 using static HercAndHippoConsole.Constants;
-using static HercAndHippoConsole.DisplayLogic;
+using static HercAndHippoConsole.DisplayPlan;
 using System.Diagnostics;
 
 const int MESSAGE_MARGIN = 3;
@@ -13,8 +13,8 @@ ConsoleKeyInfo keyInfo = default;
 Level state = TestLevels.WallsLevel;
 ScrollStatus scrollStatus = ScrollStatus.Default with { LogicalCenter = state.Player.Location };
 BufferStats bufferStats = new(BufferSizeChanged: true, BufferWidth: Console.BufferWidth, BufferHeight: Console.BufferHeight);
-IDisplayable[,] oldDisplay = DisplayData(state, scrollStatus, bufferStats);
-IDisplayable[,] newDisplay;
+DisplayPlan oldDisplay = CreateDisplayPlan(state, scrollStatus, bufferStats);
+DisplayPlan newDisplay;
 
 RefreshDisplay(oldDisplay, oldDisplay, bufferStats);
 sw.Start();
@@ -24,8 +24,8 @@ while (true)
     sw.Restart();
 
     // Check if buffer size changed
-    bufferStats = bufferStats.Update();
-    oldDisplay = DisplayData(state, scrollStatus, bufferStats);
+    bufferStats = bufferStats.Refresh();
+    oldDisplay = CreateDisplayPlan(state, scrollStatus, bufferStats);
 
     // React to any key input
     if (Console.KeyAvailable) keyInfo = Console.ReadKey();
@@ -39,7 +39,7 @@ while (true)
         .DoScroll(state.Player.Location, bufferStats);
         
     // Display current state
-    newDisplay = DisplayData(state, scrollStatus, bufferStats);
+    newDisplay = CreateDisplayPlan(state, scrollStatus, bufferStats);
     RefreshDisplay(oldDisplay, newDisplay, bufferStats);
 
     ShowMessage("Use arrow keys to move, shift + arrow keys to shoot, 'q' to quit.");    
@@ -47,9 +47,12 @@ while (true)
 
 
 // Helper Methods
-void RefreshDisplay(IDisplayable[,] oldDisplay, IDisplayable[,] newDisplay, BufferStats bufferStats)
+void RefreshDisplay(DisplayPlan oldDisplayPlan, DisplayPlan newDisplayPlan, BufferStats bufferStats)
 {
     bool forceRefresh = bufferStats.BufferSizeChanged;
+
+    var oldDisplay = oldDisplayPlan.PlanArray;
+    var newDisplay = newDisplayPlan.PlanArray;
 
     int maxCol = (forceRefresh ? Console.BufferWidth : bufferStats.BufferWidth) - VIEW_MARGIN;
     int maxRow = (forceRefresh ? Console.BufferHeight : bufferStats.BufferHeight) - VIEW_MARGIN;

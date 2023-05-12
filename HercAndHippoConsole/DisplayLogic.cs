@@ -6,24 +6,28 @@ namespace HercAndHippoConsole
 
     internal record BufferStats(bool BufferSizeChanged, int BufferWidth, int BufferHeight)
     {
-        public BufferStats Update()
+        public BufferStats Refresh()
         {
             bool changed = BufferHeight != Console.BufferHeight || BufferWidth != Console.BufferWidth;
             return new(changed, BufferWidth: Console.BufferWidth, BufferHeight: Console.BufferHeight);
         } 
     }
 
-    internal static class DisplayLogic
+    internal record DisplayPlan(IDisplayable[,] PlanArray)
     {
+        public static DisplayPlan CreateDisplayPlan(Level state, ScrollStatus scrollStatus, BufferStats bufferStats)
+            => new DisplayPlan(new IDisplayable[bufferStats.BufferWidth, bufferStats.BufferHeight])
+                    .UpdateDisplayPlan(state, scrollStatus, bufferStats);
+            
         public static Location GetScreenCenter(int bufferWidth, int bufferHeight)
             => ((bufferWidth - VIEW_MARGIN) / 2, (bufferHeight - VIEW_MARGIN) / 2);
 
-        public static IDisplayable[,] DisplayData(Level state, ScrollStatus transitionStatus, BufferStats bufferStats)
+        public DisplayPlan UpdateDisplayPlan(Level state, ScrollStatus scrollStatus, BufferStats bufferStats)
         {
             IDisplayable[,] ToShow = new IDisplayable[bufferStats.BufferWidth, bufferStats.BufferHeight];
 
             Location screenCenter = GetScreenCenter(bufferStats.BufferWidth, bufferStats.BufferHeight);
-            Location logicalCenter = transitionStatus.LogicalCenter;
+            Location logicalCenter = scrollStatus.LogicalCenter;
 
             foreach (IDisplayable toShow in state.LevelObjects)
             {
@@ -38,7 +42,7 @@ namespace HercAndHippoConsole
                     ToShow[writeCol, writeRow] = toShow;
                 }
             }
-            return ToShow;
+            return this with { PlanArray = ToShow };
         }
     }
 }
