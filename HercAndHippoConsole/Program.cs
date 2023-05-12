@@ -13,13 +13,11 @@ bool forceRefresh;
 bool bufferSizeChanged;
 
 Level state = TestLevels.WallsLevel;
-Location oldLogicalCenter = state.Player.Location;
-ScrollStatus scrollStatus = ScrollStatus.Default with { LogicalCenter = oldLogicalCenter };
+ScrollStatus scrollStatus = ScrollStatus.Default with { LogicalCenter = state.Player.Location };
 IDisplayable[,] oldDisplay = DisplayData(state, scrollStatus, Console.BufferWidth, Console.BufferHeight);
 IDisplayable[,] newDisplay;
 int bufferHeight = Console.BufferHeight;
 int bufferWidth = Console.BufferWidth;
-
 
 RefreshDisplay(oldDisplay, oldDisplay, forceRefresh: true, bufferWidth: bufferWidth, bufferHeight: bufferHeight);
 sw.Start();
@@ -43,7 +41,7 @@ while (true)
     // Check if we need to move the focus of the screen
     scrollStatus = scrollStatus
         .UpdateTriggerRadius(bufferWidth, bufferHeight)
-        .DoScroll(state.Player.Location, oldLogicalCenter, bufferWidth, bufferHeight);
+        .DoScroll(state.Player.Location, bufferWidth, bufferHeight);
         
     // Display current state
     newDisplay = DisplayData(state, scrollStatus, bufferWidth, bufferHeight);
