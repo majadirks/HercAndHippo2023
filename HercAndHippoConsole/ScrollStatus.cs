@@ -21,7 +21,7 @@ namespace HercAndHippoConsole
             // Round these down (versus Convert.ToInt32, which uses banker's rounding).
             // This makes scrolling more aggressive on smaller displays.
             int newHorizRadius = (int) (bufferStats.BufferWidth * HORIZONTAL_RADIUS_RATIO);
-            int newVertRadius = (int) (bufferStats.BufferHeight * VERTICAL_RADIUS_RATIO);
+            int newVertRadius = (int) (bufferStats.BufferHeight * VERTICAL_RADIUS_RATIO) - 1;
             return this with { HorizRadius = newHorizRadius, VertRadius = newVertRadius };
         }
 
