@@ -17,11 +17,16 @@ namespace HercAndHippoConsole
 
             foreach (IDisplayable toShow in state.LevelObjects)
             {
-                Column writeCol = screenCenter.Col + toShow.Location.Col - logicalCenter.Col;
-                Row writeRow = screenCenter.Row + toShow.Location.Row - logicalCenter.Row;
-                if (writeCol >= MIN_COL && writeCol < bufferWidth && writeRow >= MIN_ROW && writeRow < bufferHeight)
+                Location writeLocation = screenCenter - logicalCenter + toShow.Location;
+                Column writeCol = writeLocation.Col;
+                Row writeRow = writeLocation.Row;
+                if (writeCol >= MIN_COL && writeCol < bufferWidth - VIEW_MARGIN && writeRow >= MIN_ROW && writeRow < bufferHeight - VIEW_MARGIN)
                 {
                     ToShow[writeCol, writeRow] = toShow;
+                    if (toShow is Bullet b)
+                    {
+                        ;
+                    }
                 }
             }
             return ToShow;

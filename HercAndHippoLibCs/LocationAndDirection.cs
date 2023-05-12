@@ -1,4 +1,6 @@
-﻿using static System.Math;
+﻿using System.Numerics;
+using System.Runtime.CompilerServices;
+using static System.Math;
 
 namespace HercAndHippoLibCs
 {
@@ -30,6 +32,8 @@ namespace HercAndHippoLibCs
     {
         public static implicit operator Location((int col, int row) tuple) => new(tuple.col, tuple.row);
         public override string ToString() => $"(col {Col}, row {Row})";
+        public static Location operator +(Location left, Location right) => new(left.Col + right.Col, left.Row+right.Row);
+        public static Location operator -(Location left, Location right) => new(left.Col - right.Col, left.Row - right.Row);
     }
     public enum Direction { Idle, North, East, South, West, Seek, Flee }
     public static class DirectionExtensions

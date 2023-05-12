@@ -18,7 +18,7 @@
                 nextState.Replace(this, this with { Location = NextLocation }) : // If bullet wasn't stopped, continue
                 nextState; // If bullet was stopped, don't regenerate it
 
-            // If reached screen boundary, die 
+            // If reached level boundary, die 
             if (Location.Row == Row.MIN_ROW || Location.Row == Row.MAX_ROW || Location.Col == Column.MIN_COL || Location.Col == Column.MAX_COL)
                 bulletMoved = bulletMoved.Without(this);
             return bulletMoved;
