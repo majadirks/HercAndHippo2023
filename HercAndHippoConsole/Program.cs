@@ -12,11 +12,10 @@ ConsoleKeyInfo keyInfo = default;
 bool forceRefresh;
 bool bufferSizeChanged;
 
-Level oldState = TestLevels.WallsLevel;
-Location oldLogicalCenter = oldState.Player.Location;
+Level state = TestLevels.WallsLevel;
+Location oldLogicalCenter = state.Player.Location;
 ScrollStatus scrollStatus = ScrollStatus.Default with { LogicalCenter = oldLogicalCenter };
-IDisplayable[,] oldDisplay = DisplayData(oldState, scrollStatus, Console.BufferWidth, Console.BufferHeight);
-Level newState;
+IDisplayable[,] oldDisplay = DisplayData(state, scrollStatus, Console.BufferWidth, Console.BufferHeight);
 IDisplayable[,] newDisplay;
 int bufferHeight = Console.BufferHeight;
 int bufferWidth = Console.BufferWidth;
@@ -29,12 +28,12 @@ while (true)
     while (sw.ElapsedMilliseconds < REFRESH_INTERVAL_MS);
     sw.Restart();
 
-    oldDisplay = DisplayData(oldState, scrollStatus, bufferWidth, bufferHeight);
+    oldDisplay = DisplayData(state, scrollStatus, bufferWidth, bufferHeight);
 
-    // Parse key input
+    // React to any key input
     if (Console.KeyAvailable) keyInfo = Console.ReadKey();
     if (keyInfo.KeyChar == 'q') break;
-    newState = oldState.RefreshCyclables(keyInfo.ToActionInput());
+    state = state.RefreshCyclables(keyInfo.ToActionInput());
     keyInfo = default;
 
     //  Decide if we need to refresh
@@ -44,19 +43,14 @@ while (true)
     // Check if we need to move the focus of the screen
     scrollStatus = scrollStatus
         .UpdateTriggerRadius(bufferWidth, bufferHeight)
-        .DoScroll(newState.Player.Location, oldLogicalCenter, bufferWidth, bufferHeight);
+        .DoScroll(state.Player.Location, oldLogicalCenter, bufferWidth, bufferHeight);
         
     // Display current state
-    newDisplay = DisplayData(newState, scrollStatus, bufferWidth, bufferHeight);
+    newDisplay = DisplayData(state, scrollStatus, bufferWidth, bufferHeight);
     RefreshDisplay(oldDisplay, newDisplay, forceRefresh, bufferWidth, bufferHeight);
 
-    ShowMessage("Use arrow keys to move, shift + arrow keys to shoot, 'q' to quit.");
-
-    // Update current state to new state
-    oldState = newState;
-    
+    ShowMessage("Use arrow keys to move, shift + arrow keys to shoot, 'q' to quit.");    
 }
-
 
 // Helper Methods
 (bool changed, int BufferHeight, int BufferWidth) BufferSizeChanged(int bufferHeight, int bufferWidth)
@@ -64,8 +58,6 @@ while (true)
     bool changed = bufferHeight != Console.BufferHeight || bufferWidth != Console.BufferWidth;
     return (changed, Console.BufferHeight, Console.BufferWidth);
 }
-
-
 
 void RefreshDisplay(IDisplayable[,] oldDisplay, IDisplayable[,] newDisplay, bool forceRefresh, int bufferWidth, int bufferHeight)
 {
@@ -102,7 +94,6 @@ void RefreshDisplay(IDisplayable[,] oldDisplay, IDisplayable[,] newDisplay, bool
         }      
     }
 }
-
 
 void ShowMessage(string message)
 {
