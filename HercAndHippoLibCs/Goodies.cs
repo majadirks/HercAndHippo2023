@@ -3,7 +3,9 @@
     public record Ammo(Location Location, AmmoCount Count) : IDisplayable, ITouchable
     {
         public string ConsoleDisplayString => "ä";
+
         public ConsoleColor Color => ConsoleColor.Green;
+        public ConsoleColor BackgroundColor => ConsoleColor.Black;
         public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy)
             => level.Without(this)
                     .WithPlayer(level.Player with 
@@ -16,6 +18,7 @@
     public record Key(ConsoleColor Color, Location Location) : IDisplayable, ITouchable, ITakeable, IShootable
     {
         public string ConsoleDisplayString => "&";
+        public ConsoleColor BackgroundColor => ConsoleColor.Black;
         public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy)
         {
             Player player = level.Player;

@@ -56,6 +56,7 @@
         private record Counter(Location Location, ConsoleColor Color, int Count) : IDisplayable, ICyclable
         {
             public string ConsoleDisplayString => Count.ToString();
+            public ConsoleColor BackgroundColor => ConsoleColor.Black;
             public Level Cycle(Level level, ActionInput actionInput)
             => level.Replace(this, this with { Count = Count + 1 });
         }

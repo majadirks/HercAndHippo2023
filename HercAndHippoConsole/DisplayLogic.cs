@@ -77,6 +77,7 @@ namespace HercAndHippoConsole
                     {
                         // Something is here that wasn't here before, so show it
                         Console.SetCursorPosition(col, row);
+                        Console.BackgroundColor = newDisp.BackgroundColor;
                         Console.ForegroundColor = newDisp.Color;
                         Console.Write(newDisp.ConsoleDisplayString);
                     }
@@ -85,6 +86,7 @@ namespace HercAndHippoConsole
                     {
                         // Something used to be here, but now nothing is here, so clear the spot
                         Console.SetCursorPosition(col, row);
+                        Console.BackgroundColor = ConsoleColor.Black;
                         Console.ForegroundColor = ConsoleColor.Black;
                         Console.Write(" ");
                     }

@@ -13,6 +13,9 @@ ScrollStatus scrollStatus = ScrollStatus.Default(state.Player.Location);
 BufferStats bufferStats = new(BufferSizeChanged: true, BufferWidth: Console.BufferWidth, BufferHeight: Console.BufferHeight);
 DisplayPlan displayPlan = new(state, scrollStatus, bufferStats);
 
+Console.ForegroundColor = ConsoleColor.White;
+Console.BackgroundColor = ConsoleColor.Black;
+
 displayPlan.RefreshDisplay(state, scrollStatus);
 ShowMessage("Use arrow keys to move, shift + arrow keys to shoot, 'q' to quit.");
 sw.Start();
@@ -42,6 +45,7 @@ while (true)
 }
 
 Console.ForegroundColor = ConsoleColor.White; // Set text to white for ending message
+Console.BackgroundColor = ConsoleColor.Black;
 static void ShowMessage(string message)
 {
     Console.SetCursorPosition(1, Console.BufferHeight - MESSAGE_MARGIN);

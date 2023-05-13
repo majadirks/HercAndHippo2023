@@ -6,7 +6,8 @@ namespace HercAndHippoLibCs
         : IDisplayable, IShootable, ICyclable, ITouchable
     {
         public string ConsoleDisplayString => HasHealth ? "☺" : "RIP";
-        public ConsoleColor Color => ConsoleColor.Blue;
+        public ConsoleColor Color => ConsoleColor.White;
+        public ConsoleColor BackgroundColor => ConsoleColor.Blue;
         public override string ToString() => $"Player at location {Location} with {Health}, {AmmoCount}";
         public Level OnShot(Level level, Direction shotFrom, Bullet shotBy)
             => level.WithPlayer(this with { Health = Health - 5 });
