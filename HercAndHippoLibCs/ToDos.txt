@@ -11,7 +11,6 @@
 -=Unit tests=-
 
 * Level:
-   - Correct calculation of level width and height
    - RefreshCyclables correctly calls OnCycle method for its ICyclables
 
 * Player:
