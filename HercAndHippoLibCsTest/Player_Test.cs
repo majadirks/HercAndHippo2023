@@ -221,5 +221,30 @@ namespace HercAndHippoLibCsTest
             level = level.RefreshCyclables(ActionInput.ShootSouth);
             Assert.IsTrue(level.Contains(southBullet));
         }
+
+        [TestMethod]
+        public void PlayerCanShootWhenOnBoundary_Test()
+        {
+            // Arrange
+            Bullet westBullet = new((9, 9), Direction.West);
+            Wall corner = new(ConsoleColor.Yellow, (10, 10));
+            Player player = new((10,9), Health: 100, AmmoCount: 5, Inventory: EmptyInventory);
+            Level level = new(player, new HashSet<IDisplayable>() { corner });
+            Assert.IsFalse(level.Contains(westBullet));
+
+            // Act
+            level = level.RefreshCyclables(ActionInput.ShootWest);
+            // Assert
+            Assert.IsTrue(level.Contains(westBullet));
+
+            // Arrange
+            level = level.WithPlayer(player with {Location = (9, 10)}); // west of corner
+            Bullet northBullet = new((9, 9), Direction.North);
+            // Act
+            level = level.RefreshCyclables(ActionInput.ShootNorth);
+            //Assert
+            Assert.IsTrue(level.Contains(northBullet));
+
+        }
     }
 }
