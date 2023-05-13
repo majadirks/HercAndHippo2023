@@ -135,7 +135,7 @@ namespace HercAndHippoLibCsTest
             Assert.IsFalse(level.Player.Location.Row == corner.Location.Row);
 
             // Act
-            // Move east until player reaches corner
+            // Move south until player reaches corner
             while (level.Player.Location.Row < corner.Location.Row)
             {
                 if (attempt > maxAttempt) Assert.IsTrue(false);
@@ -164,6 +164,34 @@ namespace HercAndHippoLibCsTest
             Player player2 = new((2, 2), Health: 100, AmmoCount: 0, Inventory: p2Inventory);
             // Assert
             Assert.AreEqual(player1, player2);            
+        }
+
+        [TestMethod]
+        public void OnTouchMethodTriggeredWhenPlayerTouchesAnITouchable_Test()
+        {
+            // Arrange
+            int startCount = 0;
+            Player player = new((2, 2), Health: 100, AmmoCount: 0, Inventory: EmptyInventory);
+            Player movedPlayer = player with { Location = (3, 2) };
+            TouchCounter initialCounter = new((3, 2), ConsoleColor.Green, startCount);
+            TouchCounter cycledCounter = new((3, 2), ConsoleColor.Green, startCount + 1);
+            Level level = new(player, displayables: new HashSet<IDisplayable>() { initialCounter });
+
+            Assert.IsTrue(level.Contains(initialCounter));
+            Assert.IsFalse(level.Contains(cycledCounter));
+            Assert.IsTrue(level.Contains(player));
+            Assert.IsFalse(level.Contains(movedPlayer));
+
+            // Act: player attempts to move east, but is blocked by counter, which increments
+            level = level.RefreshCyclables(ActionInput.MoveEast);
+
+            // Assert
+            // Check that counter has incremented
+            Assert.IsFalse(level.Contains(initialCounter));
+            Assert.IsTrue(level.Contains(cycledCounter));
+            // Check that player has not moved
+            Assert.IsTrue(level.Contains(player));
+            Assert.IsFalse(level.Contains(movedPlayer));
         }
     }
 }

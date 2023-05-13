@@ -52,16 +52,6 @@ namespace HercAndHippoLibCsTest
             Assert.AreEqual(expectedHeight, level.Height);
         }
 
-        /// <summary>
-        /// Simple object that increments a counter at each cycle
-        /// </summary>
-        private record Counter(Location Location, ConsoleColor Color, int Count) : IDisplayable, ICyclable
-        {
-            public string ConsoleDisplayString => Count.ToString();
-            public ConsoleColor BackgroundColor => ConsoleColor.Black;
-            public Level Cycle(Level level, ActionInput actionInput)
-            => level.Replace(this, this with { Count = Count + 1 });
-        }
 
         [TestMethod]
         public void RefreshCyclables_Test()
@@ -69,8 +59,8 @@ namespace HercAndHippoLibCsTest
             // Arrange
             Player player = new(new Location(Col: 1, Row: 1), Health: 100, AmmoCount: 5, Inventory: EmptyInventory);
             int startCount = 0;
-            Counter initialCounter = new((2, 2), ConsoleColor.Green, startCount);
-            Counter cycledCounter = new((2, 2), ConsoleColor.Green, startCount + 1);
+            CycleCounter initialCounter = new((2, 2), ConsoleColor.Green, startCount);
+            CycleCounter cycledCounter = new((2, 2), ConsoleColor.Green, startCount + 1);
             Level level = new(player: player, displayables: new HashSet<IDisplayable>() { initialCounter });
 
             // Check that we set this up correctly
