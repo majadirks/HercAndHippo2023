@@ -23,6 +23,7 @@
         [TestMethod]
         public void HeightAndWidthDoNotChange_Test()
         {
+            // Arrange
             int expectedWidth = 4;
             int expectedHeight = 7;
             Player player = new(new Location(Col: expectedWidth, Row: expectedHeight), Health: 100, AmmoCount: 5, Inventory: new HashSet<ITakeable>());
@@ -30,23 +31,22 @@
             {
                 new Wall(ConsoleColor.Yellow, new Location(Col: expectedWidth, Row: expectedHeight))
             });
+            Bullet bulletEastOfBoundary = new((expectedWidth + 10, expectedHeight), Direction.East);
+            Bullet bulletSouthOfBoundary = new(Location: (expectedWidth, expectedHeight + 1), Direction.South);
 
-            // Arrange for shooting east
-            Bullet expectedBulletEastOfBoundary = new((expectedWidth + 1, expectedHeight), Direction.East);
             // Act
-            level = level.RefreshCyclables(ActionInput.ShootEast); // puts a bullet at column 5
-            // Assert: There is a bullet east of the bounds of the level, but width has not changed
-            Assert.IsTrue(level.LevelObjects.Contains(expectedBulletEastOfBoundary));
-            Assert.IsTrue(expectedBulletEastOfBoundary.Location.Col > expectedWidth);
+            level = level.AddObject(bulletEastOfBoundary).AddObject(bulletSouthOfBoundary);
+
+            // Assert: There is a bullet east of the bounds of the level, but width has not changed.
+            Assert.IsTrue(level.LevelObjects.Contains(bulletEastOfBoundary));
+            Assert.IsTrue(bulletEastOfBoundary.Location.Col > expectedWidth);
+            Assert.IsTrue(bulletEastOfBoundary.Location.Col > level.Width);
             Assert.AreEqual(expectedWidth, level.Width);
 
-            // Arrange for shooting south
-            Bullet expectedBulletSouthOfBoundary = new(Location: (expectedWidth, expectedHeight + 1), Direction.South);
-            // Act
-            level = level.RefreshCyclables(ActionInput.ShootSouth); // puts a bullet in row 8
             // Assert: There is a bullet south of the bounds of the level, but height has not changed
-            Assert.IsTrue(level.LevelObjects.Contains(expectedBulletSouthOfBoundary));
-            Assert.IsTrue(expectedBulletSouthOfBoundary.Location.Row > expectedHeight);
+            Assert.IsTrue(level.LevelObjects.Contains(bulletSouthOfBoundary));
+            Assert.IsTrue(bulletSouthOfBoundary.Location.Row > expectedHeight);
+            Assert.IsTrue(bulletSouthOfBoundary.Location.Row > level.Height);
             Assert.AreEqual(expectedHeight, level.Height);
         }
 
