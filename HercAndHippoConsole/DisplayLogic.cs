@@ -53,7 +53,7 @@ namespace HercAndHippoConsole
         {
             DisplayPlan newDisplayPlan = new(newState, scrollStatus, bufferStats);
             bool forceRefresh = bufferStats.BufferSizeChanged;
-
+            
             var oldDisplay = this.planArray;
             var newDisplay = newDisplayPlan.planArray;
 
@@ -65,6 +65,7 @@ namespace HercAndHippoConsole
             // to prevent attempting to set the cursor position to an offscreen location (which throws an exception).
             static bool InView(int col, int row) => col < Console.BufferWidth - VIEW_MARGIN && row < Console.BufferHeight - VIEW_MARGIN;
 
+            if (forceRefresh) Console.Clear();
             for (int row = 0; row < maxRow; row++)
             {
                 for (int col = 0; col < maxCol; col++)
@@ -79,7 +80,7 @@ namespace HercAndHippoConsole
                         Console.ForegroundColor = newDisp.Color;
                         Console.Write(newDisp.ConsoleDisplayString);
                     }
-                    if ((newDisp == default && (forceRefresh || oldDisp != default)) &&
+                    if ((newDisp == default && oldDisp != default) &&
                         InView(col, row))
                     {
                         // Something used to be here, but now nothing is here, so clear the spot

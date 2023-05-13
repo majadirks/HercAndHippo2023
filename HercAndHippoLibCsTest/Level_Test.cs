@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace HercAndHippoLibCsTest
+﻿namespace HercAndHippoLibCsTest
 {
     [TestClass]
     public class Level_Test
@@ -72,8 +66,8 @@ namespace HercAndHippoLibCsTest
             // Arrange
             Player player = new(new Location(Col: 1, Row: 1), Health: 100, AmmoCount: 5, Inventory: new HashSet<ITakeable>());
             int startCount = 0;
-            Counter initialCounter = new Counter((2, 2), ConsoleColor.Green, startCount);
-            Counter cycledCounter = new Counter((2, 2), ConsoleColor.Green, startCount + 1);
+            Counter initialCounter = new((2, 2), ConsoleColor.Green, startCount);
+            Counter cycledCounter = new((2, 2), ConsoleColor.Green, startCount + 1);
             Level level = new(player: player, displayables: new HashSet<IDisplayable>() { initialCounter });
 
             // Check that we set this up correctly

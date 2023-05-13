@@ -9,10 +9,6 @@
 - Torches and darkness
 	
 -=Unit tests=-
-
-* Level:
-   - RefreshCyclables correctly calls OnCycle method for its ICyclables
-
 * Player:
    - Movement within level
    - Correctly calls OnTouch method for ITouchables touched
