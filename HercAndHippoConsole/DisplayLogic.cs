@@ -33,7 +33,9 @@ namespace HercAndHippoConsole
             {
                 // Note that these are ints, not instances of the Column/Row type.
                 // If writeCol and writeRow were column/row respectively,
-                // we would use the "max out" addition logic, which isn't what we want.
+                // they would "bottom out" at 1. This would cause a bug where
+                // things that should disappear off the left edge of the screen
+                // would just hang out in column 1.
                 int writeCol = screenCenter.Col - logicalCenter.Col + toShow.Location.Col; 
                 int writeRow = screenCenter.Row - logicalCenter.Row + toShow.Location.Row;
                 if (writeCol >= MIN_COL && writeCol < bufferStats.BufferWidth - VIEW_MARGIN && 

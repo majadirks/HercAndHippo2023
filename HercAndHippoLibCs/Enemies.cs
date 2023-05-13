@@ -14,13 +14,14 @@
                 .Aggregate(seed: curState, func: (state, shot) => shot.OnShot(state, shotFrom: Whither.Mirror(), shotBy: this));
 
             // Continue moving in current direction if it hasn't been stopped
+            Bullet bulletAtNextPosition = this with { Location = NextLocation };
             Level bulletMoved = nextState.Contains(this) ?
-                nextState.Replace(this, this with { Location = NextLocation }) : // If bullet wasn't stopped, continue
+                nextState.Replace(this, bulletAtNextPosition) : // If bullet wasn't stopped, continue
                 nextState; // If bullet was stopped, don't regenerate it
 
             // If reached level boundary, die 
-            if (Location.Row == Row.MIN_ROW || Location.Row == Row.MAX_ROW || Location.Col == Column.MIN_COL || Location.Col == Column.MAX_COL)
-                bulletMoved = bulletMoved.Without(this);
+            if (Location.Row <= Row.MIN_ROW || Location.Row > curState.Height || Location.Col <= Column.MIN_COL || Location.Col > curState.Width)
+                bulletMoved = bulletMoved.Without(this).Without(bulletAtNextPosition);
             return bulletMoved;
         }
 

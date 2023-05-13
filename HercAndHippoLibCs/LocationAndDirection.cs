@@ -7,9 +7,8 @@ namespace HercAndHippoLibCs
     public record Column : IComparable<Column>
     {
         public const int MIN_COL = 1;
-        public const int MAX_COL = 110;
         private readonly int colNum;
-        public Column(int col) => colNum = Min(Max(MIN_COL, col), MAX_COL);
+        public Column(int col) => colNum = Max(MIN_COL, col);
         public static implicit operator Column(int col) => new(col);
         public static implicit operator int(Column col) => col.colNum;
         public override string ToString() => $"{colNum}";
@@ -18,10 +17,9 @@ namespace HercAndHippoLibCs
     public record Row : IComparable<Row>
     {
         public const int MIN_ROW = 1;
-        public const int MAX_ROW = 25;
 
         private readonly int rowNum;
-        public Row(int row) => rowNum = Min(Max(MIN_ROW, row), MAX_ROW);
+        public Row(int row) => rowNum = Max(MIN_ROW, row);
         public static implicit operator Row(int row) => new(row);
         public static implicit operator int(Row row) => row.rowNum;
         public override string ToString() => $"{rowNum}";
