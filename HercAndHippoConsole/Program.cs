@@ -1,6 +1,5 @@
 ﻿using HercAndHippoLibCs;
 using HercAndHippoConsole;
-using static HercAndHippoConsole.DisplayPlan;
 using System.Diagnostics;
 
 const int MESSAGE_MARGIN = 3;
@@ -12,7 +11,7 @@ ConsoleKeyInfo keyInfo = default;
 Level state = TestLevels.WallsLevel;
 ScrollStatus scrollStatus = ScrollStatus.Default(state.Player.Location);
 BufferStats bufferStats = new(BufferSizeChanged: true, BufferWidth: Console.BufferWidth, BufferHeight: Console.BufferHeight);
-DisplayPlan displayPlan = CreateDisplayPlan(state, scrollStatus, bufferStats);
+DisplayPlan displayPlan = new(state, scrollStatus, bufferStats);
 
 displayPlan.RefreshDisplay(state, scrollStatus);
 sw.Start();
@@ -23,7 +22,7 @@ while (true)
 
     // Check if buffer size changed
     bufferStats = bufferStats.Refresh();
-    displayPlan = CreateDisplayPlan(state, scrollStatus, bufferStats);
+    displayPlan = new(state, scrollStatus, bufferStats);
 
     // React to any key input
     if (Console.KeyAvailable) keyInfo = Console.ReadKey();
