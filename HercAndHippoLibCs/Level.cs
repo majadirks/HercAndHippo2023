@@ -30,7 +30,6 @@ namespace HercAndHippoLibCs
         public static bool operator !=(Level left, Level right) => !(left == right);
         public override int GetHashCode() => LevelObjects.GetHashCode();
         public override string ToString() => $"Level with Player at {Player.Location}; Object count = {Displayables.Count}.";
-
         private static int GetWidth(HashSet<IDisplayable> ds) => ds.Select(d => d.Location.Col).Max() ?? 0;
         private static int GetHeight(HashSet<IDisplayable> ds) => ds.Select(d => d.Location.Row).Max() ?? 0;
     }

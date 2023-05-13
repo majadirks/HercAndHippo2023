@@ -105,8 +105,8 @@ namespace HercAndHippoLibCs
         private int HealthAmt { get; init; }
         public Health(int health = DEFAULT_STARTING_HEALTH) => HealthAmt = Min(Max(health, MIN_HEALTH), MAX_HEALTH);
         public bool HasHealth => HealthAmt > 0;
-        public static Health operator -(Health health, int subtrahend) => Math.Max(MIN_HEALTH, health.HealthAmt - subtrahend);
-        public static Health operator +(Health health,int addend) => Math.Min(MAX_HEALTH, health.HealthAmt + addend);
+        public static Health operator -(Health health, int subtrahend) => Max(MIN_HEALTH, health.HealthAmt - subtrahend);
+        public static Health operator +(Health health,int addend) => Min(MAX_HEALTH, health.HealthAmt + addend);
         public static implicit operator Health(int health) => new(health);
         public override string ToString() => $"Health: {HealthAmt}";
     }
