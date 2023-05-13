@@ -10,7 +10,7 @@ namespace HercAndHippoLibCs
         public string ConsoleDisplayString => HasHealth ? "☺" : "RIP";
         public ConsoleColor Color => ConsoleColor.White;
         public ConsoleColor BackgroundColor => ConsoleColor.Blue;
-        public override string ToString() => $"Player at location {Location} with {Health}, {AmmoCount}";
+        public override string ToString() => $"Player at location {Location} with {Health}, {AmmoCount}, Inventory Size: {Inventory.Count}";
         public Level OnShot(Level level, Direction shotFrom, Bullet shotBy)
             => level.WithPlayer(this with { Health = Health - 5 });
         public bool HasHealth => Health.HasHealth;
@@ -121,19 +121,15 @@ namespace HercAndHippoLibCs
         }
         public IEnumerator<ITakeable> GetEnumerator() => takeables.GetEnumerator();
         IEnumerator IEnumerable.GetEnumerator() => takeables.GetEnumerator();
-
         public override bool Equals([NotNullWhen(true)] object? obj)
          => obj != null && obj is Inventory other && this.ContainsSameItemsAs(other);
         public bool Equals(Inventory other) => this.ContainsSameItemsAs(other);
         private bool ContainsSameItemsAs(Inventory other)
             => takeables.IsSubsetOf(other) && other.takeables.IsSubsetOf(takeables);
-
-        public static bool operator ==(Inventory left, Inventory right) => left.Equals(right);
-        
+        public static bool operator ==(Inventory left, Inventory right) => left.Equals(right);  
         public static bool operator !=(Inventory left, Inventory right) => !(left == right);
-
         public override int GetHashCode() => takeables.GetHashCode();
-
+        public int Count => takeables.Count;
     }
 
     public record Health

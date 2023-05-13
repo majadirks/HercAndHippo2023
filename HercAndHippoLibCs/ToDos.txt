@@ -14,7 +14,6 @@
 	
 -=Unit tests=-
 * Player:
-   - Movement within level
    - No movement west of min col or right of level width
    - No movement north of min row or south of level height
    - Correctly calls OnTouch method for ITouchables touched

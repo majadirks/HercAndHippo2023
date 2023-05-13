@@ -36,7 +36,7 @@ while (true)
     scrollStatus = scrollStatus.Update(state.Player.Location, bufferStats);
         
     // Display current state
-    displayPlan.RefreshDisplay(state, scrollStatus);
+    displayPlan.RefreshDisplay(newState: state, newScrollStatus: scrollStatus);
 
     // Move the cursor so it doesn't always appear next to the player
     Console.SetCursorPosition(1, Console.BufferHeight - 1);
