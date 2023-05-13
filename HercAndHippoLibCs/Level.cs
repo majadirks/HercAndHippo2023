@@ -88,7 +88,7 @@ namespace HercAndHippoLibCs
                 new Ammo((4,10), Count: 20),
                 new Ammo((5,10), Count: 20),
 
-                new BreakableWall(ConsoleColor.Blue, (50, 15))
+                new BreakableWall(ConsoleColor.Blue, (40, 40))
             });
     }
 }
