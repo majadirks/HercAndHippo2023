@@ -73,7 +73,7 @@ namespace HercAndHippoLibCsTest
         /// <summary>
         /// Check that two player objects are equal if they have equivalent inventories
         /// </summary>
-        public void PlayerEquality()
+        public void PlayerEquality_Test()
         {
             static Inventory GetNewInventory() => new(new HashSet<ITakeable>());
             // Arrange
