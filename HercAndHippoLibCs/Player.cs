@@ -7,7 +7,7 @@ namespace HercAndHippoLibCs
     public record Player(Location Location, Health Health, AmmoCount AmmoCount, Inventory Inventory) 
         : IDisplayable, IShootable, ICyclable, ITouchable
     {
-        public string ConsoleDisplayString => HasHealth ? "☺" : "RIP";
+        public string ConsoleDisplayString => HasHealth ? "☻" : "RIP";
         public ConsoleColor Color => ConsoleColor.White;
         public ConsoleColor BackgroundColor => ConsoleColor.Blue;
         public override string ToString() => $"Player at location {Location} with {Health}, {AmmoCount}, Inventory Size: {Inventory.Count}";

@@ -193,5 +193,33 @@ namespace HercAndHippoLibCsTest
             Assert.IsTrue(level.Contains(player));
             Assert.IsFalse(level.Contains(movedPlayer));
         }
+
+        [TestMethod]
+        public void PlayerCanShootInAllDirections_Test()
+        {
+            // Arrange
+            Player player = new((5,5), Health: 100, AmmoCount: 5, Inventory: EmptyInventory);
+            Bullet northBullet = new((5, 4), Direction.North);
+            Bullet eastBullet = new((6, 5), Direction.East);
+            Bullet southBullet = new((5,6), Direction.South);
+            Bullet westBullet = new((4,5), Direction.West);
+            Wall corner = new(ConsoleColor.Yellow, (10, 10));
+            Level level = new(player, new HashSet<IDisplayable>() { corner });
+
+            Assert.IsFalse(level.Contains(northBullet));
+            Assert.IsFalse(level.Contains(eastBullet));
+            Assert.IsFalse(level.Contains(southBullet));
+            Assert.IsFalse(level.Contains(westBullet));
+
+            // Act and Assert
+            level = level.RefreshCyclables(ActionInput.ShootEast);
+            Assert.IsTrue(level.Contains(eastBullet));
+            level = level.RefreshCyclables(ActionInput.ShootWest);
+            Assert.IsTrue(level.Contains(westBullet));
+            level = level.RefreshCyclables(ActionInput.ShootNorth);
+            Assert.IsTrue(level.Contains(northBullet));
+            level = level.RefreshCyclables(ActionInput.ShootSouth);
+            Assert.IsTrue(level.Contains(southBullet));
+        }
     }
 }
