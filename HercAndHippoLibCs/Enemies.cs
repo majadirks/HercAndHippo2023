@@ -20,7 +20,7 @@
                 nextState; // If bullet was stopped, don't regenerate it
 
             // If reached level boundary, die 
-            if (Location.Row <= Row.MIN_ROW || Location.Row > curState.Height || Location.Col <= Column.MIN_COL || Location.Col > curState.Width)
+            if (curState.BoundaryReached(this))
                 bulletMoved = bulletMoved.Without(this).Without(bulletAtNextPosition);
             return bulletMoved;
         }
