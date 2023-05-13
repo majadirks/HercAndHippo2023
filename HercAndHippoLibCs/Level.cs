@@ -20,6 +20,7 @@ namespace HercAndHippoLibCs
         public Level RefreshCyclables(ActionInput actionInput)
             => LevelObjects.Where(disp => disp is ICyclable cylable)
             .Cast<ICyclable>()
+            .AsParallel()
             .Aggregate(seed: this, func: (state, nextCyclable) => nextCyclable.Cycle(state, actionInput));
         private bool HasSameStateAs(Level otherState)
             => LevelObjects.Count == otherState.LevelObjects.Count &&
