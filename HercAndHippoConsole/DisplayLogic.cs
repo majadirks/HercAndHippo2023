@@ -1,4 +1,5 @@
 ﻿using HercAndHippoLibCs;
+using System.Runtime.CompilerServices;
 using static HercAndHippoConsole.Constants;
 
 namespace HercAndHippoConsole
@@ -13,15 +14,14 @@ namespace HercAndHippoConsole
         } 
     }
 
-    internal record DisplayPlan(IDisplayable[,] PlanArray)
-    {    
+    internal record DisplayPlan(IDisplayable[,] PlanArray, BufferStats BufferStats)
+    {
         public static Location GetScreenCenter(int bufferWidth, int bufferHeight)
             => ((bufferWidth - VIEW_MARGIN) / 2, (bufferHeight - VIEW_MARGIN) / 2);
 
         public static DisplayPlan CreateDisplayPlan(Level state, ScrollStatus scrollStatus, BufferStats bufferStats)
         {
-            IDisplayable[,] ToShow = new IDisplayable[bufferStats.BufferWidth, bufferStats.BufferHeight];
-
+            IDisplayable[,] ToShow = new IDisplayable[bufferStats.BufferWidth, bufferStats.BufferHeight];           
             Location screenCenter = GetScreenCenter(bufferStats.BufferWidth, bufferStats.BufferHeight);
             Location logicalCenter = scrollStatus.LogicalCenter;
 
@@ -38,19 +38,19 @@ namespace HercAndHippoConsole
                     ToShow[writeCol, writeRow] = toShow;
                 }
             }
-            return new DisplayPlan(PlanArray: ToShow);
+            return new DisplayPlan(PlanArray: ToShow, BufferStats: bufferStats);
         }
 
-        public void RefreshDisplay(Level state, ScrollStatus scrollStatus, BufferStats bufferStats)
+        public void RefreshDisplay(Level newState, ScrollStatus scrollStatus)
         {
-            DisplayPlan newDisplayPlan = CreateDisplayPlan(state, scrollStatus, bufferStats);
-            bool forceRefresh = bufferStats.BufferSizeChanged;
+            DisplayPlan newDisplayPlan = CreateDisplayPlan(newState, scrollStatus, BufferStats);
+            bool forceRefresh = BufferStats.BufferSizeChanged;
 
             var oldDisplay = this.PlanArray;
             var newDisplay = newDisplayPlan.PlanArray;
 
-            int maxCol = (forceRefresh ? Console.BufferWidth : bufferStats.BufferWidth) - VIEW_MARGIN;
-            int maxRow = (forceRefresh ? Console.BufferHeight : bufferStats.BufferHeight) - VIEW_MARGIN;
+            int maxCol = (forceRefresh ? Console.BufferWidth : BufferStats.BufferWidth) - VIEW_MARGIN;
+            int maxRow = (forceRefresh ? Console.BufferHeight : BufferStats.BufferHeight) - VIEW_MARGIN;
 
             // Rather than using the cached maxCol and maxRow values calculated above,
             // the following method recalculates the buffer width and height when it is needed

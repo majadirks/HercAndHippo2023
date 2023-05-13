@@ -14,7 +14,7 @@ ScrollStatus scrollStatus = ScrollStatus.Default(state.Player.Location);
 BufferStats bufferStats = new(BufferSizeChanged: true, BufferWidth: Console.BufferWidth, BufferHeight: Console.BufferHeight);
 DisplayPlan displayPlan = CreateDisplayPlan(state, scrollStatus, bufferStats);
 
-displayPlan.RefreshDisplay(state, scrollStatus, bufferStats);
+displayPlan.RefreshDisplay(state, scrollStatus);
 sw.Start();
 while (true)
 {
@@ -35,7 +35,7 @@ while (true)
     scrollStatus = scrollStatus.Update(state.Player.Location, bufferStats);
         
     // Display current state
-    displayPlan.RefreshDisplay(state, scrollStatus, bufferStats);
+    displayPlan.RefreshDisplay(state, scrollStatus);
 
     ShowMessage("Use arrow keys to move, shift + arrow keys to shoot, 'q' to quit.");    
 }
