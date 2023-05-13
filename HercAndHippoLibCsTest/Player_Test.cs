@@ -97,6 +97,60 @@ namespace HercAndHippoLibCsTest
         }
 
         [TestMethod]
+        public void PlayerCannotMoveEastOfCorner_Test()
+        {
+            // Arrange
+            Player player = new((2, 2), Health: 100, AmmoCount: 0, Inventory: EmptyInventory);
+            Wall corner = new(ConsoleColor.Yellow, (10, 10));
+            Level level = new(player, new HashSet<IDisplayable> { corner });
+            int attempt = 1;
+            int maxAttempt = 10;
+            Assert.IsFalse(level.Player.Location.Col == corner.Location.Col);
+
+            // Act
+            // Move east until player reaches corner
+            while (level.Player.Location.Col < corner.Location.Col)
+            {
+                if (attempt > maxAttempt) Assert.IsTrue(false);
+                attempt++;
+                level = level.RefreshCyclables(ActionInput.MoveEast);
+            }
+            Assert.IsTrue(level.Player.Location.Col == corner.Location.Col);
+            // Move east once more
+            level = level.RefreshCyclables(ActionInput.MoveEast);
+
+            // Assert: Player still in the same column (did not move further east)
+            Assert.IsTrue(level.Player.Location.Col == corner.Location.Col);
+        }
+
+        [TestMethod]
+        public void PlayerCannotMoveSouthOfCorner_Test()
+        {
+            // Arrange
+            Player player = new((2, 2), Health: 100, AmmoCount: 0, Inventory: EmptyInventory);
+            Wall corner = new(ConsoleColor.Yellow, (10, 10));
+            Level level = new(player, new HashSet<IDisplayable> { corner });
+            int attempt = 1;
+            int maxAttempt = 10;
+            Assert.IsFalse(level.Player.Location.Row == corner.Location.Row);
+
+            // Act
+            // Move east until player reaches corner
+            while (level.Player.Location.Row < corner.Location.Row)
+            {
+                if (attempt > maxAttempt) Assert.IsTrue(false);
+                attempt++;
+                level = level.RefreshCyclables(ActionInput.MoveSouth);
+            }
+            Assert.IsTrue(level.Player.Location.Row == corner.Location.Row);
+            // Move east once more
+            level = level.RefreshCyclables(ActionInput.MoveSouth);
+
+            // Assert: Player still in the same row (did not move further south)
+            Assert.IsTrue(level.Player.Location.Row == corner.Location.Row);
+        }
+
+        [TestMethod]
         /// <summary>
         /// Check that two player objects are equal if they have equivalent inventories
         /// </summary>
