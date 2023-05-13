@@ -14,7 +14,7 @@ namespace HercAndHippoLibCs
         public override string ToString() => $"{colNum}";
         public int CompareTo(Column? other) => colNum.CompareTo(other?.colNum);
 
-        public Column NextEast(Level level) => Min(colNum + 1, level.Width);
+        public Column NextEast(int levelWidth) => Min(colNum + 1, levelWidth);
         public Column NextWest() => Max(MIN_COL, colNum - 1);
     }
     public record Row : IComparable<Row>
@@ -29,7 +29,7 @@ namespace HercAndHippoLibCs
         public int CompareTo(Row? other) => rowNum.CompareTo(other?.rowNum);
 
         public Row NextNorth() => Max(MIN_ROW, rowNum - 1);
-        public Row NextSouth(Level level) => Min(rowNum + 1, level.Height);
+        public Row NextSouth(int levelHeight) => Min(rowNum + 1, levelHeight);
     }
 
     public record Location(Column Col, Row Row)

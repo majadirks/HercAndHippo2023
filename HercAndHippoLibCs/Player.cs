@@ -16,9 +16,9 @@ namespace HercAndHippoLibCs
          => actionInput switch
          {
              ActionInput.MoveWest => TryMoveTo((Location.Col.NextWest(), Location.Row), approachFrom: Direction.East, curState: level),
-             ActionInput.MoveEast => TryMoveTo((Location.Col.NextEast(level), Location.Row), approachFrom: Direction.West, curState: level),
+             ActionInput.MoveEast => TryMoveTo((Location.Col.NextEast(level.Width), Location.Row), approachFrom: Direction.West, curState: level),
              ActionInput.MoveNorth => TryMoveTo((Location.Col, Location.Row.NextNorth()), approachFrom: Direction.South, curState: level),
-             ActionInput.MoveSouth => TryMoveTo((Location.Col, Location.Row.NextSouth(level)), approachFrom: Direction.North, curState: level),
+             ActionInput.MoveSouth => TryMoveTo((Location.Col, Location.Row.NextSouth(level.Height)), approachFrom: Direction.North, curState: level),
              ActionInput.ShootNorth => Shoot(level, Direction.North),
              ActionInput.ShootSouth => Shoot(level, Direction.South),
              ActionInput.ShootWest => Shoot(level, Direction.West),
