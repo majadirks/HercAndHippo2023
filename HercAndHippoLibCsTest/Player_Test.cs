@@ -43,13 +43,19 @@ namespace HercAndHippoLibCsTest
         }
 
         [TestMethod]
+        /// <summary>
+        /// Check that two player objects are equal if they have equivalent inventories
+        /// </summary>
         public void PlayerEquality()
         {
+            static Inventory GetNewInventory() => new(new HashSet<ITakeable>());
             // Arrange
-            Player player1 = new((2, 2), Health: 100, AmmoCount: 0, Inventory: EmptyInventory);
-            Player player2 = new((2, 2), Health: 100, AmmoCount: 0, Inventory: EmptyInventory);
+            Inventory p1Inventory = GetNewInventory();
+            Player player1 = new((2, 2), Health: 100, AmmoCount: 0, Inventory: p1Inventory);
+            Inventory p2Inventory = GetNewInventory();
+            Player player2 = new((2, 2), Health: 100, AmmoCount: 0, Inventory: p2Inventory);
             // Assert
-            Assert.AreEqual(player1, player2);
+            Assert.AreEqual(player1, player2);            
         }
     }
 }
