@@ -9,8 +9,10 @@ namespace HercAndHippoConsole
     {
         public BufferStats Refresh()
         {
-            bool changed = BufferHeight != Console.BufferHeight || BufferWidth != Console.BufferWidth;
-            return new(changed, BufferWidth: Console.BufferWidth, BufferHeight: Console.BufferHeight);
+            int newBH = Console.BufferHeight;
+            int newBW = Console.BufferWidth;
+            bool changed = BufferHeight != newBH || BufferWidth != newBW;
+            return new(changed, BufferWidth: newBW, BufferHeight: newBH);
         } 
     }
 
