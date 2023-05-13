@@ -13,6 +13,9 @@ namespace HercAndHippoLibCs
         public static implicit operator int(Column col) => col.colNum;
         public override string ToString() => $"{colNum}";
         public int CompareTo(Column? other) => colNum.CompareTo(other?.colNum);
+
+        public Column NextEast(Level level) => Min(colNum + 1, level.Width);
+        public Column NextWest() => Max(MIN_COL, colNum - 1);
     }
     public record Row : IComparable<Row>
     {
@@ -24,6 +27,9 @@ namespace HercAndHippoLibCs
         public static implicit operator int(Row row) => row.rowNum;
         public override string ToString() => $"{rowNum}";
         public int CompareTo(Row? other) => rowNum.CompareTo(other?.rowNum);
+
+        public Row NextNorth() => Max(MIN_ROW, rowNum - 1);
+        public Row NextSouth(Level level) => Min(rowNum + 1, level.Height);
     }
 
     public record Location(Column Col, Row Row)

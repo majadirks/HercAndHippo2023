@@ -15,10 +15,10 @@ namespace HercAndHippoLibCs
         public Level Cycle(Level level, ActionInput actionInput)
          => actionInput switch
          {
-             ActionInput.MoveWest => TryMoveTo((Location.Col - 1, Location.Row), approachFrom: Direction.East, curState: level),
-             ActionInput.MoveEast => TryMoveTo((Location.Col + 1, Location.Row), approachFrom: Direction.West, curState: level),
-             ActionInput.MoveNorth => TryMoveTo((Location.Col, Location.Row - 1), approachFrom: Direction.South, curState: level),
-             ActionInput.MoveSouth => TryMoveTo((Location.Col, Location.Row + 1), approachFrom: Direction.North, curState: level),
+             ActionInput.MoveWest => TryMoveTo((Location.Col.NextWest(), Location.Row), approachFrom: Direction.East, curState: level),
+             ActionInput.MoveEast => TryMoveTo((Location.Col.NextEast(level), Location.Row), approachFrom: Direction.West, curState: level),
+             ActionInput.MoveNorth => TryMoveTo((Location.Col, Location.Row.NextNorth()), approachFrom: Direction.South, curState: level),
+             ActionInput.MoveSouth => TryMoveTo((Location.Col, Location.Row.NextSouth(level)), approachFrom: Direction.North, curState: level),
              ActionInput.ShootNorth => Shoot(level, Direction.North),
              ActionInput.ShootSouth => Shoot(level, Direction.South),
              ActionInput.ShootWest => Shoot(level, Direction.West),

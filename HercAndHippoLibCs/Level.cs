@@ -21,7 +21,6 @@ namespace HercAndHippoLibCs
             => LevelObjects.Where(disp => disp is ICyclable cylable)
             .Cast<ICyclable>()
             .Aggregate(seed: this, func: (state, nextCyclable) => nextCyclable.Cycle(state, actionInput));
-
         private bool HasSameStateAs(Level otherState)
             => LevelObjects.Count == otherState.LevelObjects.Count &&
                LevelObjects.Zip(otherState.LevelObjects).All(zipped => zipped.First.Equals(zipped.Second));
