@@ -23,7 +23,7 @@ namespace HercAndHippoConsole
 
         public DisplayPlan(Level state, ScrollStatus scrollStatus, BufferStats bufferStats)
         {
-            IDisplayable[,] ToShow = new IDisplayable[bufferStats.BufferWidth, bufferStats.BufferHeight];           
+            IDisplayable[,] planArray = new IDisplayable[bufferStats.BufferWidth, bufferStats.BufferHeight];           
             Location screenCenter = GetScreenCenter(bufferStats.BufferWidth, bufferStats.BufferHeight);
             Location logicalCenter = scrollStatus.LogicalCenter;
 
@@ -37,11 +37,11 @@ namespace HercAndHippoConsole
                 if (writeCol >= MIN_COL && writeCol < bufferStats.BufferWidth - VIEW_MARGIN && 
                     writeRow >= MIN_ROW && writeRow < bufferStats.BufferHeight - VIEW_MARGIN)
                 {
-                    ToShow[writeCol, writeRow] = toShow;
+                    planArray[writeCol, writeRow] = toShow;
                 }
             }
 
-            this.planArray = ToShow;
+            this.planArray = planArray;
             this.bufferStats = bufferStats;
         }
 
