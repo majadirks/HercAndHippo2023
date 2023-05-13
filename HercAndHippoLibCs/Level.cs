@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 
 namespace HercAndHippoLibCs
 {
@@ -25,7 +24,7 @@ namespace HercAndHippoLibCs
         private bool HasSameStateAs(Level otherState)
             => LevelObjects.Count == otherState.LevelObjects.Count &&
                LevelObjects.Zip(otherState.LevelObjects).All(zipped => zipped.First.Equals(zipped.Second));
-        public bool Contains(IDisplayable obj) => Displayables.Contains(obj);
+        public bool Contains(IDisplayable obj) => LevelObjects.Contains(obj);
         public override bool Equals([NotNullWhen(true)] object? obj) => obj is Level other && other.HasSameStateAs(this);
         public static bool operator ==(Level left, Level right) => left.Equals(right);
         public static bool operator !=(Level left, Level right) => !(left == right);

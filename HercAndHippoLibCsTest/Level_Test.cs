@@ -1,4 +1,6 @@
-﻿namespace HercAndHippoLibCsTest
+﻿using static HercAndHippoLibCs.InventoryExtensions;
+
+namespace HercAndHippoLibCsTest
 {
     [TestClass]
     public class Level_Test
@@ -9,7 +11,7 @@
             // Arrange
             int expectedWidth = 4;
             int expectedHeight = 7;
-            Player player = new((1, 1), Health: 100, AmmoCount: 0, Inventory: new HashSet<ITakeable>());
+            Player player = new((1, 1), Health: 100, AmmoCount: 0, Inventory: EmptyInventory);
             Level level = new(player: player, displayables: new HashSet<IDisplayable>()
             {
                 new Wall(ConsoleColor.Yellow, new Location(Col: expectedWidth, Row: expectedHeight))
@@ -26,7 +28,7 @@
             // Arrange
             int expectedWidth = 4;
             int expectedHeight = 7;
-            Player player = new(new Location(Col: expectedWidth, Row: expectedHeight), Health: 100, AmmoCount: 5, Inventory: new HashSet<ITakeable>());
+            Player player = new(new Location(Col: expectedWidth, Row: expectedHeight), Health: 100, AmmoCount: 5, Inventory: EmptyInventory);
             Level level = new(player: player, displayables: new HashSet<IDisplayable>()
             {
                 new Wall(ConsoleColor.Yellow, new Location(Col: expectedWidth, Row: expectedHeight))
@@ -65,7 +67,7 @@
         public void RefreshCyclables_Test()
         {
             // Arrange
-            Player player = new(new Location(Col: 1, Row: 1), Health: 100, AmmoCount: 5, Inventory: new HashSet<ITakeable>());
+            Player player = new(new Location(Col: 1, Row: 1), Health: 100, AmmoCount: 5, Inventory: EmptyInventory);
             int startCount = 0;
             Counter initialCounter = new((2, 2), ConsoleColor.Green, startCount);
             Counter cycledCounter = new((2, 2), ConsoleColor.Green, startCount + 1);
@@ -80,8 +82,7 @@
 
             // Assert
             Assert.IsFalse(level.Contains(initialCounter));
-            Assert.IsTrue(level.Contains(cycledCounter));
-            
+            Assert.IsTrue(level.Contains(cycledCounter));           
         }
     }
 }

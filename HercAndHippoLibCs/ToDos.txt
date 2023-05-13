@@ -15,13 +15,14 @@
 -=Unit tests=-
 * Player:
    - Movement within level
-   - Correctly calls OnTouch method for ITouchables touched
    - No movement west of min col or right of level width
    - No movement north of min row or south of level height
+   - Correctly calls OnTouch method for ITouchables touched
    - Can shoot in all directions
    - Can add ITakeables to inventory via Take() method
    - Has() method checks inventory correctly
    - DropItem() method drops items from inventory as expected
+   - Equality of player records (currently fails unless inventories point to same HashSet in memory)
 
 Enemies: 
 

@@ -96,6 +96,7 @@ namespace HercAndHippoLibCs
     {
         ///<summary>Returns true if an ITakeable is of the given type and color</summary> 
         public static bool MatchesColor<T>(this ITakeable item, ConsoleColor color) => item is T && item.Color == color;
+        public static HashSet<ITakeable> EmptyInventory { get => new(); }
     }
 
     public record Health

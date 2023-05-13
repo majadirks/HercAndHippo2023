@@ -50,7 +50,7 @@ static void ShowMessage(string message)
     Console.WriteLine(message);
 }
 
-void ResetConsoleColors()
+static void ResetConsoleColors()
 {
     Console.ForegroundColor = ConsoleColor.White;
     Console.BackgroundColor = ConsoleColor.Black;
