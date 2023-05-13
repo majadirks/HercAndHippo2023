@@ -2,9 +2,14 @@
 {
     public interface IDisplayable
     {
-        public Location Location { get; init; }
+        public Location Location { get;  }
         public ConsoleColor Color { get; }
         public string ConsoleDisplayString { get; }
+    }
+
+    public interface IMovable
+    {
+        public Location Location { get;  set; }
     }
     public interface IShootable { public Level OnShot(Level level, Direction shotFrom, Bullet shotBy); }
     public interface ITouchable { public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy); }
