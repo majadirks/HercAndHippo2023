@@ -7,6 +7,7 @@
         /// <summary>When the level cycles, a bullet moves in the direction it's currently heading.</summary>
         public Level Cycle(Level curState, ActionInput actionInput)
         {
+            // Call OnShot methods for any IShootable at current location 
             Level nextState = curState
                 .ObjectsAt(Location)
                 .Where(obj => obj is IShootable shot)
@@ -20,8 +21,8 @@
                 nextState; // If bullet was stopped, don't regenerate it
 
             // If reached level boundary, die 
-            if (curState.BoundaryReached(this))
-                bulletMoved = bulletMoved.Without(this).Without(bulletAtNextPosition);
+            if (curState.BoundaryReached(bulletAtNextPosition))
+                bulletMoved = bulletMoved.Without(bulletAtNextPosition);
             return bulletMoved;
         }
 

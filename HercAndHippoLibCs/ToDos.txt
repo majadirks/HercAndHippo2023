@@ -1,5 +1,22 @@
 - Status bar
 - Implement and test "seek" behavior for bullet
-- Unit tests
 - Level editor
 	
+
+-=Unit tests=-
+
+* Test correct calculation of level width and height
+* Player:
+   - movement within level
+   - no movement west of min col or right of level width
+   - no movement north of min row or south of level height
+
+* Bullet:
+   - correctly calls OnTouch method of anything it shoots
+   - Ignores objects without OnShoot methods
+   - moves with each cycle in correct direction
+   - Does not move if it was stopped (eg by wall)
+   - dies when reaches level edge (check that it hasn't just moved beyond!)
+   - Two adjacent bullets do not interfere with each other
+   - Can shoot something at the last column/row of a level (eg breakable wall)
+   - Can be shot from bottom right corner of a level
