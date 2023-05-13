@@ -8,7 +8,7 @@ const int REFRESH_INTERVAL_MS = 20;
 // Initialize data
 Stopwatch sw = new();
 ConsoleKeyInfo keyInfo = default;
-Level state = TestLevels.WallsLevel;
+Level state = DemoLevels.SoManyBullets();
 ScrollStatus scrollStatus = ScrollStatus.Default(state.Player.Location);
 BufferStats bufferStats = new(BufferSizeChanged: true, BufferWidth: Console.BufferWidth, BufferHeight: Console.BufferHeight);
 DisplayPlan displayPlan = new(state, scrollStatus, bufferStats);
@@ -45,8 +45,8 @@ while (true)
 ResetConsoleColors();
 static void ShowMessage(string message)
 {
+    ResetConsoleColors();
     Console.SetCursorPosition(1, Console.BufferHeight - MESSAGE_MARGIN);
-    Console.ForegroundColor = ConsoleColor.White;
     Console.WriteLine(message);
 }
 

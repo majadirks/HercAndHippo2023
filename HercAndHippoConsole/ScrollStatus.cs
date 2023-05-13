@@ -44,7 +44,7 @@ namespace HercAndHippoConsole
 
 
             int verticalDist = Abs(playerLocation.Row - logicalCenter.Row);
-            if (verticalDist > VertRadius || logicalCenter.Row < MIN_ROW || logicalCenter.Row > bufferStats.BufferHeight)
+            if (verticalDist > VertRadius || logicalCenter.Row < MIN_DISPLAY_ROW || logicalCenter.Row > bufferStats.BufferHeight)
             {
                 if (playerLocation.Row > logicalCenter.Row)
                 {
@@ -63,7 +63,7 @@ namespace HercAndHippoConsole
             }
 
             int horizDist = Abs(playerLocation.Col - logicalCenter.Col);
-            if (horizDist > HorizRadius || logicalCenter.Col < MIN_COL || logicalCenter.Col > bufferStats.BufferWidth)
+            if (horizDist > HorizRadius || logicalCenter.Col < MIN_DISPLAY_COL || logicalCenter.Col > bufferStats.BufferWidth)
             {
                 if (playerLocation.Col > logicalCenter.Col)
                 {

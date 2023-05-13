@@ -36,8 +36,8 @@ namespace HercAndHippoConsole
                 // would just hang out in column 1.
                 int writeCol = screenCenter.Col - logicalCenter.Col + toShow.Location.Col; 
                 int writeRow = screenCenter.Row - logicalCenter.Row + toShow.Location.Row;
-                if (writeCol >= MIN_COL && writeCol < bufferStats.BufferWidth - VIEW_MARGIN && 
-                    writeRow >= MIN_ROW && writeRow < bufferStats.BufferHeight - VIEW_MARGIN)
+                if (writeCol >= MIN_DISPLAY_COL && writeCol < bufferStats.BufferWidth - VIEW_MARGIN && 
+                    writeRow >= MIN_DISPLAY_ROW && writeRow < bufferStats.BufferHeight - VIEW_MARGIN)
                 {
                     planArray[writeCol, writeRow] = toShow;
                 }
