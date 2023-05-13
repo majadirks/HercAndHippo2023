@@ -14,6 +14,7 @@ BufferStats bufferStats = new(BufferSizeChanged: true, BufferWidth: Console.Buff
 DisplayPlan displayPlan = new(state, scrollStatus, bufferStats);
 
 displayPlan.RefreshDisplay(state, scrollStatus);
+ShowMessage("Use arrow keys to move, shift + arrow keys to shoot, 'q' to quit.");
 sw.Start();
 while (true)
 {
@@ -36,7 +37,8 @@ while (true)
     // Display current state
     displayPlan.RefreshDisplay(state, scrollStatus);
 
-    ShowMessage("Use arrow keys to move, shift + arrow keys to shoot, 'q' to quit.");    
+    // Move the cursor so it doesn't always appear next to the player
+    Console.SetCursorPosition(1, Console.BufferHeight - 1);
 }
 
 static void ShowMessage(string message)
@@ -45,3 +47,4 @@ static void ShowMessage(string message)
     Console.ForegroundColor = ConsoleColor.White;
     Console.WriteLine(message);
 }
+
