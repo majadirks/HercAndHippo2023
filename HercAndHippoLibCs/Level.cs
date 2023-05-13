@@ -87,6 +87,26 @@ namespace HercAndHippoLibCs
                 new Ammo((4,10), Count: 20),
                 new Ammo((5,10), Count: 20),
 
+                // Downward-pointing arrow
+                new BreakableWall(ConsoleColor.Magenta, (4, 12)),
+                new BreakableWall(ConsoleColor.Magenta, (4, 13)),
+                new BreakableWall(ConsoleColor.Magenta, (4, 14)),
+                new BreakableWall(ConsoleColor.Magenta, (4, 15)),
+                new BreakableWall(ConsoleColor.Magenta, (4, 16)),
+                new BreakableWall(ConsoleColor.Magenta, (1, 17)),
+                new BreakableWall(ConsoleColor.Magenta, (4, 17)),
+                new BreakableWall(ConsoleColor.Magenta, (7, 17)),
+                new BreakableWall(ConsoleColor.Magenta, (2, 18)),
+                new BreakableWall(ConsoleColor.Magenta, (4, 18)),
+                new BreakableWall(ConsoleColor.Magenta, (6, 18)),
+                new BreakableWall(ConsoleColor.Magenta, (3, 19)),
+                new BreakableWall(ConsoleColor.Magenta, (4, 19)),
+                new BreakableWall(ConsoleColor.Magenta, (5, 19)),
+                new BreakableWall(ConsoleColor.Magenta, (4, 20)),
+
+
+                // Walls on the bottom to define level boundary
+                new Wall(ConsoleColor.Blue, (1,40)),
                 new Wall(ConsoleColor.Blue, (37, 40)),
                 new Wall(ConsoleColor.Blue, (38, 40)),
                 new Wall(ConsoleColor.Blue, (39, 40)),
