@@ -41,6 +41,7 @@ while (true)
     Console.SetCursorPosition(1, Console.BufferHeight - 1);
 }
 
+Console.ForegroundColor = ConsoleColor.White; // Set text to white for ending message
 static void ShowMessage(string message)
 {
     Console.SetCursorPosition(1, Console.BufferHeight - MESSAGE_MARGIN);
