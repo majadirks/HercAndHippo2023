@@ -47,7 +47,7 @@ namespace HercAndHippoLibCsTest
         {
             // Arrange
             Player player = new((Column.MIN_COL + 5, 2), Health: 100, AmmoCount: 0, Inventory: EmptyInventory);
-            Wall corner = new(ConsoleColor.Yellow, (5,5));
+            Wall corner = new(ConsoleColor.Yellow, (10,10));
             Level level = new(player, new HashSet<IDisplayable> {corner});
             int attempt = 1;
             int maxAttempt = 10;
@@ -67,6 +67,33 @@ namespace HercAndHippoLibCsTest
 
             // Assert: Player still in the same column (did not move further west)
             Assert.IsTrue(level.Player.Location.Col == Column.MIN_COL);
+        }
+
+        [TestMethod]
+        public void PlayerCannotMoveNorthOfMinRow_Test()
+        {
+            // Arrange
+            Player player = new((5, Row.MIN_ROW + 5), Health: 100, AmmoCount: 0, Inventory: EmptyInventory);
+            Wall corner = new(ConsoleColor.Yellow, (10, 10));
+            Level level = new(player, new HashSet<IDisplayable> { corner });
+            int attempt = 1;
+            int maxAttempt = 10;
+            Assert.IsFalse(level.Player.Location.Row == Row.MIN_ROW);
+
+            // Act
+            // Move north until we reach min row
+            while (level.Player.Location.Row > Row.MIN_ROW)
+            {
+                if (attempt > maxAttempt) Assert.IsTrue(false);
+                attempt++;
+                level = level.RefreshCyclables(ActionInput.MoveNorth);
+            }
+            Assert.IsTrue(level.Player.Location.Row == Row.MIN_ROW);
+            // Move north once more
+            level = level.RefreshCyclables(ActionInput.MoveNorth);
+
+            // Assert: Player still in the same column (did not move further west)
+            Assert.IsTrue(level.Player.Location.Row == Row.MIN_ROW);
         }
 
         [TestMethod]
