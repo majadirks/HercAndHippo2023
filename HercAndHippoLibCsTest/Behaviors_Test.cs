@@ -56,8 +56,9 @@ namespace HercAndHippoLibCsTest
             // Arrange
             Bullet bulletAboveKey = new((3, 2), Direction.South);
             Key key = new(ConsoleColor.Green, (3, 3));
+            Wall levelCorner = new(ConsoleColor.Blue, (10, 10));
             Level level = new(player: new((5, 5), Health: 100, AmmoCount: 5, Inventory: new()),
-                displayables: new() { bulletAboveKey, key });
+                displayables: new() { bulletAboveKey, key, levelCorner});
 
             Bullet bulletOverlappingKey = bulletAboveKey with { Location = key.Location };
             Level expectedSecondState = level.Replace(bulletAboveKey, bulletOverlappingKey);

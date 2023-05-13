@@ -98,22 +98,21 @@ namespace HercAndHippoLibCs
     {
         ///<summary>Returns true if an ITakeable is of the given type and color</summary> 
         public static bool MatchesColor<T>(this ITakeable item, ConsoleColor color) => item is T && item.Color == color;
-
-        public static Inventory ToInventory(this IEnumerable<ITakeable> enumerable) => new(enumerable.ToHashSet());
+        public static Inventory ToInventory(this IEnumerable<ITakeable> enumerable) => new(enumerable);
     }
 
     /// <summary>
-    /// Wraps a HashSet, but performs equality check by comparing items in the set, rather than
-    /// reference equality. This allows two player objects to be equal if they have the same items
+    /// Wraps a HashSet, but performs equality check by comparing items in the set rather than
+    /// by reference equality. This allows two player objects to be equal if they have the same items
     /// in their inventory.
     /// </summary>
     public readonly struct Inventory : IEnumerable<ITakeable>, IEquatable<Inventory>
     {
         private readonly HashSet<ITakeable> takeables;
         public static Inventory EmptyInventory { get; } = new();
-
         public Inventory() => takeables = new HashSet<ITakeable>();
         public Inventory(HashSet<ITakeable> takeables) => this.takeables = takeables;
+        public Inventory(IEnumerable<ITakeable> takeables) => this.takeables = new(takeables.ToHashSet());
         public Inventory(ITakeable starterItem) => takeables = new HashSet<ITakeable>() { starterItem };
         public Inventory AddItem(ITakeable item)
         {
