@@ -1,4 +1,4 @@
-﻿using static HercAndHippoLibCs.InventoryExtensions;
+﻿using static HercAndHippoLibCs.Inventory;
 namespace HercAndHippoLibCsTest
 {
     [TestClass]
@@ -42,5 +42,14 @@ namespace HercAndHippoLibCsTest
             Assert.IsTrue(level.Contains(southPlayer));
         }
 
+        [TestMethod]
+        public void PlayerEquality()
+        {
+            // Arrange
+            Player player1 = new((2, 2), Health: 100, AmmoCount: 0, Inventory: EmptyInventory);
+            Player player2 = new((2, 2), Health: 100, AmmoCount: 0, Inventory: EmptyInventory);
+            // Assert
+            Assert.AreEqual(player1, player2);
+        }
     }
 }

@@ -1,4 +1,4 @@
-﻿using static HercAndHippoLibCs.InventoryExtensions;
+﻿using static HercAndHippoLibCs.Inventory;
 
 namespace HercAndHippoLibCsTest
 {

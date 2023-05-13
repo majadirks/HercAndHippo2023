@@ -1,8 +1,10 @@
-﻿using static System.Math;
+﻿using System.Collections;
+using System.Diagnostics.CodeAnalysis;
+using static System.Math;
 
 namespace HercAndHippoLibCs
 {
-    public record Player(Location Location, Health Health, AmmoCount AmmoCount, HashSet<ITakeable> Inventory) 
+    public record Player(Location Location, Health Health, AmmoCount AmmoCount, Inventory Inventory) 
         : IDisplayable, IShootable, ICyclable, ITouchable
     {
         public string ConsoleDisplayString => HasHealth ? "☺" : "RIP";
@@ -77,7 +79,7 @@ namespace HercAndHippoLibCs
                 .WithPlayer(this with { AmmoCount = AmmoCount - 1 });
             return level;
         }
-        public Player Take(ITakeable toTake) => this with { Inventory = new(Inventory) { toTake } };
+        public Player Take(ITakeable toTake) => this with { Inventory = Inventory.AddItem(toTake) };
         public bool Has<T>(ConsoleColor color) => Inventory.Where(item => item.MatchesColor<T>(color)).Any();
 
         /// <summary>
@@ -87,7 +89,7 @@ namespace HercAndHippoLibCs
         public (ITakeable item, Player newPlayerState) DropItem<T>(ConsoleColor color)
         { 
             ITakeable item = Inventory.Where(item => item.MatchesColor<T>(color)).First();
-            Player newPlayerState = this with { Inventory = Inventory.Where(item => !item.MatchesColor<T>(color)).ToHashSet() };
+            Player newPlayerState = this with { Inventory = Inventory.Where(item => !item.MatchesColor<T>(color)).ToInventory() };
             return (item, newPlayerState);
         }
     }
@@ -96,7 +98,41 @@ namespace HercAndHippoLibCs
     {
         ///<summary>Returns true if an ITakeable is of the given type and color</summary> 
         public static bool MatchesColor<T>(this ITakeable item, ConsoleColor color) => item is T && item.Color == color;
-        public static HashSet<ITakeable> EmptyInventory { get => new(); }
+
+        public static Inventory ToInventory(this IEnumerable<ITakeable> enumerable) => new(enumerable.ToHashSet());
+    }
+
+    /// <summary>
+    /// Wraps a HashSet, but performs equality check by comparing items in the set, rather than
+    /// reference equality. This allows two player objects to be equal if they have the same items
+    /// in their inventory.
+    /// </summary>
+    public readonly struct Inventory : IEnumerable<ITakeable>
+    {
+        private readonly HashSet<ITakeable> takeables;
+        public static Inventory EmptyInventory { get; } = new();
+
+        public Inventory() => takeables = new HashSet<ITakeable>();
+        public Inventory(HashSet<ITakeable> takeables) => this.takeables = takeables;
+        public Inventory(ITakeable starterItem) => takeables = new HashSet<ITakeable>() { starterItem };
+        public Inventory AddItem(ITakeable item)
+        {
+            HashSet<ITakeable> newSet = new(takeables) { item };
+            return new Inventory(newSet);
+        }
+        public IEnumerator<ITakeable> GetEnumerator() => takeables.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => takeables.GetEnumerator();
+
+        public override bool Equals([NotNullWhen(true)] object? obj)
+         => obj != null && obj is Inventory other && this.ContainsSameItemsAs(other);
+
+        private bool ContainsSameItemsAs(Inventory other)
+            => takeables.IsProperSubsetOf(other) && other.takeables.IsProperSubsetOf(takeables);
+
+        public static bool operator ==(Inventory left, Inventory right) => left.Equals(right);
+        
+        public static bool operator !=(Inventory left, Inventory right) => !(left == right);
+       
     }
 
     public record Health

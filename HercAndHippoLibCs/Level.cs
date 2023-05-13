@@ -48,7 +48,7 @@ namespace HercAndHippoLibCs
     public static class TestLevels
     {
         public static readonly Level WallsLevel = new(
-            player: new Player((4, 3), Health: 100, AmmoCount: 0, Inventory: new HashSet<ITakeable>()),
+            player: new Player((4, 3), Health: 100, AmmoCount: 0, Inventory: Inventory.EmptyInventory),
             displayables: new HashSet<IDisplayable>
             {
                 new Wall(ConsoleColor.Yellow, (1,1)),

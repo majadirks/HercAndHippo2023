@@ -24,6 +24,9 @@
    - DropItem() method drops items from inventory as expected
    - Equality of player records (currently fails unless inventories point to same HashSet in memory)
 
+* Inventory
+   - Equality by object comparison
+
 Enemies: 
 
 * Bullet:
