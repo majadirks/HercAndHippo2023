@@ -107,7 +107,7 @@ namespace HercAndHippoLibCs
     /// reference equality. This allows two player objects to be equal if they have the same items
     /// in their inventory.
     /// </summary>
-    public readonly struct Inventory : IEnumerable<ITakeable>
+    public readonly struct Inventory : IEnumerable<ITakeable>, IEquatable<Inventory>
     {
         private readonly HashSet<ITakeable> takeables;
         public static Inventory EmptyInventory { get; } = new();
@@ -125,14 +125,16 @@ namespace HercAndHippoLibCs
 
         public override bool Equals([NotNullWhen(true)] object? obj)
          => obj != null && obj is Inventory other && this.ContainsSameItemsAs(other);
-
+        public bool Equals(Inventory other) => this.ContainsSameItemsAs(other);
         private bool ContainsSameItemsAs(Inventory other)
-            => takeables.IsProperSubsetOf(other) && other.takeables.IsProperSubsetOf(takeables);
+            => takeables.IsSubsetOf(other) && other.takeables.IsSubsetOf(takeables);
 
         public static bool operator ==(Inventory left, Inventory right) => left.Equals(right);
         
         public static bool operator !=(Inventory left, Inventory right) => !(left == right);
-       
+
+        public override int GetHashCode() => takeables.GetHashCode();
+
     }
 
     public record Health
