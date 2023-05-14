@@ -22,8 +22,6 @@
 	
 -=Unit tests=-
 * Player:
-   - Has() method checks inventory correctly
-   - DropItem() method drops items from inventory as expected
    - Equality of player records (currently fails unless inventories point to same HashSet in memory)
 
 * Inventory
