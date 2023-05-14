@@ -17,9 +17,10 @@ namespace HercAndHippoLibCs
         public Level AddObject(IDisplayable toAdd) => this with { Displayables = Displayables.AddObject(toAdd) };
         public Level Replace(IDisplayable toReplace, IDisplayable toAdd) => this.Without(toReplace).AddObject(toAdd);
         public Level RefreshCyclables(ActionInput actionInput)
-            => LevelObjects.Where(disp => disp is ICyclable cylable)
-            .Cast<ICyclable>()
+            => LevelObjects
             .AsParallel()
+            .Where(disp => disp is ICyclable cylable)
+            .Cast<ICyclable>()     
             .Aggregate(seed: this, func: (state, nextCyclable) => nextCyclable.Cycle(state, actionInput));
         private bool HasSameStateAs(Level otherState)
             => LevelObjects.Count == otherState.LevelObjects.Count &&
