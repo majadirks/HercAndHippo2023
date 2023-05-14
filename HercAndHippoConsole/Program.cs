@@ -1,12 +1,11 @@
 ﻿using HercAndHippoLibCs;
 using HercAndHippoConsole;
-using System.Diagnostics;
 
 const int MESSAGE_MARGIN = 3;
-const int REFRESH_INTERVAL_MS = 20;
+const int REFRESH_FREQUENCY_HZ = 50;
 
 // Initialize data
-Stopwatch sw = new();
+CycleTimer cycleTimer = new(frequencyHz: REFRESH_FREQUENCY_HZ);
 ConsoleKeyInfo keyInfo = default;
 Level state = DemoLevels.WallsLevel;
 ScrollStatus scrollStatus = ScrollStatus.Default(state.Player.Location);
@@ -16,11 +15,9 @@ Console.OutputEncoding = System.Text.Encoding.UTF8;
 ResetConsoleColors();
 displayPlan.RefreshDisplay(state, scrollStatus);
 ShowMessage("Use arrow keys to move, shift + arrow keys to shoot, 'q' to quit.");
-sw.Start();
 while (true)
 {
-    while (sw.ElapsedMilliseconds < REFRESH_INTERVAL_MS);
-    sw.Restart();
+    cycleTimer.AwaitCycle();
 
     // Check if buffer size changed
     bufferStats = bufferStats.Refresh();
