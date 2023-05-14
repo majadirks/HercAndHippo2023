@@ -22,13 +22,12 @@
 	
 -=Unit tests=-
 * Player:
-   - Can add ITakeables to inventory via Take() method
    - Has() method checks inventory correctly
    - DropItem() method drops items from inventory as expected
    - Equality of player records (currently fails unless inventories point to same HashSet in memory)
 
 * Inventory
-   - Equality by object comparison
+   - Equality and HashCode equality by object comparison (for both empty and nonempty)
 
 Enemies: 
 

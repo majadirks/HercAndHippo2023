@@ -312,5 +312,17 @@ namespace HercAndHippoLibCsTest
             Assert.IsTrue(player.Inventory.Contains(key));
             Assert.IsTrue(player.Has<Key>(keyColor));
         }
+
+        [TestMethod]
+        public void Has_Test()
+        {
+            // Arrange
+            ConsoleColor keyColor = ConsoleColor.Magenta;
+            Key key = new(keyColor, (3, 2));
+            Player player = new((2, 2), Health: 100, AmmoCount: 0, Inventory: new(key));
+            // Assert
+            Assert.IsTrue(player.Has<Key>(keyColor));
+            Assert.IsFalse(player.Has<Key>(ConsoleColor.Cyan));
+        }
     }
 }
