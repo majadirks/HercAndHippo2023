@@ -1,4 +1,7 @@
 -= Desired features =-
+- Research faster console writing:
+	* https://stackoverflow.com/questions/29920056/c-sharp-something-faster-than-console-write
+	* https://stackoverflow.com/questions/2754518/how-can-i-write-fast-colored-output-to-console
 - Segregate interfaces:
 	* Separate out ILocatable (Location) and IConsoleDisplayable (ConsoleColor foreground, ConsoleColor background, ConsoleDisplayString)
 	* Genericize Level to support other interfaces besides IConsoleDisplayable, or so it depends only on ILocatable

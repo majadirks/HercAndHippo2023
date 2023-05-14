@@ -8,11 +8,11 @@ const int REFRESH_INTERVAL_MS = 20;
 // Initialize data
 Stopwatch sw = new();
 ConsoleKeyInfo keyInfo = default;
-Level state = DemoLevels.SoManyBullets();
+Level state = DemoLevels.WallsLevel;
 ScrollStatus scrollStatus = ScrollStatus.Default(state.Player.Location);
 BufferStats bufferStats = new(BufferSizeChanged: true, BufferWidth: Console.BufferWidth, BufferHeight: Console.BufferHeight);
 DisplayPlan displayPlan = new(state, scrollStatus, bufferStats);
-
+Console.OutputEncoding = System.Text.Encoding.UTF8;
 ResetConsoleColors();
 displayPlan.RefreshDisplay(state, scrollStatus);
 ShowMessage("Use arrow keys to move, shift + arrow keys to shoot, 'q' to quit.");
