@@ -268,7 +268,7 @@ namespace HercAndHippoLibCsTest
         }
 
         [TestMethod]
-        public void PlayerCanPickUpKey_Test()
+        public void PlayerCanPickUpKeyByMoving_Test()
         {
             // Arrange: Player west of key
             Player player = new((2,2), Health: 100, AmmoCount: 0, Inventory:EmptyInventory);
@@ -295,5 +295,22 @@ namespace HercAndHippoLibCsTest
             Assert.IsTrue(level.Contains(movedPlayer));
         }
 
+        [TestMethod]
+        public void Take_Test()
+        {
+            // Arrange
+            Player player = new((2, 2), Health: 100, AmmoCount: 0, Inventory: EmptyInventory);
+            ConsoleColor keyColor = ConsoleColor.Magenta;
+            Key key = new(keyColor, (3, 2));
+            Assert.IsFalse(player.Inventory.Contains(key));
+            Assert.IsFalse(player.Has<Key>(keyColor));
+
+            // Act
+            player = player.Take(key);
+
+            // Assert
+            Assert.IsTrue(player.Inventory.Contains(key));
+            Assert.IsTrue(player.Has<Key>(keyColor));
+        }
     }
 }

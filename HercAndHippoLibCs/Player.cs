@@ -130,16 +130,11 @@ namespace HercAndHippoLibCs
         public static bool operator !=(Inventory left, Inventory right) => !(left == right);
         public override int GetHashCode()
         {
-            // Code from Jon Skeet:
+            // Adapted from code by Jon Skeet:
             // https://stackoverflow.com/questions/8094867/good-gethashcode-override-for-list-of-foo-objects-respecting-the-order
             unchecked
             {
-                int hash = 19;
-                foreach (var takeable in takeables)
-                {
-                    hash = hash * 31 + takeable.GetHashCode();
-                }
-                return hash;
+                return 19 + takeables.Select(takeable => 31 + takeable.GetHashCode()).Sum();
             }
         }
         public int Count => takeables.Count;
