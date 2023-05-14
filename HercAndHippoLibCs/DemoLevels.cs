@@ -94,6 +94,8 @@ namespace HercAndHippoLibCs
             for (Column col = 0; col <= width; col++)
             {
                 displayables.Add(new Bullet((col, 2), Direction.South));
+                displayables.Add(new Bullet((col, 12), Direction.South));
+                displayables.Add(new Bullet((col, 22), Direction.South));
                 displayables.Add(new Wall(ConsoleColor.Green, (col, height)));
             }
             return new Level(player, displayables);
