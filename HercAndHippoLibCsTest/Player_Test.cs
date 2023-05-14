@@ -205,10 +205,24 @@ namespace HercAndHippoLibCsTest
             static Inventory GetNewInventory() => new(new HashSet<ITakeable>());
             static Key GetNewKey() => new(ConsoleColor.Cyan, (5, 5));
             Inventory inv1 = GetNewInventory().AddItem(GetNewKey());
-            Inventory inv2 = GetNewInventory().AddItem(GetNewKey());
+            Inventory inv2 = GetNewInventory();
+            Assert.AreNotEqual(inv1.GetHashCode(), inv2.GetHashCode());
+            Assert.AreNotEqual(inv1, inv2);
+            inv2 = inv2.AddItem(GetNewKey());
             // Assert
             Assert.AreEqual(inv1.GetHashCode(), inv2.GetHashCode());
             Assert.AreEqual(inv1, inv2);
+        }
+
+        [TestMethod]
+        public void InventoriesWithDifferentItemsAreNotEqual_Test()
+        {
+            // Arrange
+            Inventory inv1 = new(new Key(ConsoleColor.Cyan, (5,5)));
+            Inventory inv2 = new(new Key(ConsoleColor.Blue, (5, 5)));
+            // Assert
+            Assert.AreNotEqual(inv1.GetHashCode(), inv2.GetHashCode());
+            Assert.AreNotEqual(inv1, inv2);
         }
 
         [TestMethod]
