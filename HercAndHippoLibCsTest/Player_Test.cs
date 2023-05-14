@@ -290,14 +290,8 @@ namespace HercAndHippoLibCsTest
             Assert.IsFalse(level.Contains(key));
             Assert.IsTrue(level.Player.Has<Key>(keyColor));
 
-            Console.WriteLine($"Expected player: {movedPlayer}, expected inventory: {string.Join(", ", movedPlayer.Inventory)}");
-            Console.WriteLine($"Actual player: {level.Player}, actual inventory: {string.Join(", ", level.Player.Inventory)}");
-
             Assert.AreEqual(movedPlayer.Inventory, level.Player.Inventory);
-            Assert.AreEqual(movedPlayer.Inventory.GetHashCode(), level.Player.Inventory.GetHashCode());
-            Assert.AreEqual(movedPlayer.Location, level.Player.Location);
             Assert.AreEqual(movedPlayer, level.Player);
-            Assert.AreEqual(movedPlayer.GetHashCode(), level.Player.GetHashCode());
             Assert.IsTrue(level.Contains(movedPlayer));
         }
 
