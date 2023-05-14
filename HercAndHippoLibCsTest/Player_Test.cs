@@ -152,9 +152,9 @@ namespace HercAndHippoLibCsTest
 
         [TestMethod]
         /// <summary>
-        /// Check that two player objects are equal if they have equivalent inventories
+        /// Check that two player objects are equal if they have both have empty inventories
         /// </summary>
-        public void PlayerEquality_Test()
+        public void PlayerEqualityWithEmptyInventory_Test()
         {
             static Inventory GetNewInventory() => new(new HashSet<ITakeable>());
             // Arrange
@@ -164,6 +164,23 @@ namespace HercAndHippoLibCsTest
             Player player2 = new((2, 2), Health: 100, AmmoCount: 0, Inventory: p2Inventory);
             // Assert
             Assert.AreEqual(player1, player2);            
+        }
+
+        [TestMethod]
+        /// <summary>
+        /// Check that two player objects are equal if they have both have empty inventories
+        /// </summary>
+        public void PlayerEqualityWithNonemptyInventory_Test()
+        {
+            static Key GetNewKey() => new(ConsoleColor.DarkBlue, (3, 2));
+            static Inventory GetNewInventory() => new Inventory(new HashSet<ITakeable>()).AddItem(GetNewKey());
+            // Arrange
+            Inventory p1Inventory = GetNewInventory();
+            Player player1 = new((2, 2), Health: 100, AmmoCount: 0, Inventory: p1Inventory);
+            Inventory p2Inventory = GetNewInventory();
+            Player player2 = new((2, 2), Health: 100, AmmoCount: 0, Inventory: p2Inventory);
+            // Assert
+            Assert.AreEqual(player1, player2);
         }
 
         [TestMethod]
@@ -246,5 +263,35 @@ namespace HercAndHippoLibCsTest
             Assert.IsTrue(level.Contains(northBullet));
 
         }
+
+        [TestMethod]
+        public void PlayerCanPickUpKey_Test()
+        {
+            // Arrange: Player west of key
+            Player player = new((2,2), Health: 100, AmmoCount: 0, Inventory:EmptyInventory);
+            ConsoleColor keyColor = ConsoleColor.DarkRed;
+            Key key = new(keyColor, (3, 2));
+            Player movedPlayer = player with { Location = key.Location, Inventory = player.Inventory.AddItem(key) };
+            Level level = new(player: player, displayables: new HashSet<IDisplayable>() { key });
+
+            Assert.IsTrue(level.Contains(player));
+            Assert.IsTrue(level.Contains(key));
+            Assert.IsFalse(level.Player.Has<Key>(keyColor));
+            Assert.IsFalse(level.Contains(movedPlayer));
+
+            // Act: Move east
+            level = level.RefreshCyclables(ActionInput.MoveEast);
+
+            // Assert: Player has moved and has key in inventory. Key not in level.
+            Assert.IsFalse(level.Contains(player));
+            Assert.IsFalse(level.Contains(key));
+            Assert.IsTrue(level.Player.Has<Key>(keyColor));
+
+            Console.WriteLine($"Expected player: {movedPlayer}, expected inventory: {string.Join(", ", movedPlayer.Inventory)}");
+            Console.WriteLine($"Actual player: {level.Player}, actual inventory: {string.Join(", ", level.Player.Inventory)}");
+
+            Assert.IsTrue(level.Contains(movedPlayer));
+        }
+
     }
 }

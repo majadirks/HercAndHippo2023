@@ -22,8 +22,6 @@
 	
 -=Unit tests=-
 * Player:
-   - Can shoot in all directions
-   - Can shoot to to an in-bound location when in min/max col/row
    - Can add ITakeables to inventory via Take() method
    - Has() method checks inventory correctly
    - DropItem() method drops items from inventory as expected
