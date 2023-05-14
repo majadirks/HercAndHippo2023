@@ -16,7 +16,7 @@
     }
     public record Door(ConsoleColor BackgroundColor, Location Location) : IDisplayable, IShootable, ITouchable
     {
-        public string ConsoleDisplayString => "D";
+        public string ConsoleDisplayString => "◙";
         public ConsoleColor Color => ConsoleColor.Black;
         public Level OnShot(Level level, Direction shotFrom, Bullet shotBy) => Behaviors.StopBullet(level,shotBy); // Cannot shoot through a door
         public Level OnTouch(Level level, Direction _, ITouchable touchedBy)

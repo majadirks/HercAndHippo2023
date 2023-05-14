@@ -17,7 +17,7 @@
 
     public record Key(ConsoleColor Color, Location Location) : IDisplayable, ITouchable, ITakeable, IShootable
     {
-        public string ConsoleDisplayString => "&";
+        public string ConsoleDisplayString => "♀";
         public ConsoleColor BackgroundColor => ConsoleColor.Black;
         public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy)
         {

@@ -2,7 +2,7 @@
 {
     public record Bullet(Location Location, Direction Whither) : IDisplayable, ICyclable
     {
-        public string ConsoleDisplayString => "*";
+        public string ConsoleDisplayString => "○";
         public ConsoleColor Color => ConsoleColor.White;
         public ConsoleColor BackgroundColor => ConsoleColor.Black;
         /// <summary>When the level cycles, a bullet moves in the direction it's currently heading.</summary>
