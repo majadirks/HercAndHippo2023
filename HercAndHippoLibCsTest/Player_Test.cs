@@ -163,6 +163,7 @@ namespace HercAndHippoLibCsTest
             Inventory p2Inventory = GetNewInventory();
             Player player2 = new((2, 2), Health: 100, AmmoCount: 0, Inventory: p2Inventory);
             // Assert
+            Assert.AreEqual(player1.Inventory.GetHashCode(), player2.Inventory.GetHashCode());
             Assert.AreEqual(player1, player2);            
         }
 
@@ -181,6 +182,8 @@ namespace HercAndHippoLibCsTest
             Player player2 = new((2, 2), Health: 100, AmmoCount: 0, Inventory: p2Inventory);
             // Assert
             Assert.AreEqual(player1, player2);
+            Assert.AreEqual(player1.Inventory.GetHashCode(), player2.Inventory.GetHashCode());
+            Assert.AreEqual(player1.GetHashCode(), player2.GetHashCode());
         }
 
         [TestMethod]
@@ -290,6 +293,11 @@ namespace HercAndHippoLibCsTest
             Console.WriteLine($"Expected player: {movedPlayer}, expected inventory: {string.Join(", ", movedPlayer.Inventory)}");
             Console.WriteLine($"Actual player: {level.Player}, actual inventory: {string.Join(", ", level.Player.Inventory)}");
 
+            Assert.AreEqual(movedPlayer.Inventory, level.Player.Inventory);
+            Assert.AreEqual(movedPlayer.Inventory.GetHashCode(), level.Player.Inventory.GetHashCode());
+            Assert.AreEqual(movedPlayer.Location, level.Player.Location);
+            Assert.AreEqual(movedPlayer, level.Player);
+            Assert.AreEqual(movedPlayer.GetHashCode(), level.Player.GetHashCode());
             Assert.IsTrue(level.Contains(movedPlayer));
         }
 
