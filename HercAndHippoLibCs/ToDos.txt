@@ -22,11 +22,8 @@
 - Cheat codes
 	
 -=Unit tests=-
-* Inventory
-   - Equality and HashCode equality by object comparison (for both empty and nonempty)
 
 Enemies: 
-
 * Bullet:
    - Correctly calls OnShot method of anything it shoots
    - Calls OnShot from its initial location (before moving) so player can shoot adjacent objects

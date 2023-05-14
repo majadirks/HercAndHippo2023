@@ -187,6 +187,31 @@ namespace HercAndHippoLibCsTest
         }
 
         [TestMethod]
+        public void EmptyInventoriesAreEqual_Test()
+        {
+            // Arrange
+            static Inventory GetNewInventory() => new(new HashSet<ITakeable>());
+            Inventory inv1 = GetNewInventory();
+            Inventory inv2 = GetNewInventory();
+            // Assert
+            Assert.AreEqual(inv1.GetHashCode(), inv2.GetHashCode());
+            Assert.AreEqual(inv1, inv2);
+        }
+
+        [TestMethod]
+        public void NonemptyInventoriesAreEqual_Test()
+        {
+            // Arrange
+            static Inventory GetNewInventory() => new(new HashSet<ITakeable>());
+            static Key GetNewKey() => new(ConsoleColor.Cyan, (5, 5));
+            Inventory inv1 = GetNewInventory().AddItem(GetNewKey());
+            Inventory inv2 = GetNewInventory().AddItem(GetNewKey());
+            // Assert
+            Assert.AreEqual(inv1.GetHashCode(), inv2.GetHashCode());
+            Assert.AreEqual(inv1, inv2);
+        }
+
+        [TestMethod]
         public void OnTouchMethodTriggeredWhenPlayerTouchesAnITouchable_Test()
         {
             // Arrange
