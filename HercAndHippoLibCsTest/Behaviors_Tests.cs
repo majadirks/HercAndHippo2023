@@ -2,7 +2,7 @@
 namespace HercAndHippoLibCsTest
 {
     [TestClass]
-    public class Behaviors_Test
+    public class Behaviors_Tests
     {
         [TestMethod]
         public void DieAndStopBullet_Test()

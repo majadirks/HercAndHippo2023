@@ -2,7 +2,7 @@
 namespace HercAndHippoLibCsTest
 {
     [TestClass]
-    public class Player_Test
+    public class Player_Tests
     {
         [TestMethod]
         public void PlayerCanMoveWithinBounds_Test()

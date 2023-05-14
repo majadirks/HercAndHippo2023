@@ -3,7 +3,7 @@
 namespace HercAndHippoLibCsTest
 {
     [TestClass]
-    public class Level_Test
+    public class Level_Tests
     {
         [TestMethod]
         public void HeightAndWidth_Test()
