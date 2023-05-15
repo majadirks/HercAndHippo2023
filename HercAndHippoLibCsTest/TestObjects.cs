@@ -17,4 +17,13 @@
         private Level IncreaseCount(Level level) => level.Replace(this, this with { Count = Count + 1 });
         public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy) => IncreaseCount(level);
     }
+
+    /// <summary>Increments a counter when shot </summary>
+    internal record ShotCounter(Location Location, ConsoleColor Color, int Count) : IDisplayable, IShootable
+    {
+        public string ConsoleDisplayString => Count.ToString();
+        public ConsoleColor BackgroundColor => ConsoleColor.Black;
+        private Level IncreaseCount(Level level) => level.Replace(this, this with { Count = Count + 1 });
+        public Level OnShot(Level level, Direction shotFrom, Bullet shotBy) => IncreaseCount(level);
+    }
 }

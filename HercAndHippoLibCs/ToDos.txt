@@ -18,6 +18,10 @@
 - Torches and darkness
 - Gems
 - Lives
+- Scrolls
+- Message text
+- Custom programmable objects (support a superset of ZZT-OOP)
+- Music / sound effects
 - Saved games
 - Cheat codes
 	
@@ -25,7 +29,6 @@
 
 Enemies: 
 * Bullet:
-   - Correctly calls OnShot method of anything it shoots
    - Calls OnShot from its initial location (before moving) so player can shoot adjacent objects
    - Ignores objects without OnShoot methods
    - Moves with each cycle in correct direction
