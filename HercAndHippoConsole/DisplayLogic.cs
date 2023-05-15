@@ -3,14 +3,28 @@ using static HercAndHippoConsole.Constants;
 
 namespace HercAndHippoConsole
 {
-    internal record BufferStats(bool BufferSizeChanged, int BufferWidth, int BufferHeight)
+    internal class BufferStats
     {
-        public BufferStats Refresh()
+        public bool BufferSizeChanged { get; private set; }
+        public int BufferWidth { get; private set; }
+        public int BufferHeight { get; private set; }
+        public BufferStats(bool bufferSizeChanged, int bufferWidth, int bufferHeight)
+        {
+            BufferSizeChanged = bufferSizeChanged;
+            BufferWidth = bufferWidth;
+            BufferHeight = bufferHeight;
+        }
+        public void Refresh()
         {
             int newBH = Console.BufferHeight;
             int newBW = Console.BufferWidth;
-            bool changed = BufferHeight != newBH || BufferWidth != newBW;
-            return new(changed, BufferWidth: newBW, BufferHeight: newBH);
+            BufferSizeChanged = BufferHeight != newBH || BufferWidth != newBW;
+
+            if (BufferSizeChanged)
+            {
+                BufferWidth = newBW;
+                BufferHeight = newBH;
+            }
         } 
     }
 

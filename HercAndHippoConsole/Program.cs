@@ -7,9 +7,9 @@ const int REFRESH_FREQUENCY_HZ = 50;
 // Initialize data
 CycleTimer cycleTimer = new(frequencyHz: REFRESH_FREQUENCY_HZ);
 ConsoleKeyInfo keyInfo;
-Level state = DemoLevels.WallsLevel;
+Level state = DemoLevels.SoManyBullets();
 ScrollStatus scrollStatus = ScrollStatus.Default(state.Player.Location);
-BufferStats bufferStats = new(BufferSizeChanged: true, BufferWidth: Console.BufferWidth, BufferHeight: Console.BufferHeight);
+BufferStats bufferStats = new(bufferSizeChanged: true, bufferWidth: Console.BufferWidth, bufferHeight: Console.BufferHeight);
 DisplayPlan displayPlan = new(state, scrollStatus, bufferStats);
 Console.OutputEncoding = System.Text.Encoding.UTF8;
 
@@ -22,7 +22,7 @@ ShowMessage("Use arrow keys to move, shift + arrow keys to shoot, 'q' to quit.")
 while (true)
 {
     cycleTimer.AwaitCycle(); // Update only once per 20 ms
-    bufferStats = bufferStats.Refresh(); // Check if buffer size changed
+    bufferStats.Refresh(); // Check if buffer size changed
     displayPlan = new(state, scrollStatus, bufferStats); // save current screen layout
     keyInfo = GetKeyIfAny(); // Get next key input
     if (keyInfo.KeyChar == 'q') break; // Quit on q
