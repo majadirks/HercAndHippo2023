@@ -40,5 +40,27 @@ namespace HercAndHippoLibCsTest
             Assert.IsTrue(level.Contains(cycledCounter));
         }
 
+        [TestMethod]
+        public void PlayerCanShootAdjacentObjects_Test()
+        {
+            // Arrange
+            int initialCount = 0;
+            Player player = new((3, 2), Health: 100, AmmoCount: 1, Inventory: Inventory.EmptyInventory);
+            ShotCounter initialCounter = new((2, 2), ConsoleColor.Green, Count: initialCount);
+            ShotCounter cycledCounter = initialCounter with { Count = initialCount + 1 };
+            Level level = new(player, new HashSet<IDisplayable>() { initialCounter });
+            Assert.IsTrue(level.Contains(initialCounter));
+            Assert.IsFalse(level.Contains(cycledCounter));
+            // Act: Player shoots at the counter immediately west of it.
+            // Cycle twice. On first cycle, player places bullet over the counter. On second cycle, the bullet
+            // calls the counter's OnShot method and then moves.
+            // If this behavior changes in the future (ie if I decide that the bullet should call OnShot
+            // when it is first created), this test will still pass, which is fine; I just want to enforce
+            // that OnShot is called at some point before the bullet moves past the object.
+            level = level.RefreshCyclables(ActionInput.ShootWest).RefreshCyclables(ActionInput.NoAction);
+            // Assert: counter has cycled
+            Assert.IsFalse(level.Contains(initialCounter));
+            Assert.IsTrue(level.Contains(cycledCounter));
+        }
     }
 }
