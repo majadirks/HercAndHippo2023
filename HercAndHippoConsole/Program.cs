@@ -31,7 +31,7 @@ while (true)
     displayPlan.RefreshDisplay(newState: state, newScrollStatus: scrollStatus); // Re-display anything that changed
     Console.SetCursorPosition(1, Console.BufferHeight - 1); // Move the cursor so it doesn't always appear next to the player
 }
-ResetConsoleColors(); // Cleanup
+ResetConsoleColors(); // Clean up
 
 // Helper Functions
 static void ShowMessage(string message)

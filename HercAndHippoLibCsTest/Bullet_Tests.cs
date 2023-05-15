@@ -91,5 +91,33 @@ namespace HercAndHippoLibCsTest
             Assert.IsTrue(level.Contains(nonshootable));
 
         }
+
+        [TestMethod]
+        public void BulletMovesInCorrectDirection_Test()
+        {
+            // Arrange
+            Wall corner = new(ConsoleColor.Yellow, (10, 10));
+            Bullet initialEastward = new((5,5), Direction.East);
+            Bullet cycledEastward = new((6, 5), Direction.East);
+            Bullet initialNorthward = new((5, 5), Direction.North);
+            Bullet cycledNorthward = new((5, 4), Direction.North);
+            Bullet initialSouthward = new((5, 5), Direction.South);
+            Bullet cycledSouthward = new((5, 6), Direction.South);
+            Bullet initialWestward = new((5, 5), Direction.West);
+            Bullet cycledWestward = new((4, 5), Direction.West);
+            Player player = new((1, 1), Health: 100, AmmoCount: 5, Inventory: Inventory.EmptyInventory);
+            Level level = new(player, new HashSet<IDisplayable>() { corner, initialEastward, initialWestward, initialNorthward, initialSouthward });
+
+            // Act
+            level = level.RefreshCyclables(ActionInput.NoAction);
+
+            // Assert
+            Assert.IsTrue(level.Contains(cycledEastward));
+            Assert.IsTrue(level.Contains(cycledNorthward));
+            Assert.IsTrue(level.Contains(cycledWestward));
+            Assert.IsTrue(level.Contains(cycledSouthward));     
+        }
+
+
     }
 }

@@ -21,6 +21,7 @@
 - Scrolls
 - Message text
 - Custom programmable objects (support a superset of ZZT-OOP)
+- Objects can send each other messages and react accordingly.
 - Music / sound effects
 - Saved games
 - Cheat codes
@@ -29,16 +30,13 @@
 
 Enemies: 
 * Bullet:
-   - Moves with each cycle in correct direction
-   - Does not move if it was stopped (eg by wall)
-   - dies when reaches level edge (check that it hasn't just moved beyond!)
+   - dies when reaches level edge (check that it hasn't just moved beyond! Also check that it can actually reach the edge.)
    - dies if beyond level edge (eg if shot from edge and placed beyond initially)
    - Two adjacent bullets do not interfere with each other
    - Can shoot something at the last column/row of a level (eg breakable wall)
    - Can be shot from bottom right corner of a level
 
 Environment:
-
 * Wall:
    - Stops and removes a bullet
    - Stops a player
@@ -53,7 +51,6 @@ Environment:
    - When touched, if player has key, door dies, player moves where door was, and player loses key
 
 Goodies:
-
 * Ammo:
    - When touched: dies, increases player's ammo count, and player ends where ammo was
 
