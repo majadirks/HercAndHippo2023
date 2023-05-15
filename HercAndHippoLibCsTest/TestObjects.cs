@@ -26,4 +26,13 @@
         private Level IncreaseCount(Level level) => level.Replace(this, this with { Count = Count + 1 });
         public Level OnShot(Level level, Direction shotFrom, Bullet shotBy) => IncreaseCount(level);
     }
+
+    /// <summary>Object that does not respond in any particular way to being shot or touched.</summary>
+    internal record Noninteractor(Location Location) : IDisplayable
+    {
+        public ConsoleColor Color => ConsoleColor.Gray;
+        public ConsoleColor BackgroundColor => ConsoleColor.Black;
+        public string ConsoleDisplayString => "!";
+
+    }
 }

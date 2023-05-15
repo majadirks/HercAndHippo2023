@@ -29,8 +29,6 @@
 
 Enemies: 
 * Bullet:
-   - Calls OnShot from its initial location (before moving) so player can shoot adjacent objects
-   - Ignores objects without OnShoot methods
    - Moves with each cycle in correct direction
    - Does not move if it was stopped (eg by wall)
    - dies when reaches level edge (check that it hasn't just moved beyond!)
