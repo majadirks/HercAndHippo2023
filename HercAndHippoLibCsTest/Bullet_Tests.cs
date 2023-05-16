@@ -119,7 +119,7 @@ namespace HercAndHippoLibCsTest
         }
 
         [TestMethod]
-        public void BulletDiesAtLevelEdge_Test()
+        public void BulletDiesAtEastEdgeOfLevel_Test()
         {
             // Arrange
             int cornerCol = 10;
@@ -130,12 +130,31 @@ namespace HercAndHippoLibCsTest
             Bullet bulletBeyondEdge = bullet with { Location = (cornerCol + 1, bulletRow) };
             Level level = new(Player.Default(1, 1), new HashSet<IDisplayable>() {bullet, corner});
             // Act
-            while (bullet.Location.Col < cornerCol)
-            {
-                level = level.RefreshCyclables(ActionInput.NoAction); // Bullet moves until it reaches east edge
-                bullet = level.LevelObjects.Where(obj => obj is Bullet).Cast<Bullet>().Single();
-            }
-                
+            while (!level.Contains(bulletAtEdge)) // Bullet moves until it reaches east edge
+                level = level.RefreshCyclables(ActionInput.NoAction);                
+            Assert.IsTrue(level.Contains(bulletAtEdge));
+
+            // Let it move once more
+            level = level.RefreshCyclables(ActionInput.NoAction);
+
+            // Assert: no more bullet
+            Assert.IsFalse(level.Contains(bulletAtEdge));
+            Assert.IsFalse(level.Contains(bulletBeyondEdge));
+        }
+
+        [TestMethod]
+        public void BulletDiesAtSouthEdgeOfLevel_Test()
+        {
+            // Arrange
+            int cornerRow = 10;
+            Wall corner = new(ConsoleColor.Yellow, (10, cornerRow));
+            Bullet bullet = new((7, 2), Direction.South);
+            Bullet bulletAtEdge = bullet with { Location = (7, 10) };
+            Bullet bulletBeyondEdge = bullet with { Location = (7, 11) };
+            Level level = new(Player.Default(1, 1), new HashSet<IDisplayable>() { bullet, corner });
+            // Act
+            while (!level.Contains(bulletAtEdge)) // Bullet moves until it reaches south edge     
+                level = level.RefreshCyclables(ActionInput.NoAction); 
             Assert.IsTrue(level.Contains(bulletAtEdge));
             // Let it move once more
             level = level.RefreshCyclables(ActionInput.NoAction);

@@ -26,6 +26,8 @@
 - Music / sound effects
 - Saved games
 - Cheat codes
+- Converter to convert ZZT worlds (including ZZT-OOP) to Herc and Hippo worlds???
+- Look into Unity or MAUI for creating non-ASCII interface and mobile version
 	
 -=Unit tests=-
 
