@@ -33,9 +33,6 @@
 
 Enemies: 
 * Bullet:
-   - dies when reaches level edge (min row/col, corner row/col) 
-			(check that it hasn't just moved beyond! Also check that it can actually reach the edge. Including moving > spot int in row/column one)
-   - dies if beyond level edge (eg if shot from edge and placed beyond initially)
    - Two adjacent bullets do not interfere with each other
    - Can shoot something at the last column/row of a level (eg breakable wall)
    - Can be shot from bottom right corner of a level

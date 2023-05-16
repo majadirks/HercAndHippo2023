@@ -164,5 +164,56 @@ namespace HercAndHippoLibCsTest
             Assert.IsFalse(level.Contains(bulletBeyondEdge));
         }
 
+        [TestMethod]
+        public void BulletDiesWhenPlacedBeyondLevelEdge_Test()
+        {
+            // Arrange
+            Wall corner1 = new(ConsoleColor.Yellow, (10, 9));
+            Wall corner2 = new(ConsoleColor.Yellow, (9, 10));
+            Player player = Player.Default(10,10); //placed in bottom-right corner
+            Level level = new(player, new HashSet<IDisplayable>() { corner1, corner2 });
+
+            // Act and assert
+            // Shoot east and then cycle; there should be no bullet remaining.
+            level = level.RefreshCyclables(ActionInput.ShootEast).RefreshCyclables(ActionInput.NoAction);
+            Assert.IsFalse(level.LevelObjects.Where(obj => obj is Bullet).Any());
+            // Shoot south and then cycle; there should be no bullet remaining.
+            level = level.RefreshCyclables(ActionInput.ShootSouth).RefreshCyclables(ActionInput.NoAction);
+            Assert.IsFalse(level.LevelObjects.Where(obj => obj is Bullet).Any());
+        }
+
+        [TestMethod]
+        public void TwoConsecutiveBulletsMoveAndCallOnShotAsExpected_Test()
+        {
+            // Arrange
+            Wall corner1 = new(ConsoleColor.Yellow, (10, 10));
+            Player player = new((2,2), Health: 100,AmmoCount: 5, Inventory: Inventory.EmptyInventory);
+            ShotCounter counter = new((5, 2), ConsoleColor.Green, 0);
+            Level level = new(player, new HashSet<IDisplayable>() { corner1, counter });
+
+            // Act and assert
+            level = level.RefreshCyclables(ActionInput.ShootEast); // bullet at (3,2)
+            Assert.IsTrue(level.Contains(new Bullet((3, 2), Direction.East)));
+
+            level = level.RefreshCyclables(ActionInput.ShootEast); // bullets at (3,2) and (4,2)
+            Assert.IsTrue(level.Contains(new Bullet((3, 2), Direction.East)));
+            Assert.IsTrue(level.Contains(new Bullet((4, 2), Direction.East)));
+
+            level = level.RefreshCyclables(ActionInput.NoAction); // bullets at (4,2) and (5,2)
+            Assert.IsTrue(level.Contains(new Bullet((4, 2), Direction.East)));
+            Assert.IsTrue(level.Contains(new Bullet((5, 2), Direction.East)));
+
+            level = level.RefreshCyclables(ActionInput.NoAction); // bullets at (5,2) and (6,2), count is 1
+            Assert.IsTrue(level.Contains(new Bullet((5, 2), Direction.East)));
+            Assert.IsTrue(level.Contains(new Bullet((6, 2), Direction.East)));
+            Assert.IsTrue(level.Contains(counter with { Count = 1 }));
+
+
+            level = level.RefreshCyclables(ActionInput.NoAction); // bullets at (6,2) and (7,2), count is2;
+            Assert.IsTrue(level.Contains(new Bullet((6, 2), Direction.East)));
+            Assert.IsTrue(level.Contains(new Bullet((7, 2), Direction.East)));
+            Assert.IsTrue(level.Contains(counter with { Count = 2 }));
+        }
+
     }
 }
