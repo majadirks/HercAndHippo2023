@@ -118,6 +118,32 @@ namespace HercAndHippoLibCsTest
             Assert.IsTrue(level.Contains(cycledSouthward));     
         }
 
+        [TestMethod]
+        public void BulletDiesAtLevelEdge_Test()
+        {
+            // Arrange
+            int cornerCol = 10;
+            int bulletRow = 3;
+            Wall corner = new(ConsoleColor.Yellow, (cornerCol, 10));
+            Bullet bullet = new((7, bulletRow), Direction.East);
+            Bullet bulletAtEdge = bullet with { Location = (cornerCol, bulletRow) };
+            Bullet bulletBeyondEdge = bullet with { Location = (cornerCol + 1, bulletRow) };
+            Level level = new(Player.Default(1, 1), new HashSet<IDisplayable>() {bullet, corner});
+            // Act
+            while (bullet.Location.Col < cornerCol)
+            {
+                level = level.RefreshCyclables(ActionInput.NoAction); // Bullet moves until it reaches east edge
+                bullet = level.LevelObjects.Where(obj => obj is Bullet).Cast<Bullet>().Single();
+            }
+                
+            Assert.IsTrue(level.Contains(bulletAtEdge));
+            // Let it move once more
+            level = level.RefreshCyclables(ActionInput.NoAction);
+
+            // Assert: no more bullet
+            Assert.IsFalse(level.Contains(bulletAtEdge));
+            Assert.IsFalse(level.Contains(bulletBeyondEdge));
+        }
 
     }
 }

@@ -27,7 +27,7 @@ while (true)
     keyInfo = GetKeyIfAny(); // Get next key input
     if (keyInfo.KeyChar == 'q') break; // Quit on q
     state = state.RefreshCyclables(keyInfo.ToActionInput()); // Update level state using key input
-    scrollStatus = scrollStatus.Update(state.Player.Location, bufferStats); // Plan to scroll screen if needed
+    scrollStatus = scrollStatus.Update(state.Player.Location, bufferStats); // Plan to scroll screen if needed. displayPlan contains the previous state so it can compare and update only affected stuff.
     displayPlan.RefreshDisplay(newState: state, newScrollStatus: scrollStatus); // Re-display anything that changed
     Console.SetCursorPosition(1, Console.BufferHeight - 1); // Move the cursor so it doesn't always appear next to the player
 }

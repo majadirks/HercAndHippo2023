@@ -22,7 +22,7 @@
                 nextState; // If bullet was stopped, don't regenerate it
 
             // If reached level boundary, die 
-            if (curState.BoundaryReached(bulletAtNextPosition))
+            if (bulletMoved.Contains(bulletAtNextPosition) && bulletAtNextPosition.ExceededBoundary(bulletMoved))
                 bulletMoved = bulletMoved.Without(bulletAtNextPosition);
             return bulletMoved;
         }
@@ -38,6 +38,10 @@
                 Direction.Flee => throw new NotImplementedException(), // todo
                 _ => throw new NotImplementedException()
             };
+
+        private bool ExceededBoundary(Level level)
+            => Location.Row <= Row.MIN_ROW || Location.Row > level.Height ||
+               Location.Col <= Column.MIN_COL || Location.Col > level.Width;
     }
 
 
