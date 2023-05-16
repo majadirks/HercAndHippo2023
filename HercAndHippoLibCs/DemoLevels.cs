@@ -98,6 +98,7 @@ namespace HercAndHippoLibCs
                 displayables.Add(new Bullet((col, 22), Direction.South));
                 displayables.Add(new Wall(ConsoleColor.Green, (col, height)));
             }
+            displayables.Add(new Bullet((15, height - 1), Direction.Idle));
             return new Level(player, displayables);
         }
 

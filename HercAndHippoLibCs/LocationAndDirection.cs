@@ -49,6 +49,7 @@ namespace HercAndHippoLibCs
                 Direction.West => Direction.North,
                 Direction.Seek => Direction.Flee,
                 Direction.Flee => Direction.Seek,
+                Direction.Idle => Direction.Idle,
                 _ => throw new NotSupportedException()
             };
     }
