@@ -88,7 +88,7 @@ namespace HercAndHippoLibCs
         public static  Level SoManyBullets()
         {
             int width = 120;
-            int height = 80;
+            int height = 120;
             Player player = new((10, height - 1), Health: 100, AmmoCount: 200, Inventory: Inventory.EmptyInventory);
             HashSet<IDisplayable> displayables = new();
             for (Column col = 0; col <= width; col++)
@@ -98,6 +98,11 @@ namespace HercAndHippoLibCs
                 displayables.Add(new Bullet((col, 22), Direction.South));
                 displayables.Add(new Wall(ConsoleColor.Green, (col, height)));
             }
+            for (int row = 0; row <= height; row++)
+            {
+                displayables.Add(new BreakableWall(ConsoleColor.Blue, (row % 5, row)));
+            }
+            displayables.Add(new Driver((width, height), Direction.North));
             displayables.Add(new Bullet((15, height - 1), Direction.Idle));
             return new Level(player, displayables);
         }

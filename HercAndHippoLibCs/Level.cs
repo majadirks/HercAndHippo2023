@@ -23,7 +23,7 @@ namespace HercAndHippoLibCs
             .Cast<ICyclable>()     
             .Aggregate(seed: this, func: (state, nextCyclable) => nextCyclable.Cycle(state, actionInput));
         private bool HasSameStateAs(Level otherState)
-            => LevelObjects.Count == otherState.LevelObjects.Count &&
+            => Displayables.Count == otherState.Displayables.Count &&
                LevelObjects.Zip(otherState.LevelObjects).All(zipped => zipped.First.Equals(zipped.Second));
         public bool Contains(IDisplayable obj) => LevelObjects.Contains(obj);
         public override bool Equals([NotNullWhen(true)] object? obj) => obj is Level other && other.HasSameStateAs(this);

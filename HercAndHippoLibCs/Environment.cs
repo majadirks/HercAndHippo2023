@@ -1,4 +1,6 @@
-﻿namespace HercAndHippoLibCs
+﻿using System.Globalization;
+
+namespace HercAndHippoLibCs
 { 
     public record Wall(ConsoleColor Color, Location Location) : IDisplayable, ITouchable, IShootable
     {
@@ -30,6 +32,27 @@
             (ITakeable _, Player newPlayerState) = player.DropItem<Key>(BackgroundColor);
             Level newState = Behaviors.DieAndAllowPassage(level, this, newPlayerState);
             return newState;
+        }
+    }
+
+    public record Driver(Location Location, Direction Whither) : IDisplayable, ICyclable
+    {
+        public ConsoleColor Color => ConsoleColor.White;
+        public ConsoleColor BackgroundColor => ConsoleColor.Black;
+        public string ConsoleDisplayString => "";
+
+        public Level Cycle(Level level, ActionInput actionInput)
+        {
+            ActionInput motion = Whither switch
+            {
+                Direction.East => ActionInput.MoveEast,
+                Direction.West => ActionInput.MoveWest,
+                Direction.North => ActionInput.MoveNorth,
+                Direction.South => ActionInput.MoveSouth,
+                _ => ActionInput.NoAction
+
+            };
+            return level.Player.Cycle(level, motion);
         }
     }
 }
