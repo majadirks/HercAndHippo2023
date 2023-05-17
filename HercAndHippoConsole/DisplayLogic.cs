@@ -18,13 +18,11 @@ namespace HercAndHippoConsole
         {
             int newBH = Console.BufferHeight;
             int newBW = Console.BufferWidth;
-            BufferSizeChanged = BufferHeight != newBH || BufferWidth != newBW;
 
-            if (BufferSizeChanged)
-            {
-                BufferWidth = newBW;
-                BufferHeight = newBH;
-            }
+            BufferSizeChanged = BufferHeight != newBH || BufferWidth != newBW;
+            BufferWidth = newBW;
+            BufferHeight = newBH;
+       
         } 
     }
 
@@ -69,8 +67,8 @@ namespace HercAndHippoConsole
             var oldDisplay = this.planArray;
             var newDisplay = newDisplayPlan.planArray;
 
-            int maxCol = (forceRefresh ? Console.BufferWidth : bufferStats.BufferWidth) - VIEW_MARGIN;
-            int maxRow = (forceRefresh ? Console.BufferHeight : bufferStats.BufferHeight) - VIEW_MARGIN;
+            int maxCol = bufferStats.BufferWidth - VIEW_MARGIN;
+            int maxRow = bufferStats.BufferHeight - VIEW_MARGIN;
 
             // Rather than using the cached maxCol and maxRow values calculated above,
             // the following method recalculates the buffer width and height when it is needed
