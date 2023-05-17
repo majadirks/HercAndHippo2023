@@ -1,5 +1,6 @@
 ﻿using HercAndHippoLibCs;
 using HercAndHippoConsole;
+using static HercAndHippoConsole.DisplayUtilities;
 
 const int MESSAGE_MARGIN = 3;
 const int REFRESH_FREQUENCY_HZ = 50;
@@ -40,10 +41,3 @@ static void ShowMessage(string message)
     Console.SetCursorPosition(1, Console.BufferHeight - MESSAGE_MARGIN);
     Console.WriteLine(message);
 }
-
-static void ResetConsoleColors()
-{
-    Console.ForegroundColor = ConsoleColor.White;
-    Console.BackgroundColor = ConsoleColor.Black;
-}
-

@@ -3,6 +3,15 @@ using static HercAndHippoConsole.Constants;
 
 namespace HercAndHippoConsole
 {
+
+    internal static class DisplayUtilities
+    {
+        public static void ResetConsoleColors()
+        {
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.BackgroundColor = ConsoleColor.Black;
+        }
+    }
     internal class BufferStats
     {
         public bool BufferSizeChanged { get; private set; }
@@ -76,7 +85,11 @@ namespace HercAndHippoConsole
             static bool InView(int col, int row) 
                 => col < Console.BufferWidth - VIEW_MARGIN && row < Console.BufferHeight - VIEW_MARGIN;
 
-            if (forceRefresh) Console.Clear();
+            if (forceRefresh)
+            {
+                DisplayUtilities.ResetConsoleColors();
+                Console.Clear();
+            }
             for (int row = 0; row < maxRow; row++)
             {
                 for (int col = 0; col < maxCol; col++)
