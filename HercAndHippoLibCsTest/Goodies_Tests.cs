@@ -1,0 +1,30 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace HercAndHippoLibCsTest
+{
+    [TestClass]
+    public class Goodies_Tests
+    {
+        [TestMethod]
+        public void AmmoCanBePickedUp_Test()
+        {
+            // Arrange
+            int ammoCount = 17;
+            Ammo ammo = new((2, 1), Count: ammoCount);
+            Level level = new(Player.Default(1, 1), new HashSet<IDisplayable>() { ammo });
+            Assert.AreEqual(0, (int) level.Player.AmmoCount);
+            Assert.IsTrue(level.Contains(ammo));
+            Assert.AreNotEqual(ammo.Location, level.Player.Location);
+            // Act
+            level = level.RefreshCyclables(ActionInput.MoveEast);
+            // Assert
+            Assert.AreEqual(ammoCount, (int) level.Player.AmmoCount);
+            Assert.IsFalse(level.Contains(ammo));
+            Assert.AreEqual(ammo.Location, level.Player.Location);
+        }
+    }
+}
