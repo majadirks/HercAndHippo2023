@@ -15,15 +15,15 @@
                 .Cast<IShootable>()
                 .Aggregate(seed: curState, func: (state, shot) => shot.OnShot(state, shotFrom: Whither.Mirror(), shotBy: this));
 
+            // Die if at boundary
+            if (ReachedBoundary(nextState.Width, nextState.Height)) nextState = nextState.Without(this);       
+
             // Continue moving in current direction if it hasn't been stopped
             Bullet bulletAtNextPosition = this with { Location = NextLocation };
             Level bulletMoved = nextState.Contains(this) ?
                 nextState.Replace(this, bulletAtNextPosition) : // If bullet wasn't stopped, continue
                 nextState; // If bullet was stopped, don't regenerate it
 
-            // If reached level boundary, die 
-            if (bulletMoved.Contains(bulletAtNextPosition) && bulletAtNextPosition.ExceededBoundary(bulletMoved))
-                bulletMoved = bulletMoved.Without(bulletAtNextPosition);
             return bulletMoved;
         }
 
@@ -40,9 +40,14 @@
                 _ => throw new NotImplementedException()
             };
 
-        private bool ExceededBoundary(Level level)
-            => Location.Row <= Row.MIN_ROW || Location.Row > level.Height ||
-               Location.Col <= Column.MIN_COL || Location.Col > level.Width;
+        private bool ReachedBoundary(int levelWidth, int levelHeight)
+        {
+            bool reachedWestBoundary = Whither == Direction.West && Location.Col == Column.MIN_COL;
+            bool reachedEastBoundary = Whither == Direction.East && Location.Col >= levelWidth;
+            bool reachedNorthBoundary = Whither == Direction.North && Location.Row <= Row.MIN_ROW;
+            bool reachedSouthBoundary = Whither == Direction.South && Location.Row >= levelHeight;
+            return reachedWestBoundary || reachedEastBoundary || reachedNorthBoundary || reachedSouthBoundary;
+        }
     }
 
 
