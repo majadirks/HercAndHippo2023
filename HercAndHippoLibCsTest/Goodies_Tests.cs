@@ -26,5 +26,22 @@ namespace HercAndHippoLibCsTest
             Assert.IsFalse(level.Contains(ammo));
             Assert.AreEqual(ammo.Location, level.Player.Location);
         }
+
+        [TestMethod]
+        public void KeyCanBePickedUp_Test()
+        {
+            // Arrange
+            Key key = new(ConsoleColor.Magenta, (2,1));
+            Level level = new(Player.Default(1, 1), new HashSet<IDisplayable>() { key });
+            Assert.AreEqual(Inventory.EmptyInventory, level.Player.Inventory);
+            Assert.IsTrue(level.Contains(key));
+            Assert.AreNotEqual(key.Location, level.Player.Location);
+            // Act
+            level = level.RefreshCyclables(ActionInput.MoveEast);
+            // Assert
+            Assert.AreEqual(new Inventory(key), level.Player.Inventory);
+            Assert.IsFalse(level.Contains(key));
+            Assert.AreEqual(key.Location, level.Player.Location);
+        }
     }
 }
