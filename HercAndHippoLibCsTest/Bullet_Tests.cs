@@ -1,5 +1,8 @@
 ﻿
 
+using System.ComponentModel;
+using System.Diagnostics.Metrics;
+
 namespace HercAndHippoLibCsTest
 {
     [TestClass]
@@ -260,5 +263,46 @@ namespace HercAndHippoLibCsTest
             Assert.IsTrue(level.Contains(counter with { Count = 2 }));
         }
 
+        [TestMethod]
+        public void CanShootNorthAndSouthInFirstColumn()
+        {
+            // Arrange
+            Player player = new((Column.MIN_COL, 4), Health: 10, AmmoCount: 2, Inventory: Inventory.EmptyInventory);
+            ShotCounter northCounter = new((Column.MIN_COL, 1), ConsoleColor.Yellow, Count: 0);
+            ShotCounter southCounter = new((Column.MIN_COL, 7), ConsoleColor.Yellow, Count: 0);
+            Level level = new(player, new HashSet<IDisplayable>() { northCounter, southCounter });
+            // Act
+            level = level
+                .RefreshCyclables(ActionInput.ShootNorth)
+                .RefreshCyclables(ActionInput.ShootSouth)
+                .RefreshCyclables(ActionInput.NoAction)
+                .RefreshCyclables(ActionInput.NoAction)
+                .RefreshCyclables(ActionInput.NoAction);
+            // Assert
+            Assert.IsTrue(level.Contains(northCounter with { Count = 1 }));
+            Assert.IsTrue(level.Contains(southCounter with { Count = 1 }));
+            Assert.IsFalse(level.LevelObjects.Where(b => b is Bullet).Any());
+        }
+
+        [TestMethod]
+        public void CanShootEastAndWestInFirstRow()
+        {
+            // Arrange
+            Player player = new((4, Row.MIN_ROW), Health: 10, AmmoCount: 2, Inventory: Inventory.EmptyInventory);
+            ShotCounter westCounter = new((1, Row.MIN_ROW), ConsoleColor.Yellow, Count: 0);
+            ShotCounter eastCounter = new((7, Row.MIN_ROW), ConsoleColor.Yellow, Count: 0);
+            Level level = new(player, new HashSet<IDisplayable>() { westCounter, eastCounter });
+            // Act
+            level = level
+                .RefreshCyclables(ActionInput.ShootWest)
+                .RefreshCyclables(ActionInput.ShootEast)
+                .RefreshCyclables(ActionInput.NoAction)
+                .RefreshCyclables(ActionInput.NoAction)
+                .RefreshCyclables(ActionInput.NoAction);
+            // Assert
+            Assert.IsTrue(level.Contains(westCounter with { Count = 1 }));
+            Assert.IsTrue(level.Contains(eastCounter with { Count = 1 }));
+            Assert.IsFalse(level.LevelObjects.Where(b => b is Bullet).Any());
+        }
     }
 }

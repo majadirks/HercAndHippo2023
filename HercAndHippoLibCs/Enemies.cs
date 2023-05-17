@@ -16,12 +16,12 @@
                 .Aggregate(seed: curState, func: (state, shot) => shot.OnShot(state, shotFrom: Whither.Mirror(), shotBy: this));
 
             // Die if at boundary
-            if (ReachedBoundary(nextState.Width, nextState.Height)) nextState = nextState.Without(this);       
+            if (ReachedBoundary(nextState.Width, nextState.Height))
+                nextState = nextState.Without(this);       
 
             // Continue moving in current direction if it hasn't been stopped
-            Bullet bulletAtNextPosition = this with { Location = NextLocation };
             Level bulletMoved = nextState.Contains(this) ?
-                nextState.Replace(this, bulletAtNextPosition) : // If bullet wasn't stopped, continue
+                nextState.Replace(this, this with { Location = NextLocation }) : // If bullet wasn't stopped, continue
                 nextState; // If bullet was stopped, don't regenerate it
 
             return bulletMoved;
