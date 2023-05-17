@@ -7,7 +7,7 @@ namespace HercAndHippoLibCs
     public record Player(Location Location, Health Health, AmmoCount AmmoCount, Inventory Inventory) 
         : IDisplayable, IShootable, ICyclable, ITouchable
     {
-        public static Player Default(Location location) => new Player(Location: location, Health: 100, AmmoCount: 0, Inventory: Inventory.EmptyInventory);
+        public static Player Default(Location location) => new(Location: location, Health: 100, AmmoCount: 0, Inventory: Inventory.EmptyInventory);
         public static Player Default(Column col, Row row) => Player.Default((col, row));
         public string ConsoleDisplayString => HasHealth ? "☻" : "RIP";
         public ConsoleColor Color => ConsoleColor.White;

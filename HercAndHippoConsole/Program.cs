@@ -21,10 +21,10 @@ ShowMessage("Use arrow keys to move, shift + arrow keys to shoot, 'q' to quit.")
 // Main loop
 while (true)
 {
-    cycleTimer.AwaitCycle(); // Update only once per 20 ms
+    cycleTimer.AwaitCycle(); // Update once per 20 ms
     bufferStats.Refresh(); // Check if buffer size changed
     displayPlan = new(state, scrollStatus, bufferStats); // save current screen layout
-    keyInfo = GetKeyIfAny(); // Get next key input
+    keyInfo = Console.KeyAvailable ? Console.ReadKey() : default; // Get next key input
     if (keyInfo.KeyChar == 'q') break; // Quit on q
     state = state.RefreshCyclables(keyInfo.ToActionInput()); // Update level state using key input
     scrollStatus = scrollStatus.Update(state.Player.Location, bufferStats); // Plan to scroll screen if needed. displayPlan contains the previous state so it can compare and update only affected stuff.
@@ -41,12 +41,6 @@ static void ShowMessage(string message)
     Console.WriteLine(message);
 }
 
-static ConsoleKeyInfo GetKeyIfAny()
-{
-    ConsoleKeyInfo nextKey = default;
-    if (Console.KeyAvailable) nextKey = Console.ReadKey();
-    return nextKey;
-}
 static void ResetConsoleColors()
 {
     Console.ForegroundColor = ConsoleColor.White;
