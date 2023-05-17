@@ -143,6 +143,28 @@ namespace HercAndHippoLibCsTest
         }
 
         [TestMethod]
+        public void BulletDiesAtWestEdgeOfLevel_Test()
+        {
+            // Arrange
+            int cornerCol = 10;
+            int bulletRow = 3;
+            Wall corner = new(ConsoleColor.Yellow, (cornerCol, 10));
+            Bullet bullet = new((5, bulletRow), Direction.West);
+            Bullet bulletAtEdge = bullet with { Location = (Column.MIN_COL, bulletRow) };
+            Level level = new(Player.Default(5, 1), new HashSet<IDisplayable>() { bullet, corner });
+            // Act
+            while (!level.Contains(bulletAtEdge)) // Bullet moves until it reaches east edge
+                level = level.RefreshCyclables(ActionInput.NoAction);
+            Assert.AreEqual(bulletAtEdge, level.LevelObjects.Where(b => b is Bullet).Single());
+
+            // Let it move once more
+            level = level.RefreshCyclables(ActionInput.NoAction);
+
+            // Assert: no more bullet
+            Assert.IsFalse(level.LevelObjects.Where(b => b is Bullet).Any());
+        }
+
+        [TestMethod]
         public void BulletDiesAtSouthEdgeOfLevel_Test()
         {
             // Arrange
@@ -163,6 +185,29 @@ namespace HercAndHippoLibCsTest
             Assert.IsFalse(level.Contains(bulletAtEdge));
             Assert.IsFalse(level.Contains(bulletBeyondEdge));
         }
+
+        [TestMethod]
+        public void BulletDiesAtNorthEdgeOfLevel_Test()
+        {
+            // Arrange
+            int cornerRow = 10;
+            Wall corner = new(ConsoleColor.Yellow, (10, cornerRow));
+            Bullet bullet = new((7, 2), Direction.North);
+            Bullet bulletAtEdge = bullet with { Location = (7, Row.MIN_ROW) };
+            Bullet bulletBeyondEdge = bullet with { Location = (7, 11) };
+            Level level = new(Player.Default(7, 3), new HashSet<IDisplayable>() { bullet, corner });
+            // Act
+            while (!level.Contains(bulletAtEdge)) // Bullet moves until it reaches south edge     
+                level = level.RefreshCyclables(ActionInput.NoAction);
+            Assert.AreEqual(bulletAtEdge, level.LevelObjects.Where(b => b is Bullet).Single());
+           
+            // Let it move once more
+            level = level.RefreshCyclables(ActionInput.NoAction);
+
+            // Assert: no more bullet
+            Assert.IsFalse(level.LevelObjects.Where(b => b is Bullet).Any());
+        }
+
 
         [TestMethod]
         public void BulletDiesWhenPlacedBeyondLevelEdge_Test()

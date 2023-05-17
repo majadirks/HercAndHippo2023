@@ -42,7 +42,7 @@
 
         private bool ReachedBoundary(int levelWidth, int levelHeight)
         {
-            bool reachedWestBoundary = Whither == Direction.West && Location.Col == Column.MIN_COL;
+            bool reachedWestBoundary = Whither == Direction.West && Location.Col <= Column.MIN_COL;
             bool reachedEastBoundary = Whither == Direction.East && Location.Col >= levelWidth;
             bool reachedNorthBoundary = Whither == Direction.North && Location.Row <= Row.MIN_ROW;
             bool reachedSouthBoundary = Whither == Direction.South && Location.Row >= levelHeight;
