@@ -39,7 +39,6 @@ Enemies:
 Environment:
 * Wall:
    - Stops and removes a bullet
-   - Stops a player
 
 * Breakable Wall:
    - When shot, stops bullet and dies
