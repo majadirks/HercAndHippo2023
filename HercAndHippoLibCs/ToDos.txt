@@ -37,8 +37,6 @@ Enemies:
    - Can be shot from bottom right corner of a level
 
 Environment:
-* Wall:
-   - Stops and removes a bullet
 
 * Breakable Wall:
    - When shot, stops bullet and dies
