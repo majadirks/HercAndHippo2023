@@ -6,9 +6,10 @@
 - Custom color enum (library should not use Console-specific features, including ConsoleColor. Console app should do conversion.)
 - Segregate interfaces:
 	* Separate out ILocatable (Location) and IConsoleDisplayable (ConsoleColor foreground, ConsoleColor background, ConsoleDisplayString)
-	* Genericize Level to support other interfaces besides IConsoleDisplayable, or so it depends only on ILocatable
+	* Genericize Level to support other interfaces besides IConsoleDisplayable, or so it depends only on ILocatable (or HercAndHippoObj superclass?)
 			(so we could have a non-ASCII visual representation that doesn't depend on ConsoleDisplayString method,
 			 or write tests without implementing these ASCII-specific methods)
+    * Abstract HercAndHippoObj superclass
 - Level editor
 - Status bar
 - Implement and test "seek" behavior for bullet
