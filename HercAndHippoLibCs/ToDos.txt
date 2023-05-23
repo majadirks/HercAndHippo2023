@@ -36,10 +36,3 @@ Enemies:
 * Bullet:
    - Can shoot something at the last column/row of a level (eg breakable wall)
    - Can be shot from bottom right corner of a level
-
-Environment:
-
-* Door:
-   - Stops and removes a bullet
-   - Stops a player without the correct key
-   - When touched, if player has key, door dies, player moves where door was, and player loses key
