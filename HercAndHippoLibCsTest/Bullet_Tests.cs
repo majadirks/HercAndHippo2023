@@ -233,6 +233,7 @@ namespace HercAndHippoLibCsTest
         [TestMethod]
         public void TwoConsecutiveBulletsMoveAndCallOnShotAsExpected_Test()
         {
+            //Assert.IsTrue(false); //this test fails intermittently!
             // Arrange
             Wall corner1 = new(ConsoleColor.Yellow, (10, 10));
             Player player = new((2,2), Health: 100,AmmoCount: 5, Inventory: Inventory.EmptyInventory);
@@ -257,7 +258,7 @@ namespace HercAndHippoLibCsTest
             Assert.IsTrue(level.Contains(counter with { Count = 1 }));
 
 
-            level = level.RefreshCyclables(ActionInput.NoAction); // bullets at (6,2) and (7,2), count is2;
+            level = level.RefreshCyclables(ActionInput.NoAction); // bullets at (6,2) and (7,2), count is 2;
             Assert.IsTrue(level.Contains(new Bullet((6, 2), Direction.East)));
             Assert.IsTrue(level.Contains(new Bullet((7, 2), Direction.East)));
             Assert.IsTrue(level.Contains(counter with { Count = 2 }));

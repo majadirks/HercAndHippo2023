@@ -17,8 +17,7 @@ namespace HercAndHippoLibCs
         public Level AddObject(IDisplayable toAdd) => this with { Displayables = Displayables.AddObject(toAdd) };
         public Level Replace(IDisplayable toReplace, IDisplayable toAdd) => this.Without(toReplace).AddObject(toAdd);
         public Level RefreshCyclables(ActionInput actionInput)
-            => LevelObjects
-            .AsParallel()
+            => LevelObjects // Do not refresh in parallel; this could cause objects to interfere with nearby copies of themselves
             .Where(disp => disp is ICyclable cylable)
             .Cast<ICyclable>()     
             .Aggregate(seed: this, func: (state, nextCyclable) => nextCyclable.Cycle(state, actionInput));
