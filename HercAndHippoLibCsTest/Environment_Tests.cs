@@ -51,5 +51,43 @@ namespace HercAndHippoLibCsTest
             Assert.IsFalse(level.LevelObjects.Where(b => b is Bullet).Any());
         }
 
+        [TestMethod]
+        public void BreakableWallStopsPlayer_Test()
+        {
+            // Arrange
+            Player initial = Player.Default((2, 2));
+            Player secondPosition = Player.Default((3, 2));
+            Player impossiblePosition = Player.Default((4, 2));
+            BreakableWall bwall = new(ConsoleColor.White, (4, 2));
+            BreakableWall corner = new(ConsoleColor.White, (10, 10));
+            Level level = new(initial, new HashSet<IDisplayable> { bwall, corner });
+
+            // Act and Assert
+            level = level.RefreshCyclables(ActionInput.MoveEast);
+            Assert.IsTrue(level.Contains(secondPosition)); // Player is adjacent to to wall after moving east
+            level = level.RefreshCyclables(ActionInput.MoveEast);
+            Assert.IsTrue(level.Contains(secondPosition)); // Wall has blocked further eastward movement.
+            Assert.IsFalse(level.Contains(impossiblePosition));
+        }
+
+        [TestMethod]
+        public void BreakableWallStopsBulletAndDies_Test()
+        {
+            // Arrange
+            Player initial = Player.Default((2, 2)) with { AmmoCount = 1 };
+            BreakableWall bwall = new(ConsoleColor.White, (4, 2));
+            Wall corner = new(ConsoleColor.White, (10, 10));
+            Level level = new(initial, new HashSet<IDisplayable> { bwall, corner });
+
+            // Act
+            level = level.RefreshCyclables(ActionInput.ShootEast);
+            Assert.IsTrue(level.LevelObjects.Where(b => b is Bullet).Count() == 1);
+            level = level.RefreshCyclables(ActionInput.NoAction).RefreshCyclables(ActionInput.NoAction);
+
+            // Assert
+            Assert.IsFalse(level.LevelObjects.Where(bw => bw is BreakableWall).Any()); 
+            Assert.IsFalse(level.LevelObjects.Where(b => b is Bullet).Any());
+        }
+
     }
 }
