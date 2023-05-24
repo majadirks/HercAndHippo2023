@@ -48,7 +48,7 @@ namespace HercAndHippoConsole
             Location screenCenter = GetScreenCenter(bufferStats.BufferWidth, bufferStats.BufferHeight);
             Location logicalCenter = scrollStatus.LogicalCenter;
 
-            foreach (ILocatable levelObj in state.LevelObjects.Where(obj => obj is IConsoleDisplayable))
+            foreach (IConsoleDisplayable levelObj in state.LevelObjects.Where(obj => obj is IConsoleDisplayable).Cast<IConsoleDisplayable>())
             {
                 // Note that these are ints, not instances of the Column/Row type.
                 // If writeCol and writeRow were column/row respectively,
@@ -60,7 +60,7 @@ namespace HercAndHippoConsole
                 if (writeCol >= MIN_DISPLAY_COL && writeCol < bufferStats.BufferWidth - VIEW_MARGIN && 
                     writeRow >= MIN_DISPLAY_ROW && writeRow < bufferStats.BufferHeight - VIEW_MARGIN)
                 {
-                    planArray[writeCol, writeRow] = (IConsoleDisplayable) levelObj;
+                    planArray[writeCol, writeRow] = levelObj;
                 }
             }
 

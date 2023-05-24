@@ -5,7 +5,7 @@
         public Location Location { get;  }
     }
 
-    public interface IConsoleDisplayable
+    public interface IConsoleDisplayable : ILocatable
     {
         public ConsoleColor Color { get; }
         public ConsoleColor BackgroundColor { get; }
