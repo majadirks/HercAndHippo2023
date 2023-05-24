@@ -15,7 +15,7 @@
                                 });
     }
 
-    public record Key(ConsoleColor Color, Location Location) : HercAndHippoObj, ILocatable, ITouchable, ITakeable
+    public record Key(ConsoleColor Color, Location Location) : HercAndHippoObj, ILocatable, IConsoleDisplayable, ITouchable, ITakeable
     {
         public string ConsoleDisplayString => "♀";
         public ConsoleColor BackgroundColor => ConsoleColor.Black;
