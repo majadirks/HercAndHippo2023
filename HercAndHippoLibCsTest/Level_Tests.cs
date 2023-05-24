@@ -59,8 +59,8 @@ namespace HercAndHippoLibCsTest
             // Arrange
             Player player = new(new Location(Col: 1, Row: 1), Health: 100, AmmoCount: 5, Inventory: EmptyInventory);
             int startCount = 0;
-            CycleCounter initialCounter = new((2, 2), ConsoleColor.Green, startCount);
-            CycleCounter cycledCounter = new((2, 2), ConsoleColor.Green, startCount + 1);
+            CycleCounter initialCounter = new((2, 2), startCount);
+            CycleCounter cycledCounter = new((2, 2), startCount + 1);
             Level level = new(player: player, displayables: new HashSet<HercAndHippoObj>() { initialCounter });
 
             // Check that we set this up correctly

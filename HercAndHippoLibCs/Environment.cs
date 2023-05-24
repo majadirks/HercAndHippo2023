@@ -35,12 +35,8 @@ namespace HercAndHippoLibCs
         }
     }
 
-    public record Driver(Location Location, Direction Whither) : HercAndHippoObj, ICyclable, ILocatable, IConsoleDisplayable // eventually will remove support for ILocatable and IConsoleDisplayable
+    public record Driver(Direction Whither) : HercAndHippoObj, ICyclable
     {
-        public ConsoleColor Color => ConsoleColor.White;
-        public ConsoleColor BackgroundColor => ConsoleColor.Black;
-        public string ConsoleDisplayString => "";
-
         public Level Cycle(Level level, ActionInput actionInput)
         {
             ActionInput motion = Whither switch

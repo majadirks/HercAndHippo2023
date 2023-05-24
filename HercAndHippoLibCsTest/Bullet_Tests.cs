@@ -15,7 +15,7 @@ namespace HercAndHippoLibCsTest
             // Arrange
             int initialCount = 0;
             Player player = new((1, 1), Health: 100, AmmoCount: 0, Inventory: Inventory.EmptyInventory);
-            ShotCounter initialCounter = new((3,3), ConsoleColor.Blue, initialCount);
+            ShotCounter initialCounter = new((3,3), initialCount);
             ShotCounter cycledCounter = initialCounter with { Count = initialCount + 1 };
             Bullet bullet = new((2, 3), Direction.East);
             Bullet movedBullet = bullet with { Location = initialCounter.Location };
@@ -49,7 +49,7 @@ namespace HercAndHippoLibCsTest
             // Arrange
             int initialCount = 0;
             Player player = new((3, 2), Health: 100, AmmoCount: 1, Inventory: Inventory.EmptyInventory);
-            ShotCounter initialCounter = new((2, 2), ConsoleColor.Green, Count: initialCount);
+            ShotCounter initialCounter = new((2, 2), Count: initialCount);
             ShotCounter cycledCounter = initialCounter with { Count = initialCount + 1 };
             Level level = new(player, new HashSet<HercAndHippoObj>() { initialCounter });
             Bullet bullet = new(initialCounter.Location, Direction.West);
@@ -237,7 +237,7 @@ namespace HercAndHippoLibCsTest
             // Arrange
             Wall corner1 = new(ConsoleColor.Yellow, (10, 10));
             Player player = new((2,2), Health: 100,AmmoCount: 5, Inventory: Inventory.EmptyInventory);
-            ShotCounter counter = new((5, 2), ConsoleColor.Green, 0);
+            ShotCounter counter = new((5, 2), 0);
             Level level = new(player, new HashSet<HercAndHippoObj>() { corner1, counter });
 
             // Act and assert
@@ -269,8 +269,8 @@ namespace HercAndHippoLibCsTest
         {
             // Arrange
             Player player = new((Column.MIN_COL, 4), Health: 10, AmmoCount: 2, Inventory: Inventory.EmptyInventory);
-            ShotCounter northCounter = new((Column.MIN_COL, 1), ConsoleColor.Yellow, Count: 0);
-            ShotCounter southCounter = new((Column.MIN_COL, 7), ConsoleColor.Yellow, Count: 0);
+            ShotCounter northCounter = new((Column.MIN_COL, 1), Count: 0);
+            ShotCounter southCounter = new((Column.MIN_COL, 7), Count: 0);
             Level level = new(player, new HashSet<HercAndHippoObj>() { northCounter, southCounter });
             // Act
             level = level
@@ -290,8 +290,8 @@ namespace HercAndHippoLibCsTest
         {
             // Arrange
             Player player = new((4, Row.MIN_ROW), Health: 10, AmmoCount: 2, Inventory: Inventory.EmptyInventory);
-            ShotCounter westCounter = new((1, Row.MIN_ROW), ConsoleColor.Yellow, Count: 0);
-            ShotCounter eastCounter = new((7, Row.MIN_ROW), ConsoleColor.Yellow, Count: 0);
+            ShotCounter westCounter = new((1, Row.MIN_ROW), Count: 0);
+            ShotCounter eastCounter = new((7, Row.MIN_ROW), Count: 0);
             Level level = new(player, new HashSet<HercAndHippoObj>() { westCounter, eastCounter });
             // Act
             level = level
