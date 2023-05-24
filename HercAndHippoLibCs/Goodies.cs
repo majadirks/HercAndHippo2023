@@ -1,6 +1,6 @@
 ﻿namespace HercAndHippoLibCs
 {
-    public record Ammo(Location Location, AmmoCount Count) : IDisplayable, ITouchable
+    public record Ammo(Location Location, AmmoCount Count) : HercAndHippoObj, IDisplayable, ITouchable
     {
         public string ConsoleDisplayString => "ä";
 
@@ -15,7 +15,7 @@
                                 });
     }
 
-    public record Key(ConsoleColor Color, Location Location) : IDisplayable, ITouchable, ITakeable, IShootable
+    public record Key(ConsoleColor Color, Location Location) : HercAndHippoObj, IDisplayable, ITouchable, ITakeable
     {
         public string ConsoleDisplayString => "♀";
         public ConsoleColor BackgroundColor => ConsoleColor.Black;
