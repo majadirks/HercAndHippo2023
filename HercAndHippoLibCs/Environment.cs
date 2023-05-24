@@ -41,12 +41,21 @@ namespace HercAndHippoLibCs
         {
             int nextCount = Count + 1;
             int nextMod = Modulus;
+            Level nextState = level;
 
-            if (actionInput == ActionInput.MoveNorth) nextMod = Math.Max(1, nextMod - 1);
-            else if (actionInput == ActionInput.MoveSouth) nextMod = Math.Min(10, nextMod + 1);
+            if (actionInput == ActionInput.MoveNorth)
+            {
+                nextMod = Math.Max(1, nextMod - 1);
+                nextState = nextState.Player.Cycle(nextState, ActionInput.MoveSouth);
+            }
+            else if (actionInput == ActionInput.MoveSouth)
+            {
+                nextMod = Math.Min(10, nextMod + 1);
+                nextState = nextState.Player.Cycle(nextState, ActionInput.MoveNorth);
+            }
 
             if (Count % Modulus > 0)
-                return level.Replace(this, this with { Count = nextCount, Modulus = nextMod} );
+                nextState = nextState.Replace(this, this with { Count = nextCount, Modulus = nextMod} );
 
             ActionInput motion = Whither switch
             {
@@ -57,7 +66,8 @@ namespace HercAndHippoLibCs
                 _ => ActionInput.NoAction
 
             };
-            return level.Player.Cycle(level, motion).Replace(this, this with { Count = nextCount, Modulus = nextMod });
+
+            return nextState.Player.Cycle(level, motion).Replace(this, this with { Count = nextCount, Modulus = nextMod });
         }
     }
 }
