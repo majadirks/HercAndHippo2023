@@ -1,6 +1,6 @@
 ﻿namespace HercAndHippoLibCs
 {
-    public interface IDisplayable
+    public interface ILocatable
     {
         public Location Location { get;  }
         public ConsoleColor Color { get; }

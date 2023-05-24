@@ -2,21 +2,21 @@
 
 namespace HercAndHippoLibCs
 { 
-    public record Wall(ConsoleColor Color, Location Location) : HercAndHippoObj, IDisplayable, ITouchable, IShootable
+    public record Wall(ConsoleColor Color, Location Location) : HercAndHippoObj, ILocatable, ITouchable, IShootable
     {
         public string ConsoleDisplayString => "█";
         public ConsoleColor BackgroundColor => Color;
         public Level OnShot(Level level, Direction shotFrom, Bullet shotBy) => Behaviors.StopBullet(level,shotBy);
         public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy) => Behaviors.NoReaction(level);
     }
-    public record BreakableWall(ConsoleColor Color, Location Location) : HercAndHippoObj, IDisplayable, IShootable, ITouchable
+    public record BreakableWall(ConsoleColor Color, Location Location) : HercAndHippoObj, ILocatable, IShootable, ITouchable
     {
         public string ConsoleDisplayString => "▓";
         public ConsoleColor BackgroundColor => ConsoleColor.Black;
         public Level OnShot(Level level, Direction shotFrom, Bullet shotBy) => Behaviors.DieAndStopBullet(this, level, shotBy);
         public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy) => Behaviors.NoReaction(level);    
     }
-    public record Door(ConsoleColor BackgroundColor, Location Location) : HercAndHippoObj, IDisplayable, IShootable, ITouchable
+    public record Door(ConsoleColor BackgroundColor, Location Location) : HercAndHippoObj, ILocatable, IShootable, ITouchable
     {
         public string ConsoleDisplayString => "◙";
         public ConsoleColor Color => ConsoleColor.Black;
@@ -35,7 +35,7 @@ namespace HercAndHippoLibCs
         }
     }
 
-    public record Driver(Location Location, Direction Whither) : HercAndHippoObj, IDisplayable, ICyclable
+    public record Driver(Location Location, Direction Whither) : HercAndHippoObj, ILocatable, ICyclable
     {
         public ConsoleColor Color => ConsoleColor.White;
         public ConsoleColor BackgroundColor => ConsoleColor.Black;

@@ -14,7 +14,7 @@ namespace HercAndHippoLibCsTest
             Player northPlayer = initial with { Location = (5, 4) };
             Player southPlayer = initial with { Location = (5, 6) };
 
-            Level level = new(player: initial, displayables: new HashSet<IDisplayable>()
+            Level level = new(player: initial, displayables: new HashSet<ILocatable>()
             {
                 new Wall(ConsoleColor.DarkRed, (10, 10))
             });
@@ -48,7 +48,7 @@ namespace HercAndHippoLibCsTest
             // Arrange
             Player player = new((Column.MIN_COL + 5, 2), Health: 100, AmmoCount: 0, Inventory: EmptyInventory);
             Wall corner = new(ConsoleColor.Yellow, (10,10));
-            Level level = new(player, new HashSet<IDisplayable> {corner});
+            Level level = new(player, new HashSet<ILocatable> {corner});
             int attempt = 1;
             int maxAttempt = 10;
             Assert.IsFalse(level.Player.Location.Col == Column.MIN_COL);
@@ -75,7 +75,7 @@ namespace HercAndHippoLibCsTest
             // Arrange
             Player player = new((5, Row.MIN_ROW + 5), Health: 100, AmmoCount: 0, Inventory: EmptyInventory);
             Wall corner = new(ConsoleColor.Yellow, (10, 10));
-            Level level = new(player, new HashSet<IDisplayable> { corner });
+            Level level = new(player, new HashSet<ILocatable> { corner });
             int attempt = 1;
             int maxAttempt = 10;
             Assert.IsFalse(level.Player.Location.Row == Row.MIN_ROW);
@@ -102,7 +102,7 @@ namespace HercAndHippoLibCsTest
             // Arrange
             Player player = new((2, 2), Health: 100, AmmoCount: 0, Inventory: EmptyInventory);
             Wall corner = new(ConsoleColor.Yellow, (10, 10));
-            Level level = new(player, new HashSet<IDisplayable> { corner });
+            Level level = new(player, new HashSet<ILocatable> { corner });
             int attempt = 1;
             int maxAttempt = 10;
             Assert.IsFalse(level.Player.Location.Col == corner.Location.Col);
@@ -129,7 +129,7 @@ namespace HercAndHippoLibCsTest
             // Arrange
             Player player = new((2, 2), Health: 100, AmmoCount: 0, Inventory: EmptyInventory);
             Wall corner = new(ConsoleColor.Yellow, (10, 10));
-            Level level = new(player, new HashSet<IDisplayable> { corner });
+            Level level = new(player, new HashSet<ILocatable> { corner });
             int attempt = 1;
             int maxAttempt = 10;
             Assert.IsFalse(level.Player.Location.Row == corner.Location.Row);
@@ -234,7 +234,7 @@ namespace HercAndHippoLibCsTest
             Player movedPlayer = player with { Location = (3, 2) };
             TouchCounter initialCounter = new((3, 2), ConsoleColor.Green, startCount);
             TouchCounter cycledCounter = new((3, 2), ConsoleColor.Green, startCount + 1);
-            Level level = new(player, displayables: new HashSet<IDisplayable>() { initialCounter });
+            Level level = new(player, displayables: new HashSet<ILocatable>() { initialCounter });
 
             Assert.IsTrue(level.Contains(initialCounter));
             Assert.IsFalse(level.Contains(cycledCounter));
@@ -263,7 +263,7 @@ namespace HercAndHippoLibCsTest
             Bullet southBullet = new((5,6), Direction.South);
             Bullet westBullet = new((4,5), Direction.West);
             Wall corner = new(ConsoleColor.Yellow, (10, 10));
-            Level level = new(player, new HashSet<IDisplayable>() { corner });
+            Level level = new(player, new HashSet<ILocatable>() { corner });
 
             Assert.IsFalse(level.Contains(northBullet));
             Assert.IsFalse(level.Contains(eastBullet));
@@ -288,7 +288,7 @@ namespace HercAndHippoLibCsTest
             Bullet westBullet = new((9, 9), Direction.West);
             Wall corner = new(ConsoleColor.Yellow, (10, 10));
             Player player = new((10,9), Health: 100, AmmoCount: 5, Inventory: EmptyInventory);
-            Level level = new(player, new HashSet<IDisplayable>() { corner });
+            Level level = new(player, new HashSet<ILocatable>() { corner });
             Assert.IsFalse(level.Contains(westBullet));
 
             // Act
@@ -314,7 +314,7 @@ namespace HercAndHippoLibCsTest
             ConsoleColor keyColor = ConsoleColor.DarkRed;
             Key key = new(keyColor, (3, 2));
             Player movedPlayer = player with { Location = key.Location, Inventory = player.Inventory.AddItem(key) };
-            Level level = new(player: player, displayables: new HashSet<IDisplayable>() { key });
+            Level level = new(player: player, displayables: new HashSet<ILocatable>() { key });
 
             Assert.IsTrue(level.Contains(player));
             Assert.IsTrue(level.Contains(key));

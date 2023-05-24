@@ -5,7 +5,7 @@ using static System.Math;
 namespace HercAndHippoLibCs
 {
     public record Player(Location Location, Health Health, AmmoCount AmmoCount, Inventory Inventory) 
-        : HercAndHippoObj, IDisplayable, IShootable, ICyclable, ITouchable
+        : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouchable
     {
         public static Player Default(Location location) => new(Location: location, Health: 100, AmmoCount: 0, Inventory: Inventory.EmptyInventory);
         public static Player Default(Column col, Row row) => Player.Default((col, row));
@@ -44,7 +44,7 @@ namespace HercAndHippoLibCs
 
             // Otherwise, call the touch methods for any ITouchables and move over all else
             Level nextState = curState;
-            foreach (IDisplayable obj in curState.ObjectsAt(newLocation))
+            foreach (ILocatable obj in curState.ObjectsAt(newLocation))
             {
                 nextState = obj switch
                 {

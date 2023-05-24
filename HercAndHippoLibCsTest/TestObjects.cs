@@ -1,7 +1,7 @@
 ﻿namespace HercAndHippoLibCsTest
 {
     /// <summary>Increments a counter at each cycle </summary>
-    internal record CycleCounter(Location Location, ConsoleColor Color, int Count) : IDisplayable, ICyclable
+    internal record CycleCounter(Location Location, ConsoleColor Color, int Count) : ILocatable, ICyclable
     {
         public string ConsoleDisplayString => Count.ToString();
         public ConsoleColor BackgroundColor => ConsoleColor.Black;
@@ -10,7 +10,7 @@
     }
 
     /// <summary>Increments a counter when touched </summary>
-    internal record TouchCounter(Location Location, ConsoleColor Color, int Count) : IDisplayable, ITouchable
+    internal record TouchCounter(Location Location, ConsoleColor Color, int Count) : ILocatable, ITouchable
     {
         public string ConsoleDisplayString => Count.ToString();
         public ConsoleColor BackgroundColor => ConsoleColor.Black;
@@ -19,7 +19,7 @@
     }
 
     /// <summary>Increments a counter when shot </summary>
-    internal record ShotCounter(Location Location, ConsoleColor Color, int Count) : IDisplayable, IShootable
+    internal record ShotCounter(Location Location, ConsoleColor Color, int Count) : ILocatable, IShootable
     {
         public string ConsoleDisplayString => Count.ToString();
         public ConsoleColor BackgroundColor => ConsoleColor.Black;
@@ -28,7 +28,7 @@
     }
 
     /// <summary>Object that does not respond in any particular way to being shot or touched.</summary>
-    internal record Noninteractor(Location Location) : IDisplayable
+    internal record Noninteractor(Location Location) : ILocatable
     {
         public ConsoleColor Color => ConsoleColor.Gray;
         public ConsoleColor BackgroundColor => ConsoleColor.Black;

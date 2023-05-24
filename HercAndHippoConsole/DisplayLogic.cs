@@ -37,18 +37,18 @@ namespace HercAndHippoConsole
 
     internal readonly struct DisplayPlan
     {
-        private readonly IDisplayable[,] planArray;
+        private readonly ILocatable[,] planArray;
         private readonly BufferStats bufferStats;
         public static Location GetScreenCenter(int bufferWidth, int bufferHeight)
             => ((bufferWidth - VIEW_MARGIN) / 2, (bufferHeight - VIEW_MARGIN) / 2);
 
         public DisplayPlan(Level state, ScrollStatus scrollStatus, BufferStats bufferStats)
         {
-            IDisplayable[,] planArray = new IDisplayable[bufferStats.BufferWidth, bufferStats.BufferHeight];           
+            ILocatable[,] planArray = new ILocatable[bufferStats.BufferWidth, bufferStats.BufferHeight];           
             Location screenCenter = GetScreenCenter(bufferStats.BufferWidth, bufferStats.BufferHeight);
             Location logicalCenter = scrollStatus.LogicalCenter;
 
-            foreach (IDisplayable toShow in state.LevelObjects)
+            foreach (ILocatable toShow in state.LevelObjects)
             {
                 // Note that these are ints, not instances of the Column/Row type.
                 // If writeCol and writeRow were column/row respectively,
@@ -94,8 +94,8 @@ namespace HercAndHippoConsole
             {
                 for (int col = 0; col < maxCol; col++)
                 {
-                    IDisplayable oldDisp = oldDisplay[col, row];
-                    IDisplayable newDisp = newDisplay[col, row];
+                    ILocatable oldDisp = oldDisplay[col, row];
+                    ILocatable newDisp = newDisplay[col, row];
                     if ((newDisp != default && (forceRefresh || (oldDisp != newDisp))) &&
                         InView(col, row))
                     {

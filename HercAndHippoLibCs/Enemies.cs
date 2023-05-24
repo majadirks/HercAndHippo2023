@@ -1,6 +1,6 @@
 ﻿namespace HercAndHippoLibCs
 {
-    public record Bullet(Location Location, Direction Whither) : HercAndHippoObj, IDisplayable, ICyclable
+    public record Bullet(Location Location, Direction Whither) : HercAndHippoObj, ILocatable, ICyclable
     {
         public string ConsoleDisplayString => "○";
         public ConsoleColor Color => ConsoleColor.White;
