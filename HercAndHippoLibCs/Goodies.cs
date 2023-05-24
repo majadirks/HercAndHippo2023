@@ -1,6 +1,6 @@
 ﻿namespace HercAndHippoLibCs
 {
-    public record Ammo(Location Location, AmmoCount Count) : HercAndHippoObj, ILocatable, ITouchable
+    public record Ammo(Location Location, AmmoCount Count) : HercAndHippoObj, ILocatable, ITouchable, IConsoleDisplayable
     {
         public string ConsoleDisplayString => "ä";
 

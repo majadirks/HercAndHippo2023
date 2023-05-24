@@ -5,7 +5,7 @@ using static System.Math;
 namespace HercAndHippoLibCs
 {
     public record Player(Location Location, Health Health, AmmoCount AmmoCount, Inventory Inventory) 
-        : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouchable
+        : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouchable, IConsoleDisplayable
     {
         public static Player Default(Location location) => new(Location: location, Health: 100, AmmoCount: 0, Inventory: Inventory.EmptyInventory);
         public static Player Default(Column col, Row row) => Player.Default((col, row));
