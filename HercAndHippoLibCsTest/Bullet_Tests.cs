@@ -336,5 +336,34 @@ namespace HercAndHippoLibCsTest
                 .RefreshCyclables(ActionInput.NoAction);
             Assert.IsTrue(level.Contains(counter with { Count = 2 }));
         }
+
+        [TestMethod]
+        public void CanShootFromBottomRightCorner_Test()
+        {
+            // Arrange
+            Player player = new((10, 10), Health: 100, AmmoCount: 5, Inventory: Inventory.EmptyInventory);
+            Noninteractor corner = new((10,10)); // Just to be perverse
+            ShotCounter topRight = new((10, Row.MIN_ROW), 0);
+            ShotCounter bottomLeft = new((Column.MIN_COL, 10), 0);
+            Level level = new(player, new HashSet<HercAndHippoObj> {corner, topRight, bottomLeft });
+            Assert.AreEqual(10, level.Width);
+            Assert.AreEqual(10, level.Height);
+
+            // Act
+            level = level.RefreshCyclables(ActionInput.ShootWest).RefreshCyclables(ActionInput.ShootNorth);
+            int maxWait = 15;
+            int i = 0;
+            while (level.LevelObjects.Where(b => b is Bullet).Any())
+            {
+                level = level.RefreshCyclables(ActionInput.NoAction);
+                i++;
+                if (i > maxWait) Assert.IsTrue(false);
+            }
+
+            //Assert
+            Assert.IsTrue(level.Contains(topRight with { Count = 1 }));
+            Assert.IsTrue(level.Contains(bottomLeft with { Count = 1 }));
+
+        }
     }
 }
