@@ -27,5 +27,4 @@
 
 Enemies: 
 * Bullet:
-   - Can shoot something at the last column/row of a level (eg breakable wall)
    - Can be shot from bottom right corner of a level
