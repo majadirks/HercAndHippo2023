@@ -102,7 +102,7 @@ namespace HercAndHippoLibCs
             {
                 displayables.Add(new BreakableWall(ConsoleColor.Blue, (row % 5, row)));
             }
-            displayables.Add(new Driver(Direction.North));
+            displayables.Add(new Driver(Direction.North, Modulus: 3));
             displayables.Add(new Bullet((15, height - 1), Direction.Idle));
             return new Level(player, displayables);
         }

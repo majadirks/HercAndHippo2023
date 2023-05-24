@@ -35,10 +35,19 @@ namespace HercAndHippoLibCs
         }
     }
 
-    public record Driver(Direction Whither) : HercAndHippoObj, ICyclable
+    public record Driver(Direction Whither, int Modulus, int Count = 0) : HercAndHippoObj, ICyclable
     {
         public Level Cycle(Level level, ActionInput actionInput)
         {
+            int nextCount = Count + 1;
+            int nextMod = Modulus;
+
+            if (actionInput == ActionInput.MoveNorth) nextMod = Math.Max(1, nextMod - 1);
+            else if (actionInput == ActionInput.MoveSouth) nextMod = Math.Min(10, nextMod + 1);
+
+            if (Count % Modulus > 0)
+                return level.Replace(this, this with { Count = nextCount, Modulus = nextMod} );
+
             ActionInput motion = Whither switch
             {
                 Direction.East => ActionInput.MoveEast,
@@ -48,7 +57,7 @@ namespace HercAndHippoLibCs
                 _ => ActionInput.NoAction
 
             };
-            return level.Player.Cycle(level, motion);
+            return level.Player.Cycle(level, motion).Replace(this, this with { Count = nextCount, Modulus = nextMod });
         }
     }
 }
