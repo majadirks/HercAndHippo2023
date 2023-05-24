@@ -12,7 +12,7 @@ namespace HercAndHippoLibCsTest
             int expectedWidth = 4;
             int expectedHeight = 7;
             Player player = new((1, 1), Health: 100, AmmoCount: 0, Inventory: EmptyInventory);
-            Level level = new(player: player, displayables: new HashSet<IDisplayable>()
+            Level level = new(player: player, secondaryObjects: new HashSet<HercAndHippoObj>()
             {
                 new Wall(ConsoleColor.Yellow, new Location(Col: expectedWidth, Row: expectedHeight))
             }) ;
@@ -29,7 +29,7 @@ namespace HercAndHippoLibCsTest
             int expectedWidth = 4;
             int expectedHeight = 7;
             Player player = new(new Location(Col: expectedWidth, Row: expectedHeight), Health: 100, AmmoCount: 5, Inventory: EmptyInventory);
-            Level level = new(player: player, displayables: new HashSet<IDisplayable>()
+            Level level = new(player: player, secondaryObjects: new HashSet<HercAndHippoObj>()
             {
                 new Wall(ConsoleColor.Yellow, new Location(Col: expectedWidth, Row: expectedHeight))
             });
@@ -59,9 +59,9 @@ namespace HercAndHippoLibCsTest
             // Arrange
             Player player = new(new Location(Col: 1, Row: 1), Health: 100, AmmoCount: 5, Inventory: EmptyInventory);
             int startCount = 0;
-            CycleCounter initialCounter = new((2, 2), ConsoleColor.Green, startCount);
-            CycleCounter cycledCounter = new((2, 2), ConsoleColor.Green, startCount + 1);
-            Level level = new(player: player, displayables: new HashSet<IDisplayable>() { initialCounter });
+            CycleCounter initialCounter = new((2, 2), startCount);
+            CycleCounter cycledCounter = new((2, 2), startCount + 1);
+            Level level = new(player: player, secondaryObjects: new HashSet<HercAndHippoObj>() { initialCounter });
 
             // Check that we set this up correctly
             Assert.IsTrue(level.Contains(initialCounter));

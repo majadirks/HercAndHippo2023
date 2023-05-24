@@ -10,7 +10,7 @@ namespace HercAndHippoLibCs
     {
         public static readonly Level WallsLevel = new(
             player: new Player((4, 3), Health: 100, AmmoCount: 0, Inventory: Inventory.EmptyInventory),
-            displayables: new HashSet<IDisplayable>
+            secondaryObjects: new HashSet<HercAndHippoObj>
             {
                 new Wall(ConsoleColor.Yellow, (1,1)),
                 new Wall(ConsoleColor.Yellow, (2,1)),
@@ -76,7 +76,7 @@ namespace HercAndHippoLibCs
 
         public static readonly Level Clones = new(
             player: new Player((2, 2), Health: 100, AmmoCount: 200, Inventory: Inventory.EmptyInventory),
-            displayables: new HashSet<IDisplayable>()
+            secondaryObjects: new HashSet<HercAndHippoObj>()
             {
                 new Wall(ConsoleColor.DarkGreen, (100, 100)),
                 new Player((5, 5), Health: 100, AmmoCount: 200, Inventory: Inventory.EmptyInventory),
@@ -90,7 +90,7 @@ namespace HercAndHippoLibCs
             int width = 120;
             int height = 120;
             Player player = new((10, height - 1), Health: 100, AmmoCount: 200, Inventory: Inventory.EmptyInventory);
-            HashSet<IDisplayable> displayables = new();
+            HashSet<HercAndHippoObj> displayables = new();
             for (Column col = 0; col <= width; col++)
             {
                 displayables.Add(new Bullet((col, 2), Direction.South));
@@ -102,7 +102,7 @@ namespace HercAndHippoLibCs
             {
                 displayables.Add(new BreakableWall(ConsoleColor.Blue, (row % 5, row)));
             }
-            displayables.Add(new Driver((width, height), Direction.North));
+            displayables.Add(new Driver(Direction.North));
             displayables.Add(new Bullet((15, height - 1), Direction.Idle));
             return new Level(player, displayables);
         }

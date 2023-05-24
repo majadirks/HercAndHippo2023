@@ -19,7 +19,7 @@ namespace HercAndHippoLibCsTest
             Player impossiblePosition = Player.Default((4, 2));
             Wall wall = new(ConsoleColor.White, (4, 2));
             Wall corner = new(ConsoleColor.White, (10, 10));
-            Level level = new(initial, new HashSet<IDisplayable> { wall, corner });
+            Level level = new(initial, new HashSet<HercAndHippoObj> { wall, corner });
 
             // Act and Assert
             level = level.RefreshCyclables(ActionInput.MoveEast);
@@ -36,7 +36,7 @@ namespace HercAndHippoLibCsTest
             Player player = Player.Default((2, 2)) with { AmmoCount = 1 };
             Wall wall = new(ConsoleColor.White, (4, 2));
             Wall corner = new(ConsoleColor.White, (10, 10));
-            Level level = new(player, new HashSet<IDisplayable> { wall, corner });
+            Level level = new(player, new HashSet<HercAndHippoObj> { wall, corner });
             Bullet initialBullet = new((3, 2), Direction.East);
             Bullet bulletOverWall = new(wall.Location, Direction.East);
 
@@ -60,7 +60,7 @@ namespace HercAndHippoLibCsTest
             Player impossiblePosition = Player.Default((4, 2));
             BreakableWall bwall = new(ConsoleColor.White, (4, 2));
             BreakableWall corner = new(ConsoleColor.White, (10, 10));
-            Level level = new(initial, new HashSet<IDisplayable> { bwall, corner });
+            Level level = new(initial, new HashSet<HercAndHippoObj> { bwall, corner });
 
             // Act and Assert
             level = level.RefreshCyclables(ActionInput.MoveEast);
@@ -77,7 +77,7 @@ namespace HercAndHippoLibCsTest
             Player initial = Player.Default((2, 2)) with { AmmoCount = 1 };
             BreakableWall bwall = new(ConsoleColor.White, (4, 2));
             Wall corner = new(ConsoleColor.White, (10, 10));
-            Level level = new(initial, new HashSet<IDisplayable> { bwall, corner });
+            Level level = new(initial, new HashSet<HercAndHippoObj> { bwall, corner });
 
             // Act
             level = level.RefreshCyclables(ActionInput.ShootEast);
@@ -96,7 +96,7 @@ namespace HercAndHippoLibCsTest
             Player player = Player.Default((2, 2)) with { AmmoCount = 1 };
             Door door = new(ConsoleColor.DarkMagenta, (4, 2));
             Wall corner = new(ConsoleColor.White, (10, 10));
-            Level level = new(player, new HashSet<IDisplayable> { door, corner });
+            Level level = new(player, new HashSet<HercAndHippoObj> { door, corner });
             Bullet initialBullet = new((3, 2), Direction.East);
             Bullet bulletOverWall = new(door.Location, Direction.East);
 
@@ -121,7 +121,7 @@ namespace HercAndHippoLibCsTest
             Player playerAtDoor = Player.Default((4, 2));
             Door door = new(ConsoleColor.Cyan, (4, 2));
             Wall corner = new(ConsoleColor.White, (10, 10));
-            Level level = new(initial, new HashSet<IDisplayable> { door, corner });
+            Level level = new(initial, new HashSet<HercAndHippoObj> { door, corner });
 
             // Act and Assert
             level = level.RefreshCyclables(ActionInput.MoveEast);
@@ -142,7 +142,7 @@ namespace HercAndHippoLibCsTest
             Key key = new(ConsoleColor.Cyan, (3, 2));
             Player secondPosition = Player.Default((3, 2)) with { Inventory = new Inventory(starterItem: key) };
             Wall corner = new(ConsoleColor.White, (10, 10));
-            Level level = new(initial, new HashSet<IDisplayable> { door, key, corner });
+            Level level = new(initial, new HashSet<HercAndHippoObj> { door, key, corner });
 
             // Act and Assert
             level = level.RefreshCyclables(ActionInput.MoveEast);

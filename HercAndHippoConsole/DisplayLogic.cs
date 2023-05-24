@@ -37,30 +37,30 @@ namespace HercAndHippoConsole
 
     internal readonly struct DisplayPlan
     {
-        private readonly IDisplayable[,] planArray;
+        private readonly IConsoleDisplayable[,] planArray;
         private readonly BufferStats bufferStats;
         public static Location GetScreenCenter(int bufferWidth, int bufferHeight)
             => ((bufferWidth - VIEW_MARGIN) / 2, (bufferHeight - VIEW_MARGIN) / 2);
 
         public DisplayPlan(Level state, ScrollStatus scrollStatus, BufferStats bufferStats)
         {
-            IDisplayable[,] planArray = new IDisplayable[bufferStats.BufferWidth, bufferStats.BufferHeight];           
+            IConsoleDisplayable[,] planArray = new IConsoleDisplayable[bufferStats.BufferWidth, bufferStats.BufferHeight];           
             Location screenCenter = GetScreenCenter(bufferStats.BufferWidth, bufferStats.BufferHeight);
             Location logicalCenter = scrollStatus.LogicalCenter;
 
-            foreach (IDisplayable toShow in state.LevelObjects)
+            foreach (ILocatable levelObj in state.LevelObjects.Where(obj => obj is IConsoleDisplayable))
             {
                 // Note that these are ints, not instances of the Column/Row type.
                 // If writeCol and writeRow were column/row respectively,
                 // they would "bottom out" at 1. This would cause a bug where
                 // things that should disappear off the left edge of the screen
                 // would just hang out in column 1.
-                int writeCol = screenCenter.Col - logicalCenter.Col + toShow.Location.Col; 
-                int writeRow = screenCenter.Row - logicalCenter.Row + toShow.Location.Row;
+                int writeCol = screenCenter.Col - logicalCenter.Col + levelObj.Location.Col; 
+                int writeRow = screenCenter.Row - logicalCenter.Row + levelObj.Location.Row;
                 if (writeCol >= MIN_DISPLAY_COL && writeCol < bufferStats.BufferWidth - VIEW_MARGIN && 
                     writeRow >= MIN_DISPLAY_ROW && writeRow < bufferStats.BufferHeight - VIEW_MARGIN)
                 {
-                    planArray[writeCol, writeRow] = toShow;
+                    planArray[writeCol, writeRow] = (IConsoleDisplayable) levelObj;
                 }
             }
 
@@ -94,8 +94,8 @@ namespace HercAndHippoConsole
             {
                 for (int col = 0; col < maxCol; col++)
                 {
-                    IDisplayable oldDisp = oldDisplay[col, row];
-                    IDisplayable newDisp = newDisplay[col, row];
+                    IConsoleDisplayable oldDisp = oldDisplay[col, row];
+                    IConsoleDisplayable newDisp = newDisplay[col, row];
                     if ((newDisp != default && (forceRefresh || (oldDisp != newDisp))) &&
                         InView(col, row))
                     {
