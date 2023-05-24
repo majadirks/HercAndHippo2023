@@ -14,7 +14,7 @@ namespace HercAndHippoLibCsTest
             Player northPlayer = initial with { Location = (5, 4) };
             Player southPlayer = initial with { Location = (5, 6) };
 
-            Level level = new(player: initial, displayables: new HashSet<HercAndHippoObj>()
+            Level level = new(player: initial, secondaryObjects: new HashSet<HercAndHippoObj>()
             {
                 new Wall(ConsoleColor.DarkRed, (10, 10))
             });
@@ -234,7 +234,7 @@ namespace HercAndHippoLibCsTest
             Player movedPlayer = player with { Location = (3, 2) };
             TouchCounter initialCounter = new((3, 2), startCount);
             TouchCounter cycledCounter = new((3, 2), startCount + 1);
-            Level level = new(player, displayables: new HashSet<HercAndHippoObj>() { initialCounter });
+            Level level = new(player, secondaryObjects: new HashSet<HercAndHippoObj>() { initialCounter });
 
             Assert.IsTrue(level.Contains(initialCounter));
             Assert.IsFalse(level.Contains(cycledCounter));
@@ -314,7 +314,7 @@ namespace HercAndHippoLibCsTest
             ConsoleColor keyColor = ConsoleColor.DarkRed;
             Key key = new(keyColor, (3, 2));
             Player movedPlayer = player with { Location = key.Location, Inventory = player.Inventory.AddItem(key) };
-            Level level = new(player: player, displayables: new HashSet<HercAndHippoObj>() { key });
+            Level level = new(player: player, secondaryObjects: new HashSet<HercAndHippoObj>() { key });
 
             Assert.IsTrue(level.Contains(player));
             Assert.IsTrue(level.Contains(key));

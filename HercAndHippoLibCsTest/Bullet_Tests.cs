@@ -19,7 +19,7 @@ namespace HercAndHippoLibCsTest
             ShotCounter cycledCounter = initialCounter with { Count = initialCount + 1 };
             Bullet bullet = new((2, 3), Direction.East);
             Bullet movedBullet = bullet with { Location = initialCounter.Location };
-            Level level = new(player: player, displayables: new HashSet<HercAndHippoObj> { bullet, initialCounter });
+            Level level = new(player: player, secondaryObjects: new HashSet<HercAndHippoObj> { bullet, initialCounter });
             Assert.IsTrue(level.Contains(bullet));
             Assert.IsFalse(level.Contains(movedBullet));
             Assert.IsTrue(level.Contains(initialCounter));

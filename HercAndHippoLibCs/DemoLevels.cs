@@ -10,7 +10,7 @@ namespace HercAndHippoLibCs
     {
         public static readonly Level WallsLevel = new(
             player: new Player((4, 3), Health: 100, AmmoCount: 0, Inventory: Inventory.EmptyInventory),
-            displayables: new HashSet<HercAndHippoObj>
+            secondaryObjects: new HashSet<HercAndHippoObj>
             {
                 new Wall(ConsoleColor.Yellow, (1,1)),
                 new Wall(ConsoleColor.Yellow, (2,1)),
@@ -76,7 +76,7 @@ namespace HercAndHippoLibCs
 
         public static readonly Level Clones = new(
             player: new Player((2, 2), Health: 100, AmmoCount: 200, Inventory: Inventory.EmptyInventory),
-            displayables: new HashSet<HercAndHippoObj>()
+            secondaryObjects: new HashSet<HercAndHippoObj>()
             {
                 new Wall(ConsoleColor.DarkGreen, (100, 100)),
                 new Player((5, 5), Health: 100, AmmoCount: 200, Inventory: Inventory.EmptyInventory),
