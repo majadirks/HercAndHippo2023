@@ -11,6 +11,7 @@ namespace HercAndHippoConsole
             Console.ForegroundColor = ConsoleColor.White;
             Console.BackgroundColor = ConsoleColor.Black;
         }
+        
     }
     internal class BufferStats
     {
@@ -116,6 +117,9 @@ namespace HercAndHippoConsole
                     }
                 } // end for (columns)
             } // end for (rows)
+
+            Console.SetCursorPosition(1, Console.BufferHeight - 1); // Move the cursor so it doesn't always appear next to the player
+
         } // end method RefreshDisplay()
     } // end struct DisplayPlan
 } // end namespace

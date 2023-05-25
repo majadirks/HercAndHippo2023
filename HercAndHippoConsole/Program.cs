@@ -8,7 +8,7 @@ const int REFRESH_FREQUENCY_HZ = 50;
 // Initialize data
 CycleTimer cycleTimer = new(frequencyHz: REFRESH_FREQUENCY_HZ);
 ConsoleKeyInfo keyInfo;
-Level state = DemoLevels.SoManyBullets();
+Level state = DemoLevels.WallsLevel;
 ScrollStatus scrollStatus = ScrollStatus.Default(state.Player.Location);
 BufferStats bufferStats = new(bufferSizeChanged: true, bufferWidth: Console.BufferWidth, bufferHeight: Console.BufferHeight);
 DisplayPlan displayPlan = new(state, scrollStatus, bufferStats);
@@ -28,9 +28,8 @@ while (true)
     keyInfo = Console.KeyAvailable ? Console.ReadKey() : default; // Get next key input
     if (keyInfo.KeyChar == 'q') break; // Quit on q
     state = state.RefreshCyclables(keyInfo.ToActionInput()); // Update level state using key input
-    scrollStatus = scrollStatus.Update(state.Player.Location, bufferStats); // Plan to scroll screen if needed. displayPlan contains the previous state so it can compare and update only affected stuff.
+    scrollStatus = scrollStatus.Update(state.Player.Location, bufferStats); // Plan to scroll screen if needed.
     displayPlan.RefreshDisplay(newState: state, newScrollStatus: scrollStatus); // Re-display anything that changed
-    Console.SetCursorPosition(1, Console.BufferHeight - 1); // Move the cursor so it doesn't always appear next to the player
 }
 ResetConsoleColors(); // Clean up
 
