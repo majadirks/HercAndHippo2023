@@ -4,13 +4,13 @@ namespace HercAndHippoLibCs
 {
     public readonly struct Level
     {
-        public Player Player { get; private init; }
+        public readonly Player Player { get; private init; }
         public readonly int Width { get; private init; }
         public readonly int Height { get; private init; }
-        private HashSet<HercAndHippoObj> SecondaryObjects { get; init; } // secondary, ie not the player
+        private readonly HashSet<HercAndHippoObj> SecondaryObjects { get; init; } // secondary, ie not the player
         public Level(Player player, HashSet<HercAndHippoObj> secondaryObjects)
             => (Player, SecondaryObjects, Width, Height) = (player, secondaryObjects, GetWidth(secondaryObjects), GetHeight(secondaryObjects));
-        public HashSet<HercAndHippoObj> LevelObjects => SecondaryObjects.AddObject(Player);
+        public readonly HashSet<HercAndHippoObj> LevelObjects => SecondaryObjects.AddObject(Player);
         public Level WithPlayer(Player player) => this with { Player = player };
         public IEnumerable<HercAndHippoObj> ObjectsAt(Location location) => LevelObjects.Where(d => d is ILocatable dAtLoc && dAtLoc.Location.Equals(location));
         public Level Without(HercAndHippoObj toRemove) => this with { SecondaryObjects = SecondaryObjects.RemoveObject(toRemove) };
