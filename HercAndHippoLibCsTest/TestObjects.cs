@@ -24,4 +24,9 @@
 
     /// <summary>Object that does not respond in any particular way to being shot or touched.</summary>
     internal record Noninteractor(Location Location) : HercAndHippoObj, ILocatable {}
+
+    internal record Blocker(Location Location) : HercAndHippoObj, ILocatable
+    {
+        public override bool IsBlocking => true; // this is the default anyway, but make that default explicit for this object
+    }
 }
