@@ -39,12 +39,13 @@ namespace HercAndHippoLibCs
         private Level TryMoveTo(Location newLocation, Direction approachFrom, Level curState)
         {
             // If no obstacles, move
-            if (!curState.ObjectsAt(newLocation).Any()) 
+            if (!IsBlocked(curState, approachFrom.Mirror()))
                 return curState.WithPlayer(this with { Location = newLocation });
 
             // Otherwise, call the touch methods for any ITouchables and move over all else
             Level nextState = curState;
-            foreach (ILocatable obj in curState.ObjectsAt(newLocation))
+            // The ObjectsAt() method returns ILocatable objects, so the following cast is safe.
+            foreach (ILocatable obj in curState.ObjectsAt(newLocation).Cast<ILocatable>())
             {
                 nextState = obj switch
                 {

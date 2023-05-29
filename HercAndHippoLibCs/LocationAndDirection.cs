@@ -46,7 +46,7 @@ namespace HercAndHippoLibCs
                 Direction.North => Direction.South,
                 Direction.South => Direction.North,
                 Direction.East => Direction.West,
-                Direction.West => Direction.North,
+                Direction.West => Direction.East,
                 Direction.Seek => Direction.Flee,
                 Direction.Flee => Direction.Seek,
                 Direction.Idle => Direction.Idle,
