@@ -36,25 +36,28 @@ namespace HercAndHippoLibCs
         public Level Cycle(Level level, ActionInput actionInput)
         {
             Velocity nextVelocity = Velocity.NextVelocity(actionInput);
+            Player nextPlayer = this with { Velocity = nextVelocity };
+            Level nextState = level.WithPlayer(nextPlayer);
+
             // Motion east/west
             if (nextVelocity != 0)
             {
                 if (nextVelocity < 0)
-                    return TryMoveTo((Location.Col.NextWest(), Location.Row), approachFrom: Direction.East, curState: level);
+                    return TryMoveTo((Location.Col.NextWest(), Location.Row), approachFrom: Direction.East, curState: nextState);
                 else
-                    return TryMoveTo((Location.Col.NextEast(level.Width), Location.Row), approachFrom: Direction.West, curState: level);
+                    return TryMoveTo((Location.Col.NextEast(level.Width), Location.Row), approachFrom: Direction.West, curState: nextState);
             }
             // Motion north/south and shooting
            else 
             return actionInput switch
             {      
-                ActionInput.MoveNorth => TryMoveTo((Location.Col, Location.Row.NextNorth()), approachFrom: Direction.South, curState: level),
-                ActionInput.MoveSouth => TryMoveTo((Location.Col, Location.Row.NextSouth(level.Height)), approachFrom: Direction.North, curState: level),
-                ActionInput.ShootNorth => Shoot(level, Direction.North),
-                ActionInput.ShootSouth => Shoot(level, Direction.South),
-                ActionInput.ShootWest => Shoot(level, Direction.West),
-                ActionInput.ShootEast => Shoot(level, Direction.East),
-                _ => Behaviors.NoReaction(level)
+                ActionInput.MoveNorth => TryMoveTo((Location.Col, Location.Row.NextNorth()), approachFrom: Direction.South, curState: nextState),
+                ActionInput.MoveSouth => TryMoveTo((Location.Col, Location.Row.NextSouth(level.Height)), approachFrom: Direction.North, curState: nextState),
+                ActionInput.ShootNorth => Shoot(nextState, Direction.North),
+                ActionInput.ShootSouth => Shoot(nextState, Direction.South),
+                ActionInput.ShootWest => Shoot(nextState, Direction.West),
+                ActionInput.ShootEast => Shoot(nextState, Direction.East),
+                _ => Behaviors.NoReaction(nextState)
             };
         }
 
