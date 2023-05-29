@@ -2,7 +2,17 @@
 
 namespace HercAndHippoLibCs
 {
-    public abstract record HercAndHippoObj {}
+    public abstract record HercAndHippoObj 
+    {
+        public virtual bool IsBlocking => this is ILocatable;
+
+        //public bool IsBlocked(Direction where)
+        //{
+        //    if (this is not ILocatable loc) return false;
+            
+        //}
+
+    }
 
     #region HercAndHippoObjCollection. No good reason to use this. Commenting out for now, will probably delete in the future.
     //public class HercAndHippoObjCollection : IEnumerable<HercAndHippoObj>, IEquatable<HercAndHippoObjCollection>
