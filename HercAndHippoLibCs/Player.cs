@@ -44,7 +44,8 @@ namespace HercAndHippoLibCs
 
             // Otherwise, call the touch methods for any ITouchables and move over all else
             Level nextState = curState;
-            foreach (ILocatable obj in curState.ObjectsAt(newLocation))
+            // The ObjectsAt() method returns ILocatable objects, so the following cast is safe.
+            foreach (ILocatable obj in curState.ObjectsAt(newLocation).Cast<ILocatable>())
             {
                 nextState = obj switch
                 {
