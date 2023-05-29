@@ -4,19 +4,36 @@ using static System.Math;
 
 namespace HercAndHippoLibCs
 {
-    public record Player(Location Location, Health Health, AmmoCount AmmoCount, Inventory Inventory) 
-        : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouchable, IConsoleDisplayable
+    public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouchable, IConsoleDisplayable
     {
-        public static Player Default(Location location) => new(Location: location, Health: 100, AmmoCount: 0, Inventory: Inventory.EmptyInventory);
-        public static Player Default(Column col, Row row) => Player.Default((col, row));
-        public string ConsoleDisplayString => HasHealth ? "☻" : "RIP";
+        public Player(Location location, Health health, AmmoCount ammoCount, Inventory inventory)
+        {
+            Location = location;
+            Health = health;
+            AmmoCount = ammoCount;
+            Inventory = inventory;
+            Velocity = 0;
+        }
+
+        // Properties
+        public Location Location { get; init; }
+        public Health Health { get; init; }
+        public AmmoCount AmmoCount { get; init; }
+        public Inventory Inventory { get; init; }
+        public string ConsoleDisplayString => HasHealth ? "☻" : "X";
         public Color Color => Color.White;
         public Color BackgroundColor => Color.Blue;
+        public Velocity Velocity { get; init; }
+        public bool HasHealth => Health.HasHealth;
+        public bool HasAmmo => AmmoCount.HasAmmo;
+
+        public static Player Default(Location location) => new(location: location, health: 100, ammoCount: 0, inventory: Inventory.EmptyInventory);
+        public static Player Default(Column col, Row row) => Player.Default((col, row));
+
+
         public override string ToString() => $"Player at location {Location} with {Health}, {AmmoCount}, Inventory Size: {Inventory.Count}";
         public Level OnShot(Level level, Direction shotFrom, Bullet shotBy)
             => level.WithPlayer(this with { Health = Health - 5 });
-        public bool HasHealth => Health.HasHealth;
-        public bool HasAmmo => AmmoCount.HasAmmo;
         public Level Cycle(Level level, ActionInput actionInput)
          => actionInput switch
          {

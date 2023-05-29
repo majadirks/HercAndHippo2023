@@ -11,7 +11,7 @@ namespace HercAndHippoLibCsTest
             // Arrange
             int expectedWidth = 4;
             int expectedHeight = 7;
-            Player player = new((1, 1), Health: 100, AmmoCount: 0, Inventory: EmptyInventory);
+            Player player = new((1, 1), health: 100, ammoCount: 0, inventory: EmptyInventory);
             Level level = new(player: player, secondaryObjects: new HashSet<HercAndHippoObj>()
             {
                 new Wall(Color.Yellow, new Location(Col: expectedWidth, Row: expectedHeight))
@@ -28,7 +28,7 @@ namespace HercAndHippoLibCsTest
             // Arrange
             int expectedWidth = 4;
             int expectedHeight = 7;
-            Player player = new(new Location(Col: expectedWidth, Row: expectedHeight), Health: 100, AmmoCount: 5, Inventory: EmptyInventory);
+            Player player = new(new Location(Col: expectedWidth, Row: expectedHeight), health: 100, ammoCount: 5, inventory: EmptyInventory);
             Level level = new(player: player, secondaryObjects: new HashSet<HercAndHippoObj>()
             {
                 new Wall(Color.Yellow, new Location(Col: expectedWidth, Row: expectedHeight))
@@ -57,7 +57,7 @@ namespace HercAndHippoLibCsTest
         public void RefreshCyclables_Test()
         {
             // Arrange
-            Player player = new(new Location(Col: 1, Row: 1), Health: 100, AmmoCount: 5, Inventory: EmptyInventory);
+            Player player = new(new Location(Col: 1, Row: 1), health: 100, ammoCount: 5, inventory: EmptyInventory);
             int startCount = 0;
             CycleCounter initialCounter = new((2, 2), startCount);
             CycleCounter cycledCounter = new((2, 2), startCount + 1);
