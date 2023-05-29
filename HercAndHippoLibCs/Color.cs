@@ -6,4 +6,5 @@
         Red, Yellow, Green, Cyan, Blue, Magenta,
         DarkRed, DarkYellow, DarkGreen, DarkCyan, DarkBlue, DarkMagenta
     }
+
 }
