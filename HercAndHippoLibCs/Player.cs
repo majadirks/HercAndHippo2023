@@ -170,4 +170,49 @@ namespace HercAndHippoLibCs
         public static implicit operator int(AmmoCount ac) => ac.AmmoAmt;
         public override string ToString() => $"Ammo Count: {AmmoAmt}";
     }
+
+    public record Velocity
+    {
+        private const float MAX_VELOCITY = 12.0f;
+        private const float MIN_VELOCITY = -12.0f;
+        private const float ZERO_THRESHOLD = 0.5f;
+        private const float ACCELERATION = 2f;
+        public float CurrentVelocity { get; init; }
+        public static Velocity DefaultVelocity { get; } = new(velocity: 0);
+        public Velocity(float velocity)
+        {
+            CurrentVelocity = Min(Max(velocity, MIN_VELOCITY), MAX_VELOCITY);
+            if (Abs(CurrentVelocity) <= ZERO_THRESHOLD || Sign(CurrentVelocity) != Sign(velocity))
+                CurrentVelocity = 0;
+        }
+
+        public Velocity NextVelocity(ActionInput actionInput)
+        => actionInput switch
+        {
+            ActionInput.MoveEast => AccelerateEastward(),
+            ActionInput.MoveWest => AccelerateWestward(),
+            _ => SlowDown()
+        };
+
+
+        public Velocity Reverse(ActionInput actionInput)
+            => actionInput switch
+            {
+                ActionInput.MoveEast => AccelerateWestward(),
+                ActionInput.MoveWest => AccelerateEastward(),
+                _ => SlowDown()
+            };
+        public Velocity SlowDown()
+        {
+            if (CurrentVelocity > 0) return AccelerateWestward();
+            else if (CurrentVelocity < 0) return AccelerateEastward();
+            else return this;
+        }
+        private Velocity AccelerateEastward() => new(velocity: CurrentVelocity + ACCELERATION);
+        private Velocity AccelerateWestward() => new(velocity: CurrentVelocity - ACCELERATION);
+
+        public static implicit operator Velocity(float cv) => new(velocity: cv);
+        public static implicit operator float(Velocity veloc) => veloc.CurrentVelocity;
+    }
+
 }
