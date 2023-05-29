@@ -39,7 +39,7 @@ namespace HercAndHippoLibCs
         private Level TryMoveTo(Location newLocation, Direction approachFrom, Level curState)
         {
             // If no obstacles, move
-            if (!curState.ObjectsAt(newLocation).Any()) 
+            if (!IsBlocked(curState, approachFrom.Mirror()))
                 return curState.WithPlayer(this with { Location = newLocation });
 
             // Otherwise, call the touch methods for any ITouchables and move over all else
