@@ -1,0 +1,15 @@
+* Acceleration applies only to East/West motion. 
+  - North/south acceleration is to be handled by gravity and
+     some sort of "vertical acceleration" variable that depends on the level's gravity value.
+
+* Reference video: https://www.youtube.com/watch?v=9d5DsYWrIgg
+  - if (moving west) velocity -= some constant
+  - if (moving east) velocity += same constant
+  - if (not moving either direction and velocity > 0) decrease velocity by the same constant
+  - if (not moving either direction and velocity < 0) increase velocity by the same constant.
+  - if abs(velocity) <= some threshold, set velocity = 0
+  - Cap out at fixed max velocity
+  - Boost modifier increases the max velocity to a higher cap
+  
+  - Upshot: accelerate/decelerate at same constant rate
+
