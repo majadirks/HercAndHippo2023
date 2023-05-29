@@ -35,18 +35,31 @@ namespace HercAndHippoLibCs
         public Level OnShot(Level level, Direction shotFrom, Bullet shotBy)
             => level.WithPlayer(this with { Health = Health - 5 });
         public Level Cycle(Level level, ActionInput actionInput)
-         => actionInput switch
-         {
-             ActionInput.MoveWest => TryMoveTo((Location.Col.NextWest(), Location.Row), approachFrom: Direction.East, curState: level),
-             ActionInput.MoveEast => TryMoveTo((Location.Col.NextEast(level.Width), Location.Row), approachFrom: Direction.West, curState: level),
-             ActionInput.MoveNorth => TryMoveTo((Location.Col, Location.Row.NextNorth()), approachFrom: Direction.South, curState: level),
-             ActionInput.MoveSouth => TryMoveTo((Location.Col, Location.Row.NextSouth(level.Height)), approachFrom: Direction.North, curState: level),
-             ActionInput.ShootNorth => Shoot(level, Direction.North),
-             ActionInput.ShootSouth => Shoot(level, Direction.South),
-             ActionInput.ShootWest => Shoot(level, Direction.West),
-             ActionInput.ShootEast => Shoot(level, Direction.East),
-             _ => Behaviors.NoReaction(level)
-         };
+        {
+            // Motion east/west
+            if (actionInput == ActionInput.MoveEast || actionInput == ActionInput.MoveWest)
+            {
+                return actionInput switch
+                {
+                    ActionInput.MoveWest => TryMoveTo((Location.Col.NextWest(), Location.Row), approachFrom: Direction.East, curState: level),
+                    ActionInput.MoveEast => TryMoveTo((Location.Col.NextEast(level.Width), Location.Row), approachFrom: Direction.West, curState: level),
+                    _ => throw new Exception($"Expected MoveEast or MoveWest but received {actionInput}.")
+                };
+            }
+            // Motion north/south and shooting
+           else 
+            return actionInput switch
+            {      
+                ActionInput.MoveNorth => TryMoveTo((Location.Col, Location.Row.NextNorth()), approachFrom: Direction.South, curState: level),
+                ActionInput.MoveSouth => TryMoveTo((Location.Col, Location.Row.NextSouth(level.Height)), approachFrom: Direction.North, curState: level),
+                ActionInput.ShootNorth => Shoot(level, Direction.North),
+                ActionInput.ShootSouth => Shoot(level, Direction.South),
+                ActionInput.ShootWest => Shoot(level, Direction.West),
+                ActionInput.ShootEast => Shoot(level, Direction.East),
+                _ => Behaviors.NoReaction(level)
+            };
+        }
+
         public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy)
             => touchedBy switch
             {
