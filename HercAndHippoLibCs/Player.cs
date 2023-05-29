@@ -30,23 +30,19 @@ namespace HercAndHippoLibCs
         public static Player Default(Location location) => new(location: location, health: 100, ammoCount: 0, inventory: Inventory.EmptyInventory);
         public static Player Default(Column col, Row row) => Player.Default((col, row));
 
-
         public override string ToString() => $"Player at location {Location} with {Health}, {AmmoCount}, Inventory Size: {Inventory.Count}";
         public Level OnShot(Level level, Direction shotFrom, Bullet shotBy)
             => level.WithPlayer(this with { Health = Health - 5 });
         public Level Cycle(Level level, ActionInput actionInput)
         {
             Velocity nextVelocity = Velocity.NextVelocity(actionInput);
-
             // Motion east/west
-            if (actionInput == ActionInput.MoveEast || actionInput == ActionInput.MoveWest)
+            if (nextVelocity != 0)
             {
-                return actionInput switch
-                {
-                    ActionInput.MoveWest => TryMoveTo((Location.Col.NextWest(), Location.Row), approachFrom: Direction.East, curState: level),
-                    ActionInput.MoveEast => TryMoveTo((Location.Col.NextEast(level.Width), Location.Row), approachFrom: Direction.West, curState: level),
-                    _ => throw new Exception($"Expected MoveEast or MoveWest but received {actionInput}.")
-                };
+                if (nextVelocity < 0)
+                    return TryMoveTo((Location.Col.NextWest(), Location.Row), approachFrom: Direction.East, curState: level);
+                else
+                    return TryMoveTo((Location.Col.NextEast(level.Width), Location.Row), approachFrom: Direction.West, curState: level);
             }
             // Motion north/south and shooting
            else 
