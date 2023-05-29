@@ -36,6 +36,8 @@ namespace HercAndHippoLibCs
             => level.WithPlayer(this with { Health = Health - 5 });
         public Level Cycle(Level level, ActionInput actionInput)
         {
+            Velocity nextVelocity = Velocity.NextVelocity(actionInput);
+
             // Motion east/west
             if (actionInput == ActionInput.MoveEast || actionInput == ActionInput.MoveWest)
             {
