@@ -3,9 +3,8 @@
     public record Ammo(Location Location, AmmoCount Count) : HercAndHippoObj, ILocatable, ITouchable, IConsoleDisplayable
     {
         public string ConsoleDisplayString => "ä";
-
-        public ConsoleColor Color => ConsoleColor.Green;
-        public ConsoleColor BackgroundColor => ConsoleColor.Black;
+        public Color Color => Color.Green;
+        public Color BackgroundColor => Color.Black;
         public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy)
             => level.Without(this)
                     .WithPlayer(level.Player with 
@@ -15,10 +14,10 @@
                                 });
     }
 
-    public record Key(ConsoleColor Color, Location Location) : HercAndHippoObj, ILocatable, IConsoleDisplayable, ITouchable, ITakeable
+    public record Key(Color Color, Location Location) : HercAndHippoObj, ILocatable, IConsoleDisplayable, ITouchable, ITakeable
     {
         public string ConsoleDisplayString => "♀";
-        public ConsoleColor BackgroundColor => ConsoleColor.Black;
+        public Color BackgroundColor => Color.Black;
         public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy)
         {
             Player player = level.Player;

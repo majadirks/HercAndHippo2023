@@ -14,7 +14,7 @@ namespace HercAndHippoLibCsTest
             Player player = new((1, 1), Health: 100, AmmoCount: 0, Inventory: EmptyInventory);
             Level level = new(player: player, secondaryObjects: new HashSet<HercAndHippoObj>()
             {
-                new Wall(ConsoleColor.Yellow, new Location(Col: expectedWidth, Row: expectedHeight))
+                new Wall(Color.Yellow, new Location(Col: expectedWidth, Row: expectedHeight))
             }) ;
 
             // Assert
@@ -31,7 +31,7 @@ namespace HercAndHippoLibCsTest
             Player player = new(new Location(Col: expectedWidth, Row: expectedHeight), Health: 100, AmmoCount: 5, Inventory: EmptyInventory);
             Level level = new(player: player, secondaryObjects: new HashSet<HercAndHippoObj>()
             {
-                new Wall(ConsoleColor.Yellow, new Location(Col: expectedWidth, Row: expectedHeight))
+                new Wall(Color.Yellow, new Location(Col: expectedWidth, Row: expectedHeight))
             });
             Bullet bulletEastOfBoundary = new((expectedWidth + 10, expectedHeight), Direction.East);
             Bullet bulletSouthOfBoundary = new(Location: (expectedWidth, expectedHeight + 1), Direction.South);

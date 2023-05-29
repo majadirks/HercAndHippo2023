@@ -78,7 +78,7 @@ namespace HercAndHippoLibCsTest
             Bullet initialBullet = new((2, 3), Direction.East);
             Bullet bullet2 = new(nonshootable.Location, Direction.East);
             Bullet bullet3 = new((4, 3), Direction.East);
-            Wall corner = new(ConsoleColor.Yellow, (10, 10)); // Give bullet room in the level to move past the nonshootable
+            Wall corner = new(Color.Yellow, (10, 10)); // Give bullet room in the level to move past the nonshootable
             Player player = new((3, 2), Health: 100, AmmoCount: 1, Inventory: Inventory.EmptyInventory);
             Level level = new(player, new HashSet<HercAndHippoObj> { initialBullet, nonshootable, corner });
 
@@ -99,7 +99,7 @@ namespace HercAndHippoLibCsTest
         public void BulletMovesInCorrectDirection_Test()
         {
             // Arrange
-            Wall corner = new(ConsoleColor.Yellow, (10, 10));
+            Wall corner = new(Color.Yellow, (10, 10));
             Bullet initialEastward = new((5,5), Direction.East);
             Bullet cycledEastward = new((6, 5), Direction.East);
             Bullet initialNorthward = new((5, 5), Direction.North);
@@ -127,7 +127,7 @@ namespace HercAndHippoLibCsTest
             // Arrange
             int cornerCol = 10;
             int bulletRow = 3;
-            Wall corner = new(ConsoleColor.Yellow, (cornerCol, 10));
+            Wall corner = new(Color.Yellow, (cornerCol, 10));
             Bullet bullet = new((7, bulletRow), Direction.East);
             Bullet bulletAtEdge = bullet with { Location = (cornerCol, bulletRow) };
             Bullet bulletBeyondEdge = bullet with { Location = (cornerCol + 1, bulletRow) };
@@ -151,7 +151,7 @@ namespace HercAndHippoLibCsTest
             // Arrange
             int cornerCol = 10;
             int bulletRow = 3;
-            Wall corner = new(ConsoleColor.Yellow, (cornerCol, 10));
+            Wall corner = new(Color.Yellow, (cornerCol, 10));
             Bullet bullet = new((5, bulletRow), Direction.West);
             Bullet bulletAtEdge = bullet with { Location = (Column.MIN_COL, bulletRow) };
             Level level = new(Player.Default(5, 1), new HashSet<HercAndHippoObj>() { bullet, corner });
@@ -172,7 +172,7 @@ namespace HercAndHippoLibCsTest
         {
             // Arrange
             int cornerRow = 10;
-            Wall corner = new(ConsoleColor.Yellow, (10, cornerRow));
+            Wall corner = new(Color.Yellow, (10, cornerRow));
             Bullet bullet = new((7, 2), Direction.South);
             Bullet bulletAtEdge = bullet with { Location = (7, 10) };
             Bullet bulletBeyondEdge = bullet with { Location = (7, 11) };
@@ -194,7 +194,7 @@ namespace HercAndHippoLibCsTest
         {
             // Arrange
             int cornerRow = 10;
-            Wall corner = new(ConsoleColor.Yellow, (10, cornerRow));
+            Wall corner = new(Color.Yellow, (10, cornerRow));
             Bullet bullet = new((7, 2), Direction.North);
             Bullet bulletAtEdge = bullet with { Location = (7, Row.MIN_ROW) };
             Bullet bulletBeyondEdge = bullet with { Location = (7, 11) };
@@ -216,8 +216,8 @@ namespace HercAndHippoLibCsTest
         public void BulletDiesWhenPlacedBeyondLevelEdge_Test()
         {
             // Arrange
-            Wall corner1 = new(ConsoleColor.Yellow, (10, 9));
-            Wall corner2 = new(ConsoleColor.Yellow, (9, 10));
+            Wall corner1 = new(Color.Yellow, (10, 9));
+            Wall corner2 = new(Color.Yellow, (9, 10));
             Player player = Player.Default(10,10); //placed in bottom-right corner
             Level level = new(player, new HashSet<HercAndHippoObj>() { corner1, corner2 });
 
@@ -235,7 +235,7 @@ namespace HercAndHippoLibCsTest
         {
             //Assert.IsTrue(false); //this test fails intermittently!
             // Arrange
-            Wall corner1 = new(ConsoleColor.Yellow, (10, 10));
+            Wall corner1 = new(Color.Yellow, (10, 10));
             Player player = new((2,2), Health: 100,AmmoCount: 5, Inventory: Inventory.EmptyInventory);
             ShotCounter counter = new((5, 2), 0);
             Level level = new(player, new HashSet<HercAndHippoObj>() { corner1, counter });

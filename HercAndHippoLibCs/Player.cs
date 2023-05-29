@@ -10,8 +10,8 @@ namespace HercAndHippoLibCs
         public static Player Default(Location location) => new(Location: location, Health: 100, AmmoCount: 0, Inventory: Inventory.EmptyInventory);
         public static Player Default(Column col, Row row) => Player.Default((col, row));
         public string ConsoleDisplayString => HasHealth ? "☻" : "RIP";
-        public ConsoleColor Color => ConsoleColor.White;
-        public ConsoleColor BackgroundColor => ConsoleColor.Blue;
+        public Color Color => Color.White;
+        public Color BackgroundColor => Color.Blue;
         public override string ToString() => $"Player at location {Location} with {Health}, {AmmoCount}, Inventory Size: {Inventory.Count}";
         public Level OnShot(Level level, Direction shotFrom, Bullet shotBy)
             => level.WithPlayer(this with { Health = Health - 5 });
@@ -83,13 +83,13 @@ namespace HercAndHippoLibCs
             return level;
         }
         public Player Take(ITakeable toTake) => this with { Inventory = Inventory.AddItem(toTake) };
-        public bool Has<T>(ConsoleColor color) => Inventory.Where(item => item.MatchesColor<T>(color)).Any();
+        public bool Has<T>(Color color) => Inventory.Where(item => item.MatchesColor<T>(color)).Any();
 
         /// <summary>
         /// If a player has an item in their inventory matching the specified type and color, return the first match of that item
         /// and a player with all matches removed from their inventory. Throws an exception if there are no matches.
         /// </summary>
-        public (ITakeable item, Player newPlayerState) DropItem<T>(ConsoleColor color)
+        public (ITakeable item, Player newPlayerState) DropItem<T>(Color color)
         { 
             ITakeable item = Inventory.Where(item => item.MatchesColor<T>(color)).First();
             Player newPlayerState = this with { Inventory = Inventory.Where(item => !item.MatchesColor<T>(color)).ToInventory() };
@@ -100,7 +100,7 @@ namespace HercAndHippoLibCs
     public static class InventoryExtensions
     {
         ///<summary>Returns true if an ITakeable is of the given type and color</summary> 
-        public static bool MatchesColor<T>(this ITakeable item, ConsoleColor color) => item is T && item.Color == color;
+        public static bool MatchesColor<T>(this ITakeable item, Color color) => item is T && item.Color == color;
         public static Inventory ToInventory(this IEnumerable<ITakeable> enumerable) => new(enumerable);
     }
 

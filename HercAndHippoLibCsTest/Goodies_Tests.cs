@@ -25,7 +25,7 @@
         public void KeyCanBePickedUp_Test()
         {
             // Arrange
-            Key key = new(ConsoleColor.Magenta, (2,1));
+            Key key = new(Color.Magenta, (2,1));
             Level level = new(Player.Default(1, 1), new HashSet<HercAndHippoObj>() { key });
             Assert.AreEqual(Inventory.EmptyInventory, level.Player.Inventory);
             Assert.IsTrue(level.Contains(key));
