@@ -8,7 +8,7 @@ namespace HercAndHippoLibCsTest
         public void PlayerCanMoveWithinBounds_Test()
         {
             // Arrange
-            Player initial = new(Location:(5, 5), Health: 100, AmmoCount: 0, Inventory: EmptyInventory);
+            Player initial = new(Location: (5, 5), Health: 100, AmmoCount: 0, Inventory: EmptyInventory);
             Player eastPlayer = initial with { Location = (6, 5) };
             Player northeastPlayer = initial with { Location = (6, 4) };
             Player northPlayer = initial with { Location = (5, 4) };
@@ -22,24 +22,19 @@ namespace HercAndHippoLibCsTest
             // Move east and check
             Assert.IsTrue(level.Contains(initial));
             level = level.RefreshCyclables(ActionInput.MoveEast);
-            Assert.IsFalse(level.Contains(initial));
-            Assert.IsTrue(level.Contains(eastPlayer));
+            Assert.AreEqual(eastPlayer.Location, level.Player.Location);
 
             // Move north from there; now northeast of initial
             level = level.RefreshCyclables(ActionInput.MoveNorth);
-            Assert.IsFalse(level.Contains(eastPlayer));
-            Assert.IsTrue(level.Contains(northeastPlayer));
+            Assert.AreEqual(northeastPlayer.Location, level.Player.Location);
 
             // Move west from there; now north of initial
             level = level.RefreshCyclables(ActionInput.MoveWest);
-            Assert.IsFalse(level.Contains(northeastPlayer));
-            Assert.IsTrue(level.Contains(northPlayer));
+            Assert.AreEqual(northPlayer.Location, level.Player.Location);
 
             // Move south twice; player is now south of initial
             level = level.RefreshCyclables(ActionInput.MoveSouth).RefreshCyclables(ActionInput.MoveSouth);
-            Assert.IsFalse(level.Contains(northPlayer));
-            Assert.IsFalse(level.Contains(initial));
-            Assert.IsTrue(level.Contains(southPlayer));
+            Assert.AreEqual(southPlayer.Location, level.Player.Location);
         }
 
         [TestMethod]
@@ -47,8 +42,8 @@ namespace HercAndHippoLibCsTest
         {
             // Arrange
             Player player = new((Column.MIN_COL + 5, 2), Health: 100, AmmoCount: 0, Inventory: EmptyInventory);
-            Wall corner = new(ConsoleColor.Yellow, (10,10));
-            Level level = new(player, new HashSet<HercAndHippoObj> {corner});
+            Wall corner = new(ConsoleColor.Yellow, (10, 10));
+            Level level = new(player, new HashSet<HercAndHippoObj> { corner });
             int attempt = 1;
             int maxAttempt = 10;
             Assert.IsFalse(level.Player.Location.Col == Column.MIN_COL);
@@ -164,7 +159,7 @@ namespace HercAndHippoLibCsTest
             Player player2 = new((2, 2), Health: 100, AmmoCount: 0, Inventory: p2Inventory);
             // Assert
             Assert.AreEqual(player1.Inventory.GetHashCode(), player2.Inventory.GetHashCode());
-            Assert.AreEqual(player1, player2);            
+            Assert.AreEqual(player1, player2);
         }
 
         [TestMethod]
@@ -218,7 +213,7 @@ namespace HercAndHippoLibCsTest
         public void InventoriesWithDifferentItemsAreNotEqual_Test()
         {
             // Arrange
-            Inventory inv1 = new(new Key(ConsoleColor.Cyan, (5,5)));
+            Inventory inv1 = new(new Key(ConsoleColor.Cyan, (5, 5)));
             Inventory inv2 = new(new Key(ConsoleColor.Blue, (5, 5)));
             // Assert
             Assert.AreNotEqual(inv1.GetHashCode(), inv2.GetHashCode());
@@ -231,15 +226,13 @@ namespace HercAndHippoLibCsTest
             // Arrange
             int startCount = 0;
             Player player = new((2, 2), Health: 100, AmmoCount: 0, Inventory: EmptyInventory);
-            Player movedPlayer = player with { Location = (3, 2) };
             TouchCounter initialCounter = new((3, 2), startCount);
             TouchCounter cycledCounter = new((3, 2), startCount + 1);
             Level level = new(player, secondaryObjects: new HashSet<HercAndHippoObj>() { initialCounter });
 
             Assert.IsTrue(level.Contains(initialCounter));
             Assert.IsFalse(level.Contains(cycledCounter));
-            Assert.IsTrue(level.Contains(player));
-            Assert.IsFalse(level.Contains(movedPlayer));
+            Assert.AreEqual(player.Location, level.Player.Location);
 
             // Act: player attempts to move east, but is blocked by counter, which increments
             level = level.RefreshCyclables(ActionInput.MoveEast);
@@ -249,19 +242,18 @@ namespace HercAndHippoLibCsTest
             Assert.IsFalse(level.Contains(initialCounter));
             Assert.IsTrue(level.Contains(cycledCounter));
             // Check that player has not moved
-            Assert.IsTrue(level.Contains(player));
-            Assert.IsFalse(level.Contains(movedPlayer));
+            Assert.AreEqual(player.Location, level.Player.Location);
         }
 
         [TestMethod]
         public void PlayerCanShootInAllDirections_Test()
         {
             // Arrange
-            Player player = new((5,5), Health: 100, AmmoCount: 5, Inventory: EmptyInventory);
+            Player player = new((5, 5), Health: 100, AmmoCount: 5, Inventory: EmptyInventory);
             Bullet northBullet = new((5, 4), Direction.North);
             Bullet eastBullet = new((6, 5), Direction.East);
-            Bullet southBullet = new((5,6), Direction.South);
-            Bullet westBullet = new((4,5), Direction.West);
+            Bullet southBullet = new((5, 6), Direction.South);
+            Bullet westBullet = new((4, 5), Direction.West);
             Wall corner = new(ConsoleColor.Yellow, (10, 10));
             Level level = new(player, new HashSet<HercAndHippoObj>() { corner });
 
@@ -287,7 +279,7 @@ namespace HercAndHippoLibCsTest
             // Arrange
             Bullet westBullet = new((9, 9), Direction.West);
             Wall corner = new(ConsoleColor.Yellow, (10, 10));
-            Player player = new((10,9), Health: 100, AmmoCount: 5, Inventory: EmptyInventory);
+            Player player = new((10, 9), Health: 100, AmmoCount: 5, Inventory: EmptyInventory);
             Level level = new(player, new HashSet<HercAndHippoObj>() { corner });
             Assert.IsFalse(level.Contains(westBullet));
 
@@ -297,7 +289,7 @@ namespace HercAndHippoLibCsTest
             Assert.IsTrue(level.Contains(westBullet));
 
             // Arrange
-            level = level.WithPlayer(player with {Location = (9, 10)}); // west of corner
+            level = level.WithPlayer(player with { Location = (9, 10) }); // west of corner
             Bullet northBullet = new((9, 9), Direction.North);
             // Act
             level = level.RefreshCyclables(ActionInput.ShootNorth);
@@ -310,7 +302,7 @@ namespace HercAndHippoLibCsTest
         public void PlayerCanPickUpKeyByMoving_Test()
         {
             // Arrange: Player west of key
-            Player player = new((2,2), Health: 100, AmmoCount: 0, Inventory:EmptyInventory);
+            Player player = new((2, 2), Health: 100, AmmoCount: 0, Inventory: EmptyInventory);
             ConsoleColor keyColor = ConsoleColor.DarkRed;
             Key key = new(keyColor, (3, 2));
             Player movedPlayer = player with { Location = key.Location, Inventory = player.Inventory.AddItem(key) };
@@ -330,8 +322,7 @@ namespace HercAndHippoLibCsTest
             Assert.IsTrue(level.Player.Has<Key>(keyColor));
 
             Assert.AreEqual(movedPlayer.Inventory, level.Player.Inventory);
-            Assert.AreEqual(movedPlayer, level.Player);
-            Assert.IsTrue(level.Contains(movedPlayer));
+            Assert.AreEqual(movedPlayer.Location, level.Player.Location);
         }
 
         [TestMethod]

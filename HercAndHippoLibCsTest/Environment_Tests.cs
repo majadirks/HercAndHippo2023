@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace HercAndHippoLibCsTest
+﻿namespace HercAndHippoLibCsTest
 {
     [TestClass]
     public class Environment_Tests
@@ -16,17 +10,15 @@ namespace HercAndHippoLibCsTest
             // Arrange
             Player initial = Player.Default((2, 2));
             Player secondPosition = Player.Default((3, 2));
-            Player impossiblePosition = Player.Default((4, 2));
             Wall wall = new(ConsoleColor.White, (4, 2));
             Wall corner = new(ConsoleColor.White, (10, 10));
             Level level = new(initial, new HashSet<HercAndHippoObj> { wall, corner });
 
             // Act and Assert
             level = level.RefreshCyclables(ActionInput.MoveEast);
-            Assert.IsTrue(level.Contains(secondPosition)); // Player is adjacent to to wall after moving east
+            Assert.AreEqual(secondPosition.Location, level.Player.Location); // Player is adjacent to to wall after moving east
             level = level.RefreshCyclables(ActionInput.MoveEast);
-            Assert.IsTrue(level.Contains(secondPosition)); // Wall has blocked further eastward movement.
-            Assert.IsFalse(level.Contains(impossiblePosition));
+            Assert.AreEqual(secondPosition.Location, level.Player.Location); // Wall has blocked further eastward movement.
         }
 
         [TestMethod]
@@ -46,7 +38,7 @@ namespace HercAndHippoLibCsTest
             Assert.IsFalse(level.Contains(bulletOverWall));
             // On next cycle, bullet moves to overlap wall. On subsequent cycle, bullet is gone.
             level = level.RefreshCyclables(ActionInput.NoAction).RefreshCyclables(ActionInput.NoAction);
-            
+
             // Assert
             Assert.IsFalse(level.LevelObjects.Where(b => b is Bullet).Any());
         }
@@ -57,17 +49,15 @@ namespace HercAndHippoLibCsTest
             // Arrange
             Player initial = Player.Default((2, 2));
             Player secondPosition = Player.Default((3, 2));
-            Player impossiblePosition = Player.Default((4, 2));
             BreakableWall bwall = new(ConsoleColor.White, (4, 2));
             BreakableWall corner = new(ConsoleColor.White, (10, 10));
             Level level = new(initial, new HashSet<HercAndHippoObj> { bwall, corner });
 
             // Act and Assert
             level = level.RefreshCyclables(ActionInput.MoveEast);
-            Assert.IsTrue(level.Contains(secondPosition)); // Player is adjacent to to wall after moving east
+            Assert.AreEqual(secondPosition.Location, level.Player.Location); // Player is adjacent to to wall after moving east
             level = level.RefreshCyclables(ActionInput.MoveEast);
-            Assert.IsTrue(level.Contains(secondPosition)); // Wall has blocked further eastward movement.
-            Assert.IsFalse(level.Contains(impossiblePosition));
+            Assert.AreEqual(secondPosition.Location, level.Player.Location); // Wall has blocked further eastward movement.
         }
 
         [TestMethod]
@@ -85,7 +75,7 @@ namespace HercAndHippoLibCsTest
             level = level.RefreshCyclables(ActionInput.NoAction).RefreshCyclables(ActionInput.NoAction);
 
             // Assert
-            Assert.IsFalse(level.LevelObjects.Where(bw => bw is BreakableWall).Any()); 
+            Assert.IsFalse(level.LevelObjects.Where(bw => bw is BreakableWall).Any());
             Assert.IsFalse(level.LevelObjects.Where(b => b is Bullet).Any());
         }
 
@@ -125,10 +115,9 @@ namespace HercAndHippoLibCsTest
 
             // Act and Assert
             level = level.RefreshCyclables(ActionInput.MoveEast);
-            Assert.IsTrue(level.Contains(secondPosition)); // Player is adjacent to to door after moving east
+            Assert.AreEqual(secondPosition.Location, level.Player.Location); // Player is adjacent to to door after moving east
             level = level.RefreshCyclables(ActionInput.MoveEast);
-            Assert.IsTrue(level.Contains(secondPosition)); // door has blocked further eastward movement.
-            Assert.IsFalse(level.Contains(playerAtDoor));
+            Assert.AreEqual(secondPosition.Location, level.Player.Location); // door has blocked further eastward movement.
         }
 
         [TestMethod]
@@ -136,7 +125,7 @@ namespace HercAndHippoLibCsTest
         {
             // Arrange
             Player initial = Player.Default((2, 2));
-           
+
             Player playerAtDoor = Player.Default((4, 2));
             Door door = new(ConsoleColor.Cyan, (4, 2));
             Key key = new(ConsoleColor.Cyan, (3, 2));
@@ -146,11 +135,11 @@ namespace HercAndHippoLibCsTest
 
             // Act and Assert
             level = level.RefreshCyclables(ActionInput.MoveEast);
-            Assert.IsTrue(level.Contains(secondPosition)); // Player is adjacent to to door after moving east
+            Assert.AreEqual(secondPosition.Location, level.Player.Location); // Player is adjacent to to door after moving east
             Assert.IsTrue(level.Player.Has<Key>(ConsoleColor.Cyan));// Player has picked up the key
             level = level.RefreshCyclables(ActionInput.MoveEast);
-            Assert.IsFalse(level.Contains(secondPosition)); // door has not blocked further eastward movement.
-            Assert.IsTrue(level.Contains(playerAtDoor)); // Player has moved over door
+            Assert.AreNotEqual(secondPosition.Location, level.Player.Location); // door has not blocked further eastward movement.
+            Assert.AreEqual(playerAtDoor.Location, level.Player.Location); // Player has moved over door
             Assert.IsFalse(level.Contains(door)); // No more door!
             Assert.IsFalse(level.Player.Has<Key>(ConsoleColor.Cyan)); // Player no longer has key
         }
