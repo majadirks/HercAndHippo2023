@@ -2,7 +2,6 @@
 - Research faster console writing:
 	* https://stackoverflow.com/questions/29920056/c-sharp-something-faster-than-console-write
 	* https://stackoverflow.com/questions/2754518/how-can-i-write-fast-colored-output-to-console
-- Custom color enum (library should not use Console-specific features, including ConsoleColor. Console app should do conversion.)
 - Level editor
 - Status bar
 - Implement and test "seek" behavior for bullet

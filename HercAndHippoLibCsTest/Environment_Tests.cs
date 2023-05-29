@@ -10,8 +10,8 @@
             // Arrange
             Player initial = Player.Default((2, 2));
             Player secondPosition = Player.Default((3, 2));
-            Wall wall = new(ConsoleColor.White, (4, 2));
-            Wall corner = new(ConsoleColor.White, (10, 10));
+            Wall wall = new(Color.White, (4, 2));
+            Wall corner = new(Color.White, (10, 10));
             Level level = new(initial, new HashSet<HercAndHippoObj> { wall, corner });
 
             // Act and Assert
@@ -26,8 +26,8 @@
         {
             // Arrange
             Player player = Player.Default((2, 2)) with { AmmoCount = 1 };
-            Wall wall = new(ConsoleColor.White, (4, 2));
-            Wall corner = new(ConsoleColor.White, (10, 10));
+            Wall wall = new(Color.White, (4, 2));
+            Wall corner = new(Color.White, (10, 10));
             Level level = new(player, new HashSet<HercAndHippoObj> { wall, corner });
             Bullet initialBullet = new((3, 2), Direction.East);
             Bullet bulletOverWall = new(wall.Location, Direction.East);
@@ -49,8 +49,8 @@
             // Arrange
             Player initial = Player.Default((2, 2));
             Player secondPosition = Player.Default((3, 2));
-            BreakableWall bwall = new(ConsoleColor.White, (4, 2));
-            BreakableWall corner = new(ConsoleColor.White, (10, 10));
+            BreakableWall bwall = new(Color.White, (4, 2));
+            BreakableWall corner = new(Color.White, (10, 10));
             Level level = new(initial, new HashSet<HercAndHippoObj> { bwall, corner });
 
             // Act and Assert
@@ -65,8 +65,8 @@
         {
             // Arrange
             Player initial = Player.Default((2, 2)) with { AmmoCount = 1 };
-            BreakableWall bwall = new(ConsoleColor.White, (4, 2));
-            Wall corner = new(ConsoleColor.White, (10, 10));
+            BreakableWall bwall = new(Color.White, (4, 2));
+            Wall corner = new(Color.White, (10, 10));
             Level level = new(initial, new HashSet<HercAndHippoObj> { bwall, corner });
 
             // Act
@@ -84,8 +84,8 @@
         {
             // Arrange
             Player player = Player.Default((2, 2)) with { AmmoCount = 1 };
-            Door door = new(ConsoleColor.DarkMagenta, (4, 2));
-            Wall corner = new(ConsoleColor.White, (10, 10));
+            Door door = new(Color.DarkMagenta, (4, 2));
+            Wall corner = new(Color.White, (10, 10));
             Level level = new(player, new HashSet<HercAndHippoObj> { door, corner });
             Bullet initialBullet = new((3, 2), Direction.East);
             Bullet bulletOverWall = new(door.Location, Direction.East);
@@ -109,8 +109,8 @@
             Player initial = Player.Default((2, 2));
             Player secondPosition = Player.Default((3, 2));
             Player playerAtDoor = Player.Default((4, 2));
-            Door door = new(ConsoleColor.Cyan, (4, 2));
-            Wall corner = new(ConsoleColor.White, (10, 10));
+            Door door = new(Color.Cyan, (4, 2));
+            Wall corner = new(Color.White, (10, 10));
             Level level = new(initial, new HashSet<HercAndHippoObj> { door, corner });
 
             // Act and Assert
@@ -127,21 +127,21 @@
             Player initial = Player.Default((2, 2));
 
             Player playerAtDoor = Player.Default((4, 2));
-            Door door = new(ConsoleColor.Cyan, (4, 2));
-            Key key = new(ConsoleColor.Cyan, (3, 2));
+            Door door = new(Color.Cyan, (4, 2));
+            Key key = new(Color.Cyan, (3, 2));
             Player secondPosition = Player.Default((3, 2)) with { Inventory = new Inventory(starterItem: key) };
-            Wall corner = new(ConsoleColor.White, (10, 10));
+            Wall corner = new(Color.White, (10, 10));
             Level level = new(initial, new HashSet<HercAndHippoObj> { door, key, corner });
 
             // Act and Assert
             level = level.RefreshCyclables(ActionInput.MoveEast);
             Assert.AreEqual(secondPosition.Location, level.Player.Location); // Player is adjacent to to door after moving east
-            Assert.IsTrue(level.Player.Has<Key>(ConsoleColor.Cyan));// Player has picked up the key
+            Assert.IsTrue(level.Player.Has<Key>(Color.Cyan));// Player has picked up the key
             level = level.RefreshCyclables(ActionInput.MoveEast);
             Assert.AreNotEqual(secondPosition.Location, level.Player.Location); // door has not blocked further eastward movement.
             Assert.AreEqual(playerAtDoor.Location, level.Player.Location); // Player has moved over door
             Assert.IsFalse(level.Contains(door)); // No more door!
-            Assert.IsFalse(level.Player.Has<Key>(ConsoleColor.Cyan)); // Player no longer has key
+            Assert.IsFalse(level.Player.Has<Key>(Color.Cyan)); // Player no longer has key
         }
     }
 }

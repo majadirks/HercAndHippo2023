@@ -2,24 +2,24 @@
 
 namespace HercAndHippoLibCs
 { 
-    public record Wall(ConsoleColor Color, Location Location) : HercAndHippoObj, ILocatable, ITouchable, IShootable, IConsoleDisplayable
+    public record Wall(Color Color, Location Location) : HercAndHippoObj, ILocatable, ITouchable, IShootable, IConsoleDisplayable
     {
         public string ConsoleDisplayString => "█";
-        public ConsoleColor BackgroundColor => Color;
+        public Color BackgroundColor => Color;
         public Level OnShot(Level level, Direction shotFrom, Bullet shotBy) => Behaviors.StopBullet(level,shotBy);
         public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy) => Behaviors.NoReaction(level);
     }
-    public record BreakableWall(ConsoleColor Color, Location Location) : HercAndHippoObj, ILocatable, IShootable, ITouchable, IConsoleDisplayable
+    public record BreakableWall(Color Color, Location Location) : HercAndHippoObj, ILocatable, IShootable, ITouchable, IConsoleDisplayable
     {
         public string ConsoleDisplayString => "▓";
-        public ConsoleColor BackgroundColor => ConsoleColor.Black;
+        public Color BackgroundColor => Color.Black;
         public Level OnShot(Level level, Direction shotFrom, Bullet shotBy) => Behaviors.DieAndStopBullet(this, level, shotBy);
         public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy) => Behaviors.NoReaction(level);    
     }
-    public record Door(ConsoleColor BackgroundColor, Location Location) : HercAndHippoObj, ILocatable, IShootable, ITouchable, IConsoleDisplayable
+    public record Door(Color BackgroundColor, Location Location) : HercAndHippoObj, ILocatable, IShootable, ITouchable, IConsoleDisplayable
     {
         public string ConsoleDisplayString => "◙";
-        public ConsoleColor Color => ConsoleColor.Black;
+        public Color Color => Color.Black;
         public Level OnShot(Level level, Direction shotFrom, Bullet shotBy) => Behaviors.StopBullet(level,shotBy); // Cannot shoot through a door
         public Level OnTouch(Level level, Direction _, ITouchable touchedBy)
             => touchedBy switch

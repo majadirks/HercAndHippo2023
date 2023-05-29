@@ -102,8 +102,8 @@ namespace HercAndHippoConsole
                     {
                         // Something is here that wasn't here before, so show it
                         Console.SetCursorPosition(col, row);
-                        Console.BackgroundColor = newDisp.BackgroundColor;
-                        Console.ForegroundColor = newDisp.Color;
+                        Console.BackgroundColor = newDisp.BackgroundColor.ToConsoleColor();
+                        Console.ForegroundColor = newDisp.Color.ToConsoleColor();
                         Console.Write(newDisp.ConsoleDisplayString);
                     }
                     if ((newDisp == default && oldDisp != default) &&

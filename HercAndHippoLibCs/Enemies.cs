@@ -3,8 +3,8 @@
     public record Bullet(Location Location, Direction Whither) : HercAndHippoObj, ILocatable, ICyclable, IConsoleDisplayable
     {
         public string ConsoleDisplayString => "○";
-        public ConsoleColor Color => ConsoleColor.White;
-        public ConsoleColor BackgroundColor => ConsoleColor.Black;
+        public Color Color => Color.White;
+        public Color BackgroundColor => Color.Black;
         /// <summary>When the level cycles, a bullet moves in the direction it's currently heading.</summary>
         public Level Cycle(Level curState, ActionInput actionInput)
         {

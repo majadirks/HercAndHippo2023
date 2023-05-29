@@ -9,7 +9,7 @@ namespace HercAndHippoLibCsTest
         {
             // Arrange
             Bullet bullet = new((2, 1), Direction.East);
-            BreakableWall breakableWall = new(ConsoleColor.Green, (3, 1));
+            BreakableWall breakableWall = new(Color.Green, (3, 1));
             Level initialState = new(
                 player: new((1, 1), Health: 100, AmmoCount: 5, Inventory: new()),
                 secondaryObjects: new()  { bullet, breakableWall });
@@ -27,7 +27,7 @@ namespace HercAndHippoLibCsTest
             Level level = new(player: new((2, 3), Health: 100, AmmoCount: 5, Inventory: new()),
                 secondaryObjects: new()
                 {
-                    new BreakableWall(ConsoleColor.Green, (3,3)),
+                    new BreakableWall(Color.Green, (3,3)),
                 });
             // Act
             Level nextState = Behaviors.NoReaction(level);
@@ -40,7 +40,7 @@ namespace HercAndHippoLibCsTest
         {
             // Arrange
             Bullet bullet = new((3, 2), Direction.South);
-            Wall wall = new(ConsoleColor.Green, (3, 3));
+            Wall wall = new(Color.Green, (3, 3));
             Level level = new(player: new((2, 3), Health: 100, AmmoCount: 5, Inventory: new()),
                 secondaryObjects: new() {bullet, wall});
             Level expectedNextState = level.Without(bullet);
@@ -55,8 +55,8 @@ namespace HercAndHippoLibCsTest
         {
             // Arrange
             Bullet bulletAboveKey = new((3, 2), Direction.South);
-            Key key = new(ConsoleColor.Green, (3, 3));
-            Wall levelCorner = new(ConsoleColor.Blue, (10, 10));
+            Key key = new(Color.Green, (3, 3));
+            Wall levelCorner = new(Color.Blue, (10, 10));
             Level level = new(player: new((5, 5), Health: 100, AmmoCount: 5, Inventory: new()),
                 secondaryObjects: new() { bulletAboveKey, key, levelCorner});
 
@@ -78,8 +78,8 @@ namespace HercAndHippoLibCsTest
         public void DieAndAllowPassage_Test()
         {
             // Arrange
-            Door door = new(ConsoleColor.Magenta, (2, 1));
-            Key key = new(ConsoleColor.Magenta, (1, 1));
+            Door door = new(Color.Magenta, (2, 1));
+            Key key = new(Color.Magenta, (1, 1));
             Player startPlayer = new((1, 1), Health: 100, AmmoCount: 5, Inventory: new(key));
             Level initialState = new(player: startPlayer, secondaryObjects: new() { door });
             Level expectedNextState = initialState.WithPlayer(startPlayer with { Location = door.Location }).Without(door);
