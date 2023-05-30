@@ -135,8 +135,7 @@ namespace HercAndHippoLibCs
             return level;
         }
         public Player Take(ITakeable toTake) => this with { Inventory = Inventory.AddItem(toTake) };
-        public bool Has<T>(Color color) => Inventory.Where(item => item.MatchesColor<T>(color)).Any();
-
+        public bool Has<T>(Color color) => Inventory.Contains<T>(color);
         /// <summary>
         /// If a player has an item in their inventory matching the specified type and color, return the first match of that item
         /// and a player with all matches removed from their inventory. Throws an exception if there are no matches.
@@ -174,6 +173,7 @@ namespace HercAndHippoLibCs
             HashSet<ITakeable> newSet = new(takeables) { item };
             return new Inventory(newSet);
         }
+        public bool Contains<T>(Color color) => takeables.Where(item => item.MatchesColor<T>(color)).Any();
         public IEnumerator<ITakeable> GetEnumerator() => takeables.GetEnumerator();
         IEnumerator IEnumerable.GetEnumerator() => takeables.GetEnumerator();
         public override bool Equals([NotNullWhen(true)] object? obj)
