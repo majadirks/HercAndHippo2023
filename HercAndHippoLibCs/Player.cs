@@ -38,14 +38,28 @@ namespace HercAndHippoLibCs
             Level nextState = level.WithPlayer(this with { Velocity = GetNextVelocity(level, actionInput) });
 
             // Based on velocity, move east/west
-            if (Velocity < 0 || actionInput == ActionInput.MoveWest)
+            if (Velocity < 0)
+            {
+                for (int i = 0; i > Velocity; i--)
+                {
+                    nextState = TryMoveTo((Location.Col.NextWest(), Location.Row), approachFrom: Direction.East, curState: nextState);
+                }
+            }
+            else if (Velocity > 0)
+            {
+                for (int i = 0; i < Velocity; i++)
+                {
+                    nextState = TryMoveTo((Location.Col.NextEast(nextState.Width), Location.Row), approachFrom: Direction.West, curState: nextState);
+                }              
+            }
+            else if (actionInput == ActionInput.MoveWest)
             {
                 nextState = TryMoveTo((Location.Col.NextWest(), Location.Row), approachFrom: Direction.East, curState: nextState);
             }
-            else if (Velocity > 0|| actionInput == ActionInput.MoveEast)
+            else if (actionInput == ActionInput.MoveEast)
             {
                 nextState = TryMoveTo((Location.Col.NextEast(nextState.Width), Location.Row), approachFrom: Direction.West, curState: nextState);
-            }      
+            }
             
             // Regardless of above motion, run the following switch statement
             // to make sure we can shoot while velocity is nonzero
