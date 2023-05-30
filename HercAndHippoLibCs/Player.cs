@@ -41,16 +41,18 @@ namespace HercAndHippoLibCs
             // Based on velocity, move east/west
             if (Velocity < 0)
             {
-                for (int i = 1; i > Velocity; i--)
+                for (int i = -1; i > Velocity; i--)
                 {
-                    nextState = TryMoveTo((Location.Col.NextWest(), Location.Row), approachFrom: Direction.East, curState: nextState);
+                    Player nextPlayer = nextState.Player;
+                    nextState = TryMoveTo((nextPlayer.Location.Col.NextWest(), Location.Row), approachFrom: Direction.East, curState: nextState);
                 }
             }
             else if (Velocity > 0)
             {
                 for (int i = 1; i < Velocity; i++)
                 {
-                    nextState = TryMoveTo((Location.Col.NextEast(nextState.Width), Location.Row), approachFrom: Direction.West, curState: nextState);
+                    Player nextPlayer = nextState.Player;
+                    nextState = TryMoveTo((nextPlayer.Location.Col.NextEast(nextState.Width), Location.Row), approachFrom: Direction.West, curState: nextState);
                 }              
             }
             else if (actionInput == ActionInput.MoveWest)
@@ -220,10 +222,10 @@ namespace HercAndHippoLibCs
 
     public record Velocity
     {
-        private const float MAX_VELOCITY = 6.0f;
-        private const float MIN_VELOCITY = -6.0f;
-        private const float ZERO_THRESHOLD = 0.2f;
-        private const float ACCELERATION = 0.4f;
+        private const float MAX_VELOCITY = 2.0f;
+        private const float MIN_VELOCITY = -2.0f;
+        private const float ZERO_THRESHOLD = 0.18f;
+        private const float ACCELERATION = 0.2f;
         public float CurrentVelocity { get; init; }
         public Velocity(float velocity)
         {
