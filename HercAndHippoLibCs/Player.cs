@@ -20,10 +20,10 @@ namespace HercAndHippoLibCs
         public Health Health { get; init; }
         public AmmoCount AmmoCount { get; init; }
         public Inventory Inventory { get; init; }
+        public Velocity Velocity { get; init; }
         public string ConsoleDisplayString => HasHealth ? "☻" : "X";
         public Color Color => Color.White;
         public Color BackgroundColor => Color.Blue;
-        public Velocity Velocity { get; init; }
         public bool HasHealth => Health.HasHealth;
         public bool HasAmmo => AmmoCount.HasAmmo;
         public override string ToString() => $"Player at location {Location} with {Health}, {AmmoCount}, Inventory Size: {Inventory.Count}";
