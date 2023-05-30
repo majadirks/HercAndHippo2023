@@ -35,19 +35,27 @@ namespace HercAndHippoLibCs
             => level.WithPlayer(this with { Health = Health - 5 });
         public Level Cycle(Level level, ActionInput actionInput)
         {
-            Velocity nextVelocity = Velocity.NextVelocity(actionInput);
-            Level nextState = level.WithPlayer(this with { Velocity = nextVelocity });
+            Level nextState = level.WithPlayer(this with { Velocity = GetNextVelocity(level, actionInput) });
 
             // Based on velocity, move east/west
-            if (nextVelocity != 0)
+            if (Velocity != 0)
             {
-                if (nextVelocity < 0)
+                if (Velocity < 0)
                     nextState = TryMoveTo((Location.Col.NextWest(), Location.Row), approachFrom: Direction.East, curState: nextState);
                 else
                     nextState = TryMoveTo((Location.Col.NextEast(nextState.Width), Location.Row), approachFrom: Direction.West, curState: nextState);
             }
-            // Based on input, move north/south or shoot.
-            return actionInput switch
+            // If velocity is 0 (eg because blocked by an object), can still attempt to move east/west
+            // in order to call the blocking object's OnTouch method
+            else if (actionInput == ActionInput.MoveEast)
+            {
+                nextState = TryMoveTo((Location.Col.NextEast(nextState.Width), Location.Row), approachFrom: Direction.West, curState: nextState);
+            }
+            else if (actionInput == ActionInput.MoveWest)
+            {
+                nextState = TryMoveTo((Location.Col.NextWest(), Location.Row), approachFrom: Direction.East, curState: nextState);
+            }           
+            return actionInput switch // Based on input, move north/south or shoot.
             {      
                 ActionInput.MoveNorth => TryMoveTo((Location.Col, Location.Row.NextNorth()), approachFrom: Direction.South, curState: nextState),
                 ActionInput.MoveSouth => TryMoveTo((Location.Col, Location.Row.NextSouth(level.Height)), approachFrom: Direction.North, curState: nextState),
@@ -57,6 +65,18 @@ namespace HercAndHippoLibCs
                 ActionInput.ShootEast => Shoot(nextState, Direction.East),
                 _ => Behaviors.NoReaction(nextState)
             };
+        }
+
+        /// <summary>
+        /// If player is blocked in direction of motion, velocity resets to zero. Otherwise grows or shrinks normally.
+        /// </summary>
+        private Velocity GetNextVelocity(Level level, ActionInput actionInput)
+        {
+            if (actionInput == ActionInput.MoveEast && IsBlocked(level, Direction.East))
+                return 0;
+            else if (actionInput == ActionInput.MoveWest && IsBlocked(level, Direction.West))
+                return 0;
+            else return Velocity.NextVelocity(actionInput);
         }
 
         public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy)
