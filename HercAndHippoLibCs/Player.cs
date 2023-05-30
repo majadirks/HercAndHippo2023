@@ -35,19 +35,20 @@ namespace HercAndHippoLibCs
             => level.WithPlayer(this with { Health = Health - 5 });
         public Level Cycle(Level level, ActionInput actionInput)
         {
-            Level nextState = level.WithPlayer(this with { Velocity = GetNextVelocity(level, actionInput) });
+            Velocity nextVelocity = GetNextVelocity(level, actionInput);
+            Level nextState = level.WithPlayer(this with { Velocity = nextVelocity });
 
             // Based on velocity, move east/west
             if (Velocity < 0)
             {
-                for (int i = 0; i > Velocity; i--)
+                for (int i = 1; i > Velocity; i--)
                 {
                     nextState = TryMoveTo((Location.Col.NextWest(), Location.Row), approachFrom: Direction.East, curState: nextState);
                 }
             }
             else if (Velocity > 0)
             {
-                for (int i = 0; i < Velocity; i++)
+                for (int i = 1; i < Velocity; i++)
                 {
                     nextState = TryMoveTo((Location.Col.NextEast(nextState.Width), Location.Row), approachFrom: Direction.West, curState: nextState);
                 }              
@@ -233,8 +234,8 @@ namespace HercAndHippoLibCs
     {
         private const float MAX_VELOCITY = 12.0f;
         private const float MIN_VELOCITY = -12.0f;
-        private const float ZERO_THRESHOLD = 0.5f;
-        private const float ACCELERATION = 2f;
+        private const float ZERO_THRESHOLD = 0.4f;
+        private const float ACCELERATION = 0.5f;
         public float CurrentVelocity { get; init; }
         public static Velocity DefaultVelocity { get; } = new(velocity: 0);
         public Velocity(float velocity)
