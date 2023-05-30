@@ -38,23 +38,17 @@ namespace HercAndHippoLibCs
             Level nextState = level.WithPlayer(this with { Velocity = GetNextVelocity(level, actionInput) });
 
             // Based on velocity, move east/west
-            if (Velocity != 0)
-            {
-                if (Velocity < 0)
-                    nextState = TryMoveTo((Location.Col.NextWest(), Location.Row), approachFrom: Direction.East, curState: nextState);
-                else
-                    nextState = TryMoveTo((Location.Col.NextEast(nextState.Width), Location.Row), approachFrom: Direction.West, curState: nextState);
-            }
-            // If velocity is 0 (eg because blocked by an object), can still attempt to move east/west
-            // in order to call the blocking object's OnTouch method
-            else if (actionInput == ActionInput.MoveEast)
-            {
-                nextState = TryMoveTo((Location.Col.NextEast(nextState.Width), Location.Row), approachFrom: Direction.West, curState: nextState);
-            }
-            else if (actionInput == ActionInput.MoveWest)
+            if (Velocity < 0 || actionInput == ActionInput.MoveWest)
             {
                 nextState = TryMoveTo((Location.Col.NextWest(), Location.Row), approachFrom: Direction.East, curState: nextState);
-            }           
+            }
+            else if (Velocity > 0|| actionInput == ActionInput.MoveEast)
+            {
+                nextState = TryMoveTo((Location.Col.NextEast(nextState.Width), Location.Row), approachFrom: Direction.West, curState: nextState);
+            }      
+            
+            // Regardless of above motion, run the following switch statement
+            // to make sure we can shoot while velocity is nonzero
             return actionInput switch // Based on input, move north/south or shoot.
             {      
                 ActionInput.MoveNorth => TryMoveTo((Location.Col, Location.Row.NextNorth()), approachFrom: Direction.South, curState: nextState),
