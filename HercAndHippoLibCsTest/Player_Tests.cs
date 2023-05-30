@@ -285,6 +285,23 @@ namespace HercAndHippoLibCsTest
         }
 
         [TestMethod]
+        public void NonemptyInventoriesAreEqual_InDifferentOrders_Test()
+        {
+            // Arrange
+            static Inventory GetNewInventory() => new(new HashSet<ITakeable>());
+            static Key GetNewCyanKey() => new(Color.Cyan, (5, 5));
+            static Key GetNewMagentaKey() => new(Color.Magenta, (5, 5));
+            Inventory inv1 = GetNewInventory().AddItem(GetNewCyanKey()).AddItem(GetNewMagentaKey());
+            Inventory inv2 = GetNewInventory();
+            Assert.AreNotEqual(inv1.GetHashCode(), inv2.GetHashCode());
+            Assert.AreNotEqual(inv1, inv2);
+            inv2 = inv2.AddItem(GetNewMagentaKey()).AddItem(GetNewCyanKey()); // NB keys added in opposite order
+            // Assert
+            Assert.AreEqual(inv1.GetHashCode(), inv2.GetHashCode());
+            Assert.AreEqual(inv1, inv2);
+        }
+
+        [TestMethod]
         public void InventoriesWithDifferentItemsAreNotEqual_Test()
         {
             // Arrange

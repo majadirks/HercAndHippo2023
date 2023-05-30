@@ -1,0 +1,11 @@
+-=Gravity=-
+
+- Gravity; player dies if gravity > 0 and reaches bottom row
+- When gravity > 0, cannot accelerate east/west unless blocked to the south
+- Cannot have gravity < 0
+
+- Projectile motion:
+  * x(t) = vt, where v = initial horizontal velocity
+  * y(t) = -1/2*g*t^2 + vt + y_0, where g = some constant, v = initial vertical velocity, y_0 = initial height.
+			But we are using rows (which increase in downwards direction), so presumably we change some signs in that equation.
+			Initial vertical velocity is 0 if Herc simply walks off an edge, or some constant if Herc jumps
