@@ -36,19 +36,17 @@ namespace HercAndHippoLibCs
         public Level Cycle(Level level, ActionInput actionInput)
         {
             Velocity nextVelocity = Velocity.NextVelocity(actionInput);
-            Player nextPlayer = this with { Velocity = nextVelocity };
-            Level nextState = level.WithPlayer(nextPlayer);
+            Level nextState = level.WithPlayer(this with { Velocity = nextVelocity });
 
-            // Motion east/west
+            // Based on velocity, move east/west
             if (nextVelocity != 0)
             {
                 if (nextVelocity < 0)
-                    return TryMoveTo((Location.Col.NextWest(), Location.Row), approachFrom: Direction.East, curState: nextState);
+                    nextState = TryMoveTo((Location.Col.NextWest(), Location.Row), approachFrom: Direction.East, curState: nextState);
                 else
-                    return TryMoveTo((Location.Col.NextEast(level.Width), Location.Row), approachFrom: Direction.West, curState: nextState);
+                    nextState = TryMoveTo((Location.Col.NextEast(nextState.Width), Location.Row), approachFrom: Direction.West, curState: nextState);
             }
-            // Motion north/south and shooting
-           else 
+            // Based on input, move north/south or shoot.
             return actionInput switch
             {      
                 ActionInput.MoveNorth => TryMoveTo((Location.Col, Location.Row.NextNorth()), approachFrom: Direction.South, curState: nextState),
@@ -67,11 +65,12 @@ namespace HercAndHippoLibCs
                 Bullet shotBy => OnShot(level, touchedFrom.Mirror(), shotBy),
                 _ => level
             };
-        private Level TryMoveTo(Location newLocation, Direction approachFrom, Level curState)
+        private static Level TryMoveTo(Location newLocation, Direction approachFrom, Level curState)
         {
+            Player player = curState.Player;
             // If no obstacles, move
-            if (!IsBlocked(curState, approachFrom.Mirror()))
-                return curState.WithPlayer(this with { Location = newLocation });
+            if (!player.IsBlocked(curState, approachFrom.Mirror()))
+                return curState.WithPlayer(player with { Location = newLocation });
 
             // Otherwise, call the touch methods for any ITouchables and move over all else
             Level nextState = curState;
@@ -80,8 +79,8 @@ namespace HercAndHippoLibCs
             {
                 nextState = obj switch
                 {
-                    ITouchable touchableAtLocation => touchableAtLocation.OnTouch(curState, approachFrom, this),
-                    _ => nextState.WithPlayer(this with { Location = newLocation })
+                    ITouchable touchableAtLocation => touchableAtLocation.OnTouch(curState, approachFrom, player),
+                    _ => nextState.WithPlayer(player with { Location = newLocation })
                 };
             }
             return nextState; 
