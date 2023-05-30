@@ -38,33 +38,32 @@ namespace HercAndHippoLibCs
             Velocity nextVelocity = Velocity.NextVelocity(this, level, actionInput);
             Level nextState = level.WithPlayer(this with { Velocity = nextVelocity });
 
-            // Based on velocity, move east/west
-            Player nextPlayer;
+            // Move east/west if velocity is >= 1 or if there was a moveEast/moveWest input
             if (Velocity <= -1)
             {
                 for (int i = -1; i >= Velocity; i--)
                 {
-                    nextPlayer = nextState.Player;
-                    nextState = TryMoveTo((nextPlayer.Location.Col.NextWest(), Location.Row), approachFrom: Direction.East, curState: nextState);
+                    Column nextWest = nextState.Player.Location.Col.NextWest();
+                    nextState = TryMoveTo((nextWest, Location.Row), approachFrom: Direction.East, curState: nextState);
                 }
             }
             else if (Velocity >= 1)
             {
                 for (int i = 1; i <= Velocity; i++)
                 {
-                    nextPlayer = nextState.Player;
-                    nextState = TryMoveTo((nextPlayer.Location.Col.NextEast(nextState.Width), Location.Row), approachFrom: Direction.West, curState: nextState);
+                    Column nextEast = nextState.Player.Location.Col.NextEast(nextState.Width);
+                    nextState = TryMoveTo((nextEast, Location.Row), approachFrom: Direction.West, curState: nextState);
                 }              
             }
             else if (actionInput == ActionInput.MoveWest)
             {
-                nextPlayer = nextState.Player;
-                nextState = TryMoveTo((nextPlayer.Location.Col.NextWest(), Location.Row), approachFrom: Direction.East, curState: nextState);
+                Column nextWest = nextState.Player.Location.Col.NextWest();
+                nextState = TryMoveTo((nextWest, Location.Row), approachFrom: Direction.East, curState: nextState);
             }
             else if (actionInput == ActionInput.MoveEast)
             {
-                nextPlayer = nextState.Player;
-                nextState = TryMoveTo((nextPlayer.Location.Col.NextEast(nextState.Width), Location.Row), approachFrom: Direction.West, curState: nextState);
+                Column nextEast = nextState.Player.Location.Col.NextEast(nextState.Width);
+                nextState = TryMoveTo((nextEast, Location.Row), approachFrom: Direction.West, curState: nextState);
             }
             
             // Regardless of above motion, run the following switch statement
