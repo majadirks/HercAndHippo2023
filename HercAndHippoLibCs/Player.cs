@@ -224,8 +224,8 @@ namespace HercAndHippoLibCs
     {
         private const float MAX_VELOCITY = 2.0f;
         private const float MIN_VELOCITY = -2.0f;
-        private const float ZERO_THRESHOLD = 0.18f;
-        private const float ACCELERATION = 0.2f;
+        private const float ZERO_THRESHOLD = 0.2f;
+        private const float ACCELERATION = 0.4f;
         public float CurrentVelocity { get; init; }
         public Velocity(float velocity)
         {
