@@ -106,11 +106,12 @@ namespace HercAndHippoLibCs
             }
             return nextState; 
         }
-        private Level Shoot(Level level, Direction whither)
+        private static Level Shoot(Level level, Direction whither)
         {
-            if (!HasAmmo) return level;
-            int col = Location.Col;
-            int row = Location.Row;
+            Player player = level.Player;
+            if (!player.HasAmmo) return level;
+            int col = player.Location.Col;
+            int row = player.Location.Row;
             int bulletStartCol = whither switch
             {
                 Direction.East => col + 1,
@@ -130,7 +131,7 @@ namespace HercAndHippoLibCs
 
             level = level
                 .AddObject(new Bullet((bulletStartCol, bulletStartRow), whither))
-                .WithPlayer(this with { AmmoCount = AmmoCount - 1 });
+                .WithPlayer(player with { AmmoCount = player.AmmoCount - 1 });
             return level;
         }
         public Player Take(ITakeable toTake) => this with { Inventory = Inventory.AddItem(toTake) };
