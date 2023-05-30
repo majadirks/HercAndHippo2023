@@ -29,7 +29,7 @@ namespace HercAndHippoLibCs
             };
         private Level TakeKeyDieAndAllowPassage(Level level, Player player)
         {
-            (bool dropped, ITakeable _, Player newPlayerState) = player.DropItem<Key>(BackgroundColor);
+            (bool _, ITakeable _, Player newPlayerState) = player.DropItem<Key>(BackgroundColor);
             Level newState = Behaviors.DieAndAllowPassage(level, this, newPlayerState);
             return newState;
         }

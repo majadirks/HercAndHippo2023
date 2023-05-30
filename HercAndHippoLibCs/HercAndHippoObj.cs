@@ -3,6 +3,7 @@
     public abstract record HercAndHippoObj 
     {
         public virtual bool IsBlocking => this is ILocatable;
+        public virtual bool AffectedByGravity => true;
         public bool IsBlocked(Level level, Direction where)
             => this is ILocatable locatable && 
             where switch
