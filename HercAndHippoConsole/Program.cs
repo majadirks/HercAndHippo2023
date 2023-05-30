@@ -30,10 +30,6 @@ while (true)
     state = state.RefreshCyclables(keyInfo.ToActionInput()); // Update level state using key input
     scrollStatus = scrollStatus.Update(state.Player.Location, bufferStats); // Plan to scroll screen if needed.
     displayPlan.RefreshDisplay(newState: state, newScrollStatus: scrollStatus); // Re-display anything that changed
-    
-    // debug
-    Console.SetCursorPosition(1, 1);
-    Console.WriteLine($"Velocity: {state.Player.Velocity}");
 }
 ResetConsoleColors(); // Clean up
 
