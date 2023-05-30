@@ -225,14 +225,12 @@ namespace HercAndHippoLibCs
         private const float ZERO_THRESHOLD = 0.2f;
         private const float ACCELERATION = 0.4f;
         public float CurrentVelocity { get; init; }
-        public static Velocity DefaultVelocity { get; } = new(velocity: 0);
         public Velocity(float velocity)
         {
             CurrentVelocity = Min(Max(velocity, MIN_VELOCITY), MAX_VELOCITY);
             if (Abs(CurrentVelocity) <= ZERO_THRESHOLD || Sign(CurrentVelocity) != Sign(velocity))
                 CurrentVelocity = 0;
         }
-
         public Velocity NextVelocity(HercAndHippoObj hho, Level level, ActionInput actionInput)
         {
             if (actionInput == ActionInput.MoveEast && hho.IsBlocked(level, Direction.East))
@@ -246,16 +244,7 @@ namespace HercAndHippoLibCs
                 _ => SlowDown()
             };
         }
-
-
-        public Velocity Reverse(ActionInput actionInput)
-            => actionInput switch
-            {
-                ActionInput.MoveEast => AccelerateWestward(),
-                ActionInput.MoveWest => AccelerateEastward(),
-                _ => SlowDown()
-            };
-        public Velocity SlowDown()
+        private Velocity SlowDown()
         {
             if (CurrentVelocity > 0) return AccelerateWestward();
             else if (CurrentVelocity < 0) return AccelerateEastward();
