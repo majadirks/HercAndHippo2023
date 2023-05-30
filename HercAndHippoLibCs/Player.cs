@@ -39,29 +39,32 @@ namespace HercAndHippoLibCs
             Level nextState = level.WithPlayer(this with { Velocity = nextVelocity });
 
             // Based on velocity, move east/west
-            if (Velocity < 0)
+            Player nextPlayer;
+            if (Velocity <= -1)
             {
-                for (int i = -1; i > Velocity; i--)
+                for (int i = -1; i >= Velocity; i--)
                 {
-                    Player nextPlayer = nextState.Player;
+                    nextPlayer = nextState.Player;
                     nextState = TryMoveTo((nextPlayer.Location.Col.NextWest(), Location.Row), approachFrom: Direction.East, curState: nextState);
                 }
             }
-            else if (Velocity > 0)
+            else if (Velocity >= 1)
             {
-                for (int i = 1; i < Velocity; i++)
+                for (int i = 1; i <= Velocity; i++)
                 {
-                    Player nextPlayer = nextState.Player;
+                    nextPlayer = nextState.Player;
                     nextState = TryMoveTo((nextPlayer.Location.Col.NextEast(nextState.Width), Location.Row), approachFrom: Direction.West, curState: nextState);
                 }              
             }
             else if (actionInput == ActionInput.MoveWest)
             {
-                nextState = TryMoveTo((Location.Col.NextWest(), Location.Row), approachFrom: Direction.East, curState: nextState);
+                nextPlayer = nextState.Player;
+                nextState = TryMoveTo((nextPlayer.Location.Col.NextWest(), Location.Row), approachFrom: Direction.East, curState: nextState);
             }
             else if (actionInput == ActionInput.MoveEast)
             {
-                nextState = TryMoveTo((Location.Col.NextEast(nextState.Width), Location.Row), approachFrom: Direction.West, curState: nextState);
+                nextPlayer = nextState.Player;
+                nextState = TryMoveTo((nextPlayer.Location.Col.NextEast(nextState.Width), Location.Row), approachFrom: Direction.West, curState: nextState);
             }
             
             // Regardless of above motion, run the following switch statement
@@ -222,10 +225,10 @@ namespace HercAndHippoLibCs
 
     public record Velocity
     {
-        private const float MAX_VELOCITY = 2.0f;
-        private const float MIN_VELOCITY = -2.0f;
-        private const float ZERO_THRESHOLD = 0.2f;
-        private const float ACCELERATION = 0.3f;
+        private const int MAX_VELOCITY = 2;
+        private const int MIN_VELOCITY = -2;
+        private const float ZERO_THRESHOLD = 0.1f;
+        private const float ACCELERATION = 0.2f;
         public float CurrentVelocity { get; init; }
         public Velocity(float velocity)
         {
