@@ -35,7 +35,7 @@ namespace HercAndHippoLibCs
             => level.WithPlayer(this with { Health = Health - 5 });
         public Level Cycle(Level level, ActionInput actionInput)
         {
-            Velocity nextVelocity = GetNextVelocity(level, actionInput);
+            Velocity nextVelocity = Velocity.NextVelocity(this, level, actionInput);
             Level nextState = level.WithPlayer(this with { Velocity = nextVelocity });
 
             // Based on velocity, move east/west
@@ -74,18 +74,6 @@ namespace HercAndHippoLibCs
                 ActionInput.ShootEast => Shoot(nextState, Direction.East),
                 _ => Behaviors.NoReaction(nextState)
             };
-        }
-
-        /// <summary>
-        /// If player is blocked in direction of motion, velocity resets to zero. Otherwise grows or shrinks normally.
-        /// </summary>
-        private Velocity GetNextVelocity(Level level, ActionInput actionInput)
-        {
-            if (actionInput == ActionInput.MoveEast && IsBlocked(level, Direction.East))
-                return 0;
-            else if (actionInput == ActionInput.MoveWest && IsBlocked(level, Direction.West))
-                return 0;
-            else return Velocity.NextVelocity(actionInput);
         }
 
         public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy)
@@ -245,13 +233,19 @@ namespace HercAndHippoLibCs
                 CurrentVelocity = 0;
         }
 
-        public Velocity NextVelocity(ActionInput actionInput)
-        => actionInput switch
+        public Velocity NextVelocity(HercAndHippoObj hho, Level level, ActionInput actionInput)
         {
-            ActionInput.MoveEast => AccelerateEastward(),
-            ActionInput.MoveWest => AccelerateWestward(),
-            _ => SlowDown()
-        };
+            if (actionInput == ActionInput.MoveEast && hho.IsBlocked(level, Direction.East))
+                return 0;
+            else if (actionInput == ActionInput.MoveWest && hho.IsBlocked(level, Direction.West))
+                return 0;
+            else return actionInput switch
+            {
+                ActionInput.MoveEast => AccelerateEastward(),
+                ActionInput.MoveWest => AccelerateWestward(),
+                _ => SlowDown()
+            };
+        }
 
 
         public Velocity Reverse(ActionInput actionInput)
