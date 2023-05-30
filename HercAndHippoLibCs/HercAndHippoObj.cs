@@ -4,6 +4,8 @@
     {
         public virtual bool IsBlocking => this is ILocatable;
         public virtual bool AffectedByGravity => true;
+        public virtual Velocity Velocity { get => velocity; init => velocity = value; }
+        private Velocity velocity = 0;
         public bool IsBlocked(Level level, Direction where)
             => this is ILocatable locatable && 
             where switch
