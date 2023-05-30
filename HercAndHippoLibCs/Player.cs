@@ -20,7 +20,6 @@ namespace HercAndHippoLibCs
         public Health Health { get; init; }
         public AmmoCount AmmoCount { get; init; }
         public Inventory Inventory { get; init; }
-        public override Velocity Velocity { get; init; }
         public string ConsoleDisplayString => HasHealth ? "☻" : "X";
         public Color Color => Color.White;
         public Color BackgroundColor => Color.Blue;
