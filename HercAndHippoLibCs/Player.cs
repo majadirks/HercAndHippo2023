@@ -4,43 +4,102 @@ using static System.Math;
 
 namespace HercAndHippoLibCs
 {
-    public record Player(Location Location, Health Health, AmmoCount AmmoCount, Inventory Inventory) 
-        : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouchable, IConsoleDisplayable
+    public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouchable, IConsoleDisplayable
     {
-        public static Player Default(Location location) => new(Location: location, Health: 100, AmmoCount: 0, Inventory: Inventory.EmptyInventory);
-        public static Player Default(Column col, Row row) => Player.Default((col, row));
-        public string ConsoleDisplayString => HasHealth ? "☻" : "RIP";
+        public Player(Location location, Health health, AmmoCount ammoCount, Inventory inventory)
+        {
+            Location = location;
+            Health = health;
+            AmmoCount = ammoCount;
+            Inventory = inventory;
+            Velocity = 0;
+        }
+
+        // Properties
+        public Location Location { get; init; }
+        public Health Health { get; init; }
+        public AmmoCount AmmoCount { get; init; }
+        public Inventory Inventory { get; init; }
+        public string ConsoleDisplayString => HasHealth ? "☻" : "X";
         public Color Color => Color.White;
         public Color BackgroundColor => Color.Blue;
+        public Velocity Velocity { get; init; }
+        public bool HasHealth => Health.HasHealth;
+        public bool HasAmmo => AmmoCount.HasAmmo;
+
+        public static Player Default(Location location) => new(location: location, health: 100, ammoCount: 0, inventory: Inventory.EmptyInventory);
+        public static Player Default(Column col, Row row) => Player.Default((col, row));
+
         public override string ToString() => $"Player at location {Location} with {Health}, {AmmoCount}, Inventory Size: {Inventory.Count}";
         public Level OnShot(Level level, Direction shotFrom, Bullet shotBy)
             => level.WithPlayer(this with { Health = Health - 5 });
-        public bool HasHealth => Health.HasHealth;
-        public bool HasAmmo => AmmoCount.HasAmmo;
         public Level Cycle(Level level, ActionInput actionInput)
-         => actionInput switch
-         {
-             ActionInput.MoveWest => TryMoveTo((Location.Col.NextWest(), Location.Row), approachFrom: Direction.East, curState: level),
-             ActionInput.MoveEast => TryMoveTo((Location.Col.NextEast(level.Width), Location.Row), approachFrom: Direction.West, curState: level),
-             ActionInput.MoveNorth => TryMoveTo((Location.Col, Location.Row.NextNorth()), approachFrom: Direction.South, curState: level),
-             ActionInput.MoveSouth => TryMoveTo((Location.Col, Location.Row.NextSouth(level.Height)), approachFrom: Direction.North, curState: level),
-             ActionInput.ShootNorth => Shoot(level, Direction.North),
-             ActionInput.ShootSouth => Shoot(level, Direction.South),
-             ActionInput.ShootWest => Shoot(level, Direction.West),
-             ActionInput.ShootEast => Shoot(level, Direction.East),
-             _ => Behaviors.NoReaction(level)
-         };
+        {
+            Velocity nextVelocity = GetNextVelocity(level, actionInput);
+            Level nextState = level.WithPlayer(this with { Velocity = nextVelocity });
+
+            // Based on velocity, move east/west
+            if (Velocity < 0)
+            {
+                for (int i = 1; i > Velocity; i--)
+                {
+                    nextState = TryMoveTo((Location.Col.NextWest(), Location.Row), approachFrom: Direction.East, curState: nextState);
+                }
+            }
+            else if (Velocity > 0)
+            {
+                for (int i = 1; i < Velocity; i++)
+                {
+                    nextState = TryMoveTo((Location.Col.NextEast(nextState.Width), Location.Row), approachFrom: Direction.West, curState: nextState);
+                }              
+            }
+            else if (actionInput == ActionInput.MoveWest)
+            {
+                nextState = TryMoveTo((Location.Col.NextWest(), Location.Row), approachFrom: Direction.East, curState: nextState);
+            }
+            else if (actionInput == ActionInput.MoveEast)
+            {
+                nextState = TryMoveTo((Location.Col.NextEast(nextState.Width), Location.Row), approachFrom: Direction.West, curState: nextState);
+            }
+            
+            // Regardless of above motion, run the following switch statement
+            // to make sure we can shoot while velocity is nonzero
+            return actionInput switch // Based on input, move north/south or shoot.
+            {      
+                ActionInput.MoveNorth => TryMoveTo((Location.Col, Location.Row.NextNorth()), approachFrom: Direction.South, curState: nextState),
+                ActionInput.MoveSouth => TryMoveTo((Location.Col, Location.Row.NextSouth(level.Height)), approachFrom: Direction.North, curState: nextState),
+                ActionInput.ShootNorth => Shoot(nextState, Direction.North),
+                ActionInput.ShootSouth => Shoot(nextState, Direction.South),
+                ActionInput.ShootWest => Shoot(nextState, Direction.West),
+                ActionInput.ShootEast => Shoot(nextState, Direction.East),
+                _ => Behaviors.NoReaction(nextState)
+            };
+        }
+
+        /// <summary>
+        /// If player is blocked in direction of motion, velocity resets to zero. Otherwise grows or shrinks normally.
+        /// </summary>
+        private Velocity GetNextVelocity(Level level, ActionInput actionInput)
+        {
+            if (actionInput == ActionInput.MoveEast && IsBlocked(level, Direction.East))
+                return 0;
+            else if (actionInput == ActionInput.MoveWest && IsBlocked(level, Direction.West))
+                return 0;
+            else return Velocity.NextVelocity(actionInput);
+        }
+
         public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy)
             => touchedBy switch
             {
                 Bullet shotBy => OnShot(level, touchedFrom.Mirror(), shotBy),
                 _ => level
             };
-        private Level TryMoveTo(Location newLocation, Direction approachFrom, Level curState)
+        private static Level TryMoveTo(Location newLocation, Direction approachFrom, Level curState)
         {
+            Player player = curState.Player;
             // If no obstacles, move
-            if (!IsBlocked(curState, approachFrom.Mirror()))
-                return curState.WithPlayer(this with { Location = newLocation });
+            if (!player.IsBlocked(curState, approachFrom.Mirror()))
+                return curState.WithPlayer(player with { Location = newLocation });
 
             // Otherwise, call the touch methods for any ITouchables and move over all else
             Level nextState = curState;
@@ -49,8 +108,8 @@ namespace HercAndHippoLibCs
             {
                 nextState = obj switch
                 {
-                    ITouchable touchableAtLocation => touchableAtLocation.OnTouch(curState, approachFrom, this),
-                    _ => nextState.WithPlayer(this with { Location = newLocation })
+                    ITouchable touchableAtLocation => touchableAtLocation.OnTouch(curState, approachFrom, player),
+                    _ => nextState.WithPlayer(player with { Location = newLocation })
                 };
             }
             return nextState; 
@@ -170,4 +229,49 @@ namespace HercAndHippoLibCs
         public static implicit operator int(AmmoCount ac) => ac.AmmoAmt;
         public override string ToString() => $"Ammo Count: {AmmoAmt}";
     }
+
+    public record Velocity
+    {
+        private const float MAX_VELOCITY = 6.0f;
+        private const float MIN_VELOCITY = -6.0f;
+        private const float ZERO_THRESHOLD = 0.2f;
+        private const float ACCELERATION = 0.4f;
+        public float CurrentVelocity { get; init; }
+        public static Velocity DefaultVelocity { get; } = new(velocity: 0);
+        public Velocity(float velocity)
+        {
+            CurrentVelocity = Min(Max(velocity, MIN_VELOCITY), MAX_VELOCITY);
+            if (Abs(CurrentVelocity) <= ZERO_THRESHOLD || Sign(CurrentVelocity) != Sign(velocity))
+                CurrentVelocity = 0;
+        }
+
+        public Velocity NextVelocity(ActionInput actionInput)
+        => actionInput switch
+        {
+            ActionInput.MoveEast => AccelerateEastward(),
+            ActionInput.MoveWest => AccelerateWestward(),
+            _ => SlowDown()
+        };
+
+
+        public Velocity Reverse(ActionInput actionInput)
+            => actionInput switch
+            {
+                ActionInput.MoveEast => AccelerateWestward(),
+                ActionInput.MoveWest => AccelerateEastward(),
+                _ => SlowDown()
+            };
+        public Velocity SlowDown()
+        {
+            if (CurrentVelocity > 0) return AccelerateWestward();
+            else if (CurrentVelocity < 0) return AccelerateEastward();
+            else return this;
+        }
+        private Velocity AccelerateEastward() => new(velocity: CurrentVelocity + ACCELERATION);
+        private Velocity AccelerateWestward() => new(velocity: CurrentVelocity - ACCELERATION);
+
+        public static implicit operator Velocity(float cv) => new(velocity: cv);
+        public static implicit operator float(Velocity veloc) => veloc.CurrentVelocity;
+    }
+
 }

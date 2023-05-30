@@ -14,7 +14,7 @@ namespace HercAndHippoLibCsTest
         {
             // Arrange
             int initialCount = 0;
-            Player player = new((1, 1), Health: 100, AmmoCount: 0, Inventory: Inventory.EmptyInventory);
+            Player player = new((1, 1), health: 100, ammoCount: 0, inventory: Inventory.EmptyInventory);
             ShotCounter initialCounter = new((3,3), initialCount);
             ShotCounter cycledCounter = initialCounter with { Count = initialCount + 1 };
             Bullet bullet = new((2, 3), Direction.East);
@@ -48,7 +48,7 @@ namespace HercAndHippoLibCsTest
         {
             // Arrange
             int initialCount = 0;
-            Player player = new((3, 2), Health: 100, AmmoCount: 1, Inventory: Inventory.EmptyInventory);
+            Player player = new((3, 2), health: 100, ammoCount: 1, inventory: Inventory.EmptyInventory);
             ShotCounter initialCounter = new((2, 2), Count: initialCount);
             ShotCounter cycledCounter = initialCounter with { Count = initialCount + 1 };
             Level level = new(player, new HashSet<HercAndHippoObj>() { initialCounter });
@@ -79,7 +79,7 @@ namespace HercAndHippoLibCsTest
             Bullet bullet2 = new(nonshootable.Location, Direction.East);
             Bullet bullet3 = new((4, 3), Direction.East);
             Wall corner = new(Color.Yellow, (10, 10)); // Give bullet room in the level to move past the nonshootable
-            Player player = new((3, 2), Health: 100, AmmoCount: 1, Inventory: Inventory.EmptyInventory);
+            Player player = new((3, 2), health: 100, ammoCount: 1, inventory: Inventory.EmptyInventory);
             Level level = new(player, new HashSet<HercAndHippoObj> { initialBullet, nonshootable, corner });
 
             // Act and assert
@@ -108,7 +108,7 @@ namespace HercAndHippoLibCsTest
             Bullet cycledSouthward = new((5, 6), Direction.South);
             Bullet initialWestward = new((5, 5), Direction.West);
             Bullet cycledWestward = new((4, 5), Direction.West);
-            Player player = new((1, 1), Health: 100, AmmoCount: 5, Inventory: Inventory.EmptyInventory);
+            Player player = new((1, 1), health: 100, ammoCount: 5, inventory: Inventory.EmptyInventory);
             Level level = new(player, new HashSet<HercAndHippoObj>() { corner, initialEastward, initialWestward, initialNorthward, initialSouthward });
 
             // Act
@@ -236,7 +236,7 @@ namespace HercAndHippoLibCsTest
             //Assert.IsTrue(false); //this test fails intermittently!
             // Arrange
             Wall corner1 = new(Color.Yellow, (10, 10));
-            Player player = new((2,2), Health: 100,AmmoCount: 5, Inventory: Inventory.EmptyInventory);
+            Player player = new((2,2), health: 100,ammoCount: 5, inventory: Inventory.EmptyInventory);
             ShotCounter counter = new((5, 2), 0);
             Level level = new(player, new HashSet<HercAndHippoObj>() { corner1, counter });
 
@@ -268,7 +268,7 @@ namespace HercAndHippoLibCsTest
         public void CanShootNorthAndSouthInFirstColumn()
         {
             // Arrange
-            Player player = new((Column.MIN_COL, 4), Health: 10, AmmoCount: 2, Inventory: Inventory.EmptyInventory);
+            Player player = new((Column.MIN_COL, 4), health: 10, ammoCount: 2, inventory: Inventory.EmptyInventory);
             ShotCounter northCounter = new((Column.MIN_COL, 1), Count: 0);
             ShotCounter southCounter = new((Column.MIN_COL, 7), Count: 0);
             Level level = new(player, new HashSet<HercAndHippoObj>() { northCounter, southCounter });
@@ -289,7 +289,7 @@ namespace HercAndHippoLibCsTest
         public void CanShootEastAndWestInFirstRow()
         {
             // Arrange
-            Player player = new((4, Row.MIN_ROW), Health: 10, AmmoCount: 2, Inventory: Inventory.EmptyInventory);
+            Player player = new((4, Row.MIN_ROW), health: 10, ammoCount: 2, inventory: Inventory.EmptyInventory);
             ShotCounter westCounter = new((1, Row.MIN_ROW), Count: 0);
             ShotCounter eastCounter = new((7, Row.MIN_ROW), Count: 0);
             Level level = new(player, new HashSet<HercAndHippoObj>() { westCounter, eastCounter });
@@ -310,16 +310,14 @@ namespace HercAndHippoLibCsTest
         public void CanShootBottomRightCorner_Test()
         {
             // Arrange
-            Player player = new((2, 2), Health: 100, AmmoCount: 5, Inventory: Inventory.EmptyInventory);
+            Player player = new((4, 2), health: 100, ammoCount: 5, inventory: Inventory.EmptyInventory);
             ShotCounter counter = new((4, 4), 0);
             Level level = new(player, new HashSet<HercAndHippoObj> { counter });
 
             // Act and assert
 
-            // Move east, so positioned north of counter, and shoot south.
-            // Count increments to 1.
-            level = level.RefreshCyclables(ActionInput.MoveEast)
-                .RefreshCyclables(ActionInput.MoveEast)
+            // Shoot south. Count increments to 1.
+            level = level
                 .RefreshCyclables(ActionInput.ShootSouth)
                 .RefreshCyclables(ActionInput.NoAction)
                 .RefreshCyclables(ActionInput.NoAction);
@@ -327,10 +325,8 @@ namespace HercAndHippoLibCsTest
 
             // Move west and south, so positioned west of counter, and shoot east.
             // Count increments to 2.
-            level = level.RefreshCyclables(ActionInput.MoveWest)
-                .RefreshCyclables(ActionInput.MoveSouth)
-                .RefreshCyclables(ActionInput.MoveSouth)
-                .RefreshCyclables(ActionInput.MoveWest)
+            level = level
+                .WithPlayer(level.Player with { Location = (2, 4) })
                 .RefreshCyclables(ActionInput.ShootEast)
                 .RefreshCyclables(ActionInput.NoAction)
                 .RefreshCyclables(ActionInput.NoAction);
@@ -341,7 +337,7 @@ namespace HercAndHippoLibCsTest
         public void CanShootFromBottomRightCorner_Test()
         {
             // Arrange
-            Player player = new((10, 10), Health: 100, AmmoCount: 5, Inventory: Inventory.EmptyInventory);
+            Player player = new((10, 10), health: 100, ammoCount: 5, inventory: Inventory.EmptyInventory);
             Noninteractor corner = new((10,10)); // Just to be perverse
             ShotCounter topRight = new((10, Row.MIN_ROW), 0);
             ShotCounter bottomLeft = new((Column.MIN_COL, 10), 0);

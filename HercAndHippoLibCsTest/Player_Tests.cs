@@ -5,10 +5,32 @@ namespace HercAndHippoLibCsTest
     public class Player_Tests
     {
         [TestMethod]
+        public void PlayerCanShootWhileVelocityIsNonzero_Test()
+        {
+            // Arrange
+            Player player = new((5, 5), 100, 100, EmptyInventory);
+            ShotCounter counter = new((10, 5), 0);
+            Level level = new(player, new HashSet<HercAndHippoObj> { counter });
+
+            // Act
+            level = level.RefreshCyclables(ActionInput.MoveEast)
+                .RefreshCyclables(ActionInput.MoveEast)
+                .RefreshCyclables(ActionInput.MoveEast)
+                .RefreshCyclables(ActionInput.MoveEast);
+            Assert.IsTrue(level.Player.Velocity > 0);
+            level = level.RefreshCyclables(ActionInput.ShootEast);
+
+            // Assert
+            Assert.IsTrue(level.Player.Velocity > 0);
+            Assert.IsTrue(level.LevelObjects.Where(b => b is Bullet).Any());
+
+        }
+
+        [TestMethod]
         public void PlayerCanMoveWithinBounds_Test()
         {
             // Arrange
-            Player initial = new(Location: (5, 5), Health: 100, AmmoCount: 0, Inventory: EmptyInventory);
+            Player initial = new(location: (5, 5), health: 100, ammoCount: 0, inventory: EmptyInventory);
             Player eastPlayer = initial with { Location = (6, 5) };
             Player northeastPlayer = initial with { Location = (6, 4) };
             Player northPlayer = initial with { Location = (5, 4) };
@@ -41,7 +63,7 @@ namespace HercAndHippoLibCsTest
         public void PlayerCannotMoveWestOfMinCol_Test()
         {
             // Arrange
-            Player player = new((Column.MIN_COL + 5, 2), Health: 100, AmmoCount: 0, Inventory: EmptyInventory);
+            Player player = new((Column.MIN_COL + 5, 2), health: 100, ammoCount: 0, inventory: EmptyInventory);
             Wall corner = new(Color.Yellow, (10, 10));
             Level level = new(player, new HashSet<HercAndHippoObj> { corner });
             int attempt = 1;
@@ -68,7 +90,7 @@ namespace HercAndHippoLibCsTest
         public void PlayerCannotMoveNorthOfMinRow_Test()
         {
             // Arrange
-            Player player = new((5, Row.MIN_ROW + 5), Health: 100, AmmoCount: 0, Inventory: EmptyInventory);
+            Player player = new((5, Row.MIN_ROW + 5), health: 100, ammoCount: 0, inventory: EmptyInventory);
             Wall corner = new(Color.Yellow, (10, 10));
             Level level = new(player, new HashSet<HercAndHippoObj> { corner });
             int attempt = 1;
@@ -95,7 +117,7 @@ namespace HercAndHippoLibCsTest
         public void PlayerCannotMoveEastOfCorner_Test()
         {
             // Arrange
-            Player player = new((2, 2), Health: 100, AmmoCount: 0, Inventory: EmptyInventory);
+            Player player = new((2, 2), health: 100, ammoCount: 0, inventory: EmptyInventory);
             Wall corner = new(Color.Yellow, (10, 10));
             Level level = new(player, new HashSet<HercAndHippoObj> { corner });
             int attempt = 1;
@@ -122,7 +144,7 @@ namespace HercAndHippoLibCsTest
         public void PlayerCannotMoveSouthOfCorner_Test()
         {
             // Arrange
-            Player player = new((2, 2), Health: 100, AmmoCount: 0, Inventory: EmptyInventory);
+            Player player = new((2, 2), health: 100, ammoCount: 0, inventory: EmptyInventory);
             Wall corner = new(Color.Yellow, (10, 10));
             Level level = new(player, new HashSet<HercAndHippoObj> { corner });
             int attempt = 1;
@@ -154,9 +176,9 @@ namespace HercAndHippoLibCsTest
             static Inventory GetNewInventory() => new(new HashSet<ITakeable>());
             // Arrange
             Inventory p1Inventory = GetNewInventory();
-            Player player1 = new((2, 2), Health: 100, AmmoCount: 0, Inventory: p1Inventory);
+            Player player1 = new((2, 2), health: 100, ammoCount: 0, inventory: p1Inventory);
             Inventory p2Inventory = GetNewInventory();
-            Player player2 = new((2, 2), Health: 100, AmmoCount: 0, Inventory: p2Inventory);
+            Player player2 = new((2, 2), health: 100, ammoCount: 0, inventory: p2Inventory);
             // Assert
             Assert.AreEqual(player1.Inventory.GetHashCode(), player2.Inventory.GetHashCode());
             Assert.AreEqual(player1, player2);
@@ -172,9 +194,9 @@ namespace HercAndHippoLibCsTest
             static Inventory GetNewInventory() => new Inventory(new HashSet<ITakeable>()).AddItem(GetNewKey());
             // Arrange
             Inventory p1Inventory = GetNewInventory();
-            Player player1 = new((2, 2), Health: 100, AmmoCount: 0, Inventory: p1Inventory);
+            Player player1 = new((2, 2), health: 100, ammoCount: 0, inventory: p1Inventory);
             Inventory p2Inventory = GetNewInventory();
-            Player player2 = new((2, 2), Health: 100, AmmoCount: 0, Inventory: p2Inventory);
+            Player player2 = new((2, 2), health: 100, ammoCount: 0, inventory: p2Inventory);
             // Assert
             Assert.AreEqual(player1, player2);
             Assert.AreEqual(player1.Inventory.GetHashCode(), player2.Inventory.GetHashCode());
@@ -225,7 +247,7 @@ namespace HercAndHippoLibCsTest
         {
             // Arrange
             int startCount = 0;
-            Player player = new((2, 2), Health: 100, AmmoCount: 0, Inventory: EmptyInventory);
+            Player player = new((2, 2), health: 100, ammoCount: 0, inventory: EmptyInventory);
             TouchCounter initialCounter = new((3, 2), startCount);
             TouchCounter cycledCounter = new((3, 2), startCount + 1);
             Level level = new(player, secondaryObjects: new HashSet<HercAndHippoObj>() { initialCounter });
@@ -249,7 +271,7 @@ namespace HercAndHippoLibCsTest
         public void PlayerCanShootInAllDirections_Test()
         {
             // Arrange
-            Player player = new((5, 5), Health: 100, AmmoCount: 5, Inventory: EmptyInventory);
+            Player player = new((5, 5), health: 100, ammoCount: 5, inventory: EmptyInventory);
             Bullet northBullet = new((5, 4), Direction.North);
             Bullet eastBullet = new((6, 5), Direction.East);
             Bullet southBullet = new((5, 6), Direction.South);
@@ -279,7 +301,7 @@ namespace HercAndHippoLibCsTest
             // Arrange
             Bullet westBullet = new((9, 9), Direction.West);
             Wall corner = new(Color.Yellow, (10, 10));
-            Player player = new((10, 9), Health: 100, AmmoCount: 5, Inventory: EmptyInventory);
+            Player player = new((10, 9), health: 100, ammoCount: 5, inventory: EmptyInventory);
             Level level = new(player, new HashSet<HercAndHippoObj>() { corner });
             Assert.IsFalse(level.Contains(westBullet));
 
@@ -302,7 +324,7 @@ namespace HercAndHippoLibCsTest
         public void PlayerCanPickUpKeyByMoving_Test()
         {
             // Arrange: Player west of key
-            Player player = new((2, 2), Health: 100, AmmoCount: 0, Inventory: EmptyInventory);
+            Player player = new((2, 2), health: 100, ammoCount: 0, inventory: EmptyInventory);
             Color keyColor = Color.DarkRed;
             Key key = new(keyColor, (3, 2));
             Player movedPlayer = player with { Location = key.Location, Inventory = player.Inventory.AddItem(key) };
@@ -329,7 +351,7 @@ namespace HercAndHippoLibCsTest
         public void Take_Test()
         {
             // Arrange
-            Player player = new((2, 2), Health: 100, AmmoCount: 0, Inventory: EmptyInventory);
+            Player player = new((2, 2), health: 100, ammoCount: 0, inventory: EmptyInventory);
             Color keyColor = Color.Magenta;
             Key key = new(keyColor, (3, 2));
             Assert.IsFalse(player.Inventory.Contains(key));
@@ -349,7 +371,7 @@ namespace HercAndHippoLibCsTest
             // Arrange
             Color keyColor = Color.Magenta;
             Key key = new(keyColor, (3, 2));
-            Player player = new((2, 2), Health: 100, AmmoCount: 0, Inventory: new(key));
+            Player player = new((2, 2), health: 100, ammoCount: 0, inventory: new(key));
             // Assert
             Assert.IsTrue(player.Has<Key>(keyColor));
             Assert.IsFalse(player.Has<Key>(Color.Cyan));
@@ -361,7 +383,7 @@ namespace HercAndHippoLibCsTest
             // Arrange
             Color keyColor = Color.Magenta;
             Key key = new(keyColor, (3, 2));
-            Player player = new((2, 2), Health: 100, AmmoCount: 0, Inventory: new(key));
+            Player player = new((2, 2), health: 100, ammoCount: 0, inventory: new(key));
             Assert.IsTrue(player.Has<Key>(keyColor));
 
             // Act

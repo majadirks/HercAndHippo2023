@@ -108,7 +108,6 @@
             // Arrange
             Player initial = Player.Default((2, 2));
             Player secondPosition = Player.Default((3, 2));
-            Player playerAtDoor = Player.Default((4, 2));
             Door door = new(Color.Cyan, (4, 2));
             Wall corner = new(Color.White, (10, 10));
             Level level = new(initial, new HashSet<HercAndHippoObj> { door, corner });
