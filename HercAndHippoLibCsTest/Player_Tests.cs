@@ -5,6 +5,28 @@ namespace HercAndHippoLibCsTest
     public class Player_Tests
     {
         [TestMethod]
+        public void PlayerCanShootWhileVelocityIsNonzero_Test()
+        {
+            // Arrange
+            Player player = new((5, 5), 100, 100, EmptyInventory);
+            ShotCounter counter = new((10, 5), 0);
+            Level level = new(player, new HashSet<HercAndHippoObj> { counter });
+
+            // Act
+            level = level.RefreshCyclables(ActionInput.MoveEast)
+                .RefreshCyclables(ActionInput.MoveEast)
+                .RefreshCyclables(ActionInput.MoveEast)
+                .RefreshCyclables(ActionInput.MoveEast);
+            Assert.IsTrue(level.Player.Velocity > 0);
+            level = level.RefreshCyclables(ActionInput.ShootEast);
+
+            // Assert
+            Assert.IsTrue(level.Player.Velocity > 0);
+            Assert.IsTrue(level.LevelObjects.Where(b => b is Bullet).Any());
+
+        }
+
+        [TestMethod]
         public void PlayerCanMoveWithinBounds_Test()
         {
             // Arrange
