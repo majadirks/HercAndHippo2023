@@ -4,6 +4,7 @@
 	* https://stackoverflow.com/questions/2754518/how-can-i-write-fast-colored-output-to-console
 - Level editor
 - Status bar
+- Consider adding a Guid to the superclass and re-enabling parallel cycling
 - Implement and test "seek" behavior for bullet
 - Enemies: archers, poodles
 - Hippo and goal
