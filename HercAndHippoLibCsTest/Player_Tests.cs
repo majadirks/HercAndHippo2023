@@ -440,11 +440,30 @@ namespace HercAndHippoLibCsTest
             Assert.IsTrue(player.Has<Key>(keyColor));
 
             // Act
-            (ITakeable dropped, player) = player.DropItem<Key>(keyColor);
+            (bool dropped, ITakeable? droppedkey, player) = player.DropItem<Key>(keyColor);
 
             // Assert
-            Assert.AreEqual(dropped, key);
+            Assert.IsTrue(dropped);
+            Assert.AreEqual(droppedkey, key);
             Assert.IsFalse(player.Has<Key>(keyColor));
         }
+
+        [TestMethod]
+        public void CannotDropItemNotHeld_Test()
+        {
+            // Arrange
+            Color keyColor = Color.Magenta;
+            Player player = new((2, 2), health: 100, ammoCount: 0, inventory: EmptyInventory);
+            Assert.IsFalse(player.Has<Key>(keyColor));
+
+            // Act
+            (bool dropped, ITakeable? droppedkey, player) = player.DropItem<Key>(keyColor);
+
+            // Assert
+            Assert.IsFalse(dropped);
+            Assert.AreEqual(default, droppedkey);
+            Assert.IsFalse(player.Has<Key>(keyColor));
+        }
+
     }
 }

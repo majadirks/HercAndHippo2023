@@ -134,17 +134,16 @@ namespace HercAndHippoLibCs
                 .WithPlayer(player with { AmmoCount = player.AmmoCount - 1 });
             return level;
         }
+
+
+        // Inventory Management
         public Player Take(ITakeable toTake) => this with { Inventory = Inventory.AddItem(toTake) };
         public bool Has<T>(Color color) => Inventory.Contains<T>(color);
-        /// <summary>
-        /// If a player has an item in their inventory matching the specified type and color, return the first match of that item
-        /// and a player with all matches removed from their inventory. Throws an exception if there are no matches.
-        /// </summary>
-        public (ITakeable item, Player newPlayerState) DropItem<T>(Color color)
-        { 
-            ITakeable item = Inventory.Where(item => item.MatchesColor<T>(color)).First();
-            Player newPlayerState = this with { Inventory = Inventory.Where(item => !item.MatchesColor<T>(color)).ToInventory() };
-            return (item, newPlayerState);
+
+        public (bool dropped, ITakeable? item, Player newPlayerState) DropItem<T>(Color color)
+        {
+            (bool dropped, ITakeable? item, Inventory reducedInventory) = Inventory.DropItem<T>(color);
+            return (dropped, item, this with { Inventory = reducedInventory });
         }
     }
 
@@ -172,6 +171,13 @@ namespace HercAndHippoLibCs
         {
             HashSet<ITakeable> newSet = new(takeables) { item };
             return new Inventory(newSet);
+        }
+        public (bool dropped, ITakeable? item, Inventory newInventoryState) DropItem<T>(Color color)
+        {
+            ITakeable? item = takeables.Where(item => item.MatchesColor<T>(color)).FirstOrDefault();
+            if (item == default) return (false, item, this);
+            Inventory newState = this.Where(item => !item.MatchesColor<T>(color)).ToInventory();
+            return (true, item, newState);
         }
         public bool Contains<T>(Color color) => takeables.Where(item => item.MatchesColor<T>(color)).Any();
         public IEnumerator<ITakeable> GetEnumerator() => takeables.GetEnumerator();
