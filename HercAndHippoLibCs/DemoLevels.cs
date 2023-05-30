@@ -79,7 +79,25 @@ namespace HercAndHippoLibCs
                 new BreakableWall(Color.Blue, (90, 40)),
                 new BreakableWall(Color.Blue, (100, 40)),
                 new BreakableWall(Color.Blue, (110, 40)),
-                new BreakableWall(Color.Blue, (120, 40))
+                new BreakableWall(Color.Blue, (120, 40)),
+                new BreakableWall(Color.Blue, (130, 40)),
+                new BreakableWall(Color.Blue, (140, 40)),
+                new BreakableWall(Color.Blue, (150, 40)),
+                new BreakableWall(Color.Blue, (160, 40)),
+                new BreakableWall(Color.Blue, (170, 40)),
+                new BreakableWall(Color.Blue, (180, 40)),
+                new BreakableWall(Color.Blue, (190, 40)),
+                new BreakableWall(Color.Blue, (200, 40)),
+                new BreakableWall(Color.Blue, (210, 40)),
+                new BreakableWall(Color.Blue, (220, 40)),
+                new BreakableWall(Color.Blue, (230, 40)),
+                new BreakableWall(Color.Blue, (240, 40)),
+                new BreakableWall(Color.Blue, (250, 40)),
+                new BreakableWall(Color.Blue, (260, 40)),
+                new BreakableWall(Color.Blue, (270, 40)),
+                new BreakableWall(Color.Blue, (280, 40)),
+                new BreakableWall(Color.Blue, (290, 40)),
+                new BreakableWall(Color.Blue, (300, 40))
             });
 
         public static readonly Level Clones = new(
