@@ -26,13 +26,10 @@ namespace HercAndHippoLibCs
         public Velocity Velocity { get; init; }
         public bool HasHealth => Health.HasHealth;
         public bool HasAmmo => AmmoCount.HasAmmo;
-
-        public static Player Default(Location location) => new(location: location, health: 100, ammoCount: 0, inventory: Inventory.EmptyInventory);
-        public static Player Default(Column col, Row row) => Player.Default((col, row));
-
         public override string ToString() => $"Player at location {Location} with {Health}, {AmmoCount}, Inventory Size: {Inventory.Count}";
-        public Level OnShot(Level level, Direction shotFrom, Bullet shotBy)
-            => level.WithPlayer(this with { Health = Health - 5 });
+        
+        // Behaviors
+        public Level OnShot(Level level, Direction shotFrom, Bullet shotBy) => level.WithPlayer(this with { Health = Health - 5 });
         public Level Cycle(Level level, ActionInput actionInput)
         {
             Velocity nextVelocity = Velocity.NextVelocity(this, level, actionInput);
@@ -79,13 +76,14 @@ namespace HercAndHippoLibCs
                 _ => Behaviors.NoReaction(nextState)
             };
         }
-
         public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy)
             => touchedBy switch
             {
                 Bullet shotBy => OnShot(level, touchedFrom.Mirror(), shotBy),
                 _ => level
             };
+
+        // Private static helpers
         private static Level TryMoveTo(Location newLocation, Direction approachFrom, Level curState)
         {
             Player player = curState.Player;
@@ -135,16 +133,18 @@ namespace HercAndHippoLibCs
             return level;
         }
 
-
         // Inventory Management
         public Player Take(ITakeable toTake) => this with { Inventory = Inventory.AddItem(toTake) };
         public bool Has<T>(Color color) => Inventory.Contains<T>(color);
-
         public (bool dropped, ITakeable? item, Player newPlayerState) DropItem<T>(Color color)
         {
             (bool dropped, ITakeable? item, Inventory reducedInventory) = Inventory.DropItem<T>(color);
             return (dropped, item, this with { Inventory = reducedInventory });
         }
+
+        // Public static utilities
+        public static Player Default(Location location) => new(location: location, health: 100, ammoCount: 0, inventory: Inventory.EmptyInventory);
+        public static Player Default(Column col, Row row) => Player.Default((col, row));
     }
 
     public static class InventoryExtensions
