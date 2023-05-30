@@ -9,7 +9,12 @@ namespace HercAndHippoLibCs
         public readonly int Height { get; private init; }
         private readonly HashSet<HercAndHippoObj> SecondaryObjects { get; init; } // secondary, ie not the player
         public Level(Player player, HashSet<HercAndHippoObj> secondaryObjects)
-            => (Player, SecondaryObjects, Width, Height) = (player, secondaryObjects, GetWidth(secondaryObjects), GetHeight(secondaryObjects));
+        {
+            Player = player;
+            SecondaryObjects = secondaryObjects;
+            Width = GetWidth(secondaryObjects);
+            Height = GetHeight(secondaryObjects);
+        }
         public readonly HashSet<HercAndHippoObj> LevelObjects => SecondaryObjects.AddObject(Player);
         public Level WithPlayer(Player player) => this with { Player = player };
         public IEnumerable<HercAndHippoObj> ObjectsAt(Location location) => LevelObjects.Where(d => d is ILocatable dAtLoc && dAtLoc.Location.Equals(location));
