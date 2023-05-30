@@ -1,9 +1,62 @@
-﻿using static HercAndHippoLibCs.Inventory;
+﻿using System.Runtime.CompilerServices;
+using static HercAndHippoLibCs.Inventory;
 namespace HercAndHippoLibCsTest
 {
     [TestClass]
     public class Player_Tests
     {
+        [TestMethod]
+        public void PlayerMovesFasterAfterAccelerating_HeadingEast_Test()
+        {
+            // Arrange
+            Player player = Player.Default((2, 2));
+            Noninteractor edge = new((1000, 10));
+            Level level = new(player, new HashSet<HercAndHippoObj> { edge });
+            Velocity initialVelocity = player.Velocity;
+
+            // Act
+            for (int i = 0; i < 10; i++)
+            {
+                level = level.RefreshCyclables(ActionInput.MoveEast);
+            }
+
+            // Assert: Velocity has increased
+            Assert.IsTrue(Math.Abs(level.Player.Velocity) > Math.Abs(initialVelocity) && level.Player.Velocity > 0);
+
+            // Arrange again
+            Column curCol = level.Player.Location.Col;
+            // Act again
+            level = level.RefreshCyclables(ActionInput.MoveEast);
+            // Assert: Player has moved more than one column
+            Assert.IsTrue(level.Player.Location.Col - curCol > 1);
+        }
+
+        [TestMethod]
+        public void PlayerMovesFasterAfterAccelerating_HeadingWest_Test()
+        {
+            // Arrange
+            Player player = Player.Default((999, 2));
+            Noninteractor edge = new((1000, 10));
+            Level level = new(player, new HashSet<HercAndHippoObj> { edge });
+            Velocity initialVelocity = player.Velocity;
+
+            // Act
+            for (int i = 0; i < 10; i++)
+            {
+                level = level.RefreshCyclables(ActionInput.MoveWest);
+            }
+
+            // Assert: Velocity has increased westward
+            Assert.IsTrue(Math.Abs(level.Player.Velocity) > Math.Abs(initialVelocity) && level.Player.Velocity < 0);
+
+            // Arrange again
+            Column curCol = level.Player.Location.Col;
+            // Act again
+            level = level.RefreshCyclables(ActionInput.MoveWest);
+            // Assert: Player has moved more than one column
+            Assert.IsTrue(curCol - level.Player.Location.Col > 1);
+        }
+
         [TestMethod]
         public void PlayerCanShootWhileVelocityIsNonzero_Test()
         {
