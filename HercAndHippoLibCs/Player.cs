@@ -147,6 +147,9 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
     // Private static helpers
     private static Level TryMoveTo(Location newLocation, Direction approachFrom, Level curState)
     {
+        // ToDo: Currently, touch objects are responsible for "sucking" player into their position upon touch.
+        // Should change so Player is responsible for motion if motion is not blocked.
+
         Player player = curState.Player;
         // If no obstacles, move
         if (!player.ObjectLocatedTo(curState, approachFrom.Mirror()))
