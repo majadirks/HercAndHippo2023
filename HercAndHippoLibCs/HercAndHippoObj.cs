@@ -2,7 +2,7 @@
 {
     public abstract record HercAndHippoObj 
     {
-        protected virtual bool IsBlocking => this is ILocatable;
+        public virtual bool IsBlocking => this is ILocatable;
         public bool IsBlocked(Level level, Direction where)
             => this is ILocatable locatable && 
             where switch
