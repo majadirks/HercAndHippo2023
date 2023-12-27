@@ -126,7 +126,7 @@ public static class DemoLevels
         }
         displayables.Add(new Driver(Direction.North, Modulus: 3));
         displayables.Add(new Bullet((15, height - 1), Direction.Idle));
-        return new Level(player, displayables, gravity: 0);
+        return new Level(player, secondaryObjects: displayables, gravity: 0);
     }
 
     public static readonly Level JumpLevel = new(
