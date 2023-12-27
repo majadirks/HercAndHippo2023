@@ -482,5 +482,39 @@ namespace HercAndHippoLibCsTest
             Assert.IsFalse(player.Has<Key>(keyColor));
         }
 
+        // ToDo:
+        // Test player BlockedAt() method. Circle around wall; blockedAt should return true in relevant directions.
+        // Do same around ammo; should return false;
+        [TestMethod]
+        public void MotionBlockedByWall_NotByGem_Test()
+        {
+            // Arrange
+            Player player = new(location: (2, 2), health: 100, ammoCount: 0, inventory: EmptyInventory);
+            Wall wall = new(Color.Magenta, (2, 3));
+            Ammo ammo = new((5, 3), Count: 5);
+            Wall corner = new(Color.Yellow, (10, 10));
+            Level level = new(player: player, secondaryObjects: new() { wall, ammo, corner });
+
+            // Act and assert: Move player around wall, check IsBlocked() methods.
+            // Initially north of wall
+            Assert.IsTrue(player.MotionBlockedTo(level, Direction.South));
+            Assert.IsFalse(player.MotionBlockedTo(level, Direction.North));
+            Assert.IsFalse(player.MotionBlockedTo(level, Direction.East));
+            Assert.IsFalse(player.MotionBlockedTo(level, Direction.West));
+
+            // Player moves to east of wall, hence blocked west
+            level = level.RefreshCyclables(ActionInput.MoveEast);
+            level = level.RefreshCyclables(ActionInput.MoveSouth);
+            player = level.Player;
+            Assert.IsFalse(player.MotionBlockedTo(level, Direction.South));
+            Assert.IsFalse(player.MotionBlockedTo(level, Direction.North));
+            Assert.IsFalse(player.MotionBlockedTo(level, Direction.East));
+            Assert.IsTrue(player.MotionBlockedTo(level, Direction.West));
+
+
+        }
+
+        // ToDo: player blocked by when lacking key, not blocked when has key (maybe test elsewhere)
+
     }
 }

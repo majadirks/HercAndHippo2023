@@ -80,7 +80,7 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
         };
 
     // Check for blocking
-    public bool BlockedAt(Level level, Direction where)
+    public bool MotionBlockedTo(Level level, Direction where)
             => this is ILocatable locatable &&
             where switch
             {
