@@ -575,7 +575,5 @@ namespace HercAndHippoLibCsTest
             Assert.IsTrue(player.MotionBlockedTo(level, Direction.West));
         }
 
-        // ToDo: player blocked by when lacking key, not blocked when has key (maybe test elsewhere)
-
     }
 }

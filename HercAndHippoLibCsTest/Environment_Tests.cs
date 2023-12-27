@@ -142,5 +142,76 @@
             Assert.IsFalse(level.Contains(door)); // No more door!
             Assert.IsFalse(level.Player.Has<Key>(Color.Cyan)); // Player no longer has key
         }
+
+        [TestMethod]
+        public void MotionBlockedByDoor_IffNoKey_Test()
+        {
+            // Arrange
+            Player player = new(location: (2, 2), health: 100, ammoCount: 0, inventory: Inventory.EmptyInventory);
+            Door door = new(Color.Magenta, (2, 3));
+            Key key = new(Color.Magenta, (4, 2));
+            Wall corner = new(Color.Yellow, (10, 10));
+            Level level = new(player: player, secondaryObjects: new() { door, key, corner });
+
+            // Act and assert: Move player around door, check IsBlocked() methods.
+            // Initially north of wall
+            Assert.IsTrue(player.MotionBlockedTo(level, Direction.South));
+
+            // Player moves to east of door, hence blocked west
+            level = level.RefreshCyclables(ActionInput.MoveEast);
+            level = level.RefreshCyclables(ActionInput.MoveSouth);
+            player = level.Player;
+            Assert.IsTrue(player.MotionBlockedTo(level, Direction.West));
+
+            // Player moves to south of door, hence blocked north
+            level = level.RefreshCyclables(ActionInput.MoveSouth);
+            level = level.RefreshCyclables(ActionInput.MoveWest);
+            player = level.Player;
+            Assert.IsTrue(player.MotionBlockedTo(level, Direction.North));
+
+            // Player moves to west of door, hence blocked east.
+            level = level.RefreshCyclables(ActionInput.MoveWest);
+            level = level.RefreshCyclables(ActionInput.MoveNorth);
+            player = level.Player;
+            Assert.IsTrue(player.MotionBlockedTo(level, Direction.East));
+
+            // Player picks up key
+            level = level.RefreshCyclables(ActionInput.MoveNorth)
+                .RefreshCyclables(ActionInput.MoveEast) // back to (2,2)
+                .RefreshCyclables(ActionInput.MoveEast)
+                .RefreshCyclables(ActionInput.MoveEast); // reach key
+            player = level.Player;
+            Assert.IsTrue(player.Has<Key>(Color.Magenta));
+
+            level = level.RefreshCyclables(ActionInput.MoveWest)
+                .RefreshCyclables(ActionInput.MoveWest); // back to (2,2)
+            player = level.Player;
+
+            // Player is north of door, but motion is not blocked south
+            Assert.AreEqual((2, 2), player.Location);
+            Assert.IsTrue(player.ObjectLocatedTo(level, Direction.South));
+            Assert.IsFalse(player.MotionBlockedTo(level, Direction.South));
+
+            // Player moves to east of door
+            level = level.RefreshCyclables(ActionInput.MoveEast);
+            level = level.RefreshCyclables(ActionInput.MoveSouth);
+            player = level.Player;
+            Assert.IsTrue(player.ObjectLocatedTo(level, Direction.West));
+            Assert.IsFalse(player.MotionBlockedTo(level, Direction.West));
+
+            // Player moves to south of door
+            level = level.RefreshCyclables(ActionInput.MoveSouth);
+            level = level.RefreshCyclables(ActionInput.MoveWest);
+            player = level.Player;
+            Assert.IsTrue(player.ObjectLocatedTo(level, Direction.North));
+            Assert.IsFalse(player.MotionBlockedTo(level, Direction.North));
+
+            // Player moves to west of door
+            level = level.RefreshCyclables(ActionInput.MoveWest);
+            level = level.RefreshCyclables(ActionInput.MoveNorth);
+            player = level.Player;
+            Assert.IsTrue(player.ObjectLocatedTo(level, Direction.East));
+            Assert.IsFalse(player.MotionBlockedTo(level, Direction.East));
+        }
     }
 }
