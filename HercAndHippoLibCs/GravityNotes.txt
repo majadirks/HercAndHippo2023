@@ -9,3 +9,14 @@
   * y(t) = -1/2*g*t^2 + vt + y_0, where g = some constant, v = initial vertical velocity, y_0 = initial height.
 			But we are using rows (which increase in downwards direction), so presumably we change some signs in that equation.
 			Initial vertical velocity is 0 if Herc simply walks off an edge, or some constant if Herc jumps
+
+- Kinetic Energy strategy:
+
+Level has Gravity, player has JumpStrength and KineticEnergy.
+
+While KineticEnergy is positive, moves up (Gravity) locations per cycle, and bank decrements by (Gravity) (minimium 0).
+While KineticEnergy is zero, Player falls (Gravity) spot per cycle. 
+If player is blocked south, KineticEnrgy is reset to zero.
+KineticEnergy is increased by JumpStrength when player jumps.
+Player may jump only when blocked south. 
+If blocked south, Player may jump even if KineticEnergy is already nonzero.
