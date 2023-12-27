@@ -79,6 +79,52 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
             _ => level
         };
 
+    // Check for blocking
+    public bool BlockedAt(Level level, Direction where)
+            => this is ILocatable locatable &&
+            where switch
+            {
+                Direction.North => MotionBlockedNorth(level),
+                Direction.East => MotionBlockedEast(level),
+                Direction.South => MotionBlockedSouth(level),
+                Direction.West => MotionBlockedWest(level),
+                _ => false
+            };
+    private bool MotionBlockedEast(Level level)
+    {
+        if (Location.Col == level.Width) return true;
+        Column nextEast = Location.Col.NextEast(level.Width);
+        Location eastLoc = (nextEast, Location.Row);
+        IEnumerable<HercAndHippoObj> blockers = level.ObjectsAt(eastLoc);
+        return blockers.Where(bl => bl.BlocksMotion(this)).Any();
+    }
+    private bool MotionBlockedWest(Level level)
+    {
+        if (Location.Col == Column.MIN_COL) return true;
+        Column nextWest = Location.Col.NextWest();
+        Location westLoc = (nextWest, Location.Row);
+        IEnumerable<HercAndHippoObj> blockers = level.ObjectsAt(westLoc);
+        return blockers.Where(bl => bl.BlocksMotion(this)).Any();
+    }
+
+    private bool MotionBlockedNorth(Level level)
+    {
+        if (Location.Row == Row.MIN_ROW) return true;
+        Row nextNorth = Location.Row.NextNorth();
+        Location northLoc = (Location.Col, nextNorth);
+        IEnumerable<HercAndHippoObj> blockers = level.ObjectsAt(northLoc);
+        return blockers.Where(bl => bl.BlocksMotion(this)).Any();
+    }
+
+    private bool MotionBlockedSouth(Level level)
+    {
+        if (Location.Row == level.Height) return true;
+        Row nextSouth = Location.Row.NextSouth(level.Height);
+        Location southLoc = (Location.Col, nextSouth);
+        IEnumerable<HercAndHippoObj> blockers = level.ObjectsAt(southLoc);
+        return blockers.Where(bl => bl.BlocksMotion(this)).Any();
+    }
+
     // Private static helpers
     private static Level TryMoveTo(Location newLocation, Direction approachFrom, Level curState)
     {
