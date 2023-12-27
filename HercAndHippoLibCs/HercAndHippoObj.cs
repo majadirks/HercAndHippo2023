@@ -5,17 +5,17 @@
         public virtual bool IsLocatable => this is ILocatable;
         public abstract bool BlocksMotion(Player p);
 
-        public bool IsBlocked(Level level, Direction where)
+        public bool ObjectLocatedTo(Level level, Direction where)
             => this is ILocatable locatable && 
             where switch
             {
-                Direction.North => IsBlockedNorth(level, locatable),
-                Direction.East => IsBlockedEast(level, locatable),
-                Direction.South => IsBlockedSouth(level, locatable),
-                Direction.West => IsBlockedWest(level, locatable),
+                Direction.North => ObjectLocatedNorth(level, locatable),
+                Direction.East => ObjectLocatedEast(level, locatable),
+                Direction.South => ObjectLocatedSouth(level, locatable),
+                Direction.West => ObjectLocatedWest(level, locatable),
                 _ => false
             };  
-        private static bool IsBlockedEast(Level level, ILocatable locatable)
+        private static bool ObjectLocatedEast(Level level, ILocatable locatable)
         {
             if (locatable.Location.Col == level.Width) return true;
             Column nextEast = locatable.Location.Col.NextEast(level.Width);
@@ -23,7 +23,7 @@
             IEnumerable<HercAndHippoObj> blockers = level.ObjectsAt(eastLoc);
             return blockers.Where(bl => bl.IsLocatable && !bl.Equals(locatable)).Any();
         }
-        private static bool IsBlockedWest(Level level, ILocatable locatable)
+        private static bool ObjectLocatedWest(Level level, ILocatable locatable)
         {
             if (locatable.Location.Col == Column.MIN_COL) return true;
             Column nextWest = locatable.Location.Col.NextWest();
@@ -31,7 +31,7 @@
             IEnumerable<HercAndHippoObj> blockers = level.ObjectsAt(westLoc);
             return blockers.Where(bl => bl.IsLocatable && !bl.Equals(locatable)).Any();
         }
-        private static bool IsBlockedNorth(Level level, ILocatable locatable)
+        private static bool ObjectLocatedNorth(Level level, ILocatable locatable)
         {
             if (locatable.Location.Row == Row.MIN_ROW) return true;
             Row nextNorth = locatable.Location.Row.NextNorth();
@@ -39,7 +39,7 @@
             IEnumerable<HercAndHippoObj> blockers = level.ObjectsAt(northLoc);
             return blockers.Where(bl => bl.IsLocatable && !bl.Equals(locatable)).Any();
         }
-        private static bool IsBlockedSouth(Level level, ILocatable locatable)
+        private static bool ObjectLocatedSouth(Level level, ILocatable locatable)
         {
             if (locatable.Location.Row == level.Height) return true;
             Row nextSouth = locatable.Location.Row.NextSouth(level.Height);

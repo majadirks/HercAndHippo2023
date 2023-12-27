@@ -15,31 +15,31 @@
             Assert.IsTrue(blocker.IsLocatable);
 
             // Assert
-            Assert.IsTrue(player.IsBlocked(level, Direction.North));
-            Assert.IsFalse(player.IsBlocked(level, Direction.East));
-            Assert.IsFalse(player.IsBlocked(level, Direction.South));
-            Assert.IsFalse(player.IsBlocked(level, Direction.West));
+            Assert.IsTrue(player.ObjectLocatedTo(level, Direction.North));
+            Assert.IsFalse(player.ObjectLocatedTo(level, Direction.East));
+            Assert.IsFalse(player.ObjectLocatedTo(level, Direction.South));
+            Assert.IsFalse(player.ObjectLocatedTo(level, Direction.West));
 
             // Re-arrange and assert
             Level blockEast = level.Replace(blocker, new Blocker((4, 3))); // blocker east of player
-            Assert.IsFalse(player.IsBlocked(blockEast, Direction.North));
-            Assert.IsTrue(player.IsBlocked(blockEast, Direction.East));
-            Assert.IsFalse(player.IsBlocked(blockEast, Direction.South));
-            Assert.IsFalse(player.IsBlocked(blockEast, Direction.West));
+            Assert.IsFalse(player.ObjectLocatedTo(blockEast, Direction.North));
+            Assert.IsTrue(player.ObjectLocatedTo(blockEast, Direction.East));
+            Assert.IsFalse(player.ObjectLocatedTo(blockEast, Direction.South));
+            Assert.IsFalse(player.ObjectLocatedTo(blockEast, Direction.West));
 
             // Re-arrange and assert
             Level blockSouth = level.Replace(blocker, new Blocker((3, 4))); // blocker south of south
-            Assert.IsFalse(player.IsBlocked(blockSouth, Direction.North));
-            Assert.IsFalse(player.IsBlocked(blockSouth, Direction.East));
-            Assert.IsTrue(player.IsBlocked(blockSouth, Direction.South));
-            Assert.IsFalse(player.IsBlocked(blockSouth, Direction.West));
+            Assert.IsFalse(player.ObjectLocatedTo(blockSouth, Direction.North));
+            Assert.IsFalse(player.ObjectLocatedTo(blockSouth, Direction.East));
+            Assert.IsTrue(player.ObjectLocatedTo(blockSouth, Direction.South));
+            Assert.IsFalse(player.ObjectLocatedTo(blockSouth, Direction.West));
 
             // Re-arrange and assert
             Level blockWest = level.Replace(blocker, new Blocker((2, 3))); // blocker west of south
-            Assert.IsFalse(player.IsBlocked(blockWest, Direction.North));
-            Assert.IsFalse(player.IsBlocked(blockWest, Direction.East));
-            Assert.IsFalse(player.IsBlocked(blockWest, Direction.South));
-            Assert.IsTrue(player.IsBlocked(blockWest, Direction.West));
+            Assert.IsFalse(player.ObjectLocatedTo(blockWest, Direction.North));
+            Assert.IsFalse(player.ObjectLocatedTo(blockWest, Direction.East));
+            Assert.IsFalse(player.ObjectLocatedTo(blockWest, Direction.South));
+            Assert.IsTrue(player.ObjectLocatedTo(blockWest, Direction.West));
         }
 
         [TestMethod]
@@ -57,17 +57,17 @@
             Assert.AreEqual(10, level.Width);
             Assert.AreEqual(10, level.Height);
 
-            Assert.IsTrue(northNi.IsBlocked(level, Direction.North));
-            Assert.IsFalse(northNi.IsBlocked(level, Direction.South));
+            Assert.IsTrue(northNi.ObjectLocatedTo(level, Direction.North));
+            Assert.IsFalse(northNi.ObjectLocatedTo(level, Direction.South));
 
-            Assert.IsTrue(eastNi.IsBlocked(level, Direction.East));
-            Assert.IsFalse(eastNi.IsBlocked(level, Direction.West));
+            Assert.IsTrue(eastNi.ObjectLocatedTo(level, Direction.East));
+            Assert.IsFalse(eastNi.ObjectLocatedTo(level, Direction.West));
 
-            Assert.IsTrue(southNi.IsBlocked(level, Direction.South));
-            Assert.IsFalse(southNi.IsBlocked(level, Direction.North));
+            Assert.IsTrue(southNi.ObjectLocatedTo(level, Direction.South));
+            Assert.IsFalse(southNi.ObjectLocatedTo(level, Direction.North));
 
-            Assert.IsTrue(westNi.IsBlocked(level, Direction.West));
-            Assert.IsFalse(westNi.IsBlocked(level, Direction.East));
+            Assert.IsTrue(westNi.ObjectLocatedTo(level, Direction.West));
+            Assert.IsFalse(westNi.ObjectLocatedTo(level, Direction.East));
         }
     }
 }

@@ -88,7 +88,7 @@ namespace HercAndHippoLibCs
         {
             Player player = curState.Player;
             // If no obstacles, move
-            if (!player.IsBlocked(curState, approachFrom.Mirror()))
+            if (!player.ObjectLocatedTo(curState, approachFrom.Mirror()))
                 return curState.WithPlayer(player with { Location = newLocation });
 
             // Otherwise, call the touch methods for any ITouchables and move over all else
@@ -249,9 +249,9 @@ namespace HercAndHippoLibCs
         }
         public Velocity NextVelocity(HercAndHippoObj hho, Level level, ActionInput actionInput)
         {
-            if (actionInput == ActionInput.MoveEast && hho.IsBlocked(level, Direction.East))
+            if (actionInput == ActionInput.MoveEast && hho.ObjectLocatedTo(level, Direction.East))
                 return 0;
-            else if (actionInput == ActionInput.MoveWest && hho.IsBlocked(level, Direction.West))
+            else if (actionInput == ActionInput.MoveWest && hho.ObjectLocatedTo(level, Direction.West))
                 return 0;
             else return actionInput switch
             {
