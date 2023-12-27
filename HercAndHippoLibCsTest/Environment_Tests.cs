@@ -12,7 +12,7 @@
             Player secondPosition = Player.Default((3, 2));
             Wall wall = new(Color.White, (4, 2));
             Wall corner = new(Color.White, (10, 10));
-            Level level = new(initial, new HashSet<HercAndHippoObj> { wall, corner });
+            Level level = new(initial, gravity: 0, secondaryObjects: new HashSet<HercAndHippoObj> { wall, corner });
 
             // Act and Assert
             level = level.RefreshCyclables(ActionInput.MoveEast);
@@ -28,7 +28,7 @@
             Player player = Player.Default((2, 2)) with { AmmoCount = 1 };
             Wall wall = new(Color.White, (4, 2));
             Wall corner = new(Color.White, (10, 10));
-            Level level = new(player, new HashSet<HercAndHippoObj> { wall, corner });
+            Level level = new(player, gravity: 0, secondaryObjects: new HashSet<HercAndHippoObj> { wall, corner });
             Bullet initialBullet = new((3, 2), Direction.East);
             Bullet bulletOverWall = new(wall.Location, Direction.East);
 
@@ -51,7 +51,7 @@
             Player secondPosition = Player.Default((3, 2));
             BreakableWall bwall = new(Color.White, (4, 2));
             BreakableWall corner = new(Color.White, (10, 10));
-            Level level = new(initial, new HashSet<HercAndHippoObj> { bwall, corner });
+            Level level = new(initial, gravity: 0, secondaryObjects: new HashSet<HercAndHippoObj> { bwall, corner });
 
             // Act and Assert
             level = level.RefreshCyclables(ActionInput.MoveEast);
@@ -67,7 +67,7 @@
             Player initial = Player.Default((2, 2)) with { AmmoCount = 1 };
             BreakableWall bwall = new(Color.White, (4, 2));
             Wall corner = new(Color.White, (10, 10));
-            Level level = new(initial, new HashSet<HercAndHippoObj> { bwall, corner });
+            Level level = new(initial, gravity: 0, secondaryObjects: new HashSet<HercAndHippoObj> { bwall, corner });
 
             // Act
             level = level.RefreshCyclables(ActionInput.ShootEast);
@@ -86,7 +86,7 @@
             Player player = Player.Default((2, 2)) with { AmmoCount = 1 };
             Door door = new(Color.DarkMagenta, (4, 2));
             Wall corner = new(Color.White, (10, 10));
-            Level level = new(player, new HashSet<HercAndHippoObj> { door, corner });
+            Level level = new(player, gravity: 0, secondaryObjects: new HashSet<HercAndHippoObj> { door, corner });
             Bullet initialBullet = new((3, 2), Direction.East);
             Bullet bulletOverWall = new(door.Location, Direction.East);
 
@@ -110,7 +110,7 @@
             Player secondPosition = Player.Default((3, 2));
             Door door = new(Color.Cyan, (4, 2));
             Wall corner = new(Color.White, (10, 10));
-            Level level = new(initial, new HashSet<HercAndHippoObj> { door, corner });
+            Level level = new(initial, gravity: 0, secondaryObjects: new HashSet<HercAndHippoObj> { door, corner });
 
             // Act and Assert
             level = level.RefreshCyclables(ActionInput.MoveEast);
@@ -130,7 +130,7 @@
             Key key = new(Color.Cyan, (3, 2));
             Player secondPosition = Player.Default((3, 2)) with { Inventory = new Inventory(starterItem: key) };
             Wall corner = new(Color.White, (10, 10));
-            Level level = new(initial, new HashSet<HercAndHippoObj> { door, key, corner });
+            Level level = new(initial, gravity: 0, secondaryObjects: new HashSet<HercAndHippoObj> { door, key, corner });
 
             // Act and Assert
             level = level.RefreshCyclables(ActionInput.MoveEast);
@@ -151,7 +151,7 @@
             Door door = new(Color.Magenta, (2, 3));
             Key key = new(Color.Magenta, (4, 2));
             Wall corner = new(Color.Yellow, (10, 10));
-            Level level = new(player: player, secondaryObjects: new() { door, key, corner });
+            Level level = new(player: player, gravity: 0, secondaryObjects: new() { door, key, corner });
 
             // Act and assert: Move player around door, check IsBlocked() methods.
             // Initially north of wall

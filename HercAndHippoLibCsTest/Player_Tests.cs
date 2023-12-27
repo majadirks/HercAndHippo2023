@@ -11,7 +11,7 @@ namespace HercAndHippoLibCsTest
             // Arrange
             Player player = Player.Default((2, 2));
             Noninteractor edge = new((1000, 10));
-            Level level = new(player, new HashSet<HercAndHippoObj> { edge });
+            Level level = new(player, gravity: 0, secondaryObjects: new HashSet<HercAndHippoObj> { edge });
             Velocity initialVelocity = player.Velocity;
 
             // Act
@@ -37,7 +37,7 @@ namespace HercAndHippoLibCsTest
             // Arrange
             Player player = Player.Default((999, 2));
             Noninteractor edge = new((1000, 10));
-            Level level = new(player, new HashSet<HercAndHippoObj> { edge });
+            Level level = new(player, gravity: 0, secondaryObjects: new HashSet<HercAndHippoObj> { edge });
             Velocity initialVelocity = player.Velocity;
 
             // Act
@@ -63,7 +63,7 @@ namespace HercAndHippoLibCsTest
             // Arrange
             Player player = new((5, 5), 100, 100, EmptyInventory);
             ShotCounter counter = new((10, 5), 0);
-            Level level = new(player, new HashSet<HercAndHippoObj> { counter });
+            Level level = new(player, gravity: 0, secondaryObjects: new HashSet<HercAndHippoObj> { counter });
 
             // Act
             level = level.RefreshCyclables(ActionInput.MoveEast)
@@ -89,7 +89,7 @@ namespace HercAndHippoLibCsTest
             Player northPlayer = initial with { Location = (5, 4) };
             Player southPlayer = initial with { Location = (5, 6) };
 
-            Level level = new(player: initial, secondaryObjects: new HashSet<HercAndHippoObj>()
+            Level level = new(player: initial, gravity:0, secondaryObjects: new HashSet<HercAndHippoObj>()
             {
                 new Wall(Color.DarkRed, (10, 10))
             });
@@ -118,7 +118,7 @@ namespace HercAndHippoLibCsTest
             // Arrange
             Player player = new((Column.MIN_COL + 5, 2), health: 100, ammoCount: 0, inventory: EmptyInventory);
             Wall corner = new(Color.Yellow, (10, 10));
-            Level level = new(player, new HashSet<HercAndHippoObj> { corner });
+            Level level = new(player, gravity: 0, secondaryObjects: new HashSet<HercAndHippoObj> { corner });
             int attempt = 1;
             int maxAttempt = 10;
             Assert.IsFalse(level.Player.Location.Col == Column.MIN_COL);
@@ -145,7 +145,7 @@ namespace HercAndHippoLibCsTest
             // Arrange
             Player player = new((5, Row.MIN_ROW + 5), health: 100, ammoCount: 0, inventory: EmptyInventory);
             Wall corner = new(Color.Yellow, (10, 10));
-            Level level = new(player, new HashSet<HercAndHippoObj> { corner });
+            Level level = new(player, gravity: 0, secondaryObjects: new HashSet<HercAndHippoObj> { corner });
             int attempt = 1;
             int maxAttempt = 10;
             Assert.IsFalse(level.Player.Location.Row == Row.MIN_ROW);
@@ -172,7 +172,7 @@ namespace HercAndHippoLibCsTest
             // Arrange
             Player player = new((2, 2), health: 100, ammoCount: 0, inventory: EmptyInventory);
             Wall corner = new(Color.Yellow, (10, 10));
-            Level level = new(player, new HashSet<HercAndHippoObj> { corner });
+            Level level = new(player, gravity: 0, secondaryObjects: new HashSet<HercAndHippoObj> { corner });
             int attempt = 1;
             int maxAttempt = 10;
             Assert.IsFalse(level.Player.Location.Col == corner.Location.Col);
@@ -199,7 +199,7 @@ namespace HercAndHippoLibCsTest
             // Arrange
             Player player = new((2, 2), health: 100, ammoCount: 0, inventory: EmptyInventory);
             Wall corner = new(Color.Yellow, (10, 10));
-            Level level = new(player, new HashSet<HercAndHippoObj> { corner });
+            Level level = new(player, gravity: 0, secondaryObjects: new HashSet<HercAndHippoObj> { corner });
             int attempt = 1;
             int maxAttempt = 10;
             Assert.IsFalse(level.Player.Location.Row == corner.Location.Row);
@@ -320,7 +320,7 @@ namespace HercAndHippoLibCsTest
             Player player = new((2, 2), health: 100, ammoCount: 0, inventory: EmptyInventory);
             TouchCounter initialCounter = new((3, 2), startCount);
             TouchCounter cycledCounter = new((3, 2), startCount + 1);
-            Level level = new(player, secondaryObjects: new HashSet<HercAndHippoObj>() { initialCounter });
+            Level level = new(player, gravity: 0, secondaryObjects: new HashSet<HercAndHippoObj>() { initialCounter });
 
             Assert.IsTrue(level.Contains(initialCounter));
             Assert.IsFalse(level.Contains(cycledCounter));
@@ -347,7 +347,7 @@ namespace HercAndHippoLibCsTest
             Bullet southBullet = new((5, 6), Direction.South);
             Bullet westBullet = new((4, 5), Direction.West);
             Wall corner = new(Color.Yellow, (10, 10));
-            Level level = new(player, new HashSet<HercAndHippoObj>() { corner });
+            Level level = new(player, gravity: 0, secondaryObjects: new HashSet<HercAndHippoObj>() { corner });
 
             Assert.IsFalse(level.Contains(northBullet));
             Assert.IsFalse(level.Contains(eastBullet));
@@ -372,7 +372,7 @@ namespace HercAndHippoLibCsTest
             Bullet westBullet = new((9, 9), Direction.West);
             Wall corner = new(Color.Yellow, (10, 10));
             Player player = new((10, 9), health: 100, ammoCount: 5, inventory: EmptyInventory);
-            Level level = new(player, new HashSet<HercAndHippoObj>() { corner });
+            Level level = new(player, gravity: 0, secondaryObjects: new HashSet<HercAndHippoObj>() { corner });
             Assert.IsFalse(level.Contains(westBullet));
 
             // Act
@@ -398,7 +398,7 @@ namespace HercAndHippoLibCsTest
             Color keyColor = Color.DarkRed;
             Key key = new(keyColor, (3, 2));
             Player movedPlayer = player with { Location = key.Location, Inventory = player.Inventory.AddItem(key) };
-            Level level = new(player: player, secondaryObjects: new HashSet<HercAndHippoObj>() { key });
+            Level level = new(player: player, gravity: 0, secondaryObjects: new HashSet<HercAndHippoObj>() { key });
 
             Assert.IsTrue(level.Contains(player));
             Assert.IsTrue(level.Contains(key));
@@ -489,7 +489,7 @@ namespace HercAndHippoLibCsTest
             Player player = new(location: (2, 2), health: 100, ammoCount: 0, inventory: EmptyInventory);
             Wall wall = new(Color.Magenta, (2, 3));
             Wall corner = new(Color.Yellow, (10, 10));
-            Level level = new(player: player, secondaryObjects: new() { wall, corner });
+            Level level = new(player: player, gravity: 0, secondaryObjects: new() { wall, corner });
 
             // Act and assert: Move player around wall, check IsBlocked() methods.
             // Initially north of wall
@@ -536,7 +536,7 @@ namespace HercAndHippoLibCsTest
            
             Ammo ammo = new((2, 3), Count: 5);
             Wall corner = new(Color.Yellow, (10, 10));
-            Level level = new(player: player, secondaryObjects: new() {ammo, corner });
+            Level level = new(player: player, gravity: 0, secondaryObjects: new() {ammo, corner });
 
             // Act and assert: Move player around ammo, check IsBlocked() methods.
             // Initially north of wall

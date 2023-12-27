@@ -9,7 +9,7 @@ namespace HercAndHippoLibCs
         public int Height { get; init; }
         public int Gravity { get; init; }
         private HashSet<HercAndHippoObj> SecondaryObjects { get; init; } // secondary, ie not the player
-        public Level(Player player, HashSet<HercAndHippoObj> secondaryObjects, int gravity = 1)
+        public Level(Player player, HashSet<HercAndHippoObj> secondaryObjects, int gravity)
         {
             Player = player;
             SecondaryObjects = secondaryObjects;
@@ -20,7 +20,7 @@ namespace HercAndHippoLibCs
         public Level(Player player, HashSet<HercAndHippoObj> secondaryObjects, int width, int height, int gravity)
             => (Player, SecondaryObjects, Width, Height, Gravity) = (player, secondaryObjects, width, height, gravity);
         public HashSet<HercAndHippoObj> LevelObjects => SecondaryObjects.AddObject(Player);
-        public Level WithPlayer(Player player) => new (player: player, secondaryObjects: this.SecondaryObjects);
+        public Level WithPlayer(Player player) => new (player: player, secondaryObjects: this.SecondaryObjects, gravity: Gravity);
         
         public IEnumerable<HercAndHippoObj> ObjectsAt(Location location) => LevelObjects.Where(d => d is ILocatable dAtLoc && dAtLoc.Location.Equals(location));
         public Level Without(HercAndHippoObj toRemove) => new(player: this.Player, secondaryObjects: SecondaryObjects.RemoveObject(toRemove), Width, Height, Gravity);
