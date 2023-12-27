@@ -155,17 +155,17 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
         if (!player.ObjectLocatedTo(curState, approachFrom.Mirror()))
             return curState.WithPlayer(player with { Location = newLocation });
 
-        // Otherwise, call the touch methods for any ITouchables and move over all else
+        // If there are any ITouchables, call their OnTouch() methods
         Level nextState = curState;
-        // The ObjectsAt() method returns ILocatable objects, so the following cast is safe.
-        foreach (ILocatable obj in curState.ObjectsAt(newLocation).Cast<ILocatable>())
+        foreach (ITouchable touchable in curState.ObjectsAt(newLocation).Where(obj => obj is ITouchable))
         {
-            nextState = obj switch
-            {
-                ITouchable touchableAtLocation => touchableAtLocation.OnTouch(curState, approachFrom, player),
-                _ => nextState.WithPlayer(player with { Location = newLocation })
-            };
+            nextState = touchable.OnTouch(nextState, approachFrom, player);
         }
+
+        // If not blocked, move
+        if (!player.MotionBlockedTo(nextState, approachFrom.Mirror()))
+            nextState = nextState.WithPlayer(player with { Location = newLocation });
+        
         return nextState; 
     }
     private static Level Shoot(Level level, Direction whither)

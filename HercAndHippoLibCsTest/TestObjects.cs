@@ -14,7 +14,7 @@
     /// <summary>Increments a counter when touched </summary>
     internal record TouchCounter(Location Location,int Count) : HercAndHippoObj, ILocatable, ITouchable
     {
-        public override bool BlocksMotion(Player p) => false;
+        public override bool BlocksMotion(Player p) => true;
 
         private Level IncreaseCount(Level level) => level.Replace(this, this with { Count = Count + 1 });
         public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy) => IncreaseCount(level);
