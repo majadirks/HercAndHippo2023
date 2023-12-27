@@ -11,7 +11,7 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
         Velocity = 0;
     }
 
-    // Properties
+    // Public properies
     public Location Location { get; init; }
     public Health Health { get; init; }
     public AmmoCount AmmoCount { get; init; }
@@ -22,7 +22,6 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
     public Color BackgroundColor => Color.Blue;
     public bool HasHealth => Health.HasHealth;
     public bool HasAmmo => AmmoCount.HasAmmo;
-    public override bool BlocksMotion(Player p) => p != this;
     public override string ToString() => $"Player at location {Location} with {Health}, {AmmoCount}, Inventory Size: {Inventory.Count}";
     
     // Behaviors
@@ -79,6 +78,7 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
             Bullet shotBy => OnShot(level, touchedFrom.Mirror(), shotBy),
             _ => level
         };
+    public override bool BlocksMotion(Player p) => p != this;
 
     // Check for blocking
     public bool MotionBlockedTo(Level level, Direction where)
