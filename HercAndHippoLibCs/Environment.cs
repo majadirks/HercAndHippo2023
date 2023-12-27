@@ -6,6 +6,9 @@ namespace HercAndHippoLibCs
     {
         public string ConsoleDisplayString => "█";
         public Color BackgroundColor => Color;
+
+        public override bool BlocksMotion(Player p) => true;
+
         public Level OnShot(Level level, Direction shotFrom, Bullet shotBy) => Behaviors.StopBullet(level,shotBy);
         public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy) => Behaviors.NoReaction(level);
     }
@@ -13,6 +16,9 @@ namespace HercAndHippoLibCs
     {
         public string ConsoleDisplayString => "▓";
         public Color BackgroundColor => Color.Black;
+
+        public override bool BlocksMotion(Player p) => true;
+
         public Level OnShot(Level level, Direction shotFrom, Bullet shotBy) => Behaviors.DieAndStopBullet(this, level, shotBy);
         public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy) => Behaviors.NoReaction(level);    
     }
@@ -20,6 +26,9 @@ namespace HercAndHippoLibCs
     {
         public string ConsoleDisplayString => "◙";
         public Color Color => Color.Black;
+
+        public override bool BlocksMotion(Player p) => !p.Has<Key>(BackgroundColor);
+
         public Level OnShot(Level level, Direction shotFrom, Bullet shotBy) => Behaviors.StopBullet(level,shotBy); // Cannot shoot through a door
         public Level OnTouch(Level level, Direction _, ITouchable touchedBy)
             => touchedBy switch
@@ -29,7 +38,7 @@ namespace HercAndHippoLibCs
             };
         private Level TakeKeyDieAndAllowPassage(Level level, Player player)
         {
-            (bool dropped, ITakeable _, Player newPlayerState) = player.DropItem<Key>(BackgroundColor);
+            (bool _, ITakeable? _, Player newPlayerState) = player.DropItem<Key>(BackgroundColor);
             Level newState = Behaviors.DieAndAllowPassage(level, this, newPlayerState);
             return newState;
         }
@@ -37,6 +46,8 @@ namespace HercAndHippoLibCs
 
     public record Driver(Direction Whither, int Modulus, int Count = 0) : HercAndHippoObj, ICyclable
     {
+        public override bool BlocksMotion(Player p) => false;
+
         public Level Cycle(Level level, ActionInput actionInput)
         {
             int nextCount = Count + 1;

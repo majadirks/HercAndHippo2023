@@ -20,3 +20,4 @@ If player is blocked south, KineticEnrgy is reset to zero.
 KineticEnergy is increased by JumpStrength when player jumps.
 Player may jump only when blocked south. 
 If blocked south, Player may jump even if KineticEnergy is already nonzero.
+If player passes through an object while falling (gem, ammo, etc.),call its OnTouch method.

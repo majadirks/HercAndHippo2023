@@ -145,6 +145,8 @@ namespace HercAndHippoLibCs
         // Public static utilities
         public static Player Default(Location location) => new(location: location, health: 100, ammoCount: 0, inventory: Inventory.EmptyInventory);
         public static Player Default(Column col, Row row) => Player.Default((col, row));
+
+        public override bool BlocksMotion(Player p) => p != this;
     }
 
     public static class InventoryExtensions

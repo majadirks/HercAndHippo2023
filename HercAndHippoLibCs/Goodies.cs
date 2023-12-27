@@ -5,6 +5,9 @@
         public string ConsoleDisplayString => "ä";
         public Color Color => Color.Green;
         public Color BackgroundColor => Color.Black;
+
+        public override bool BlocksMotion(Player p) => false;
+
         public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy)
             => level.Without(this)
                     .WithPlayer(level.Player with 
@@ -27,6 +30,8 @@
         }
         public Level OnTake(Level level) => level.Without(this); // Die after being taken
         public Level OnShot(Level level, Direction shotFrom, Bullet shotBy) => Behaviors.AllowBulletToPass(this, level, shotBy);
+
+        public override bool BlocksMotion(Player p) => false;
     }
 
 }

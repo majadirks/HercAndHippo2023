@@ -2,7 +2,9 @@
 {
     public abstract record HercAndHippoObj 
     {
-        public virtual bool IsBlocking => this is ILocatable;
+        public virtual bool IsLocatable => this is ILocatable;
+        public abstract bool BlocksMotion(Player p);
+
         public bool IsBlocked(Level level, Direction where)
             => this is ILocatable locatable && 
             where switch
@@ -19,7 +21,7 @@
             Column nextEast = locatable.Location.Col.NextEast(level.Width);
             Location eastLoc = (nextEast, locatable.Location.Row);
             IEnumerable<HercAndHippoObj> blockers = level.ObjectsAt(eastLoc);
-            return blockers.Where(bl => bl.IsBlocking && !bl.Equals(locatable)).Any();
+            return blockers.Where(bl => bl.IsLocatable && !bl.Equals(locatable)).Any();
         }
         private static bool IsBlockedWest(Level level, ILocatable locatable)
         {
@@ -27,7 +29,7 @@
             Column nextWest = locatable.Location.Col.NextWest();
             Location westLoc = (nextWest, locatable.Location.Row);
             IEnumerable<HercAndHippoObj> blockers = level.ObjectsAt(westLoc);
-            return blockers.Where(bl => bl.IsBlocking && !bl.Equals(locatable)).Any();
+            return blockers.Where(bl => bl.IsLocatable && !bl.Equals(locatable)).Any();
         }
         private static bool IsBlockedNorth(Level level, ILocatable locatable)
         {
@@ -35,7 +37,7 @@
             Row nextNorth = locatable.Location.Row.NextNorth();
             Location northLoc = (locatable.Location.Col, nextNorth);
             IEnumerable<HercAndHippoObj> blockers = level.ObjectsAt(northLoc);
-            return blockers.Where(bl => bl.IsBlocking && !bl.Equals(locatable)).Any();
+            return blockers.Where(bl => bl.IsLocatable && !bl.Equals(locatable)).Any();
         }
         private static bool IsBlockedSouth(Level level, ILocatable locatable)
         {
@@ -43,7 +45,7 @@
             Row nextSouth = locatable.Location.Row.NextSouth(level.Height);
             Location southLoc = (locatable.Location.Col, nextSouth);
             IEnumerable<HercAndHippoObj> blockers = level.ObjectsAt(southLoc);
-            return blockers.Where(bl => bl.IsBlocking && !bl.Equals(locatable)).Any();
+            return blockers.Where(bl => bl.IsLocatable && !bl.Equals(locatable)).Any();
         }
     }
 }

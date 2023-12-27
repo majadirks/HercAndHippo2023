@@ -12,7 +12,7 @@
             Blocker blocker = new((3, 2)); // initially north of player
             Wall corner = new(Color.Black, (20, 20));
             Level level = new(player, new HashSet<HercAndHippoObj> { blocker, corner });
-            Assert.IsTrue(blocker.IsBlocking);
+            Assert.IsTrue(blocker.IsLocatable);
 
             // Assert
             Assert.IsTrue(player.IsBlocked(level, Direction.North));

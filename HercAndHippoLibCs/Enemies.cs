@@ -48,6 +48,8 @@
             bool reachedSouthBoundary = Whither == Direction.South && Location.Row >= levelHeight;
             return reachedWestBoundary || reachedEastBoundary || reachedNorthBoundary || reachedSouthBoundary;
         }
+
+        public override bool BlocksMotion(Player p) => false;
     }
 
 
