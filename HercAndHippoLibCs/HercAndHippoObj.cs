@@ -47,5 +47,6 @@
             IEnumerable<HercAndHippoObj> blockers = level.ObjectsAt(southLoc);
             return blockers.Where(bl => bl.IsLocatable && !bl.Equals(locatable)).Any();
         }
+
     }
 }
