@@ -22,6 +22,7 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
     public Color BackgroundColor => Color.Blue;
     public bool HasHealth => Health.HasHealth;
     public bool HasAmmo => AmmoCount.HasAmmo;
+    public override bool BlocksMotion(Player p) => p != this;
     public override string ToString() => $"Player at location {Location} with {Health}, {AmmoCount}, Inventory Size: {Inventory.Count}";
     
     // Behaviors
@@ -187,6 +188,4 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
     // Public static utilities
     public static Player Default(Location location) => new(location: location, health: 100, ammoCount: 0, inventory: Inventory.EmptyInventory);
     public static Player Default(Column col, Row row) => Player.Default((col, row));
-
-    public override bool BlocksMotion(Player p) => p != this;
 }
