@@ -62,19 +62,34 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
             Column nextEast = nextState.Player.Location.Col.NextEast(nextState.Width);
             nextState = TryMoveTo((nextEast, Location.Row), approachFrom: Direction.West, curState: nextState);
         }
+
+        // We've accounted for east/west motion. Now check for any north/south motion or shooting
+        if (level.Gravity == 0)
+        {
+            return actionInput switch // Based on input, move north/south or shoot.
+            {
+                ActionInput.MoveNorth => TryMoveTo((Location.Col, Location.Row.NextNorth()), approachFrom: Direction.South, curState: nextState),
+                ActionInput.MoveSouth => TryMoveTo((Location.Col, Location.Row.NextSouth(level.Height)), approachFrom: Direction.North, curState: nextState),
+                ActionInput.ShootNorth => Shoot(nextState, Direction.North),
+                ActionInput.ShootSouth => Shoot(nextState, Direction.South),
+                ActionInput.ShootWest => Shoot(nextState, Direction.West),
+                ActionInput.ShootEast => Shoot(nextState, Direction.East),
+                _ => Behaviors.NoReaction(nextState)
+            };
+        }
+        else
+        {
+            // Gravity is nonzero
+            // Move south n times (where n = gravity) unless motion is blocked
+            Player nextStatePlayer = nextState.Player;
+            for (int i = 0; i < nextState.Gravity && !nextStatePlayer.MotionBlockedSouth(nextState); i++, nextStatePlayer = nextState.Player)
+            {
+                nextState = TryMoveTo((nextStatePlayer.Location.Col, nextStatePlayer.Location.Row.NextSouth(level.Height)), approachFrom: Direction.North, curState: nextState);
+            }
+            // ToDo: shooting, jumping, etc.
+            return nextState;
+        }
         
-        // Regardless of above motion, run the following switch statement
-        // to make sure we can shoot while velocity is nonzero
-        return actionInput switch // Based on input, move north/south or shoot.
-        {      
-            ActionInput.MoveNorth => TryMoveTo((Location.Col, Location.Row.NextNorth()), approachFrom: Direction.South, curState: nextState),
-            ActionInput.MoveSouth => TryMoveTo((Location.Col, Location.Row.NextSouth(level.Height)), approachFrom: Direction.North, curState: nextState),
-            ActionInput.ShootNorth => Shoot(nextState, Direction.North),
-            ActionInput.ShootSouth => Shoot(nextState, Direction.South),
-            ActionInput.ShootWest => Shoot(nextState, Direction.West),
-            ActionInput.ShootEast => Shoot(nextState, Direction.East),
-            _ => Behaviors.NoReaction(nextState)
-        };
     }
     public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy)
         => touchedBy switch
