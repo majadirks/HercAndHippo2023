@@ -29,7 +29,7 @@
             return reactToKeyBeingTakenState;
         }
         public Level OnTake(Level level) => level.Without(this); // Die after being taken
-        public Level OnShot(Level level, Direction shotFrom, Bullet shotBy) => Behaviors.AllowBulletToPass(this, level, shotBy);
+        public Level OnShot(Level level, Direction _, Bullet shotBy) => Behaviors.AllowBulletToPass(this, level, shotBy);
 
         public override bool BlocksMotion(Player p) => false;
     }

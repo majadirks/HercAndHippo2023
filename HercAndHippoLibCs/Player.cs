@@ -2,13 +2,15 @@
 
 public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouchable, IConsoleDisplayable
 {
-    public Player(Location location, Health health, AmmoCount ammoCount, Inventory inventory)
+    public Player(Location location, Health health, AmmoCount ammoCount, Inventory inventory, int jumpStrength = 5, int kineticEnergy = 0)
     {
         Location = location;
         Health = health;
         AmmoCount = ammoCount;
         Inventory = inventory;
         Velocity = 0;
+        JumpStrength = Math.Max(0, jumpStrength);
+        KineticEnergy = Math.Max(0, kineticEnergy);
     }
 
     // Public properies
@@ -17,6 +19,8 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
     public AmmoCount AmmoCount { get; init; }
     public Inventory Inventory { get; init; }
     public Velocity Velocity { get; init; }
+    public int JumpStrength { get; init; }
+    public int KineticEnergy { get; init; }
     public string ConsoleDisplayString => HasHealth ? "☻" : "X";
     public Color Color => Color.White;
     public Color BackgroundColor => Color.Blue;
@@ -82,8 +86,7 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
 
     // Check for blocking
     public bool MotionBlockedTo(Level level, Direction where)
-            => this is ILocatable locatable &&
-            where switch
+            => where switch
             {
                 Direction.North => MotionBlockedNorth(level),
                 Direction.East => MotionBlockedEast(level),
@@ -186,6 +189,6 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
     }
 
     // Public static utilities
-    public static Player Default(Location location) => new(location: location, health: 100, ammoCount: 0, inventory: Inventory.EmptyInventory);
+    public static Player Default(Location location) => new(location: location, health: 100, ammoCount: 0, inventory: Inventory.EmptyInventory, jumpStrength: 5, kineticEnergy: 0);
     public static Player Default(Column col, Row row) => Player.Default((col, row));
 }

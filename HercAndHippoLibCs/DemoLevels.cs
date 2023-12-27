@@ -9,7 +9,7 @@ namespace HercAndHippoLibCs
     public static class DemoLevels
     {
         public static readonly Level WallsLevel = new(
-            player: new Player((4, 3), health: 100, ammoCount: 0, inventory: Inventory.EmptyInventory),
+            player: new Player((4, 3), health: 100, ammoCount: 0, inventory: Inventory.EmptyInventory, jumpStrength: 5),
             secondaryObjects: new HashSet<HercAndHippoObj>
             {
                 new Wall(Color.Yellow, (1,1)),
@@ -101,21 +101,21 @@ namespace HercAndHippoLibCs
             });
 
         public static readonly Level Clones = new(
-            player: new Player((2, 2), health: 100, ammoCount: 200, inventory: Inventory.EmptyInventory),
+            player: new Player((2, 2), health: 100, ammoCount: 200, inventory: Inventory.EmptyInventory, jumpStrength: 5, kineticEnergy: 0),
             secondaryObjects: new HashSet<HercAndHippoObj>()
             {
                 new Wall(Color.DarkGreen, (100, 100)),
-                new Player((5, 5), health: 100, ammoCount: 200, inventory: Inventory.EmptyInventory),
-                new Player((10, 10), health: 100, ammoCount: 200, inventory: Inventory.EmptyInventory),
-                new Player((20, 10), health: 100, ammoCount: 200, inventory: Inventory.EmptyInventory),
-                new Player((30, 10), health: 100, ammoCount: 200, inventory: Inventory.EmptyInventory),
+                new Player((5, 5), health: 100, ammoCount: 200, inventory: Inventory.EmptyInventory, jumpStrength: 5),
+                new Player((10, 10), health: 100, ammoCount: 200, inventory: Inventory.EmptyInventory, jumpStrength: 5),
+                new Player((20, 10), health: 100, ammoCount: 200, inventory: Inventory.EmptyInventory, jumpStrength: 5),
+                new Player((30, 10), health: 100, ammoCount: 200, inventory: Inventory.EmptyInventory, jumpStrength: 5),
             });
 
         public static  Level SoManyBullets()
         {
             int width = 120;
             int height = 120;
-            Player player = new((10, height - 1), health: 100, ammoCount: 200, inventory: Inventory.EmptyInventory);
+            Player player = new((10, height - 1), health: 100, ammoCount: 200, inventory: Inventory.EmptyInventory, jumpStrength: 5);
             HashSet<HercAndHippoObj> displayables = new();
             for (Column col = 0; col <= width; col++)
             {

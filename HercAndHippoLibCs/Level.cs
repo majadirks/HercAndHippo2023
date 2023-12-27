@@ -7,17 +7,24 @@ namespace HercAndHippoLibCs
         public Player Player { get; init; }
         public int Width { get; init; }
         public int Height { get; init; }
+        public int Gravity { get; init; }
         private HashSet<HercAndHippoObj> SecondaryObjects { get; init; } // secondary, ie not the player
-        public Level(Player player, HashSet<HercAndHippoObj> secondaryObjects)
-            => (Player, SecondaryObjects, Width, Height) = (player, secondaryObjects, GetWidth(secondaryObjects), GetHeight(secondaryObjects));
-        public Level(Player player, HashSet<HercAndHippoObj> secondaryObjects, int width, int height)
-            => (Player, SecondaryObjects, Width, Height) = (player, secondaryObjects, width, height);
+        public Level(Player player, HashSet<HercAndHippoObj> secondaryObjects, int gravity = 1)
+        {
+            Player = player;
+            SecondaryObjects = secondaryObjects;
+            Width = GetWidth(secondaryObjects);
+            Height = GetHeight(secondaryObjects);
+            Gravity = Math.Max(gravity, 0);
+        }
+        public Level(Player player, HashSet<HercAndHippoObj> secondaryObjects, int width, int height, int gravity)
+            => (Player, SecondaryObjects, Width, Height, Gravity) = (player, secondaryObjects, width, height, gravity);
         public HashSet<HercAndHippoObj> LevelObjects => SecondaryObjects.AddObject(Player);
         public Level WithPlayer(Player player) => new (player: player, secondaryObjects: this.SecondaryObjects);
         
         public IEnumerable<HercAndHippoObj> ObjectsAt(Location location) => LevelObjects.Where(d => d is ILocatable dAtLoc && dAtLoc.Location.Equals(location));
-        public Level Without(HercAndHippoObj toRemove) => new(player: this.Player, secondaryObjects: SecondaryObjects.RemoveObject(toRemove), Width, Height);
-        public Level AddObject(HercAndHippoObj toAdd) => new(player: this.Player, secondaryObjects: SecondaryObjects.AddObject(toAdd), Width, Height);
+        public Level Without(HercAndHippoObj toRemove) => new(player: this.Player, secondaryObjects: SecondaryObjects.RemoveObject(toRemove), Width, Height, Gravity);
+        public Level AddObject(HercAndHippoObj toAdd) => new(player: this.Player, secondaryObjects: SecondaryObjects.AddObject(toAdd), Width, Height, Gravity);
         public Level Replace(HercAndHippoObj toReplace, HercAndHippoObj toAdd) => this.Without(toReplace).AddObject(toAdd);
         public Level RefreshCyclables(ActionInput actionInput)
             => LevelObjects // Do not refresh in parallel; this could cause objects to interfere with nearby copies of themselves
