@@ -11,7 +11,7 @@
             Player player = Player.Default((3, 3));
             Blocker blocker = new((3, 2)); // initially north of player
             Wall corner = new(Color.Black, (20, 20));
-            Level level = new(player, new HashSet<HercAndHippoObj> { blocker, corner });
+            Level level = new(player, secondaryObjects: new HashSet<HercAndHippoObj> { blocker, corner }, gravity: 0);
             Assert.IsTrue(blocker.IsLocatable);
 
             // Assert
@@ -51,7 +51,7 @@
             Noninteractor eastNi = new((10, 5));
             Noninteractor southNi = new((5, 10));
             Noninteractor westNi = new((Column.MIN_COL, 5));
-            Level level = new(player, new HashSet<HercAndHippoObj> {northNi, eastNi, southNi, westNi});
+            Level level = new(player, secondaryObjects: new HashSet<HercAndHippoObj> {northNi, eastNi, southNi, westNi}, gravity: 0);
 
             // Assert
             Assert.AreEqual(10, level.Width);

@@ -2,21 +2,25 @@
 
 public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouchable, IConsoleDisplayable
 {
-    public Player(Location location, Health health, AmmoCount ammoCount, Inventory inventory)
+    public Player(Location location, Health health, AmmoCount ammoCount, Inventory inventory, int jumpStrength = 5, int kineticEnergy = 0)
     {
         Location = location;
         Health = health;
         AmmoCount = ammoCount;
         Inventory = inventory;
         Velocity = 0;
+        JumpStrength = Math.Max(0, jumpStrength);
+        KineticEnergy = Math.Max(0, kineticEnergy);
     }
 
-    // Properties
+    // Public properies
     public Location Location { get; init; }
     public Health Health { get; init; }
     public AmmoCount AmmoCount { get; init; }
     public Inventory Inventory { get; init; }
     public Velocity Velocity { get; init; }
+    public int JumpStrength { get; init; }
+    public int KineticEnergy { get; init; }
     public string ConsoleDisplayString => HasHealth ? "☻" : "X";
     public Color Color => Color.White;
     public Color BackgroundColor => Color.Blue;
@@ -58,19 +62,34 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
             Column nextEast = nextState.Player.Location.Col.NextEast(nextState.Width);
             nextState = TryMoveTo((nextEast, Location.Row), approachFrom: Direction.West, curState: nextState);
         }
+
+        // We've accounted for east/west motion. Now check for any north/south motion or shooting
+        if (level.Gravity == 0)
+        {
+            return actionInput switch // Based on input, move north/south or shoot.
+            {
+                ActionInput.MoveNorth => TryMoveTo((Location.Col, Location.Row.NextNorth()), approachFrom: Direction.South, curState: nextState),
+                ActionInput.MoveSouth => TryMoveTo((Location.Col, Location.Row.NextSouth(level.Height)), approachFrom: Direction.North, curState: nextState),
+                ActionInput.ShootNorth => Shoot(nextState, Direction.North),
+                ActionInput.ShootSouth => Shoot(nextState, Direction.South),
+                ActionInput.ShootWest => Shoot(nextState, Direction.West),
+                ActionInput.ShootEast => Shoot(nextState, Direction.East),
+                _ => Behaviors.NoReaction(nextState)
+            };
+        }
+        else
+        {
+            // Gravity is nonzero
+            // Move south n times (where n = gravity) unless motion is blocked
+            Player nextStatePlayer = nextState.Player;
+            for (int i = 0; i < nextState.Gravity && !nextStatePlayer.MotionBlockedSouth(nextState); i++, nextStatePlayer = nextState.Player)
+            {
+                nextState = TryMoveTo((nextStatePlayer.Location.Col, nextStatePlayer.Location.Row.NextSouth(level.Height)), approachFrom: Direction.North, curState: nextState);
+            }
+            // ToDo: shooting, jumping, etc.
+            return nextState;
+        }
         
-        // Regardless of above motion, run the following switch statement
-        // to make sure we can shoot while velocity is nonzero
-        return actionInput switch // Based on input, move north/south or shoot.
-        {      
-            ActionInput.MoveNorth => TryMoveTo((Location.Col, Location.Row.NextNorth()), approachFrom: Direction.South, curState: nextState),
-            ActionInput.MoveSouth => TryMoveTo((Location.Col, Location.Row.NextSouth(level.Height)), approachFrom: Direction.North, curState: nextState),
-            ActionInput.ShootNorth => Shoot(nextState, Direction.North),
-            ActionInput.ShootSouth => Shoot(nextState, Direction.South),
-            ActionInput.ShootWest => Shoot(nextState, Direction.West),
-            ActionInput.ShootEast => Shoot(nextState, Direction.East),
-            _ => Behaviors.NoReaction(nextState)
-        };
     }
     public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy)
         => touchedBy switch
@@ -78,11 +97,11 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
             Bullet shotBy => OnShot(level, touchedFrom.Mirror(), shotBy),
             _ => level
         };
+    public override bool BlocksMotion(Player p) => p != this;
 
     // Check for blocking
     public bool MotionBlockedTo(Level level, Direction where)
-            => this is ILocatable locatable &&
-            where switch
+            => where switch
             {
                 Direction.North => MotionBlockedNorth(level),
                 Direction.East => MotionBlockedEast(level),
@@ -128,22 +147,29 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
     // Private static helpers
     private static Level TryMoveTo(Location newLocation, Direction approachFrom, Level curState)
     {
+        Direction whither = approachFrom.Mirror();
+        // ToDo: Clean up object behaviors that "suck in" player, allow player to control own motion
         Player player = curState.Player;
         // If no obstacles, move
-        if (!player.ObjectLocatedTo(curState, approachFrom.Mirror()))
+        if (!player.ObjectLocatedTo(curState, whither))
             return curState.WithPlayer(player with { Location = newLocation });
 
-        // Otherwise, call the touch methods for any ITouchables and move over all else
+        // If there are any ITouchables, call their OnTouch() methods
         Level nextState = curState;
-        // The ObjectsAt() method returns ILocatable objects, so the following cast is safe.
-        foreach (ILocatable obj in curState.ObjectsAt(newLocation).Cast<ILocatable>())
+        IEnumerable<ITouchable> touchables = curState
+            .ObjectsAt(newLocation)
+            .Where(obj => obj is ITouchable)
+            .Cast<ITouchable>();
+        foreach (ITouchable touchable in touchables)
         {
-            nextState = obj switch
-            {
-                ITouchable touchableAtLocation => touchableAtLocation.OnTouch(curState, approachFrom, player),
-                _ => nextState.WithPlayer(player with { Location = newLocation })
-            };
+            nextState = touchable.OnTouch(nextState, approachFrom, player);
+            player = nextState.Player;
         }
+
+        // If not blocked, move
+        if (!player.MotionBlockedTo(nextState, whither))
+            nextState = nextState.WithPlayer(player with { Location = newLocation });
+        
         return nextState; 
     }
     private static Level Shoot(Level level, Direction whither)
@@ -185,8 +211,6 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
     }
 
     // Public static utilities
-    public static Player Default(Location location) => new(location: location, health: 100, ammoCount: 0, inventory: Inventory.EmptyInventory);
+    public static Player Default(Location location) => new(location: location, health: 100, ammoCount: 0, inventory: Inventory.EmptyInventory, jumpStrength: 5, kineticEnergy: 0);
     public static Player Default(Column col, Row row) => Player.Default((col, row));
-
-    public override bool BlocksMotion(Player p) => p != this;
 }

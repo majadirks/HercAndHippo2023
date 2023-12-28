@@ -7,23 +7,42 @@ namespace HercAndHippoLibCs
         public Player Player { get; init; }
         public int Width { get; init; }
         public int Height { get; init; }
+        public int Gravity { get; init; }
+        public int Cycles { get; private set; }
         private HashSet<HercAndHippoObj> SecondaryObjects { get; init; } // secondary, ie not the player
-        public Level(Player player, HashSet<HercAndHippoObj> secondaryObjects)
-            => (Player, SecondaryObjects, Width, Height) = (player, secondaryObjects, GetWidth(secondaryObjects), GetHeight(secondaryObjects));
-        public Level(Player player, HashSet<HercAndHippoObj> secondaryObjects, int width, int height)
-            => (Player, SecondaryObjects, Width, Height) = (player, secondaryObjects, width, height);
+        public Level(Player player, int gravity, HashSet<HercAndHippoObj> secondaryObjects)
+        {
+            Player = player;
+            SecondaryObjects = secondaryObjects;
+            Width = GetWidth(secondaryObjects);
+            Height = GetHeight(secondaryObjects);
+            Gravity = Math.Max(gravity, 0);
+            Cycles = 0;
+        }
+        private Level(Player player, HashSet<HercAndHippoObj> secondaryObjects, int width, int height, int gravity)
+        {
+            Player = player;
+            SecondaryObjects = secondaryObjects;
+            Width = width;
+            Height = height;
+            Gravity = gravity;
+            Cycles = 0;
+        }
         public HashSet<HercAndHippoObj> LevelObjects => SecondaryObjects.AddObject(Player);
-        public Level WithPlayer(Player player) => new (player: player, secondaryObjects: this.SecondaryObjects);
-        
+        public Level WithPlayer(Player player) => new (player: player, secondaryObjects: this.SecondaryObjects, width: Width, height: Height, gravity: Gravity);
         public IEnumerable<HercAndHippoObj> ObjectsAt(Location location) => LevelObjects.Where(d => d is ILocatable dAtLoc && dAtLoc.Location.Equals(location));
-        public Level Without(HercAndHippoObj toRemove) => new(player: this.Player, secondaryObjects: SecondaryObjects.RemoveObject(toRemove), Width, Height);
-        public Level AddObject(HercAndHippoObj toAdd) => new(player: this.Player, secondaryObjects: SecondaryObjects.AddObject(toAdd), Width, Height);
+        public Level Without(HercAndHippoObj toRemove) => new(player: this.Player, secondaryObjects: SecondaryObjects.RemoveObject(toRemove), Width, Height, Gravity);
+        public Level AddObject(HercAndHippoObj toAdd) => new(player: this.Player, secondaryObjects: SecondaryObjects.AddObject(toAdd), Width, Height, Gravity);
         public Level Replace(HercAndHippoObj toReplace, HercAndHippoObj toAdd) => this.Without(toReplace).AddObject(toAdd);
         public Level RefreshCyclables(ActionInput actionInput)
-            => LevelObjects // Do not refresh in parallel; this could cause objects to interfere with nearby copies of themselves
+        {
+            var nextState = LevelObjects // Do not refresh in parallel; this could cause objects to interfere with nearby copies of themselves
             .Where(disp => disp is ICyclable cylable)
-            .Cast<ICyclable>()     
+            .Cast<ICyclable>()
             .Aggregate(seed: this, func: (state, nextCyclable) => nextCyclable.Cycle(state, actionInput));
+            nextState.Cycles = Cycles + 1;
+            return nextState;
+        }
         private bool HasSameStateAs(Level otherState)
             => SecondaryObjects.Count == otherState.SecondaryObjects.Count &&
                LevelObjects.Zip(otherState.LevelObjects).All(zipped => zipped.First.Equals(zipped.Second));

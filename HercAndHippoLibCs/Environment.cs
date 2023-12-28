@@ -33,13 +33,13 @@ namespace HercAndHippoLibCs
         public Level OnTouch(Level level, Direction _, ITouchable touchedBy)
             => touchedBy switch
             {
-                Player p => p.Has<Key>(BackgroundColor) ? TakeKeyDieAndAllowPassage(level, p) : Behaviors.NoReaction(level),
+                Player p => p.Has<Key>(BackgroundColor) ? TakeKeyAndDie(level, p) : Behaviors.NoReaction(level),
                 _ => Behaviors.NoReaction(level)
             };
-        private Level TakeKeyDieAndAllowPassage(Level level, Player player)
+        private Level TakeKeyAndDie(Level level, Player player)
         {
             (bool _, ITakeable? _, Player newPlayerState) = player.DropItem<Key>(BackgroundColor);
-            Level newState = Behaviors.DieAndAllowPassage(level, this, newPlayerState);
+            Level newState = Behaviors.Die(level, this).WithPlayer(newPlayerState);
             return newState;
         }
     }
