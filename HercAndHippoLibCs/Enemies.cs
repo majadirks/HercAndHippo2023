@@ -11,7 +11,7 @@
             // Call OnShot methods for any IShootable at current location 
             Level nextState = curState
                 .ObjectsAt(Location)
-                .Where(obj => obj is IShootable shot)
+                .Where(obj => obj.IsShootable)
                 .Cast<IShootable>()
                 .Aggregate(seed: curState, func: (state, shot) => shot.OnShot(state, shotFrom: Whither.Mirror(), shotBy: this));
 

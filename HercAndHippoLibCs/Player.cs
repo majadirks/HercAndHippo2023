@@ -204,7 +204,7 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
         Level nextState = curState;
         IEnumerable<ITouchable> touchables = curState
             .ObjectsAt(newLocation)
-            .Where(obj => obj is ITouchable)
+            .Where(obj => obj.IsTouchable)
             .Cast<ITouchable>();
         foreach (ITouchable touchable in touchables)
         {

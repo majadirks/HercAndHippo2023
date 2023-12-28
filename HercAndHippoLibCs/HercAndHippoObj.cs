@@ -2,7 +2,18 @@
 {
     public abstract record HercAndHippoObj 
     {
-        public virtual bool IsLocatable => this is ILocatable;
+        public HercAndHippoObj()
+        {
+            thisIsLocatable =  this is ILocatable;
+            thisIsTouchable = this is ITouchable;
+            thisIsShootable = this is IShootable;
+        }
+        public bool IsLocatable => thisIsLocatable;
+        public bool IsTouchable => thisIsTouchable;
+        public bool IsShootable => thisIsShootable;
+        private readonly bool thisIsLocatable;
+        private readonly bool thisIsTouchable;
+        private readonly bool thisIsShootable;
         public abstract bool BlocksMotion(Player p);
 
         public bool ObjectLocatedTo(Level level, Direction where)
