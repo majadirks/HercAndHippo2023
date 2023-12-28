@@ -7,19 +7,19 @@ namespace HercAndHippoLibCs
         public Player Player { get; init; }
         public int Width { get; init; }
         public int Height { get; init; }
-        public int Gravity { get; init; }
+        public Gravity Gravity { get; init; }
         public int Cycles { get; private set; }
         private HashSet<HercAndHippoObj> SecondaryObjects { get; init; } // secondary, ie not the player
-        public Level(Player player, int gravity, HashSet<HercAndHippoObj> secondaryObjects)
+        public Level(Player player, Gravity gravity, HashSet<HercAndHippoObj> secondaryObjects)
         {
             Player = player;
             SecondaryObjects = secondaryObjects;
             Width = GetWidth(secondaryObjects);
             Height = GetHeight(secondaryObjects);
-            Gravity = Math.Max(gravity, 0);
+            Gravity = gravity;
             Cycles = 0;
         }
-        private Level(Player player, HashSet<HercAndHippoObj> secondaryObjects, int width, int height, int gravity)
+        private Level(Player player, HashSet<HercAndHippoObj> secondaryObjects, int width, int height, Gravity gravity)
         {
             Player = player;
             SecondaryObjects = secondaryObjects;
