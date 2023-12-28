@@ -35,7 +35,7 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
         Velocity nextVelocity = Velocity.NextVelocity(this, level, actionInput);
         Level nextState = level.WithPlayer(this with { Velocity = nextVelocity });
 
-        // Move east/west if velocity is >= 1
+        // Move east/west if velocity is >= 1 
         if (Velocity <= -1)
         {
             for (int i = -1; i >= Velocity; i--)
