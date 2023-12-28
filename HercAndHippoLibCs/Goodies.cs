@@ -23,7 +23,7 @@
         public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy)
         {
             Player player = level.Player;
-            Level stateWherePlayerHasKeyInInventory = level.WithPlayer(player.Take(this) with { Location = this.Location });
+            Level stateWherePlayerHasKeyInInventory = level.WithPlayer(player.Take(this));
             Level reactToKeyBeingTakenState = OnTake(stateWherePlayerHasKeyInInventory);
             return reactToKeyBeingTakenState;
         }
