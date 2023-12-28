@@ -131,7 +131,7 @@ public static class DemoLevels
 
     public static readonly Level JumpLevel = new(
         player: new Player(location: new(5, 10), health: 100, ammoCount: 100, inventory: Inventory.EmptyInventory, jumpStrength: 5),
-        gravity: new Gravity(Strength: 1, WaitCycles: 2),
+        gravity: Gravity.Default,
         secondaryObjects: new HashSet<HercAndHippoObj>()
         {
             new Wall(Color.Blue, (1,11)),
