@@ -24,7 +24,26 @@ public class JumpingAndGravityTests
     public void NoDoubleJumpsWhenNotBlockedSouth_Test()
     {
         // Arrange
-        Player player = Player.Default(new Location(5, 10));
-        //Level level = new Level(player, Gravity.Default, 
+        Player player = Player.Default(new Location(5, 10)) with { JumpStrength = 5 };
+        Level level = new Level(
+            player: player,
+            gravity: Gravity.Default,
+            secondaryObjects: new()
+            {
+                new Wall(Color.Magenta, new(5,11)),
+                new Wall(Color.Black, new(20, 20))
+            });
+        // Player jumps
+        Assert.IsTrue(player.MotionBlockedTo(level, Direction.South));
+        Assert.AreEqual(0, player.KineticEnergy);
+        level = level.RefreshCyclables(ActionInput.MoveNorth);
+        Assert.AreEqual(4, level.Player.KineticEnergy);
+
+        // Act: attempt to double-jump
+        level = level.RefreshCyclables(ActionInput.MoveNorth);
+
+        // Assert: double-jump failed; kinetic energy continues to decrease
+        Assert.AreEqual(3, level.Player.KineticEnergy);
+
     }
 }
