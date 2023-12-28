@@ -155,6 +155,8 @@ public static class DemoLevels
             new Wall(Color.Blue, (14,15)),
             new Wall(Color.Blue, (15,15)),
 
+            new Wall(Color.Blue, (40,16)),
+
             new Wall(Color.Blue, ( 1,18)),
             new Wall(Color.Blue, ( 2,18)),
             new Wall(Color.Blue, ( 3,18)),
