@@ -35,7 +35,7 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
         Velocity nextVelocity = Velocity.NextVelocity(this, level, actionInput);
         Level nextState = level.WithPlayer(this with { Velocity = nextVelocity });
 
-        // Move east/west if velocity is >= 1 or if there was a moveEast/moveWest input
+        // Move east/west if velocity is >= 1
         if (Velocity <= -1)
         {
             for (int i = -1; i >= Velocity; i--)
@@ -52,7 +52,9 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
                 nextState = TryMoveTo((nextEast, Location.Row), approachFrom: Direction.West, curState: nextState);
             }              
         }
-        else if (actionInput == ActionInput.MoveWest)
+
+        // Move east/west if there was a MoveEast/MoveWest input
+        if (actionInput == ActionInput.MoveWest)
         {
             Column nextWest = nextState.Player.Location.Col.NextWest();
             nextState = TryMoveTo((nextWest, Location.Row), approachFrom: Direction.East, curState: nextState);
@@ -106,7 +108,8 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
             if (actionInput == ActionInput.MoveNorth && nextState.Player.MotionBlockedSouth(nextState))
             {
                 int nextKineticEnergy = nextState.Player.KineticEnergy + nextState.Player.JumpStrength;
-                nextState = nextState.WithPlayer(nextState.Player with { KineticEnergy = nextKineticEnergy });
+                    nextVelocity = nextState.Player.Velocity * 3;
+                nextState = nextState.WithPlayer(nextState.Player with { KineticEnergy = nextKineticEnergy, Velocity = nextVelocity });
             }
 
             // If Kinetic Energy > 0, move up and decrement. If blocked north, KE gets set to zero.

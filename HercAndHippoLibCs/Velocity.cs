@@ -15,11 +15,11 @@ public record Velocity
         if (Abs(CurrentVelocity) <= ZERO_THRESHOLD || Sign(CurrentVelocity) != Sign(velocity))
             CurrentVelocity = 0;
     }
-    public Velocity NextVelocity(HercAndHippoObj hho, Level level, ActionInput actionInput)
+    public Velocity NextVelocity(Player player, Level level, ActionInput actionInput)
     {
-        if (actionInput == ActionInput.MoveEast && hho.ObjectLocatedTo(level, Direction.East))
+        if (actionInput == ActionInput.MoveEast && player.MotionBlockedTo(level, Direction.East))
             return 0;
-        else if (actionInput == ActionInput.MoveWest && hho.ObjectLocatedTo(level, Direction.West))
+        else if (actionInput == ActionInput.MoveWest && player.MotionBlockedTo(level, Direction.West))
             return 0;
         else return actionInput switch
         {
