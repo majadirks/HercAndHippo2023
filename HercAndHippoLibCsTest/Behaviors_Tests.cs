@@ -79,16 +79,16 @@ namespace HercAndHippoLibCsTest
         }
 
         [TestMethod]
-        public void DieAndAllowPassage_Test()
+        public void DieBehavior_Test()
         {
             // Arrange
             Door door = new(Color.Magenta, (2, 1));
             Key key = new(Color.Magenta, (1, 1));
             Player startPlayer = new((1, 1), health: 100, ammoCount: 5, inventory: new(key));
             Level initialState = new(player: startPlayer, gravity: 0, secondaryObjects: new() { door });
-            Level expectedNextState = initialState.WithPlayer(startPlayer with { Location = door.Location }).Without(door);
+            Level expectedNextState = initialState.Without(door);
             // Act
-            Level actualNextState = Behaviors.DieAndAllowPassage(level: initialState, passedOver: door, passerOver: startPlayer);
+            Level actualNextState = Behaviors.Die(level: initialState, toDie: door);
             // Assert
             Assert.AreEqual(expectedNextState, actualNextState);
         }
