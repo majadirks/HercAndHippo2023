@@ -19,20 +19,20 @@ namespace HercAndHippoLibCs
             Gravity = gravity;
             Cycles = 0;
         }
-        private Level(Player player, HashSet<HercAndHippoObj> secondaryObjects, int width, int height, Gravity gravity)
+        private Level(Player player, HashSet<HercAndHippoObj> secondaryObjects, int width, int height, int cycles, Gravity gravity)
         {
             Player = player;
             SecondaryObjects = secondaryObjects;
             Width = width;
             Height = height;
             Gravity = gravity;
-            Cycles = 0;
+            Cycles = cycles;
         }
         public HashSet<HercAndHippoObj> LevelObjects => SecondaryObjects.AddObject(Player);
-        public Level WithPlayer(Player player) => new (player: player, secondaryObjects: this.SecondaryObjects, width: Width, height: Height, gravity: Gravity);
+        public Level WithPlayer(Player player) => new (player: player, secondaryObjects: this.SecondaryObjects, width: Width, height: Height, cycles: Cycles, gravity: Gravity);
         public IEnumerable<HercAndHippoObj> ObjectsAt(Location location) => LevelObjects.Where(d => d is ILocatable dAtLoc && dAtLoc.Location.Equals(location));
-        public Level Without(HercAndHippoObj toRemove) => new(player: this.Player, secondaryObjects: SecondaryObjects.RemoveObject(toRemove), Width, Height, Gravity);
-        public Level AddObject(HercAndHippoObj toAdd) => new(player: this.Player, secondaryObjects: SecondaryObjects.AddObject(toAdd), Width, Height, Gravity);
+        public Level Without(HercAndHippoObj toRemove) => new(player: this.Player, secondaryObjects: SecondaryObjects.RemoveObject(toRemove), Width, Height, Cycles, Gravity);
+        public Level AddObject(HercAndHippoObj toAdd) => new(player: this.Player, secondaryObjects: SecondaryObjects.AddObject(toAdd), Width, Height, Cycles, Gravity);
         public Level Replace(HercAndHippoObj toReplace, HercAndHippoObj toAdd) => this.Without(toReplace).AddObject(toAdd);
         public Level RefreshCyclables(ActionInput actionInput)
         {
@@ -47,6 +47,7 @@ namespace HercAndHippoLibCs
             => SecondaryObjects.Count == otherState.SecondaryObjects.Count &&
                LevelObjects.Zip(otherState.LevelObjects).All(zipped => zipped.First.Equals(zipped.Second));
         public bool Contains(HercAndHippoObj obj) => LevelObjects.Contains(obj);
+        public bool GravityApplies() => Cycles > 0 && Cycles % Gravity.WaitCycles == 0;
         public override bool Equals([NotNullWhen(true)] object? obj) => obj is Level other && other.HasSameStateAs(this);
         public static bool operator ==(Level left, Level right) => left.Equals(right);
         public static bool operator !=(Level left, Level right) => !(left == right);

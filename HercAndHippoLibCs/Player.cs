@@ -115,7 +115,7 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
                     }
                 }
             }
-            else // No kinetic energy; fall due to gravity until blocked
+            else  if (nextState.GravityApplies()) // No kinetic energy; fall due to gravity until blocked
             {
                 for (int i = 0;
                     i < nextState.Gravity &&
