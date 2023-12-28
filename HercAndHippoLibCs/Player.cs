@@ -156,7 +156,11 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
 
         // If there are any ITouchables, call their OnTouch() methods
         Level nextState = curState;
-        foreach (ITouchable touchable in curState.ObjectsAt(newLocation).Where(obj => obj is ITouchable))
+        IEnumerable<ITouchable> touchables = curState
+            .ObjectsAt(newLocation)
+            .Where(obj => obj is ITouchable)
+            .Cast<ITouchable>();
+        foreach (ITouchable touchable in touchables)
         {
             nextState = touchable.OnTouch(nextState, approachFrom, player);
             player = nextState.Player;
