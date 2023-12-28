@@ -63,7 +63,7 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
             nextState = TryMoveTo((nextEast, Location.Row), approachFrom: Direction.West, curState: nextState);
         }
 
-        // If there was a shooting input, shoot.
+        // If there was a "shooting input", shoot.
         nextState = actionInput switch
         {
             ActionInput.ShootNorth => Shoot(nextState, Direction.North),
