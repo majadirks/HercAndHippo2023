@@ -4,16 +4,14 @@
     {
         public HercAndHippoObj()
         {
-            thisIsLocatable =  this is ILocatable;
-            thisIsTouchable = this is ITouchable;
-            thisIsShootable = this is IShootable;
+            IsLocatable =  this is ILocatable;
+            IsTouchable = this is ITouchable;
+            IsShootable = this is IShootable;
         }
-        public bool IsLocatable => thisIsLocatable;
-        public bool IsTouchable => thisIsTouchable;
-        public bool IsShootable => thisIsShootable;
-        private readonly bool thisIsLocatable;
-        private readonly bool thisIsTouchable;
-        private readonly bool thisIsShootable;
+        public bool IsLocatable { get; init; }
+        public bool IsTouchable { get; init; }
+        public bool IsShootable { get; init; }
+
         public abstract bool BlocksMotion(Player p);
 
         public bool ObjectLocatedTo(Level level, Direction where)

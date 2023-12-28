@@ -12,7 +12,7 @@ namespace HercAndHippoLibCsTest
             int expectedWidth = 4;
             int expectedHeight = 7;
             Player player = new((1, 1), health: 100, ammoCount: 0, inventory: EmptyInventory);
-            Level level = new(player: player, gravity:0, secondaryObjects: new HashSet<HercAndHippoObj>()
+            Level level = new(player: player, gravity: Gravity.None, secondaryObjects: new HashSet<HercAndHippoObj>()
             {
                 new Wall(Color.Yellow, new Location(Col: expectedWidth, Row: expectedHeight))
             }) ;
@@ -29,7 +29,7 @@ namespace HercAndHippoLibCsTest
             int expectedWidth = 4;
             int expectedHeight = 7;
             Player player = new(new Location(Col: expectedWidth, Row: expectedHeight), health: 100, ammoCount: 5, inventory: EmptyInventory);
-            Level level = new(player: player, gravity: 0, secondaryObjects: new HashSet<HercAndHippoObj>()
+            Level level = new(player: player, gravity: Gravity.None, secondaryObjects: new HashSet<HercAndHippoObj>()
             {
                 new Wall(Color.Yellow, new Location(Col: expectedWidth, Row: expectedHeight))
             });
@@ -61,7 +61,7 @@ namespace HercAndHippoLibCsTest
             int startCount = 0;
             CycleCounter initialCounter = new((2, 2), startCount);
             CycleCounter cycledCounter = new((2, 2), startCount + 1);
-            Level level = new(player: player, gravity: 0, secondaryObjects: new HashSet<HercAndHippoObj>() { initialCounter });
+            Level level = new(player: player, gravity: Gravity.None, secondaryObjects: new HashSet<HercAndHippoObj>() { initialCounter });
 
             // Check that we set this up correctly
             Assert.IsTrue(level.Contains(initialCounter));
@@ -80,7 +80,7 @@ namespace HercAndHippoLibCsTest
         {
             // Arrange
             Player player = Player.Default((1, 1));
-            Level level = new(player, gravity: 0, secondaryObjects: new());
+            Level level = new(player, gravity: Gravity.None, secondaryObjects: new());
 
             for (int i = 0; i < 100; i++)
             {

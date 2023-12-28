@@ -75,7 +75,7 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
 
 
         // We've accounted for east/west motion. Now check for any north/south motion
-        if (level.Gravity == 0)
+        if (level.Gravity.Strength == 0)
         {
             return actionInput switch // Based on input, move north/south
             {
@@ -85,9 +85,7 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
             };
         }
         else // Gravity is nonzero
-        {
-            
-
+        {       
             // If player is blocked south, allow jumping
             if (actionInput == ActionInput.MoveNorth && nextState.Player.MotionBlockedSouth(nextState))
             {
@@ -97,7 +95,7 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
 
             if (nextState.Player.KineticEnergy > 0) // player has kinetic energy; move north
             {
-                for (int i = 0; i < nextState.Gravity; i++)
+                for (int i = 0; i < nextState.Gravity.Strength; i++)
                 {
                     if (nextState.Player.KineticEnergy == 0 || nextState.Player.MotionBlockedNorth(nextState))
                     {
@@ -110,7 +108,7 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
                             newLocation: (nextState.Player.Location.Col, nextState.Player.Location.Row.NextNorth()),
                             approachFrom: Direction.South,
                             curState: nextState);
-                        int nextKineticEnergy = nextState.Player.KineticEnergy - nextState.Gravity;
+                        int nextKineticEnergy = nextState.Player.KineticEnergy - nextState.Gravity.Strength;
                         nextState = nextState.WithPlayer(nextState.Player with { KineticEnergy = nextKineticEnergy });
                     }
                 }
@@ -118,7 +116,7 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
             else  if (nextState.GravityApplies()) // No kinetic energy; fall due to gravity until blocked
             {
                 for (int i = 0;
-                    i < nextState.Gravity &&
+                    i < nextState.Gravity.Strength &&
                     !nextState.Player.MotionBlockedSouth(nextState);
                     i++)
                 {
