@@ -8,7 +8,7 @@ const int REFRESH_FREQUENCY_HZ = 50;
 // Initialize data
 CycleTimer cycleTimer = new(frequencyHz: REFRESH_FREQUENCY_HZ);
 ConsoleKeyInfo keyInfo;
-Level state = DemoLevels.JumpLevel;
+Level state = DemoLevels.WallsLevel;
 ScrollStatus scrollStatus = ScrollStatus.Default(state.Player.Location);
 BufferStats bufferStats = new(bufferSizeChanged: true, bufferWidth: Console.BufferWidth, bufferHeight: Console.BufferHeight);
 DisplayPlan displayPlan = new(state, scrollStatus, bufferStats);

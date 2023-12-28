@@ -12,7 +12,6 @@
             => level.Without(this)
                     .WithPlayer(level.Player with 
                                 { 
-                                    Location = this.Location, 
                                     AmmoCount = level.Player.AmmoCount + Count 
                                 });
     }

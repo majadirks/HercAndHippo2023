@@ -20,8 +20,7 @@ namespace HercAndHippoLibCs
         public Level(Player player, HashSet<HercAndHippoObj> secondaryObjects, int width, int height, int gravity)
             => (Player, SecondaryObjects, Width, Height, Gravity) = (player, secondaryObjects, width, height, gravity);
         public HashSet<HercAndHippoObj> LevelObjects => SecondaryObjects.AddObject(Player);
-        public Level WithPlayer(Player player) => new (player: player, secondaryObjects: this.SecondaryObjects, gravity: Gravity);
-        
+        public Level WithPlayer(Player player) => new (player: player, secondaryObjects: this.SecondaryObjects, width: Width, height: Height, gravity: Gravity);
         public IEnumerable<HercAndHippoObj> ObjectsAt(Location location) => LevelObjects.Where(d => d is ILocatable dAtLoc && dAtLoc.Location.Equals(location));
         public Level Without(HercAndHippoObj toRemove) => new(player: this.Player, secondaryObjects: SecondaryObjects.RemoveObject(toRemove), Width, Height, Gravity);
         public Level AddObject(HercAndHippoObj toAdd) => new(player: this.Player, secondaryObjects: SecondaryObjects.AddObject(toAdd), Width, Height, Gravity);
