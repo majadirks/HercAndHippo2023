@@ -74,5 +74,21 @@ namespace HercAndHippoLibCsTest
             Assert.IsFalse(level.Contains(initialCounter));
             Assert.IsTrue(level.Contains(cycledCounter));           
         }
+
+        [TestMethod]
+        public void CountCycles_Test()
+        {
+            // Arrange
+            Player player = Player.Default((1, 1));
+            Level level = new(player, gravity: 0, secondaryObjects: new());
+
+            for (int i = 0; i < 100; i++)
+            {
+                // Assert
+                Assert.AreEqual(i, level.Cycles);
+                // Act
+                level = level.RefreshCyclables(ActionInput.NoAction);
+            }
+        }
     }
 }
