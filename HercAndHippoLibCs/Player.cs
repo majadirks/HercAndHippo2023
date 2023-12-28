@@ -35,7 +35,7 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
         Velocity nextVelocity = Velocity.NextVelocity(this, level, actionInput);
         Level nextState = level.WithPlayer(this with { Velocity = nextVelocity });
 
-        // Move east/west if velocity is >= 1 or if there was a moveEast/moveWest input
+        // Move east/west if velocity is >= 1 
         if (Velocity <= -1)
         {
             for (int i = -1; i >= Velocity; i--)
@@ -63,33 +63,76 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
             nextState = TryMoveTo((nextEast, Location.Row), approachFrom: Direction.West, curState: nextState);
         }
 
-        // We've accounted for east/west motion. Now check for any north/south motion or shooting
+        // If there was a "shooting input", shoot.
+        nextState = actionInput switch
+        {
+            ActionInput.ShootNorth => Shoot(nextState, Direction.North),
+            ActionInput.ShootSouth => Shoot(nextState, Direction.South),
+            ActionInput.ShootWest => Shoot(nextState, Direction.West),
+            ActionInput.ShootEast => Shoot(nextState, Direction.East),
+            _ => Behaviors.NoReaction(nextState)
+        };
+
+
+        // We've accounted for east/west motion. Now check for any north/south motion
         if (level.Gravity == 0)
         {
-            return actionInput switch // Based on input, move north/south or shoot.
+            return actionInput switch // Based on input, move north/south
             {
                 ActionInput.MoveNorth => TryMoveTo((Location.Col, Location.Row.NextNorth()), approachFrom: Direction.South, curState: nextState),
                 ActionInput.MoveSouth => TryMoveTo((Location.Col, Location.Row.NextSouth(level.Height)), approachFrom: Direction.North, curState: nextState),
-                ActionInput.ShootNorth => Shoot(nextState, Direction.North),
-                ActionInput.ShootSouth => Shoot(nextState, Direction.South),
-                ActionInput.ShootWest => Shoot(nextState, Direction.West),
-                ActionInput.ShootEast => Shoot(nextState, Direction.East),
                 _ => Behaviors.NoReaction(nextState)
             };
         }
-        else
+        else // Gravity is nonzero
         {
-            // Gravity is nonzero
-            // Move south n times (where n = gravity) unless motion is blocked
-            Player nextStatePlayer = nextState.Player;
-            for (int i = 0; i < nextState.Gravity && !nextStatePlayer.MotionBlockedSouth(nextState); i++, nextStatePlayer = nextState.Player)
+            
+
+            // If player is blocked south, allow jumping
+            if (actionInput == ActionInput.MoveNorth && nextState.Player.MotionBlockedSouth(nextState))
             {
-                nextState = TryMoveTo((nextStatePlayer.Location.Col, nextStatePlayer.Location.Row.NextSouth(level.Height)), approachFrom: Direction.North, curState: nextState);
+                int nextKineticEnergy = nextState.Player.KineticEnergy + nextState.Player.JumpStrength;
+                nextState = nextState.WithPlayer(nextState.Player with { KineticEnergy = nextKineticEnergy });
             }
-            // ToDo: shooting, jumping, etc.
+
+            if (nextState.Player.KineticEnergy > 0) // player has kinetic energy; move north
+            {
+                for (int i = 0; i < nextState.Gravity; i++)
+                {
+                    if (nextState.Player.KineticEnergy == 0 || nextState.Player.MotionBlockedNorth(nextState))
+                    {
+                        nextState = nextState.WithPlayer(nextState.Player with { KineticEnergy = 0 });
+                        break;
+                    }
+                    else
+                    {
+                        nextState = TryMoveTo(
+                            newLocation: (nextState.Player.Location.Col, nextState.Player.Location.Row.NextNorth()),
+                            approachFrom: Direction.South,
+                            curState: nextState);
+                        int nextKineticEnergy = nextState.Player.KineticEnergy - nextState.Gravity;
+                        nextState = nextState.WithPlayer(nextState.Player with { KineticEnergy = nextKineticEnergy });
+                    }
+                }
+            }
+            else  if (nextState.GravityApplies()) // No kinetic energy; fall due to gravity until blocked
+            {
+                for (int i = 0;
+                    i < nextState.Gravity &&
+                    !nextState.Player.MotionBlockedSouth(nextState);
+                    i++)
+                {
+                    Location nextLocation = new(nextState.Player.Location.Col, nextState.Player.Location.Row.NextSouth(level.Height));
+                    nextState = TryMoveTo(
+                        newLocation: nextLocation,
+                        approachFrom: Direction.North,
+                        curState: nextState);
+                }
+            }
+
+            
             return nextState;
-        }
-        
+        } 
     }
     public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy)
         => touchedBy switch
@@ -148,7 +191,6 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
     private static Level TryMoveTo(Location newLocation, Direction approachFrom, Level curState)
     {
         Direction whither = approachFrom.Mirror();
-        // ToDo: Clean up object behaviors that "suck in" player, allow player to control own motion
         Player player = curState.Player;
         // If no obstacles, move
         if (!player.ObjectLocatedTo(curState, whither))
@@ -158,7 +200,7 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
         Level nextState = curState;
         IEnumerable<ITouchable> touchables = curState
             .ObjectsAt(newLocation)
-            .Where(obj => obj is ITouchable)
+            .Where(obj => obj.IsTouchable)
             .Cast<ITouchable>();
         foreach (ITouchable touchable in touchables)
         {

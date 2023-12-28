@@ -37,8 +37,6 @@
 
     internal record Blocker(Location Location) : HercAndHippoObj, ILocatable
     {
-        public override bool IsLocatable => true; // this is the default anyway, but make that default explicit for this object
-
         public override bool BlocksMotion(Player p) => true;
     }
 }

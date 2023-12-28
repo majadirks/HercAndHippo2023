@@ -1,6 +1,6 @@
-﻿namespace HercAndHippoLibCs
+﻿namespace HercAndHippoLibCs;
+public record Gravity(int Strength, int WaitCycles)
 {
-    public struct Gravity
-    {
-    }
+    public static implicit operator Gravity(int strength) => new(Strength: Math.Max(strength, 0), WaitCycles: 1);
+    public static implicit operator int(Gravity gravity) => gravity.Strength;  
 }
