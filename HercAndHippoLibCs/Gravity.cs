@@ -1,6 +1,1 @@
-﻿namespace HercAndHippoLibCs
-{
-    public struct Gravity
-    {
-    }
-}
+﻿// deprecated

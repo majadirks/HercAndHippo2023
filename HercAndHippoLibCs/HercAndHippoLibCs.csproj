@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Gravity.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="AccelerationNotes.txt" />
   </ItemGroup>
 
