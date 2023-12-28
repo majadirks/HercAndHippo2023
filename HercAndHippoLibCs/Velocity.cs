@@ -6,7 +6,7 @@ public record Velocity
 {
     private const int MAX_VELOCITY = 2;
     private const int MIN_VELOCITY = -2;
-    private const float ZERO_THRESHOLD = 0.1f;
+    private const float ZERO_THRESHOLD = 0.05f;
     private const float ACCELERATION = 0.2f;
     public float CurrentVelocity { get; init; }
     public Velocity(float velocity)
@@ -26,17 +26,18 @@ public record Velocity
         {
             ActionInput.MoveEast => AccelerateEastward(),
             ActionInput.MoveWest => AccelerateWestward(),
+            ActionInput.MoveNorth => CurrentVelocity,
             _ => inAir ? CurrentVelocity : SlowDown()
         };
     }
     private Velocity SlowDown()
     {
-        if (CurrentVelocity > 0) return AccelerateWestward();
-        else if (CurrentVelocity < 0) return AccelerateEastward();
+        if (CurrentVelocity > 0) return AccelerateWestward(accel: ACCELERATION / 2.0f);
+        else if (CurrentVelocity < 0) return AccelerateEastward(accel: ACCELERATION / 2.0f);
         else return this;
     }
-    private Velocity AccelerateEastward() => new(velocity: CurrentVelocity + ACCELERATION);
-    private Velocity AccelerateWestward() => new(velocity: CurrentVelocity - ACCELERATION);
+    private Velocity AccelerateEastward(float accel = ACCELERATION) => new(velocity: CurrentVelocity + accel);
+    private Velocity AccelerateWestward(float accel = ACCELERATION) => new(velocity: CurrentVelocity - accel);
 
     public static implicit operator Velocity(float cv) => new(velocity: cv);
     public static implicit operator float(Velocity veloc) => veloc.CurrentVelocity;
