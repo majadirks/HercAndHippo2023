@@ -88,12 +88,49 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
         {
             // Gravity is nonzero
             // Move south n times (where n = gravity) or until motion is blocked
+            // ToDo: test this
             Player nextStatePlayer = nextState.Player;
-            for (int i = 0; i < nextState.Gravity && !nextStatePlayer.MotionBlockedSouth(nextState); i++, nextStatePlayer = nextState.Player)
+            for (int i = 0; 
+                i < nextState.Gravity && 
+                nextStatePlayer.KineticEnergy == 0 && 
+                !nextStatePlayer.MotionBlockedSouth(nextState); 
+                i++, nextStatePlayer = nextState.Player)
             {
-                nextState = TryMoveTo((nextStatePlayer.Location.Col, nextStatePlayer.Location.Row.NextSouth(level.Height)), approachFrom: Direction.North, curState: nextState);
+                nextState = TryMoveTo(
+                    newLocation: (nextStatePlayer.Location.Col, nextStatePlayer.Location.Row.NextSouth(level.Height)), 
+                    approachFrom: Direction.North, 
+                    curState: nextState);
             }
-            // ToDo: jumping, etc.
+
+            // Player can jump if blocked south (ToDo: Test this)
+            if (actionInput == ActionInput.MoveNorth && MotionBlockedSouth(nextState))
+            {
+                int newKineticEnergy = nextState.Player.KineticEnergy + nextState.Player.JumpStrength;
+                nextState = nextState.WithPlayer(nextState.Player with { KineticEnergy = newKineticEnergy });
+            }
+
+            // If Kinetic Energy > 0, move up and decrement. If blocked north, KE gets set to zero.
+            // ToDo: Test this
+            if (nextState.Player.KineticEnergy > 0)
+            {
+                for (int i = 0; i < nextState.Gravity; i++)
+                {
+                    if (nextState.Player.KineticEnergy == 0 || nextState.Player.MotionBlockedNorth(nextState))
+                    {
+                        nextState = nextState.WithPlayer(nextState.Player with { KineticEnergy = 0 });
+                        break;
+                    }
+                    else
+                    {
+                        nextState = TryMoveTo(
+                            newLocation: (nextStatePlayer.Location.Col, nextStatePlayer.Location.Row.NextNorth()),
+                            approachFrom: Direction.South,
+                            curState: nextState);
+                        int newKineticEnergy = nextState.Player.KineticEnergy - nextState.Gravity;
+                        nextState = nextState.WithPlayer(nextState.Player with { KineticEnergy = newKineticEnergy });
+                    }
+                }
+            }
             return nextState;
         }
         
