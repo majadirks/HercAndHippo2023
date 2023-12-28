@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 namespace HercAndHippoLibCsTest;
 /*
- * Player cannot double-jump when not blocked south
 Player can jump when blocked south
 When gravity is nonzero, player falls by (gravity) locations per cycle
 Player's fall is blocked by a wall
@@ -38,6 +37,7 @@ public class JumpingAndGravityTests
         Assert.AreEqual(0, player.KineticEnergy);
         level = level.RefreshCyclables(ActionInput.MoveNorth);
         Assert.AreEqual(4, level.Player.KineticEnergy);
+        Assert.IsFalse(level.Player.MotionBlockedTo(level, Direction.South));
 
         // Act: attempt to double-jump
         level = level.RefreshCyclables(ActionInput.MoveNorth);
