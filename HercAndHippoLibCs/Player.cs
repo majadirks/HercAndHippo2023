@@ -105,8 +105,8 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
             // Player can jump if blocked south (ToDo: Test this)
             if (actionInput == ActionInput.MoveNorth && nextState.Player.MotionBlockedSouth(nextState))
             {
-                int newKineticEnergy = nextState.Player.KineticEnergy + nextState.Player.JumpStrength;
-                nextState = nextState.WithPlayer(nextState.Player with { KineticEnergy = newKineticEnergy });
+                int nextKineticEnergy = nextState.Player.KineticEnergy + nextState.Player.JumpStrength;
+                nextState = nextState.WithPlayer(nextState.Player with { KineticEnergy = nextKineticEnergy });
             }
 
             // If Kinetic Energy > 0, move up and decrement. If blocked north, KE gets set to zero.
@@ -126,8 +126,8 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
                             newLocation: (nextStatePlayer.Location.Col, nextStatePlayer.Location.Row.NextNorth()),
                             approachFrom: Direction.South,
                             curState: nextState);
-                        int newKineticEnergy = nextState.Player.KineticEnergy - nextState.Gravity;
-                        nextState = nextState.WithPlayer(nextState.Player with { KineticEnergy = newKineticEnergy });
+                        int nextKineticEnergy = nextState.Player.KineticEnergy - nextState.Gravity;
+                        nextState = nextState.WithPlayer(nextState.Player with { KineticEnergy = nextKineticEnergy });
                     }
                 }
             }
