@@ -17,7 +17,7 @@ public record Velocity
     }
     public Velocity NextVelocity(Player player, Level level, ActionInput actionInput)
     {
-        bool inAir = !player.MotionBlockedTo(level, Direction.South);
+        bool applyFriction = player.MotionBlockedTo(level, Direction.South);
         if (actionInput == ActionInput.MoveEast && player.MotionBlockedTo(level, Direction.East))
             return 0;
         else if (actionInput == ActionInput.MoveWest && player.MotionBlockedTo(level, Direction.West))
@@ -27,13 +27,13 @@ public record Velocity
             ActionInput.MoveEast => AccelerateEastward(),
             ActionInput.MoveWest => AccelerateWestward(),
             ActionInput.MoveNorth => CurrentVelocity,
-            _ => inAir ? CurrentVelocity : SlowDown()
+            _ => applyFriction ? SlowDown() : CurrentVelocity
         };
     }
     private Velocity SlowDown()
     {
-        if (CurrentVelocity > 0) return AccelerateWestward(accel: ACCELERATION / 2.0f);
-        else if (CurrentVelocity < 0) return AccelerateEastward(accel: ACCELERATION / 2.0f);
+        if (CurrentVelocity > 0) return AccelerateWestward();
+        else if (CurrentVelocity < 0) return AccelerateEastward();
         else return this;
     }
     private Velocity AccelerateEastward(float accel = ACCELERATION) => new(velocity: CurrentVelocity + accel);
