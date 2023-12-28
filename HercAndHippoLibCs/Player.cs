@@ -147,10 +147,11 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
     // Private static helpers
     private static Level TryMoveTo(Location newLocation, Direction approachFrom, Level curState)
     {
+        Direction whither = approachFrom.Mirror();
         // ToDo: Clean up object behaviors that "suck in" player, allow player to control own motion
         Player player = curState.Player;
         // If no obstacles, move
-        if (!player.ObjectLocatedTo(curState, approachFrom.Mirror()))
+        if (!player.ObjectLocatedTo(curState, whither))
             return curState.WithPlayer(player with { Location = newLocation });
 
         // If there are any ITouchables, call their OnTouch() methods
@@ -162,7 +163,7 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
         }
 
         // If not blocked, move
-        if (!player.MotionBlockedTo(nextState, approachFrom.Mirror()))
+        if (!player.MotionBlockedTo(nextState, whither))
             nextState = nextState.WithPlayer(player with { Location = newLocation });
         
         return nextState; 
