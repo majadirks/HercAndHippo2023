@@ -52,9 +52,7 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
                 nextState = TryMoveTo((nextEast, Location.Row), approachFrom: Direction.West, curState: nextState);
             }              
         }
-
-        // Move east/west if there was a MoveEast/MoveWest input
-        if (actionInput == ActionInput.MoveWest)
+        else if (actionInput == ActionInput.MoveWest)
         {
             Column nextWest = nextState.Player.Location.Col.NextWest();
             nextState = TryMoveTo((nextWest, Location.Row), approachFrom: Direction.East, curState: nextState);
