@@ -84,25 +84,11 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
                 _ => Behaviors.NoReaction(nextState)
             };
         }
-        else
+        else // Gravity is nonzero
         {
-            // Gravity is nonzero
-            // Move south n times (where n = gravity) or until motion is blocked
-            // ToDo: test this
-            Player nextStatePlayer = nextState.Player;
-            for (int i = 0; 
-                i < nextState.Gravity && 
-                nextStatePlayer.KineticEnergy == 0 && 
-                !nextStatePlayer.MotionBlockedSouth(nextState); 
-                i++, nextStatePlayer = nextState.Player)
-            {
-                nextState = TryMoveTo(
-                    newLocation: (nextStatePlayer.Location.Col, nextStatePlayer.Location.Row.NextSouth(level.Height)), 
-                    approachFrom: Direction.North, 
-                    curState: nextState);
-            }
+            
 
-            // Player can jump if blocked south (ToDo: Test this)
+            // If player is blocked south, allow jumping
             if (actionInput == ActionInput.MoveNorth && nextState.Player.MotionBlockedSouth(nextState))
             {
                 int nextKineticEnergy = nextState.Player.KineticEnergy + nextState.Player.JumpStrength;
@@ -110,9 +96,7 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
                 nextState = nextState.WithPlayer(nextState.Player with { KineticEnergy = nextKineticEnergy, Velocity = nextVelocity });
             }
 
-            // If Kinetic Energy > 0, move up and decrement. If blocked north, KE gets set to zero.
-            // ToDo: Test this
-            if (nextState.Player.KineticEnergy > 0)
+            if (nextState.Player.KineticEnergy > 0) // player has kinetic energy; move north
             {
                 for (int i = 0; i < nextState.Gravity; i++)
                 {
@@ -124,7 +108,7 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
                     else
                     {
                         nextState = TryMoveTo(
-                            newLocation: (nextStatePlayer.Location.Col, nextStatePlayer.Location.Row.NextNorth()),
+                            newLocation: (nextState.Player.Location.Col, nextState.Player.Location.Row.NextNorth()),
                             approachFrom: Direction.South,
                             curState: nextState);
                         int nextKineticEnergy = nextState.Player.KineticEnergy - nextState.Gravity;
@@ -132,9 +116,24 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
                     }
                 }
             }
+            else // No kinetic energy; fall due to gravity until blocked
+            {
+                for (int i = 0;
+                    i < nextState.Gravity &&
+                    !nextState.Player.MotionBlockedSouth(nextState);
+                    i++)
+                {
+                    Location nextLocation = new(nextState.Player.Location.Col, nextState.Player.Location.Row.NextSouth(level.Height));
+                    nextState = TryMoveTo(
+                        newLocation: nextLocation,
+                        approachFrom: Direction.North,
+                        curState: nextState);
+                }
+            }
+
+            
             return nextState;
-        }
-        
+        } 
     }
     public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy)
         => touchedBy switch
