@@ -17,6 +17,7 @@ public record Velocity
     }
     public Velocity NextVelocity(Player player, Level level, ActionInput actionInput)
     {
+        bool inAir = !player.MotionBlockedTo(level, Direction.South);
         if (actionInput == ActionInput.MoveEast && player.MotionBlockedTo(level, Direction.East))
             return 0;
         else if (actionInput == ActionInput.MoveWest && player.MotionBlockedTo(level, Direction.West))
@@ -25,7 +26,7 @@ public record Velocity
         {
             ActionInput.MoveEast => AccelerateEastward(),
             ActionInput.MoveWest => AccelerateWestward(),
-            _ => SlowDown()
+            _ => inAir ? CurrentVelocity : SlowDown()
         };
     }
     private Velocity SlowDown()

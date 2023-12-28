@@ -92,8 +92,7 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
             if (actionInput == ActionInput.MoveNorth && nextState.Player.MotionBlockedSouth(nextState))
             {
                 int nextKineticEnergy = nextState.Player.KineticEnergy + nextState.Player.JumpStrength;
-                    nextVelocity = nextState.Player.Velocity * 3;
-                nextState = nextState.WithPlayer(nextState.Player with { KineticEnergy = nextKineticEnergy, Velocity = nextVelocity });
+                nextState = nextState.WithPlayer(nextState.Player with { KineticEnergy = nextKineticEnergy });
             }
 
             if (nextState.Player.KineticEnergy > 0) // player has kinetic energy; move north
