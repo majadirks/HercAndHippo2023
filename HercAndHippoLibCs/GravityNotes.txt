@@ -22,6 +22,8 @@ Player may jump only when blocked south.
 If blocked south, Player may jump even if KineticEnergy is already nonzero.
 If player passes through an object while falling (gem, ammo, etc.),call its OnTouch method.
 
+Accelerating into jump not working as desired. Fix that.
+
 Tests to write:
 Player cannot double-jump when not blocked south
 Player can jump when blocked south
