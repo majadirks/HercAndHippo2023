@@ -16,6 +16,8 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
     {
         if (!Health.HasHealth)
             return Behaviors.Die(level, this);
+        else if (level.HasGravity && LockedToPlayer && actionInput == ActionInput.MoveSouth)
+            return PutDown(level);
         else if (LockedToPlayer)
             return LockAbovePlayer(level);
         else
@@ -25,8 +27,31 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
     private Level LockAbovePlayer(Level level)
     {
         Player player = level.Player;
-        Location newLocation = new Location(Col: player.Location.Col, Row: player.Location.Row.NextNorth());
-        return level.Replace(this, this with { Location = newLocation, LockedToPlayer = true });
+        Location nextLocation = new(Col: player.Location.Col, Row: player.Location.Row.NextNorth());
+        return level.Replace(this, this with { Location = nextLocation, LockedToPlayer = true });
+    }
+
+    private Level PutDown(Level level)
+    {
+        Player player = level.Player;
+        // First, attempt to place East
+        bool blockedEast = player.ObjectLocatedTo(level, Direction.East) || player.MotionBlockedTo(level,Direction.East);
+        if (!blockedEast)
+        {
+            Location nextLocation = new(Col: player.Location.Col.NextEast(level.Width), Row: player.Location.Row);
+            return level.Replace(this, this with { Location = nextLocation, LockedToPlayer = false });
+        }
+
+        // If that didn't work, attempt to place West
+        bool blockedWest = player.ObjectLocatedTo(level, Direction.West) || player.MotionBlockedTo(level, Direction.West);
+        if (!blockedWest)
+        {
+            Location nextLocation = new(Col: player.Location.Col.NextWest(), Row: player.Location.Row);
+            return level.Replace(this, this with { Location = nextLocation, LockedToPlayer = false });
+        }
+
+        // Could not put down hippo
+        return Behaviors.NoReaction(level);
     }
 
     public Level OnShot(Level level, Direction shotFrom, Bullet shotBy)
