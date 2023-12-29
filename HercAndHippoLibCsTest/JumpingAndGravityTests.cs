@@ -203,6 +203,55 @@ public class JumpingAndGravityTests
     }
 
     [TestMethod]
+    public void SimpleJump_Test()
+    {
+        // Arrange
+        Player player = Player.Default(new Location(5, 10)) with { JumpStrength = 5 };
+        Gravity gravity = new(Strength: 1, WaitCycles: 1);
+        Level level = new(
+            player: player,
+            gravity: gravity,
+            secondaryObjects: new()
+            {
+                new Wall(Color.Magenta, new(5,11)),
+                new Wall(Color.Black, new(20, 20))
+            });
+
+
+        // Act: Player jumps
+        level = level.RefreshCyclables(ActionInput.MoveNorth);
+        Assert.AreEqual(new KineticEnergy(4), level.Player.KineticEnergy);
+        Assert.AreEqual(new Location(5,9), level.Player.Location);
+
+        for (int i = 1; i <= 4; i++)
+        {
+            level = level.RefreshCyclables(ActionInput.NoAction);
+            // Assert: Player has moved North, and kinetic energy has decreased
+            Assert.AreEqual(new KineticEnergy(4 - i), level.Player.KineticEnergy);
+            Assert.AreEqual(new Location(5, 9 - i), level.Player.Location);
+        }
+
+        // Kinetic energy is now 0, and player is at apex (5,5).
+        Assert.AreEqual(new KineticEnergy(0), level.Player.KineticEnergy);
+        Assert.AreEqual(new Location(5, 5), level.Player.Location);
+
+        // Player now falls
+        for (int row = 6; row <= 10; row++)
+        {
+            level = level.RefreshCyclables(ActionInput.NoAction);
+            Assert.AreEqual(new KineticEnergy(0), level.Player.KineticEnergy);
+            Assert.AreEqual(row, (int) level.Player.Location.Row);
+        }
+
+        // Now above wall. Cycle again; player stays put.
+        level = level.RefreshCyclables(ActionInput.NoAction);
+        Assert.AreEqual(new KineticEnergy(0), level.Player.KineticEnergy);
+        Assert.AreEqual(10, (int)level.Player.Location.Row);
+        Assert.IsTrue(level.Player.MotionBlockedTo(level, Direction.South));
+
+    }
+
+    [TestMethod]
     public void NoDoubleJumpsWhenNotBlockedSouth_Test()
     {
         // Arrange
@@ -228,5 +277,4 @@ public class JumpingAndGravityTests
         // Assert: double-jump failed; kinetic energy continues to decrease
         Assert.AreEqual(3, (int) level.Player.KineticEnergy);
     }
-
 }
