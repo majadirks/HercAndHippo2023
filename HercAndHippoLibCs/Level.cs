@@ -47,9 +47,10 @@ namespace HercAndHippoLibCs
             nextState = SecondaryObjects // Do not refresh in parallel; this could cause objects to interfere with nearby copies of themselves, and can make updating slower
                 .Where(disp => disp.IsCyclable)
                 .Cast<ICyclable>()
+                .TakeWhile(dummy => !token.IsCancellationRequested)
                 .Aggregate(
                 seed: nextState, 
-                func: (state, nextCyclable) => token.IsCancellationRequested ? Default : nextCyclable.Cycle(state, actionInput));
+                func: (state, nextCyclable) => nextCyclable.Cycle(state, actionInput));
             nextState.Cycles = Cycles + 1;
             return nextState;
         }

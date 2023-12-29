@@ -25,12 +25,12 @@ internal class FutureStates
     }
         
     private static readonly ActionInput[] possibleInputs = (ActionInput[])Enum.GetValues(typeof(ActionInput));
-    public FutureStates(Level state, ActionInput mostRecent, bool enabled)
+    public FutureStates(Level state, ActionInput mostRecent, bool parallelEnabled)
     {
         futures = new();
         cts = new();
         initialState = state;
-        if (!enabled) return;
+        if (!parallelEnabled) return;
 
         Task<Level> fromMostRecent = Task.Run(() => state.RefreshCyclables(mostRecent));
         futures.Add(mostRecent, fromMostRecent);
