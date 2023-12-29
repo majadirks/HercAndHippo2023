@@ -11,7 +11,7 @@ public record HippoMotionBlockages(bool BlockedNorth, bool BlockedEast, bool Blo
                _ => false
            };
 }
-public record Hippo(Location Location, Health Health, bool LockedToPlayer) : HercAndHippoObj, ILocatable, ITouchable, ICyclable, IShootable, IConsoleDisplayable, ITakeable
+public record Hippo(Location Location, Health Health, bool LockedToPlayer) : HercAndHippoObj, ILocatable, ITouchable, ICyclable, IShootable, IConsoleDisplayable
 {
     public Color Color => Color.Magenta;
 
@@ -94,8 +94,6 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
 
     public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy) => PickUp(level);
 
-    public Level OnTake(Level level) => PickUp(level);
-
     private Level PickUp(Level level)
     {
         Player player = level.Player;
@@ -104,9 +102,8 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
             return Behaviors.NoReaction(level);
         else
         {
-            (Hippo lockedHippo, Level locked) = LockAbovePlayer(level);
-            Player playerWithHippo = locked.Player.Take(lockedHippo);
-            return locked.WithPlayer(playerWithHippo);
+            (Hippo _, Level locked) = LockAbovePlayer(level);
+            return locked;
         }
     }
 }

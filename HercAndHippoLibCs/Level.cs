@@ -38,7 +38,6 @@ namespace HercAndHippoLibCs
         {
             CancellationToken token = cancellationToken ?? CancellationToken.None;
             var nextState = LevelObjects // Do not refresh in parallel; this could cause objects to interfere with nearby copies of themselves, and can make updating slower
-            .Concat(Player.Inventory.Cast<HercAndHippoObj>())
             .Where(disp => disp.IsCyclable)
             .Cast<ICyclable>()
             .Aggregate(seed: this, func: (state, nextCyclable) => token.IsCancellationRequested ? Default : nextCyclable.Cycle(state, actionInput));
