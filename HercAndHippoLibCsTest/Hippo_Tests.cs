@@ -13,6 +13,7 @@
  *   Hippo prevents east/west motion if it is blocked east/west
  * When hippo is picked up, it is present in inventory
  * When hippo is dropped, it is no longer present in inventory
+ * Multiple hippos cannot be added to inventory
  */
 
 namespace HercAndHippoLibCsTest;

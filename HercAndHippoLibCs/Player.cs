@@ -145,6 +145,14 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
     // Private static helpers
     private static Level TryMoveTo(Location newLocation, Direction approachFrom, Level curState)
     {
+        Hippo? hippo = (Hippo?)curState.Player.Inventory.Where(obj => obj is Hippo).SingleOrDefault();
+
+        // ToDo: do not move if hippo is blocked.
+        if (hippo != null)
+        {
+            ;// debg
+        }
+
         Direction whither = approachFrom.Mirror();
         Player player = curState.Player;
         // If no obstacles, move
