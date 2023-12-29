@@ -1,6 +1,5 @@
 ﻿namespace HercAndHippoLibCsTest;
 /*
-Jumping: Player moves up and then down, with Kinetic Energy changing as intended
 When jumping, if player hits an obstacle (wall), Kinetic Energy is set to zero and player falls
  */
 
@@ -249,6 +248,47 @@ public class JumpingAndGravityTests
         Assert.AreEqual(10, (int)level.Player.Location.Row);
         Assert.IsTrue(level.Player.MotionBlockedTo(level, Direction.South));
 
+    }
+
+    [TestMethod]
+    public void WallBlocksJump_Test()
+    {
+        // Arrange
+        Player player = Player.Default(new Location(5, 10)) with { JumpStrength = 5 };
+        Gravity gravity = new(Strength: 1, WaitCycles: 1);
+        Level level = new(
+            player: player,
+            gravity: gravity,
+            secondaryObjects: new()
+            {
+                new Wall(Color.Magenta, new(5, 6)),
+                new Wall(Color.Magenta, new(5,11)),
+                new Wall(Color.Black, new(20, 20))
+            });
+
+
+        // Act and assert: Player jumps. Moves North until hitting wall
+        level = level.RefreshCyclables(ActionInput.MoveNorth);
+        Assert.AreEqual(new KineticEnergy(4), level.Player.KineticEnergy);
+        Assert.AreEqual(new Location(5, 9), level.Player.Location);
+
+        level = level.RefreshCyclables(ActionInput.NoAction);
+        Assert.AreEqual(new KineticEnergy(3), level.Player.KineticEnergy);
+        Assert.AreEqual(new Location(5, 8), level.Player.Location);
+
+        level = level.RefreshCyclables(ActionInput.NoAction);
+        Assert.AreEqual(new KineticEnergy(2), level.Player.KineticEnergy);
+        Assert.AreEqual(new Location(5, 7), level.Player.Location);
+
+        // Player hits wall at this point; kinetic energy falls to zero
+        level = level.RefreshCyclables(ActionInput.NoAction);
+        Assert.AreEqual(new KineticEnergy(0), level.Player.KineticEnergy);
+        Assert.AreEqual(new Location(5, 7), level.Player.Location);
+
+        // Player begins to fall
+        level = level.RefreshCyclables(ActionInput.NoAction);
+        Assert.AreEqual(new KineticEnergy(0), level.Player.KineticEnergy);
+        Assert.AreEqual(new Location(5, 8), level.Player.Location);
     }
 
     [TestMethod]
