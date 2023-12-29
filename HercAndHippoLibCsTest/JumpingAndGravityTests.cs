@@ -1,6 +1,5 @@
 ﻿namespace HercAndHippoLibCsTest;
 /*
-Kinetic energy can never be negative
 Player's fall is blocked by a wall
 Player's fall is not blocked by ammo
 Player collects ammo when falling through ammo
@@ -35,7 +34,7 @@ public class JumpingAndGravityTests
     [TestMethod]
     public void PlayerFallsPerCycleEqualsGraviyStrength_Test()
     {
-        for (int gravStrength = 1; gravStrength <= 3; gravStrength++)
+        for (int gravStrength = 1; gravStrength <= 5; gravStrength++)
         {
             // Arrange
             Player player = Player.Default(new Location(5, 10)) with { JumpStrength = 5 };
@@ -94,4 +93,6 @@ public class JumpingAndGravityTests
         // Assert: double-jump failed; kinetic energy continues to decrease
         Assert.AreEqual(3, (int) level.Player.KineticEnergy);
     }
+
+
 }
