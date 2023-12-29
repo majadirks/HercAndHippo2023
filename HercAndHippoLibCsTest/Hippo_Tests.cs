@@ -14,6 +14,8 @@
  * When hippo is picked up, it is present in inventory
  * When hippo is dropped, it is no longer present in inventory
  * Multiple hippos cannot be added to inventory
+ * Hippo is subject to gravity (if dropped over hole, falls)
+ * Hippo can be placed on top of object (eg if blocked East, but there is space above that blockage, can be placed atop)
  */
 
 namespace HercAndHippoLibCsTest;
