@@ -1,8 +1,9 @@
 ﻿/*
  * Tests:
  * Can jump while hippo is locked
- * Pick up hippo on touch if not blocked above
- * Do not pick up hippo if blocked above
+ * Pick up hippo on touch if neither player nor hippo is blocked above, and corner between player and hippo is clear
+ * Do not pick up hippo if player is blocked above or is if the intervening corner is blocked
+ * Do not pick up hippo if hippo is blocked above
  * Put hippo down East if not blocked East
  * Put hippo down West if blocked East but not West
  * Do not put hippo down if blocked both East and West
@@ -24,6 +25,7 @@
  * Test behavior of HippoBlocksTo() method in HippoMotionBlockages record
  * If hippo falls on player, player takes Hippo.
  * If player jumps into falling hippo, player takes Hippo.
+ * 
  */
 
 namespace HercAndHippoLibCsTest;
