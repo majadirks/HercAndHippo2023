@@ -9,7 +9,7 @@
 
         public override bool BlocksMotion(Player p) => !p.Has<Key>(BackgroundColor);
 
-        public Level OnShot(Level level, Direction shotFrom, Bullet shotBy) => Behaviors.StopBullet(level,shotBy); // Cannot shoot through a door
+        public Level OnShot(Level level, Direction shotFrom, Bullet shotBy) => Behaviors.NoReaction(level);
         public Level OnTouch(Level level, Direction _, ITouchable touchedBy)
             => touchedBy switch
             {

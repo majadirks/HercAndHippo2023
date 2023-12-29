@@ -6,7 +6,6 @@
 - Level editor
 - Status bar
 - Implement and test "seek" behavior for bullet
-- IShootable: clean up behavior that remove bullet on shot; bullet should remove itself if StopsBullet is true
 
 - Enemies: archers, poodles
 
