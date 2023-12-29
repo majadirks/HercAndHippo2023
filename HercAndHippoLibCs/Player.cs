@@ -73,7 +73,6 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
             _ => Behaviors.NoReaction(nextState)
         };
 
-
         // We've accounted for east/west motion. Now check for any north/south motion
         if (level.Gravity.Strength == 0)
         {

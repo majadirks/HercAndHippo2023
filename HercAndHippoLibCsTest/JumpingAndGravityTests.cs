@@ -12,6 +12,27 @@ When jumping, if player hits an obstacle (wall), Kinetic Energy is set to zero a
 public class JumpingAndGravityTests
 {
     [TestMethod]
+    public void KineticEnergyCannotBeNegative_Test()
+    {
+        // Arrange
+        Player player = Player.Default(new Location(5, 10)) with { JumpStrength = 5 };
+        Level level = new(player: player, gravity: Gravity.Default, secondaryObjects: new());
+        Assert.AreEqual(0, (int)level.Player.KineticEnergy);
+
+        // Act: Try to set KineticEnergy to a negative value.
+        // That won't work; the kinetic energy will remain at zero
+        level = level.WithPlayer(player with { KineticEnergy = - 5 });
+
+        // Assert
+        Assert.AreEqual(0, (int)level.Player.KineticEnergy);
+
+        // Act: Try to add five to KineticEnergy. This will work.
+        level = level.WithPlayer(player with { KineticEnergy = 5 });
+
+        // Assert
+        Assert.AreEqual(5, (int)level.Player.KineticEnergy);
+    }
+    [TestMethod]
     public void PlayerFallsPerCycleEqualsGraviyStrength_Test()
     {
         for (int gravStrength = 1; gravStrength <= 3; gravStrength++)
