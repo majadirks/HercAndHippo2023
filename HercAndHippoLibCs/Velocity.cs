@@ -26,7 +26,7 @@ public record Velocity
         {
             ActionInput.MoveEast => AccelerateEastward(),
             ActionInput.MoveWest => AccelerateWestward(),
-            ActionInput.MoveNorth => CurrentVelocity,
+            ActionInput.MoveNorth => CurrentVelocity * 1.5f, // On jump, accelerate slightly
             _ => applyFriction ? SlowDown() : CurrentVelocity
         };
     }
