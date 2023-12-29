@@ -17,7 +17,7 @@ public record Velocity
     }
     public Velocity NextVelocity(Player player, Level level, ActionInput actionInput)
     {
-        bool applyFriction = player.MotionBlockedTo(level, Direction.South);
+        bool applyFriction = !level.HasGravity || player.MotionBlockedTo(level, Direction.South);
         if (actionInput == ActionInput.MoveEast && player.MotionBlockedTo(level, Direction.East))
             return 0;
         else if (actionInput == ActionInput.MoveWest && player.MotionBlockedTo(level, Direction.West))
@@ -26,7 +26,7 @@ public record Velocity
         {
             ActionInput.MoveEast => AccelerateEastward(),
             ActionInput.MoveWest => AccelerateWestward(),
-            ActionInput.MoveNorth => CurrentVelocity * 1.5f, // On jump, accelerate slightly
+            ActionInput.MoveNorth => level.HasGravity ? CurrentVelocity * 1.5f : SlowDown(), // On jump, accelerate slightly
             _ => applyFriction ? SlowDown() : CurrentVelocity
         };
     }

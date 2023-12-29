@@ -47,7 +47,8 @@ namespace HercAndHippoLibCs
             => SecondaryObjects.Count == otherState.SecondaryObjects.Count &&
                LevelObjects.Zip(otherState.LevelObjects).All(zipped => zipped.First.Equals(zipped.Second));
         public bool Contains(HercAndHippoObj obj) => LevelObjects.Contains(obj);
-        public bool GravityApplies() => Cycles > 0 && Cycles % Gravity.WaitCycles == 0;
+        public bool GravityApplies() => HasGravity && Cycles > 0 && Cycles % Gravity.WaitCycles == 0;
+        public bool HasGravity => Gravity.Strength > 0;
         public override bool Equals([NotNullWhen(true)] object? obj) => obj is Level other && other.HasSameStateAs(this);
         public static bool operator ==(Level left, Level right) => left.Equals(right);
         public static bool operator !=(Level left, Level right) => !(left == right);
