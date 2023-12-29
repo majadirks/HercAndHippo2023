@@ -242,12 +242,16 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
 
     // Inventory Management
     public Player Take(ITakeable toTake) => this with { Inventory = Inventory.AddItem(toTake) };
-    public bool Has<T>(Color color) => Inventory.Contains<T>(color);
-    public (bool dropped, ITakeable? item, Player newPlayerState) DropItem<T>(Color color)
+    public bool Has<T>(string id) => Inventory.Contains<T>(id);
+    public bool Has<T>(Color color) => Inventory.Contains<T>(color.ToString());
+    public (bool dropped, ITakeable? item, Player newPlayerState) DropItem<T>(string id)
     {
-        (bool dropped, ITakeable? item, Inventory reducedInventory) = Inventory.DropItem<T>(color);
+        (bool dropped, ITakeable? item, Inventory reducedInventory) = Inventory.DropItem<T>(id);
         return (dropped, item, this with { Inventory = reducedInventory });
     }
+
+    public (bool dropped, ITakeable? item, Player newPlayerState) DropItem<T>(Color color)
+     => DropItem<T>(color.ToString());
 
     // Public static utilities
     public static Player Default(Location location) => new(location: location, health: 100, ammoCount: 0, inventory: Inventory.EmptyInventory, jumpStrength: 5, kineticEnergy: 0);

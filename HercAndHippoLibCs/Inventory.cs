@@ -21,14 +21,14 @@ public readonly struct Inventory : IEnumerable<ITakeable>, IEquatable<Inventory>
         HashSet<ITakeable> newSet = new(takeables) { item };
         return new Inventory(newSet);
     }
-    public (bool dropped, ITakeable? item, Inventory newInventoryState) DropItem<T>(Color color)
+    public (bool dropped, ITakeable? item, Inventory newInventoryState) DropItem<T>(string id)
     {
-        ITakeable? item = takeables.Where(item => item.MatchesColor<T>(color)).FirstOrDefault();
+        ITakeable? item = takeables.Where(item => item.MatchesId<T>(id)).FirstOrDefault();
         if (item == default) return (false, item, this);
-        Inventory newState = this.Where(item => !item.MatchesColor<T>(color)).ToInventory();
+        Inventory newState = this.Where(item => !item.MatchesId<T>(id)).ToInventory();
         return (true, item, newState);
     }
-    public bool Contains<T>(Color color) => takeables.Where(item => item.MatchesColor<T>(color)).Any();
+    public bool Contains<T>(string id) => takeables.Where(item => item.MatchesId<T>(id)).Any();
     public IEnumerator<ITakeable> GetEnumerator() => takeables.GetEnumerator();
     IEnumerator IEnumerable.GetEnumerator() => takeables.GetEnumerator();
     public override bool Equals([NotNullWhen(true)] object? obj)
@@ -56,6 +56,6 @@ public readonly struct Inventory : IEnumerable<ITakeable>, IEquatable<Inventory>
 public static class InventoryExtensions
 {
     ///<summary>Returns true if an ITakeable is of the given type and color</summary> 
-    public static bool MatchesColor<T>(this ITakeable item, Color color) => item is T && item.Color == color;
+    public static bool MatchesId<T>(this ITakeable item, string id) => item is T && item.Id == id;
     public static Inventory ToInventory(this IEnumerable<ITakeable> enumerable) => new(enumerable);
 }
