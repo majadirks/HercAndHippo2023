@@ -34,12 +34,13 @@ namespace HercAndHippoLibCs
         public Level Without(HercAndHippoObj toRemove) => new(player: this.Player, secondaryObjects: SecondaryObjects.RemoveObject(toRemove), Width, Height, Cycles, Gravity);
         public Level AddObject(HercAndHippoObj toAdd) => new(player: this.Player, secondaryObjects: SecondaryObjects.AddObject(toAdd), Width, Height, Cycles, Gravity);
         public Level Replace(HercAndHippoObj toReplace, HercAndHippoObj toAdd) => this.Without(toReplace).AddObject(toAdd);
-        public Level RefreshCyclables(ActionInput actionInput)
+        public Level RefreshCyclables(ActionInput actionInput, CancellationToken? cancellationToken = null)
         {
-            var nextState = LevelObjects // Do not refresh in parallel; this could cause objects to interfere with nearby copies of themselves
+            CancellationToken token = cancellationToken ?? CancellationToken.None;
+            var nextState = LevelObjects // Do not refresh in parallel; this could cause objects to interfere with nearby copies of themselves, and can make updating slower
             .Where(disp => disp.IsCyclable)
             .Cast<ICyclable>()
-            .Aggregate(seed: this, func: (state, nextCyclable) => nextCyclable.Cycle(state, actionInput));
+            .Aggregate(seed: this, func: (state, nextCyclable) => token.IsCancellationRequested ? Default : nextCyclable.Cycle(state, actionInput));
             nextState.Cycles = Cycles + 1;
             return nextState;
         }
@@ -56,14 +57,15 @@ namespace HercAndHippoLibCs
         public override string ToString() => $"Level with Player at {Player.Location}; Object count = {SecondaryObjects.Count}.";
         private static int GetWidth(HashSet<HercAndHippoObj> ds) => ds.Where(ds => ds is ILocatable d).Cast<ILocatable>().Select(d => d.Location.Col).Max() ?? 0;
         private static int GetHeight(HashSet<HercAndHippoObj> ds) => ds.Where(ds => ds is ILocatable d).Cast<ILocatable>().Select(d => d.Location.Row).Max() ?? 0;
+        public static readonly Level Default = new(Player.Default(1, 1), Gravity.None, new());
     }
 
     public static class HashSetExtensions
     {
-        public static HashSet<T> AddObject<T>(this HashSet<T> collection, T toAdd) => new(collection) { toAdd };
+        public static HashSet<T> AddObject<T>(this HashSet<T> collection, T toAdd) => new(collection, collection.Comparer) { toAdd };
         public static HashSet<T> RemoveObject<T>(this HashSet<T> collection, T toRemove)
         {
-            HashSet<T> removed = new(collection);
+            HashSet<T> removed = new(collection, collection.Comparer);
             removed.Remove(toRemove);
             return removed;
         }
