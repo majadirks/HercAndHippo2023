@@ -142,9 +142,9 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
         };
     public override bool BlocksMotion(Level level) => level.Player != this;
 
-    public bool TryGetHippo(Level level, out Hippo? hippo)
+    public static bool TryGetHippo(Level level, out Hippo? hippo)
     {
-        hippo = (Hippo?)Inventory.Where(obj => obj is Hippo).SingleOrDefault();
+        hippo = (Hippo?)level.LevelObjects.Where(obj => obj is Hippo h && h.LockedToPlayer).SingleOrDefault();
         return hippo != null;
     }
 
@@ -153,17 +153,12 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
     {
         Direction whither = approachFrom.Mirror();
         Player player = curState.Player;
-        bool hasHippo = player.TryGetHippo(curState, out Hippo? hippo);
-
-        // ToDo: do not move if hippo is blocked.
-        if (hippo != null)
-        {
-            ;// debg
-        }
-
+        bool hasHippo = TryGetHippo(curState, out Hippo? hippo);
+        HippoMotionBlockages hippoBlocks = Hippo.Blockages(hippo, curState);
+        bool blockedByHippo = hippoBlocks.HippoBlocksTo(whither);    
         
         // If no obstacles, move
-        if (!player.ObjectLocatedTo(curState, whither))
+        if (!player.ObjectLocatedTo(curState, whither) && !blockedByHippo)
             return curState.WithPlayer(player with { Location = newLocation });
 
         // If there are any ITouchables, call their OnTouch() methods
@@ -179,7 +174,7 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
         }
 
         // If not blocked, move
-        if (!player.MotionBlockedTo(nextState, whither))
+        if (!player.MotionBlockedTo(nextState, whither) && !blockedByHippo)
             nextState = nextState.WithPlayer(player with { Location = newLocation });
         
         return nextState; 

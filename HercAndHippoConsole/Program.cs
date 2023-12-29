@@ -25,7 +25,7 @@ ShowMessage("Use arrow keys to move, shift + arrow keys to shoot, 'q' to quit.")
 // Main loop
 while (true)
 {
-    futures = new(state, lastAction); // calculate possible next states
+    futures = new(state, lastAction, enabled: false); // calculate possible next states
     cycleTimer.AwaitCycle(); // Update once per 20 ms
     bufferStats.Refresh(); // Check if buffer size changed
     displayPlan = new(state, scrollStatus, bufferStats); // save current screen layout

@@ -1,12 +1,23 @@
 ﻿namespace HercAndHippoLibCs;
 
+public record HippoMotionBlockages(bool BlockedNorth, bool BlockedEast, bool BlockedWest)
+{
+    public bool HippoBlocksTo(Direction dir) 
+        => dir switch
+           {
+               Direction.North => BlockedNorth,
+               Direction.East => BlockedEast,
+               Direction.West => BlockedWest,
+               _ => false
+           };
+}
 public record Hippo(Location Location, Health Health, bool LockedToPlayer) : HercAndHippoObj, ILocatable, ITouchable, ICyclable, IShootable, IConsoleDisplayable, ITakeable
 {
     public Color Color => Color.Magenta;
 
     public Color BackgroundColor => Color.DarkBlue;
 
-    public string ConsoleDisplayString => "🦛";
+    public string ConsoleDisplayString => "H";//"🦛";
 
     public bool StopsBullet => true;
 
@@ -18,6 +29,15 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
         return ifPlayerWereNorthOne.Player.MotionBlockedTo(ifPlayerWereNorthOne, Direction.North);
     }
 
+    public static HippoMotionBlockages Blockages(Hippo? hippo, Level level)
+    {
+        if (hippo == null) return new HippoMotionBlockages(false, false, false);
+        bool blockedNorth = hippo.LockedToPlayer && hippo.MotionBlockedTo(level, Direction.North);
+        bool blockedEast = hippo.LockedToPlayer && hippo.MotionBlockedTo(level, Direction.East);
+        bool blockedWest = hippo.LockedToPlayer && hippo.MotionBlockedTo(level, Direction.West);
+        return new(BlockedNorth: blockedNorth, BlockedEast: blockedEast, BlockedWest: blockedWest);
+    }
+
     public Level Cycle(Level level, ActionInput actionInput)
     {
         if (!Health.HasHealth)
@@ -25,16 +45,21 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
         else if (LockedToPlayer && actionInput == ActionInput.DropHippo)
             return PutDown(level);
         else if (LockedToPlayer)
-            return LockAbovePlayer(level);
+        {
+            (Hippo _, Level locked) = LockAbovePlayer(level);
+            return locked;
+        }
+            
         else
             return Behaviors.NoReaction(level);
     }
 
-    private Level LockAbovePlayer(Level level)
+    private (Hippo, Level) LockAbovePlayer(Level level)
     {
         Player player = level.Player;
         Location nextLocation = new(Col: player.Location.Col, Row: player.Location.Row.NextNorth());
-        return level.Replace(this, this with { Location = nextLocation, LockedToPlayer = true });
+        Hippo lockedHippo = this with { Location = nextLocation, LockedToPlayer = true };
+        return (lockedHippo, level.Replace(this, lockedHippo));
     }
 
     private Level PutDown(Level level)
@@ -79,8 +104,8 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
             return Behaviors.NoReaction(level);
         else
         {
-            Level locked = LockAbovePlayer(level);
-            Player playerWithHippo = locked.Player.Take(this);
+            (Hippo lockedHippo, Level locked) = LockAbovePlayer(level);
+            Player playerWithHippo = locked.Player.Take(lockedHippo);
             return locked.WithPlayer(playerWithHippo);
         }
     }
