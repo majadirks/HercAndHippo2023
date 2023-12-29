@@ -30,16 +30,14 @@ internal class FutureStates
         futures = new();
         cts = new();
         initialState = state;
-        if (enabled)
-        {
-            Task<Level> fromMostRecent = Task.Run(() => state.RefreshCyclables(mostRecent));
-            futures.Add(mostRecent, fromMostRecent);
+        if (!enabled) return;
 
-            for (int i = 0; i < possibleInputs.Length; i++)
-            {
-                var actionInput = possibleInputs[i];
-                futures.TryAdd(actionInput, Task.Run(() => state.RefreshCyclables(actionInput, cts.Token)));
-            }
+        Task<Level> fromMostRecent = Task.Run(() => state.RefreshCyclables(mostRecent));
+        futures.Add(mostRecent, fromMostRecent);
+        for (int i = 0; i < possibleInputs.Length; i++)
+        {
+            var actionInput = possibleInputs[i];
+            futures.TryAdd(actionInput, Task.Run(() => state.RefreshCyclables(actionInput, cts.Token)));
         }
     }
 }
