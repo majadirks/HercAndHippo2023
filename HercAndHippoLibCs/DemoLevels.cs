@@ -223,18 +223,18 @@ public static class DemoLevels
 
             new Ammo((3, 10), Count: 15),
 
-            new Wall(Color.Blue, (1, 11)),
-            new Wall(Color.Blue, (2, 11)),
-            new Wall(Color.Blue, (3, 11)),
-            new Wall(Color.Blue, (4, 11)),
-            new Wall(Color.Blue, (5, 11)),
-            new Wall(Color.Blue, (6, 11)),
-            new Wall(Color.Blue, (7, 11)),
-            new Wall(Color.Blue, (8, 11)),
-            new Wall(Color.Blue, (9, 11)),
-            new Wall(Color.Blue, (10, 11)),
+            new Wall(Color.Cyan, (1, 11)),
+            new Wall(Color.Cyan, (2, 11)),
+            new Wall(Color.Cyan, (3, 11)),
+            new Wall(Color.Cyan, (4, 11)),
+            new Wall(Color.Cyan, (5, 11)),
+            new Wall(Color.Cyan, (6, 11)),
+            new Wall(Color.Cyan, (7, 11)),
+            new Wall(Color.Cyan, (8, 11)),
+            new Wall(Color.Cyan, (9, 11)),
+            new Wall(Color.Cyan, (10, 11)),
 
-
+            new Wall(Color.White, (9, 8))
         }
         );
 }

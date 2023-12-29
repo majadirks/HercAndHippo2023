@@ -10,7 +10,11 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
 
     public bool StopsBullet => true;
 
-    public override bool BlocksMotion(Level level) => false;
+    public override bool BlocksMotion(Level level)
+    {
+        Level ifPlayerWereNorthOne = level.WithPlayer(level.Player with { Location = this.Location });
+        return ifPlayerWereNorthOne.Player.MotionBlockedTo(ifPlayerWereNorthOne, Direction.North);
+    }
 
     public Level Cycle(Level level, ActionInput actionInput)
     {
