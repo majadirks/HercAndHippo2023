@@ -1,7 +1,4 @@
 ﻿namespace HercAndHippoLibCsTest;
-/*
-When jumping, if player hits an obstacle (wall), Kinetic Energy is set to zero and player falls
- */
 
 [TestClass]
 public class JumpingAndGravityTests
