@@ -25,18 +25,19 @@ internal class FutureStates
     }
         
     private static readonly ActionInput[] possibleInputs = (ActionInput[])Enum.GetValues(typeof(ActionInput));
-    public FutureStates(Level state, ActionInput mostRecent)
+    public FutureStates(Level state, ActionInput mostRecent, bool enabled)
     {
         futures = new();
         cts = new();
         initialState = state;
+        if (!enabled) return;
+
         Task<Level> fromMostRecent = Task.Run(() => state.RefreshCyclables(mostRecent));
         futures.Add(mostRecent, fromMostRecent);
-        
         for (int i = 0; i < possibleInputs.Length; i++)
         {
             var actionInput = possibleInputs[i];
             futures.TryAdd(actionInput, Task.Run(() => state.RefreshCyclables(actionInput, cts.Token)));
-        }        
+        }
     }
 }

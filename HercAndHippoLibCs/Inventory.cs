@@ -18,6 +18,9 @@ public readonly struct Inventory : IEnumerable<ITakeable>, IEquatable<Inventory>
     public Inventory(ITakeable starterItem) => takeables = new HashSet<ITakeable>() { starterItem };
     public Inventory AddItem(ITakeable item)
     {
+        if (takeables.Where(extant => extant.Id == item.Id).Any())
+            return this;
+
         HashSet<ITakeable> newSet = new(takeables) { item };
         return new Inventory(newSet);
     }

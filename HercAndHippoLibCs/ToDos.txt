@@ -1,5 +1,4 @@
 -= Desired features =-
-- ITakeables have some sort of "GetId()" method. In Has method, compare by Id, not Color. 
 - Research reading multiple console keys at once (for jumping/moving simultaneously)
 - Research faster console writing:
 	* https://stackoverflow.com/questions/29920056/c-sharp-something-faster-than-console-write
@@ -7,12 +6,15 @@
 - Level editor
 - Status bar
 - Implement and test "seek" behavior for bullet
-- Enemies: archers, poodles
-- Hippo and goal
+
+
+- Hippo - write tests! (See Hippo_Tests.cs)
+
 - Trophies and transporters
 - Gravity; player dies if gravity > 0 and reaches bottom row, or gravity < 0 and reaches top row
 - Torches and darkness
 - Gems
+- Enemies: archers, poodles
 - Lives
 - Scrolls
 - Message text

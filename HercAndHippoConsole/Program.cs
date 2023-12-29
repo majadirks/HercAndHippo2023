@@ -8,7 +8,7 @@ const int REFRESH_FREQUENCY_HZ = 50;
 // Initialize data
 CycleTimer cycleTimer = new(frequencyHz: REFRESH_FREQUENCY_HZ);
 ConsoleKeyInfo keyInfo;
-Level state = DemoLevels.ManyObjectsStressTest();
+Level state = DemoLevels.IntroducingTheHippo;
 FutureStates futures;
 ScrollStatus scrollStatus = ScrollStatus.Default(state.Player.Location);
 BufferStats bufferStats = new(bufferSizeChanged: true, bufferWidth: Console.BufferWidth, bufferHeight: Console.BufferHeight);
@@ -25,7 +25,7 @@ ShowMessage("Use arrow keys to move, shift + arrow keys to shoot, 'q' to quit.")
 // Main loop
 while (true)
 {
-    futures = new(state, lastAction); // calculate possible next states
+    futures = new(state, lastAction, enabled: false); // calculate possible next states
     cycleTimer.AwaitCycle(); // Update once per 20 ms
     bufferStats.Refresh(); // Check if buffer size changed
     displayPlan = new(state, scrollStatus, bufferStats); // save current screen layout

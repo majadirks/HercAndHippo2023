@@ -26,6 +26,9 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
     public Color BackgroundColor => Color.Blue;
     public bool HasHealth => Health.HasHealth;
     public bool HasAmmo => AmmoCount.HasAmmo;
+
+    public bool StopsBullet => true;
+
     public override string ToString() => $"Player at location {Location} with {Health}, {AmmoCount}, Inventory Size: {Inventory.Count}";
     
     // Behaviors
@@ -86,7 +89,7 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
         else // Gravity is nonzero
         {       
             // If player is blocked south, allow jumping
-            if (actionInput == ActionInput.MoveNorth && nextState.Player.MotionBlockedSouth(nextState))
+            if (actionInput == ActionInput.MoveNorth && nextState.Player.MotionBlockedTo(nextState, Direction.South))
             {
                 KineticEnergy nextKineticEnergy = nextState.Player.KineticEnergy + nextState.Player.JumpStrength;
                 nextState = nextState.WithPlayer(nextState.Player with { KineticEnergy = nextKineticEnergy });
@@ -96,7 +99,7 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
             {
                 for (int i = 0; i < nextState.Gravity.Strength; i++)
                 {
-                    if (nextState.Player.KineticEnergy == 0 || nextState.Player.MotionBlockedNorth(nextState))
+                    if (nextState.Player.KineticEnergy == 0 || nextState.Player.MotionBlockedTo(nextState, Direction.North))
                     {
                         nextState = nextState.WithPlayer(nextState.Player with { KineticEnergy = 0 });
                         break;
@@ -116,7 +119,7 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
             {
                 for (int i = 0;
                     i < nextState.Gravity.Strength &&
-                    !nextState.Player.MotionBlockedSouth(nextState);
+                    !nextState.Player.MotionBlockedTo(nextState,Direction.South);
                     i++)
                 {
                     Location nextLocation = new(nextState.Player.Location.Col, nextState.Player.Location.Row.NextSouth(level.Height));
@@ -137,51 +140,12 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
             Bullet shotBy => OnShot(level, touchedFrom.Mirror(), shotBy),
             _ => level
         };
-    public override bool BlocksMotion(Player p) => p != this;
+    public override bool BlocksMotion(Level level) => level.Player != this;
 
-    // Check for blocking
-    public bool MotionBlockedTo(Level level, Direction where)
-            => where switch
-            {
-                Direction.North => MotionBlockedNorth(level),
-                Direction.East => MotionBlockedEast(level),
-                Direction.South => MotionBlockedSouth(level),
-                Direction.West => MotionBlockedWest(level),
-                _ => false
-            };
-    private bool MotionBlockedEast(Level level)
+    public static bool TryGetHippo(Level level, out Hippo? hippo)
     {
-        if (Location.Col == level.Width) return true;
-        Column nextEast = Location.Col.NextEast(level.Width);
-        Location eastLoc = (nextEast, Location.Row);
-        IEnumerable<HercAndHippoObj> blockers = level.ObjectsAt(eastLoc);
-        return blockers.Where(bl => bl.BlocksMotion(this)).Any();
-    }
-    private bool MotionBlockedWest(Level level)
-    {
-        if (Location.Col == Column.MIN_COL) return true;
-        Column nextWest = Location.Col.NextWest();
-        Location westLoc = (nextWest, Location.Row);
-        IEnumerable<HercAndHippoObj> blockers = level.ObjectsAt(westLoc);
-        return blockers.Where(bl => bl.BlocksMotion(this)).Any();
-    }
-
-    private bool MotionBlockedNorth(Level level)
-    {
-        if (Location.Row == Row.MIN_ROW) return true;
-        Row nextNorth = Location.Row.NextNorth();
-        Location northLoc = (Location.Col, nextNorth);
-        IEnumerable<HercAndHippoObj> blockers = level.ObjectsAt(northLoc);
-        return blockers.Where(bl => bl.BlocksMotion(this)).Any();
-    }
-
-    private bool MotionBlockedSouth(Level level)
-    {
-        if (Location.Row == level.Height) return true;
-        Row nextSouth = Location.Row.NextSouth(level.Height);
-        Location southLoc = (Location.Col, nextSouth);
-        IEnumerable<HercAndHippoObj> blockers = level.ObjectsAt(southLoc);
-        return blockers.Where(bl => bl.BlocksMotion(this)).Any();
+        hippo = (Hippo?)level.LevelObjects.Where(obj => obj is Hippo h && h.LockedToPlayer).SingleOrDefault();
+        return hippo != null;
     }
 
     // Private static helpers
@@ -189,8 +153,12 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
     {
         Direction whither = approachFrom.Mirror();
         Player player = curState.Player;
+        bool hasHippo = TryGetHippo(curState, out Hippo? hippo);
+        HippoMotionBlockages hippoBlocks = Hippo.Blockages(hippo, curState);
+        bool blockedByHippo = hippoBlocks.HippoBlocksTo(whither);    
+        
         // If no obstacles, move
-        if (!player.ObjectLocatedTo(curState, whither))
+        if (!player.ObjectLocatedTo(curState, whither) && !blockedByHippo)
             return curState.WithPlayer(player with { Location = newLocation });
 
         // If there are any ITouchables, call their OnTouch() methods
@@ -206,7 +174,7 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
         }
 
         // If not blocked, move
-        if (!player.MotionBlockedTo(nextState, whither))
+        if (!player.MotionBlockedTo(nextState, whither) && !blockedByHippo)
             nextState = nextState.WithPlayer(player with { Location = newLocation });
         
         return nextState; 

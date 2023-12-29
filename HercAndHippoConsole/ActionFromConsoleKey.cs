@@ -26,6 +26,7 @@ namespace HercAndHippoConsole
                 ConsoleKey.RightArrow => ActionInput.MoveEast,
                 ConsoleKey.UpArrow => ActionInput.MoveNorth,
                 ConsoleKey.DownArrow => ActionInput.MoveSouth,
+                ConsoleKey.Spacebar => ActionInput.DropHippo,
                 _ => ActionInput.NoAction // No update for unknown key
             };
         }

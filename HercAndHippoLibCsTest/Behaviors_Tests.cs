@@ -5,23 +5,6 @@ namespace HercAndHippoLibCsTest
     public class Behaviors_Tests
     {
         [TestMethod]
-        public void DieAndStopBullet_Test()
-        {
-            // Arrange
-            Bullet bullet = new((2, 1), Direction.East);
-            BreakableWall breakableWall = new(Color.Green, (3, 1));
-            Level initialState = new(
-                player: new((1, 1), health: 100, ammoCount: 5, inventory: new()),
-                gravity: Gravity.None,
-                secondaryObjects: new()  { bullet, breakableWall });
-            Level expectedNextState = initialState.Without(bullet).Without(breakableWall);
-            // Act
-            Level actualNextState = Behaviors.DieAndStopBullet(breakableWall, initialState, bullet);
-            // Assert
-            Assert.AreEqual(expectedNextState, actualNextState);
-        }
-
-        [TestMethod]
         public void NoReaction_Test()
         {
             // Arrange
@@ -35,22 +18,6 @@ namespace HercAndHippoLibCsTest
             Level nextState = Behaviors.NoReaction(level);
             // Assert
             Assert.AreEqual(level, nextState);
-        }
-
-        [TestMethod]
-        public void StopBullet_Test()
-        {
-            // Arrange
-            Bullet bullet = new((3, 2), Direction.South);
-            Wall wall = new(Color.Green, (3, 3));
-            Level level = new(player: new((2, 3), health: 100, ammoCount: 5, inventory: new()),
-                gravity: Gravity.None,
-                secondaryObjects: new() {bullet, wall});
-            Level expectedNextState = level.Without(bullet);
-            // Act
-            Level actualNextState = Behaviors.StopBullet(level, bullet);
-            // Assert
-            Assert.AreEqual(expectedNextState, actualNextState);
         }
 
         [TestMethod]
