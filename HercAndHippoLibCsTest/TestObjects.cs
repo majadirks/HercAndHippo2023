@@ -11,11 +11,18 @@
         public Level Cycle(Level level, ActionInput actionInput) => IncreaseCount(level);
     }
 
-    /// <summary>Increments a counter when touched </summary>
-    internal record TouchCounter(Location Location,int Count) : HercAndHippoObj, ILocatable, ITouchable
+    /// <summary>Increments a counter when touched. Blocks motion. </summary>
+    internal record ImpassableTouchCounter(Location Location,int Count) : HercAndHippoObj, ILocatable, ITouchable
     {
         public override bool BlocksMotion(Player p) => true;
+        private Level IncreaseCount(Level level) => level.Replace(this, this with { Count = Count + 1 });
+        public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy) => IncreaseCount(level);
+    }
 
+    /// <summary>Increments a counter when touched. Does not block motion.</summary>
+    internal record PassableTouchCounter(Location Location, int Count) : HercAndHippoObj, ILocatable, ITouchable
+    {
+        public override bool BlocksMotion(Player p) => false;
         private Level IncreaseCount(Level level) => level.Replace(this, this with { Count = Count + 1 });
         public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy) => IncreaseCount(level);
     }

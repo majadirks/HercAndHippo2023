@@ -318,8 +318,8 @@ namespace HercAndHippoLibCsTest
             // Arrange
             int startCount = 0;
             Player player = new((2, 2), health: 100, ammoCount: 0, inventory: EmptyInventory);
-            TouchCounter initialCounter = new((3, 2), startCount);
-            TouchCounter cycledCounter = new((3, 2), startCount + 1);
+            ImpassableTouchCounter initialCounter = new((3, 2), startCount);
+            ImpassableTouchCounter cycledCounter = new((3, 2), startCount + 1);
             Level level = new(player, gravity: Gravity.None, secondaryObjects: new HashSet<HercAndHippoObj>() { initialCounter });
 
             Assert.IsTrue(level.Contains(initialCounter));

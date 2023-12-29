@@ -1,6 +1,5 @@
 ﻿namespace HercAndHippoLibCsTest;
 /*
-Player's fall is not blocked by ammo
 Player collects ammo when falling through ammo
 Player passes through doors when has keys
 Jumping: Player moves up and then down, with Kinetic Energy changing as intended
@@ -123,6 +122,39 @@ public class JumpingAndGravityTests
         Assert.AreEqual(10, (int)level.Player.Location.Row);
         // And ammo is not present
         Assert.IsFalse(level.LevelObjects.Where(obj => obj is Ammo).Any());
+    }
+
+    [TestMethod]
+    public void TouchObjectsWhileFallingThrough_Test()
+    {
+        // Arrange
+        Player player = Player.Default(new Location(5, 1));
+        Level level = new(
+            player: player,
+            gravity: new Gravity(Strength: 1, WaitCycles: 1),
+            secondaryObjects: new()
+            {
+                new Ammo((5,5), 5),
+                new PassableTouchCounter((5, 6), Count: 0),
+                new Wall(Color.Black, new(5, 11))
+            });
+        Assert.AreEqual(0, (int)player.AmmoCount);
+        Assert.AreEqual(0, FindTouchCounter().Count);
+
+        // Act: Let player fall
+        for (int row = 1; row <= 10; row++)
+        {
+            level = level.RefreshCyclables(ActionInput.NoAction);
+            Assert.AreEqual(row, (int)level.Player.Location.Row);
+        }
+
+        // Assert: player has collected ammo, and touch counter has incremented
+        Assert.AreEqual(5, (int)level.Player.AmmoCount);
+        Assert.AreEqual(1, FindTouchCounter().Count);
+
+        // Local function
+        PassableTouchCounter FindTouchCounter() 
+            => (PassableTouchCounter)level.LevelObjects.Where(obj => obj is PassableTouchCounter).Single();
     }
 
     [TestMethod]
