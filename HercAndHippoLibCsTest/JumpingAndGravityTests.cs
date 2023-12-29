@@ -68,6 +68,34 @@ public class JumpingAndGravityTests
     }
 
     [TestMethod]
+    public void WallBlocksFall_Test()
+    {
+        // Arrange
+        Player player = Player.Default(new Location(5, 1));
+        Level level = new(
+            player: player,
+            gravity: new Gravity(Strength: 1, WaitCycles: 1),
+            secondaryObjects: new()
+            {
+                new Wall(Color.Magenta, new(5,11)),
+                new Wall(Color.Black, new(20, 20))
+            });
+        
+        for (int row = 1; row <= 10; row++)
+        {
+            // Act: Let player fall
+            level = level.RefreshCyclables(ActionInput.NoAction);
+            // Assert
+            Assert.AreEqual(row, (int) level.Player.Location.Row);
+        }
+
+        // Act: refresh cyclables again
+        level = level.RefreshCyclables(ActionInput.NoAction);
+        // Assert: player is still at row 10, above the wall
+        Assert.AreEqual(10, (int) level.Player.Location.Row);
+    }
+
+    [TestMethod]
     public void NoDoubleJumpsWhenNotBlockedSouth_Test()
     {
         // Arrange
@@ -93,6 +121,5 @@ public class JumpingAndGravityTests
         // Assert: double-jump failed; kinetic energy continues to decrease
         Assert.AreEqual(3, (int) level.Player.KineticEnergy);
     }
-
 
 }
