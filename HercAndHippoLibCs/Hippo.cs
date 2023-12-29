@@ -16,6 +16,8 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
     {
         if (!Health.HasHealth)
             return Behaviors.Die(level, this);
+        else if (LockedToPlayer && actionInput == ActionInput.DropHippo)
+            return PutDown(level);
         else if (level.HasGravity && LockedToPlayer && actionInput == ActionInput.MoveSouth)
             return PutDown(level);
         else if (LockedToPlayer)

@@ -4,6 +4,7 @@
     {
         NoAction,
         MoveWest, MoveEast, MoveNorth, MoveSouth,
-        ShootWest, ShootEast, ShootNorth, ShootSouth
+        ShootWest, ShootEast, ShootNorth, ShootSouth,
+        DropHippo
     }
 }
