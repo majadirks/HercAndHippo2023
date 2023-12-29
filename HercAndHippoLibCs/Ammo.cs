@@ -5,7 +5,7 @@ public record Ammo(Location Location, AmmoCount Count) : HercAndHippoObj, ILocat
     public Color Color => Color.Green;
     public Color BackgroundColor => Color.Black;
 
-    public override bool BlocksMotion(Player p) => false;
+    public override bool BlocksMotion(Level level) => false;
 
     public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy)
         => level.Without(this)

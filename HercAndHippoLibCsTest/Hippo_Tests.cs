@@ -8,6 +8,9 @@
  * Do not put hippo down if blocked both East and West
  * Hippo health decrements when shot
  * Hippo dies when out of health
+ * If player is jumping or moving while hippo is locked on top:
+ *   Hippo prevents upward motion if its motion is blocked above
+ *   Hippo prevents east/west motion if it is blocked east/west
  */
 
 namespace HercAndHippoLibCsTest;

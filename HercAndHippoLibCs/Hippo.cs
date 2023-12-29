@@ -10,7 +10,7 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
 
     public bool StopsBullet => true;
 
-    public override bool BlocksMotion(Player p) => false;
+    public override bool BlocksMotion(Level level) => false;
 
     public Level Cycle(Level level, ActionInput actionInput)
     {

@@ -7,7 +7,7 @@
 
         public bool StopsBullet => true;
 
-        public override bool BlocksMotion(Player p) => !p.Has<Key>(BackgroundColor);
+        public override bool BlocksMotion(Level level) => !level.Player.Has<Key>(BackgroundColor);
 
         public Level OnShot(Level level, Direction shotFrom, Bullet shotBy) => Behaviors.NoReaction(level);
         public Level OnTouch(Level level, Direction _, ITouchable touchedBy)

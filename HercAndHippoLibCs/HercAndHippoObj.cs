@@ -14,7 +14,7 @@
         public bool IsShootable { get; init; }
         public bool IsCyclable { get; init; }
 
-        public abstract bool BlocksMotion(Player p);
+        public abstract bool BlocksMotion(Level level);
 
         public bool ObjectLocatedTo(Level level, Direction where)
             => this is ILocatable locatable && 

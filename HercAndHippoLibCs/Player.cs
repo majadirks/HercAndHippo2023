@@ -140,7 +140,7 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
             Bullet shotBy => OnShot(level, touchedFrom.Mirror(), shotBy),
             _ => level
         };
-    public override bool BlocksMotion(Player p) => p != this;
+    public override bool BlocksMotion(Level level) => level.Player != this;
 
     // Check for blocking
     public bool MotionBlockedTo(Level level, Direction where)
@@ -158,7 +158,7 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
         Column nextEast = Location.Col.NextEast(level.Width);
         Location eastLoc = (nextEast, Location.Row);
         IEnumerable<HercAndHippoObj> blockers = level.ObjectsAt(eastLoc);
-        return blockers.Where(bl => bl.BlocksMotion(this)).Any();
+        return blockers.Where(bl => bl.BlocksMotion(level)).Any();
     }
     private bool MotionBlockedWest(Level level)
     {
@@ -166,7 +166,7 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
         Column nextWest = Location.Col.NextWest();
         Location westLoc = (nextWest, Location.Row);
         IEnumerable<HercAndHippoObj> blockers = level.ObjectsAt(westLoc);
-        return blockers.Where(bl => bl.BlocksMotion(this)).Any();
+        return blockers.Where(bl => bl.BlocksMotion(level)).Any();
     }
 
     private bool MotionBlockedNorth(Level level)
@@ -175,7 +175,7 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
         Row nextNorth = Location.Row.NextNorth();
         Location northLoc = (Location.Col, nextNorth);
         IEnumerable<HercAndHippoObj> blockers = level.ObjectsAt(northLoc);
-        return blockers.Where(bl => bl.BlocksMotion(this)).Any();
+        return blockers.Where(bl => bl.BlocksMotion(level)).Any();
     }
 
     private bool MotionBlockedSouth(Level level)
@@ -184,7 +184,7 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
         Row nextSouth = Location.Row.NextSouth(level.Height);
         Location southLoc = (Location.Col, nextSouth);
         IEnumerable<HercAndHippoObj> blockers = level.ObjectsAt(southLoc);
-        return blockers.Where(bl => bl.BlocksMotion(this)).Any();
+        return blockers.Where(bl => bl.BlocksMotion(level)).Any();
     }
 
     // Private static helpers

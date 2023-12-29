@@ -54,5 +54,5 @@ public record Bullet(Location Location, Direction Whither) : HercAndHippoObj, IL
         return reachedWestBoundary || reachedEastBoundary || reachedNorthBoundary || reachedSouthBoundary;
     }
 
-    public override bool BlocksMotion(Player p) => false;
+    public override bool BlocksMotion(Level level) => false;
 }
