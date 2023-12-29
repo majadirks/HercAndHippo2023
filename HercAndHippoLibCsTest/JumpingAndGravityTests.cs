@@ -1,8 +1,8 @@
 ﻿namespace HercAndHippoLibCsTest;
 /*
-Player's fall is blocked by a wall
 Player's fall is not blocked by ammo
 Player collects ammo when falling through ammo
+Player passes through doors when has keys
 Jumping: Player moves up and then down, with Kinetic Energy changing as intended
 When jumping, if player hits an obstacle (wall), Kinetic Energy is set to zero and player falls
  */
@@ -93,6 +93,36 @@ public class JumpingAndGravityTests
         level = level.RefreshCyclables(ActionInput.NoAction);
         // Assert: player is still at row 10, above the wall
         Assert.AreEqual(10, (int) level.Player.Location.Row);
+    }
+
+    [TestMethod]
+    public void AmmoDoesNotBlockFall_Test()
+    {
+        // Arrange
+        Player player = Player.Default(new Location(5, 1));
+        Level level = new(
+            player: player,
+            gravity: new Gravity(Strength: 1, WaitCycles: 1),
+            secondaryObjects: new()
+            {
+                new Ammo((5,5), 5),
+                new Wall(Color.Black, new(5, 11))
+            });
+
+        for (int row = 1; row <= 10; row++)
+        {
+            // Act: Let player fall
+            level = level.RefreshCyclables(ActionInput.NoAction);
+            // Assert: player has fallen, even through ammo
+            Assert.AreEqual(row, (int)level.Player.Location.Row);
+        }
+
+        // Act: refresh cyclables again
+        level = level.RefreshCyclables(ActionInput.NoAction);
+        // Assert: player is still at row 10, above the wall
+        Assert.AreEqual(10, (int)level.Player.Location.Row);
+        // And ammo is not present
+        Assert.IsFalse(level.LevelObjects.Where(obj => obj is Ammo).Any());
     }
 
     [TestMethod]
