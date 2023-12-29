@@ -49,9 +49,28 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
             (Hippo _, Level locked) = LockAbovePlayer(level);
             return locked;
         }
-            
+        else if (level.GravityApplies()) // Not locked to player; fall due to gravity if relevant
+        {
+            Level nextState = level;
+            for (int i = 0;
+                i < level.Gravity.Strength &&
+                !this.MotionBlockedTo(level, Direction.South);
+                i++)
+            {
+                nextState = TryMoveSouth(nextState);
+            }
+            return nextState;
+        }
         else
             return Behaviors.NoReaction(level);
+    }
+
+    private Level TryMoveSouth(Level level) 
+    {
+        if (this.MotionBlockedTo(level, Direction.South))
+            return Behaviors.NoReaction(level);
+        Location nextLocation = new(Location.Col, Location.Row.NextSouth(level.Height));
+        return level.Replace(this, this with { Location = nextLocation });
     }
 
     private (Hippo, Level) LockAbovePlayer(Level level)
