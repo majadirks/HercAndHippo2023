@@ -14,7 +14,8 @@ public record Hippo(Location Location, Health Health) : HercAndHippoObj, ILocata
 
     public Level Cycle(Level level, ActionInput actionInput)
     {
-        // ToDo
+        if (!Health.HasHealth) 
+            return Behaviors.Die(level, this);
         return Behaviors.NoReaction(level);
     }
 

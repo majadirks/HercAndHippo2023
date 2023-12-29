@@ -214,5 +214,28 @@ public static class DemoLevels
             new Ammo((12,14), Count: 5)
         });
 
+    public static readonly Level IntroducingTheHippo = new(
+        player: Player.Default(5,10),
+        gravity: Gravity.Default,
+        secondaryObjects: new()
+        {
+            new Hippo((7,10), Health: 15),
+
+            new Ammo((3, 10), Count: 15),
+
+            new Wall(Color.Blue, (1, 11)),
+            new Wall(Color.Blue, (2, 11)),
+            new Wall(Color.Blue, (3, 11)),
+            new Wall(Color.Blue, (4, 11)),
+            new Wall(Color.Blue, (5, 11)),
+            new Wall(Color.Blue, (6, 11)),
+            new Wall(Color.Blue, (7, 11)),
+            new Wall(Color.Blue, (8, 11)),
+            new Wall(Color.Blue, (9, 11)),
+            new Wall(Color.Blue, (10, 11)),
+
+
+        }
+        );
 }
 
