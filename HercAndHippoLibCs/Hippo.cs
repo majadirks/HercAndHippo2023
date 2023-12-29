@@ -4,7 +4,7 @@ public record Hippo(Location Location, Health Health) : HercAndHippoObj, ILocata
 {
     public Color Color => Color.Magenta;
 
-    public Color BackgroundColor => Color.Black;
+    public Color BackgroundColor => Color.DarkBlue;
 
     public string ConsoleDisplayString => "🦛";
 
