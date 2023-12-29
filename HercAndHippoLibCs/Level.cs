@@ -28,6 +28,12 @@ namespace HercAndHippoLibCs
             Gravity = gravity;
             Cycles = cycles;
         }
+
+        /// <summary>
+        /// Return a HashSet containing the player and all secondary objects. 
+        /// Somewhat slow; probably better to act on player and secondary objects separately 
+        /// when performance is critical.
+        /// </summary>
         public HashSet<HercAndHippoObj> LevelObjects => SecondaryObjects.AddObject(Player);
         public Level WithPlayer(Player player) => new (player: player, secondaryObjects: this.SecondaryObjects, width: Width, height: Height, cycles: Cycles, gravity: Gravity);
         public IEnumerable<HercAndHippoObj> ObjectsAt(Location location) => LevelObjects.Where(d => d is ILocatable dAtLoc && dAtLoc.Location.Equals(location));
@@ -37,10 +43,13 @@ namespace HercAndHippoLibCs
         public Level RefreshCyclables(ActionInput actionInput, CancellationToken? cancellationToken = null)
         {
             CancellationToken token = cancellationToken ?? CancellationToken.None;
-            var nextState = LevelObjects // Do not refresh in parallel; this could cause objects to interfere with nearby copies of themselves, and can make updating slower
-            .Where(disp => disp.IsCyclable)
-            .Cast<ICyclable>()
-            .Aggregate(seed: this, func: (state, nextCyclable) => token.IsCancellationRequested ? Default : nextCyclable.Cycle(state, actionInput));
+            var nextState = Player.Cycle(this, actionInput);
+            nextState = SecondaryObjects // Do not refresh in parallel; this could cause objects to interfere with nearby copies of themselves, and can make updating slower
+                .Where(disp => disp.IsCyclable)
+                .Cast<ICyclable>()
+                .Aggregate(
+                seed: nextState, 
+                func: (state, nextCyclable) => token.IsCancellationRequested ? Default : nextCyclable.Cycle(state, actionInput));
             nextState.Cycles = Cycles + 1;
             return nextState;
         }
