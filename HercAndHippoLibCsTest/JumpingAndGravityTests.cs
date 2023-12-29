@@ -1,6 +1,5 @@
 ﻿namespace HercAndHippoLibCsTest;
 /*
-Player collects ammo when falling through ammo
 Player passes through doors when has keys
 Jumping: Player moves up and then down, with Kinetic Energy changing as intended
 When jumping, if player hits an obstacle (wall), Kinetic Energy is set to zero and player falls
@@ -155,6 +154,53 @@ public class JumpingAndGravityTests
         // Local function
         PassableTouchCounter FindTouchCounter() 
             => (PassableTouchCounter)level.LevelObjects.Where(obj => obj is PassableTouchCounter).Single();
+    }
+
+    [TestMethod]
+    public void PassThroughDoorsIfPlayerHasKeys_Test()
+    {
+        // Arrange
+        Player player = Player.Default(new Location(5, 1))
+        .Take(new Key(Color.Yellow, (0, 0)))
+        .Take(new Key(Color.Green, (0, 0)));
+        Assert.IsTrue(player.Has<Key>(Color.Yellow));
+        Assert.IsTrue(player.Has<Key>(Color.Green));
+        Assert.IsFalse(player.Has<Key>(Color.Blue));
+
+        Level level = new(
+            player: player,
+            gravity: new Gravity(Strength: 1, WaitCycles: 1),
+            secondaryObjects: new()
+            {
+                new Door(Color.Yellow, (5,5)),
+                new Door(Color.Green, (5, 6)),
+                new Door(Color.Blue, new(5, 11))
+            });
+
+        Assert.IsTrue(DoorExists(Color.Yellow));
+        Assert.IsTrue(DoorExists(Color.Green));
+        Assert.IsTrue(DoorExists(Color.Blue));
+
+        // Act: Let player fall
+        for (int row = 1; row <= 10; row++)
+        {
+            level = level.RefreshCyclables(ActionInput.NoAction);
+            Assert.AreEqual(row, (int)level.Player.Location.Row);
+        }
+
+        // Let one more cycle pass; player does not pass through the blue door at row 11
+        level = level.RefreshCyclables(ActionInput.NoAction);
+        Assert.AreEqual(10, (int)level.Player.Location.Row);
+        Assert.IsTrue(level.Player.MotionBlockedTo(level, Direction.South));
+
+        // Assert: player has passed through the yellow and green doors, but not the blue
+        Assert.IsFalse(DoorExists(Color.Yellow));
+        Assert.IsFalse(DoorExists(Color.Green));
+        Assert.IsTrue(DoorExists(Color.Blue));
+
+        // Local function
+        bool DoorExists(Color color)
+            => level.LevelObjects.Where(obj => obj is Door door &&  door.BackgroundColor == color).Any();
     }
 
     [TestMethod]
