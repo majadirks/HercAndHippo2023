@@ -22,6 +22,8 @@
  * Hippo can be placed on top of object (eg if blocked East, but there is space above that blockage, can be placed atop)
  * Player TryGetHippo() returns a hippo if present, null if not, and the returned hippo has LockedToPlayer set to true
  * Test behavior of HippoBlocksTo() method in HippoMotionBlockages record
+ * If hippo falls on player, player takes Hippo.
+ * If player jumps into falling hippo, player takes Hippo.
  */
 
 namespace HercAndHippoLibCsTest;
