@@ -11,6 +11,8 @@
  * If player is jumping or moving while hippo is locked on top:
  *   Hippo prevents upward motion if its motion is blocked above
  *   Hippo prevents east/west motion if it is blocked east/west
+ * When hippo is picked up, it is present in inventory
+ * When hippo is dropped, it is no longer present in inventory
  */
 
 namespace HercAndHippoLibCsTest;

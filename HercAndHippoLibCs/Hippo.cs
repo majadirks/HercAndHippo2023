@@ -1,6 +1,6 @@
 ﻿namespace HercAndHippoLibCs;
 
-public record Hippo(Location Location, Health Health, bool LockedToPlayer) : HercAndHippoObj, ILocatable, ITouchable, ICyclable, IShootable, IConsoleDisplayable
+public record Hippo(Location Location, Health Health, bool LockedToPlayer) : HercAndHippoObj, ILocatable, ITouchable, ICyclable, IShootable, IConsoleDisplayable, ITakeable
 {
     public Color Color => Color.Magenta;
 
@@ -9,6 +9,8 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
     public string ConsoleDisplayString => "🦛";
 
     public bool StopsBullet => true;
+
+    public string Id => "Hippo";
 
     public override bool BlocksMotion(Level level)
     {
@@ -43,7 +45,9 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
         if (!blockedEast)
         {
             Location nextLocation = new(Col: player.Location.Col.NextEast(level.Width), Row: player.Location.Row);
-            return level.Replace(this, this with { Location = nextLocation, LockedToPlayer = false });
+            Level nextState = level.Replace(this, this with { Location = nextLocation, LockedToPlayer = false });
+            nextState = nextState.WithPlayer(nextState.Player.DropItem<Hippo>(Id).newPlayerState);
+            return nextState;
         }
 
         // If that didn't work, attempt to place West
@@ -51,7 +55,9 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
         if (!blockedWest)
         {
             Location nextLocation = new(Col: player.Location.Col.NextWest(), Row: player.Location.Row);
-            return level.Replace(this, this with { Location = nextLocation, LockedToPlayer = false });
+            Level nextState = level.Replace(this, this with { Location = nextLocation, LockedToPlayer = false });
+            nextState = nextState.WithPlayer(nextState.Player.DropItem<Hippo>(Id).newPlayerState);
+            return nextState;
         }
 
         // Could not put down hippo
@@ -61,14 +67,22 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
     public Level OnShot(Level level, Direction shotFrom, Bullet shotBy)
         => level.Without(shotBy).Replace(this, this with { Health = this.Health - 5 });
 
-    public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy)
+    public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy) => PickUp(level);
+
+    public Level OnTake(Level level) => PickUp(level);
+
+    private Level PickUp(Level level)
     {
         Player player = level.Player;
         bool cannotLift = player.ObjectLocatedTo(level, Direction.North) || player.MotionBlockedTo(level, Direction.North);
         if (cannotLift)
             return Behaviors.NoReaction(level);
         else
-            return LockAbovePlayer(level);     
+        {
+            Level locked = LockAbovePlayer(level);
+            Player playerWithHippo = locked.Player.Take(this);
+            return locked.WithPlayer(playerWithHippo);
+        }
     }
 }
 
