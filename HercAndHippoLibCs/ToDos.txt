@@ -1,6 +1,7 @@
 -= Desired features =-
 - Consider: anticipate the possible next states (10 of them or so, which can be calculated in parallel), then display whichever is relevant
 - ITakeables have some sort of "GetId()" method. In Has method, compare by Id, not Color. 
+- Research reading multiple console keys at once (for jumping/moving simultaneously)
 - Research faster console writing:
 	* https://stackoverflow.com/questions/29920056/c-sharp-something-faster-than-console-write
 	* https://stackoverflow.com/questions/2754518/how-can-i-write-fast-colored-output-to-console
