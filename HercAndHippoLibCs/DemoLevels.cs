@@ -107,7 +107,7 @@ public static class DemoLevels
             new Player((30, 10), health: 100, ammoCount: 200, inventory: Inventory.EmptyInventory, jumpStrength: 5),
         });
 
-    public static  Level SoManyBullets()
+    public static  Level ManyObjectsStressTest()
     {
         int width = 120;
         int height = 120;
