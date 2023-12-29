@@ -1,6 +1,5 @@
 ﻿namespace HercAndHippoLibCsTest;
 /*
-Player passes through doors when has keys
 Jumping: Player moves up and then down, with Kinetic Energy changing as intended
 When jumping, if player hits an obstacle (wall), Kinetic Energy is set to zero and player falls
  */
