@@ -144,6 +144,30 @@
         }
 
         [TestMethod]
+        public void DoorYieldsToPlayerWithKey_IdentifiedByStringId_Test()
+        {
+            // Arrange
+            Player initial = Player.Default((2, 2));
+
+            Player playerAtDoor = Player.Default((4, 2));
+            Door door = new(Color.Cyan, (4, 2));
+            Key key = new(Color.Cyan, (3, 2));
+            Player secondPosition = Player.Default((3, 2)) with { Inventory = new Inventory(starterItem: key) };
+            Wall corner = new(Color.White, (10, 10));
+            Level level = new(initial, gravity: Gravity.None, secondaryObjects: new HashSet<HercAndHippoObj> { door, key, corner });
+
+            // Act and Assert
+            level = level.RefreshCyclables(ActionInput.MoveEast);
+            Assert.AreEqual(secondPosition.Location, level.Player.Location); // Player is adjacent to to door after moving east
+            Assert.IsTrue(level.Player.Has<Key>("Cyan"));// Player has picked up the key
+            level = level.RefreshCyclables(ActionInput.MoveEast);
+            Assert.AreNotEqual(secondPosition.Location, level.Player.Location); // door has not blocked further eastward movement.
+            Assert.AreEqual(playerAtDoor.Location, level.Player.Location); // Player has moved over door
+            Assert.IsFalse(level.Contains(door)); // No more door!
+            Assert.IsFalse(level.Player.Has<Key>("Cyan")); // Player no longer has key
+        }
+
+        [TestMethod]
         public void MotionBlockedByDoor_IffNoKey_Test()
         {
             // Arrange
