@@ -1,4 +1,5 @@
-﻿namespace HercAndHippoLibCsTest
+﻿using HercAndHippoLibCs;
+namespace HercAndHippoLibCsTest
 {
     [TestClass]
     public class Environment_Tests

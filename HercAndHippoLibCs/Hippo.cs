@@ -12,6 +12,7 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
 
     public override bool BlocksMotion(Level level)
     {
+        // this is gross, and blocks only if moving north
         Level ifPlayerWereNorthOne = level.WithPlayer(level.Player with { Location = this.Location });
         return ifPlayerWereNorthOne.Player.MotionBlockedTo(ifPlayerWereNorthOne, Direction.North);
     }

@@ -89,7 +89,7 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
         else // Gravity is nonzero
         {       
             // If player is blocked south, allow jumping
-            if (actionInput == ActionInput.MoveNorth && nextState.Player.MotionBlockedSouth(nextState))
+            if (actionInput == ActionInput.MoveNorth && nextState.Player.MotionBlockedTo(nextState, Direction.South))
             {
                 KineticEnergy nextKineticEnergy = nextState.Player.KineticEnergy + nextState.Player.JumpStrength;
                 nextState = nextState.WithPlayer(nextState.Player with { KineticEnergy = nextKineticEnergy });
@@ -99,7 +99,7 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
             {
                 for (int i = 0; i < nextState.Gravity.Strength; i++)
                 {
-                    if (nextState.Player.KineticEnergy == 0 || nextState.Player.MotionBlockedNorth(nextState))
+                    if (nextState.Player.KineticEnergy == 0 || nextState.Player.MotionBlockedTo(nextState, Direction.North))
                     {
                         nextState = nextState.WithPlayer(nextState.Player with { KineticEnergy = 0 });
                         break;
@@ -119,7 +119,7 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
             {
                 for (int i = 0;
                     i < nextState.Gravity.Strength &&
-                    !nextState.Player.MotionBlockedSouth(nextState);
+                    !nextState.Player.MotionBlockedTo(nextState,Direction.South);
                     i++)
                 {
                     Location nextLocation = new(nextState.Player.Location.Col, nextState.Player.Location.Row.NextSouth(level.Height));
@@ -141,51 +141,6 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
             _ => level
         };
     public override bool BlocksMotion(Level level) => level.Player != this;
-
-    // Check for blocking
-    public bool MotionBlockedTo(Level level, Direction where)
-            => where switch
-            {
-                Direction.North => MotionBlockedNorth(level),
-                Direction.East => MotionBlockedEast(level),
-                Direction.South => MotionBlockedSouth(level),
-                Direction.West => MotionBlockedWest(level),
-                _ => false
-            };
-    private bool MotionBlockedEast(Level level)
-    {
-        if (Location.Col == level.Width) return true;
-        Column nextEast = Location.Col.NextEast(level.Width);
-        Location eastLoc = (nextEast, Location.Row);
-        IEnumerable<HercAndHippoObj> blockers = level.ObjectsAt(eastLoc);
-        return blockers.Where(bl => bl.BlocksMotion(level)).Any();
-    }
-    private bool MotionBlockedWest(Level level)
-    {
-        if (Location.Col == Column.MIN_COL) return true;
-        Column nextWest = Location.Col.NextWest();
-        Location westLoc = (nextWest, Location.Row);
-        IEnumerable<HercAndHippoObj> blockers = level.ObjectsAt(westLoc);
-        return blockers.Where(bl => bl.BlocksMotion(level)).Any();
-    }
-
-    private bool MotionBlockedNorth(Level level)
-    {
-        if (Location.Row == Row.MIN_ROW) return true;
-        Row nextNorth = Location.Row.NextNorth();
-        Location northLoc = (Location.Col, nextNorth);
-        IEnumerable<HercAndHippoObj> blockers = level.ObjectsAt(northLoc);
-        return blockers.Where(bl => bl.BlocksMotion(level)).Any();
-    }
-
-    private bool MotionBlockedSouth(Level level)
-    {
-        if (Location.Row == level.Height) return true;
-        Row nextSouth = Location.Row.NextSouth(level.Height);
-        Location southLoc = (Location.Col, nextSouth);
-        IEnumerable<HercAndHippoObj> blockers = level.ObjectsAt(southLoc);
-        return blockers.Where(bl => bl.BlocksMotion(level)).Any();
-    }
 
     // Private static helpers
     private static Level TryMoveTo(Location newLocation, Direction approachFrom, Level curState)
