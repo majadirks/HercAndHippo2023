@@ -219,7 +219,7 @@ public static class DemoLevels
         gravity: Gravity.Default,
         secondaryObjects: new()
         {
-            new Hippo((7,10), Health: 15),
+            new Hippo((7,10), Health: 15, LockedToPlayer: false),
 
             new Ammo((3, 10), Count: 15),
 

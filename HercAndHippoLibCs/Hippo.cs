@@ -1,6 +1,6 @@
 ﻿namespace HercAndHippoLibCs;
 
-public record Hippo(Location Location, Health Health) : HercAndHippoObj, ILocatable, ITouchable, ICyclable, IShootable, IConsoleDisplayable
+public record Hippo(Location Location, Health Health, bool LockedToPlayer) : HercAndHippoObj, ILocatable, ITouchable, ICyclable, IShootable, IConsoleDisplayable
 {
     public Color Color => Color.Magenta;
 
@@ -14,9 +14,19 @@ public record Hippo(Location Location, Health Health) : HercAndHippoObj, ILocata
 
     public Level Cycle(Level level, ActionInput actionInput)
     {
-        if (!Health.HasHealth) 
+        if (!Health.HasHealth)
             return Behaviors.Die(level, this);
-        return Behaviors.NoReaction(level);
+        else if (LockedToPlayer)
+            return LockAbovePlayer(level);
+        else
+            return Behaviors.NoReaction(level);
+    }
+
+    private Level LockAbovePlayer(Level level)
+    {
+        Player player = level.Player;
+        Location newLocation = new Location(Col: player.Location.Col, Row: player.Location.Row.NextNorth());
+        return level.Replace(this, this with { Location = newLocation, LockedToPlayer = true });
     }
 
     public Level OnShot(Level level, Direction shotFrom, Bullet shotBy)
@@ -24,8 +34,12 @@ public record Hippo(Location Location, Health Health) : HercAndHippoObj, ILocata
 
     public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy)
     {
-        // ToDo
-        return Behaviors.NoReaction(level);
+        Player player = level.Player;
+        bool cannotLift = player.ObjectLocatedTo(level, Direction.North) || player.MotionBlockedTo(level, Direction.North);
+        if (cannotLift)
+            return Behaviors.NoReaction(level);
+        else
+            return LockAbovePlayer(level);     
     }
 }
 
