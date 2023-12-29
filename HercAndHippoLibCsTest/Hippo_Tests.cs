@@ -16,6 +16,7 @@
  * Multiple hippos cannot be added to inventory
  * Hippo is subject to gravity (if dropped over hole, falls)
  * Hippo can be placed on top of object (eg if blocked East, but there is space above that blockage, can be placed atop)
+ * Player TryGetHippo() returns a hippo if present, nullif not
  */
 
 namespace HercAndHippoLibCsTest;
