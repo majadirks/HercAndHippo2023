@@ -9,22 +9,27 @@ public record Bullet(Location Location, Direction Whither) : HercAndHippoObj, IL
     public Level Cycle(Level curState, ActionInput actionInput)
     {
         // Call OnShot methods for any IShootable at current location 
-        Level nextState = curState
+        var shootables = curState
             .ObjectsAt(Location)
             .Where(obj => obj.IsShootable)
             .Cast<IShootable>()
+            .ToList();
+        Level nextState = shootables
             .Aggregate(seed: curState, func: (state, shot) => shot.OnShot(state, shotFrom: Whither.Mirror(), shotBy: this));
+
+        if (shootables.Any(s => s.StopsBullet))
+            nextState = nextState.Without(this);
 
         // Die if at boundary
         if (ReachedBoundary(nextState.Width, nextState.Height))
             nextState = nextState.Without(this);       
 
         // Continue moving in current direction if it hasn't been stopped
-        Level bulletMoved = nextState.Contains(this) ?
+        nextState = nextState.Contains(this) ?
             nextState.Replace(this, this with { Location = NextLocation }) : // If bullet wasn't stopped, continue
             nextState; // If bullet was stopped, don't regenerate it
 
-        return bulletMoved;
+        return nextState;
     }
 
     private Location NextLocation
