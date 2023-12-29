@@ -8,7 +8,8 @@ const int REFRESH_FREQUENCY_HZ = 50;
 // Initialize data
 CycleTimer cycleTimer = new(frequencyHz: REFRESH_FREQUENCY_HZ);
 ConsoleKeyInfo keyInfo;
-Level state = DemoLevels.JumpLevel;
+Level state = DemoLevels.WallsLevel;
+FutureStates futures;
 ScrollStatus scrollStatus = ScrollStatus.Default(state.Player.Location);
 BufferStats bufferStats = new(bufferSizeChanged: true, bufferWidth: Console.BufferWidth, bufferHeight: Console.BufferHeight);
 DisplayPlan displayPlan = new(state, scrollStatus, bufferStats);
@@ -22,12 +23,13 @@ ShowMessage("Use arrow keys to move, shift + arrow keys to shoot, 'q' to quit.")
 // Main loop
 while (true)
 {
+    futures = new(state); // calculate possible next states
     cycleTimer.AwaitCycle(); // Update once per 20 ms
     bufferStats.Refresh(); // Check if buffer size changed
     displayPlan = new(state, scrollStatus, bufferStats); // save current screen layout
     keyInfo = Console.KeyAvailable ? Console.ReadKey() : default; // Get next key input
     if (keyInfo.KeyChar == 'q') break; // Quit on q
-    state = state.RefreshCyclables(keyInfo.ToActionInput()); // Update level state using key input
+    state = futures[keyInfo.ToActionInput()]; // Update level state using key input
     scrollStatus = scrollStatus.Update(state.Player.Location, bufferStats); // Plan to scroll screen if needed.
     displayPlan.RefreshDisplay(newState: state, newScrollStatus: scrollStatus); // Re-display anything that changed
 }
