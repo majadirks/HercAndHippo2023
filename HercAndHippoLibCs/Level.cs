@@ -62,10 +62,10 @@ namespace HercAndHippoLibCs
 
     public static class HashSetExtensions
     {
-        public static HashSet<T> AddObject<T>(this HashSet<T> collection, T toAdd) => new(collection) { toAdd };
+        public static HashSet<T> AddObject<T>(this HashSet<T> collection, T toAdd) => new(collection, collection.Comparer) { toAdd };
         public static HashSet<T> RemoveObject<T>(this HashSet<T> collection, T toRemove)
         {
-            HashSet<T> removed = new(collection);
+            HashSet<T> removed = new(collection, collection.Comparer);
             removed.Remove(toRemove);
             return removed;
         }
