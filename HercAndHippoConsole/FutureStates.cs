@@ -9,11 +9,19 @@ internal class FutureStates
     private readonly CancellationTokenSource cts;
     public Level GetState(ActionInput actionInput)
     {
-        cts.Cancel();
+        // If next state has been calculated, return it
         if (futures.TryGetValue(actionInput, out Task<Level>? value) && value.IsCompleted)
-            return value.Result;
-        else
-            return initialState.RefreshCyclables(actionInput);  
+        {
+            var ret = value.Result;
+            cts.Cancel(); //cancel others
+            return ret;
+        }
+        else // next state has not been fully calculated.
+        {
+            cts.Cancel();
+            return initialState.RefreshCyclables(actionInput);
+        }
+            
     }
         
     private static readonly ActionInput[] possibleInputs = (ActionInput[])Enum.GetValues(typeof(ActionInput));
