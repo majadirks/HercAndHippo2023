@@ -1,6 +1,6 @@
 ﻿namespace HercAndHippoLibCsTest;
 /*
-When gravity is nonzero, player falls by (gravity) locations per cycle
+Kinetic energy can never be negative
 Player's fall is blocked by a wall
 Player's fall is not blocked by ammo
 Player collects ammo when falling through ammo
@@ -33,7 +33,7 @@ public class JumpingAndGravityTests
             {
                 level = level.RefreshCyclables(ActionInput.MoveNorth);
             }
-            Assert.AreEqual(0, level.Player.KineticEnergy);
+            Assert.AreEqual(0, (int) level.Player.KineticEnergy);
             Location apex = level.Player.Location;
 
             // Act: Player falls
@@ -62,15 +62,15 @@ public class JumpingAndGravityTests
             });
         // Player jumps
         Assert.IsTrue(player.MotionBlockedTo(level, Direction.South));
-        Assert.AreEqual(0, player.KineticEnergy);
+        Assert.AreEqual(0, (int) player.KineticEnergy);
         level = level.RefreshCyclables(ActionInput.MoveNorth);
-        Assert.AreEqual(4, level.Player.KineticEnergy);
+        Assert.AreEqual(4, (int) level.Player.KineticEnergy);
         Assert.IsFalse(level.Player.MotionBlockedTo(level, Direction.South));
 
         // Act: attempt to double-jump
         level = level.RefreshCyclables(ActionInput.MoveNorth);
 
         // Assert: double-jump failed; kinetic energy continues to decrease
-        Assert.AreEqual(3, level.Player.KineticEnergy);
+        Assert.AreEqual(3, (int) level.Player.KineticEnergy);
     }
 }

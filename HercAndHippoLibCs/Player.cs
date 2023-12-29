@@ -2,7 +2,7 @@
 
 public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouchable, IConsoleDisplayable
 {
-    public Player(Location location, Health health, AmmoCount ammoCount, Inventory inventory, int jumpStrength = 5, int kineticEnergy = 0)
+    public Player(Location location, Health health, AmmoCount ammoCount, Inventory inventory, KineticEnergy? kineticEnergy = null, int jumpStrength = 5)
     {
         Location = location;
         Health = health;
@@ -10,7 +10,7 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
         Inventory = inventory;
         Velocity = 0;
         JumpStrength = Math.Max(0, jumpStrength);
-        KineticEnergy = Math.Max(0, kineticEnergy);
+        KineticEnergy = kineticEnergy ?? KineticEnergy.None;
     }
 
     // Public properies
@@ -20,7 +20,7 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
     public Inventory Inventory { get; init; }
     public Velocity Velocity { get; init; }
     public int JumpStrength { get; init; }
-    public int KineticEnergy { get; init; }
+    public KineticEnergy KineticEnergy { get; init; }
     public string ConsoleDisplayString => HasHealth ? "☻" : "X";
     public Color Color => Color.White;
     public Color BackgroundColor => Color.Blue;
