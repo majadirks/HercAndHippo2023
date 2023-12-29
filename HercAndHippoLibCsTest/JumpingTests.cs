@@ -1,7 +1,7 @@
 ﻿namespace HercAndHippoLibCsTest;
 
 [TestClass]
-public class JumpingAndGravityTests
+public class JumpingTests
 {
     [TestMethod]
     public void KineticEnergyCannotBeNegative_Test()
