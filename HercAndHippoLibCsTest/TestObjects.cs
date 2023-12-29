@@ -30,6 +30,8 @@
     /// <summary>Increments a counter when shot </summary>
     internal record ShotCounter(Location Location, int Count) : HercAndHippoObj, ILocatable, IShootable
     {
+        public bool StopsBullet => false;
+
         public override bool BlocksMotion(Player p) => false;
 
         private Level IncreaseCount(Level level) => level.Replace(this, this with { Count = Count + 1 });

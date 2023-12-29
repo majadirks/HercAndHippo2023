@@ -5,6 +5,8 @@
         public string ConsoleDisplayString => "◙";
         public Color Color => Color.Black;
 
+        public bool StopsBullet => true;
+
         public override bool BlocksMotion(Player p) => !p.Has<Key>(BackgroundColor);
 
         public Level OnShot(Level level, Direction shotFrom, Bullet shotBy) => Behaviors.StopBullet(level,shotBy); // Cannot shoot through a door

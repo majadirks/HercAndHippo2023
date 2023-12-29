@@ -26,6 +26,9 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
     public Color BackgroundColor => Color.Blue;
     public bool HasHealth => Health.HasHealth;
     public bool HasAmmo => AmmoCount.HasAmmo;
+
+    public bool StopsBullet => true;
+
     public override string ToString() => $"Player at location {Location} with {Health}, {AmmoCount}, Inventory Size: {Inventory.Count}";
     
     // Behaviors

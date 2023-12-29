@@ -5,6 +5,8 @@
         public string ConsoleDisplayString => "█";
         public Color BackgroundColor => Color;
 
+        public bool StopsBullet => true;
+
         public override bool BlocksMotion(Player p) => true;
 
         public Level OnShot(Level level, Direction shotFrom, Bullet shotBy) => Behaviors.StopBullet(level,shotBy);
