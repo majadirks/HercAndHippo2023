@@ -9,7 +9,7 @@
             // Arrange
             int ammoCount = 17;
             Ammo ammo = new((2, 1), Count: ammoCount);
-            Level level = new(Player.Default(1, 1), gravity: 0, secondaryObjects: new HashSet<HercAndHippoObj>() { ammo });
+            Level level = new(Player.Default(1, 1), gravity: Gravity.None, secondaryObjects: new HashSet<HercAndHippoObj>() { ammo });
             Assert.AreEqual(0, (int) level.Player.AmmoCount);
             Assert.IsTrue(level.Contains(ammo));
             Assert.AreNotEqual(ammo.Location, level.Player.Location);
@@ -26,7 +26,7 @@
         {
             // Arrange
             Key key = new(Color.Magenta, (2,1));
-            Level level = new(Player.Default(1, 1), gravity: 0, secondaryObjects: new HashSet<HercAndHippoObj>() { key });
+            Level level = new(Player.Default(1, 1), gravity: Gravity.None, secondaryObjects: new HashSet<HercAndHippoObj>() { key });
             Assert.AreEqual(Inventory.EmptyInventory, level.Player.Inventory);
             Assert.IsTrue(level.Contains(key));
             Assert.AreNotEqual(key.Location, level.Player.Location);

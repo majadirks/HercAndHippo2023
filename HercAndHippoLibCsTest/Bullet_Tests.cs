@@ -19,7 +19,7 @@ namespace HercAndHippoLibCsTest
             ShotCounter cycledCounter = initialCounter with { Count = initialCount + 1 };
             Bullet bullet = new((2, 3), Direction.East);
             Bullet movedBullet = bullet with { Location = initialCounter.Location };
-            Level level = new(player: player, gravity: 0, secondaryObjects: new HashSet<HercAndHippoObj> { bullet, initialCounter });
+            Level level = new(player: player, gravity: Gravity.None, secondaryObjects: new HashSet<HercAndHippoObj> { bullet, initialCounter });
             Assert.IsTrue(level.Contains(bullet));
             Assert.IsFalse(level.Contains(movedBullet));
             Assert.IsTrue(level.Contains(initialCounter));
@@ -51,7 +51,7 @@ namespace HercAndHippoLibCsTest
             Player player = new((3, 2), health: 100, ammoCount: 1, inventory: Inventory.EmptyInventory);
             ShotCounter initialCounter = new((2, 2), Count: initialCount);
             ShotCounter cycledCounter = initialCounter with { Count = initialCount + 1 };
-            Level level = new(player, gravity: 0, secondaryObjects: new HashSet<HercAndHippoObj>() { initialCounter });
+            Level level = new(player, gravity: Gravity.None, secondaryObjects: new HashSet<HercAndHippoObj>() { initialCounter });
             Bullet bullet = new(initialCounter.Location, Direction.West);
             Assert.IsTrue(level.Contains(initialCounter));
             Assert.IsFalse(level.Contains(cycledCounter));
@@ -80,7 +80,7 @@ namespace HercAndHippoLibCsTest
             Bullet bullet3 = new((4, 3), Direction.East);
             Wall corner = new(Color.Yellow, (10, 10)); // Give bullet room in the level to move past the nonshootable
             Player player = new((3, 2), health: 100, ammoCount: 1, inventory: Inventory.EmptyInventory);
-            Level level = new(player, gravity: 0, secondaryObjects: new HashSet<HercAndHippoObj> { initialBullet, nonshootable, corner });
+            Level level = new(player, gravity: Gravity.None, secondaryObjects: new HashSet<HercAndHippoObj> { initialBullet, nonshootable, corner });
 
             // Act and assert
             level = level.RefreshCyclables(ActionInput.NoAction);
@@ -109,7 +109,7 @@ namespace HercAndHippoLibCsTest
             Bullet initialWestward = new((5, 5), Direction.West);
             Bullet cycledWestward = new((4, 5), Direction.West);
             Player player = new((1, 1), health: 100, ammoCount: 5, inventory: Inventory.EmptyInventory);
-            Level level = new(player, gravity:0, secondaryObjects: new HashSet<HercAndHippoObj>() { corner, initialEastward, initialWestward, initialNorthward, initialSouthward });
+            Level level = new(player, gravity: Gravity.None, secondaryObjects: new HashSet<HercAndHippoObj>() { corner, initialEastward, initialWestward, initialNorthward, initialSouthward });
 
             // Act
             level = level.RefreshCyclables(ActionInput.NoAction);
@@ -131,7 +131,7 @@ namespace HercAndHippoLibCsTest
             Bullet bullet = new((7, bulletRow), Direction.East);
             Bullet bulletAtEdge = bullet with { Location = (cornerCol, bulletRow) };
             Bullet bulletBeyondEdge = bullet with { Location = (cornerCol + 1, bulletRow) };
-            Level level = new(Player.Default(1, 1), gravity: 0, secondaryObjects: new HashSet<HercAndHippoObj>() {bullet, corner});
+            Level level = new(Player.Default(1, 1), gravity: Gravity.None, secondaryObjects: new HashSet<HercAndHippoObj>() {bullet, corner});
             // Act
             while (!level.Contains(bulletAtEdge)) // Bullet moves until it reaches east edge
                 level = level.RefreshCyclables(ActionInput.NoAction);                
@@ -154,7 +154,7 @@ namespace HercAndHippoLibCsTest
             Wall corner = new(Color.Yellow, (cornerCol, 10));
             Bullet bullet = new((5, bulletRow), Direction.West);
             Bullet bulletAtEdge = bullet with { Location = (Column.MIN_COL, bulletRow) };
-            Level level = new(Player.Default(5, 1), gravity: 0, secondaryObjects: new HashSet<HercAndHippoObj>() { bullet, corner });
+            Level level = new(Player.Default(5, 1), gravity: Gravity.None, secondaryObjects: new HashSet<HercAndHippoObj>() { bullet, corner });
             // Act
             while (!level.Contains(bulletAtEdge)) // Bullet moves until it reaches east edge
                 level = level.RefreshCyclables(ActionInput.NoAction);
@@ -176,7 +176,7 @@ namespace HercAndHippoLibCsTest
             Bullet bullet = new((7, 2), Direction.South);
             Bullet bulletAtEdge = bullet with { Location = (7, 10) };
             Bullet bulletBeyondEdge = bullet with { Location = (7, 11) };
-            Level level = new(Player.Default(1, 1), gravity: 0, secondaryObjects: new HashSet<HercAndHippoObj>() { bullet, corner });
+            Level level = new(Player.Default(1, 1), gravity: Gravity.None, secondaryObjects: new HashSet<HercAndHippoObj>() { bullet, corner });
             // Act
             while (!level.Contains(bulletAtEdge)) // Bullet moves until it reaches south edge     
                 level = level.RefreshCyclables(ActionInput.NoAction); 
@@ -198,7 +198,7 @@ namespace HercAndHippoLibCsTest
             Bullet bullet = new((7, 2), Direction.North);
             Bullet bulletAtEdge = bullet with { Location = (7, Row.MIN_ROW) };
             Bullet bulletBeyondEdge = bullet with { Location = (7, 11) };
-            Level level = new(Player.Default(7, 3), gravity: 0, secondaryObjects: new HashSet<HercAndHippoObj>() { bullet, corner });
+            Level level = new(Player.Default(7, 3), gravity: Gravity.None, secondaryObjects: new HashSet<HercAndHippoObj>() { bullet, corner });
             // Act
             while (!level.Contains(bulletAtEdge)) // Bullet moves until it reaches south edge     
                 level = level.RefreshCyclables(ActionInput.NoAction);
@@ -219,7 +219,7 @@ namespace HercAndHippoLibCsTest
             Wall corner1 = new(Color.Yellow, (10, 9));
             Wall corner2 = new(Color.Yellow, (9, 10));
             Player player = Player.Default(10,10); //placed in bottom-right corner
-            Level level = new(player, gravity: 0, secondaryObjects: new HashSet<HercAndHippoObj>() { corner1, corner2 });
+            Level level = new(player, gravity: Gravity.None, secondaryObjects: new HashSet<HercAndHippoObj>() { corner1, corner2 });
 
             // Act and assert
             // Shoot east and then cycle; there should be no bullet remaining.
@@ -238,7 +238,7 @@ namespace HercAndHippoLibCsTest
             Wall corner1 = new(Color.Yellow, (10, 10));
             Player player = new((2,2), health: 100,ammoCount: 5, inventory: Inventory.EmptyInventory);
             ShotCounter counter = new((5, 2), 0);
-            Level level = new(player, gravity: 0, secondaryObjects: new HashSet<HercAndHippoObj>() { corner1, counter });
+            Level level = new(player, gravity: Gravity.None, secondaryObjects: new HashSet<HercAndHippoObj>() { corner1, counter });
 
             // Act and assert
             level = level.RefreshCyclables(ActionInput.ShootEast); // bullet at (3,2)
@@ -271,7 +271,7 @@ namespace HercAndHippoLibCsTest
             Player player = new((Column.MIN_COL, 4), health: 10, ammoCount: 2, inventory: Inventory.EmptyInventory);
             ShotCounter northCounter = new((Column.MIN_COL, 1), Count: 0);
             ShotCounter southCounter = new((Column.MIN_COL, 7), Count: 0);
-            Level level = new(player, gravity: 0, secondaryObjects: new HashSet<HercAndHippoObj>() { northCounter, southCounter });
+            Level level = new(player, gravity: Gravity.None, secondaryObjects: new HashSet<HercAndHippoObj>() { northCounter, southCounter });
             // Act
             level = level
                 .RefreshCyclables(ActionInput.ShootNorth)
@@ -292,7 +292,7 @@ namespace HercAndHippoLibCsTest
             Player player = new((4, Row.MIN_ROW), health: 10, ammoCount: 2, inventory: Inventory.EmptyInventory);
             ShotCounter westCounter = new((1, Row.MIN_ROW), Count: 0);
             ShotCounter eastCounter = new((7, Row.MIN_ROW), Count: 0);
-            Level level = new(player, gravity: 0, secondaryObjects: new HashSet<HercAndHippoObj>() { westCounter, eastCounter });
+            Level level = new(player, gravity: Gravity.None, secondaryObjects: new HashSet<HercAndHippoObj>() { westCounter, eastCounter });
             // Act
             level = level
                 .RefreshCyclables(ActionInput.ShootWest)
@@ -312,7 +312,7 @@ namespace HercAndHippoLibCsTest
             // Arrange
             Player player = new((4, 2), health: 100, ammoCount: 5, inventory: Inventory.EmptyInventory);
             ShotCounter counter = new((4, 4), 0);
-            Level level = new(player, gravity: 0, secondaryObjects: new HashSet<HercAndHippoObj> { counter });
+            Level level = new(player, gravity: Gravity.None, secondaryObjects: new HashSet<HercAndHippoObj> { counter });
 
             // Act and assert
 
@@ -341,7 +341,7 @@ namespace HercAndHippoLibCsTest
             Noninteractor corner = new((10,10)); // Just to be perverse
             ShotCounter topRight = new((10, Row.MIN_ROW), 0);
             ShotCounter bottomLeft = new((Column.MIN_COL, 10), 0);
-            Level level = new(player, gravity: 0, secondaryObjects: new HashSet<HercAndHippoObj> {corner, topRight, bottomLeft });
+            Level level = new(player, gravity: Gravity.None, secondaryObjects: new HashSet<HercAndHippoObj> {corner, topRight, bottomLeft });
             Assert.AreEqual(10, level.Width);
             Assert.AreEqual(10, level.Height);
 

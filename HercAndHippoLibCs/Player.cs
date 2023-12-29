@@ -2,7 +2,7 @@
 
 public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouchable, IConsoleDisplayable
 {
-    public Player(Location location, Health health, AmmoCount ammoCount, Inventory inventory, int jumpStrength = 5, int kineticEnergy = 0)
+    public Player(Location location, Health health, AmmoCount ammoCount, Inventory inventory, KineticEnergy? kineticEnergy = null, int jumpStrength = 5)
     {
         Location = location;
         Health = health;
@@ -10,7 +10,7 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
         Inventory = inventory;
         Velocity = 0;
         JumpStrength = Math.Max(0, jumpStrength);
-        KineticEnergy = Math.Max(0, kineticEnergy);
+        KineticEnergy = kineticEnergy ?? KineticEnergy.None;
     }
 
     // Public properies
@@ -20,7 +20,7 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
     public Inventory Inventory { get; init; }
     public Velocity Velocity { get; init; }
     public int JumpStrength { get; init; }
-    public int KineticEnergy { get; init; }
+    public KineticEnergy KineticEnergy { get; init; }
     public string ConsoleDisplayString => HasHealth ? "☻" : "X";
     public Color Color => Color.White;
     public Color BackgroundColor => Color.Blue;
@@ -73,9 +73,8 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
             _ => Behaviors.NoReaction(nextState)
         };
 
-
         // We've accounted for east/west motion. Now check for any north/south motion
-        if (level.Gravity == 0)
+        if (level.Gravity.Strength == 0)
         {
             return actionInput switch // Based on input, move north/south
             {
@@ -85,19 +84,17 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
             };
         }
         else // Gravity is nonzero
-        {
-            
-
+        {       
             // If player is blocked south, allow jumping
             if (actionInput == ActionInput.MoveNorth && nextState.Player.MotionBlockedSouth(nextState))
             {
-                int nextKineticEnergy = nextState.Player.KineticEnergy + nextState.Player.JumpStrength;
+                KineticEnergy nextKineticEnergy = nextState.Player.KineticEnergy + nextState.Player.JumpStrength;
                 nextState = nextState.WithPlayer(nextState.Player with { KineticEnergy = nextKineticEnergy });
             }
 
             if (nextState.Player.KineticEnergy > 0) // player has kinetic energy; move north
             {
-                for (int i = 0; i < nextState.Gravity; i++)
+                for (int i = 0; i < nextState.Gravity.Strength; i++)
                 {
                     if (nextState.Player.KineticEnergy == 0 || nextState.Player.MotionBlockedNorth(nextState))
                     {
@@ -110,7 +107,7 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
                             newLocation: (nextState.Player.Location.Col, nextState.Player.Location.Row.NextNorth()),
                             approachFrom: Direction.South,
                             curState: nextState);
-                        int nextKineticEnergy = nextState.Player.KineticEnergy - nextState.Gravity;
+                        KineticEnergy nextKineticEnergy = nextState.Player.KineticEnergy - nextState.Gravity.Strength;
                         nextState = nextState.WithPlayer(nextState.Player with { KineticEnergy = nextKineticEnergy });
                     }
                 }
@@ -118,7 +115,7 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
             else  if (nextState.GravityApplies()) // No kinetic energy; fall due to gravity until blocked
             {
                 for (int i = 0;
-                    i < nextState.Gravity &&
+                    i < nextState.Gravity.Strength &&
                     !nextState.Player.MotionBlockedSouth(nextState);
                     i++)
                 {
