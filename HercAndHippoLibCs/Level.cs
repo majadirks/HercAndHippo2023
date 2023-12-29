@@ -37,7 +37,7 @@ namespace HercAndHippoLibCs
         public Level RefreshCyclables(ActionInput actionInput)
         {
             var nextState = LevelObjects // Do not refresh in parallel; this could cause objects to interfere with nearby copies of themselves
-            .Where(disp => disp is ICyclable cylable)
+            .Where(disp => disp.IsCyclable)
             .Cast<ICyclable>()
             .Aggregate(seed: this, func: (state, nextCyclable) => nextCyclable.Cycle(state, actionInput));
             nextState.Cycles = Cycles + 1;

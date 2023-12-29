@@ -7,10 +7,12 @@
             IsLocatable =  this is ILocatable;
             IsTouchable = this is ITouchable;
             IsShootable = this is IShootable;
+            IsCyclable = this is ICyclable;
         }
         public bool IsLocatable { get; init; }
         public bool IsTouchable { get; init; }
         public bool IsShootable { get; init; }
+        public bool IsCyclable { get; init; }
 
         public abstract bool BlocksMotion(Player p);
 
