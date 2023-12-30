@@ -87,8 +87,10 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
     {
         Player player = level.Player;
         // First, attempt to place East
-        bool blockedEast = player.ObjectLocatedTo(level, Direction.East) || player.MotionBlockedTo(level,Direction.East);
-        if (!blockedEast)
+        bool blockedEast = player.MotionBlockedTo(level,Direction.East);
+        Location NECorner = new(player.Location.Col.NextEast(level.Width), player.Location.Row.NextNorth());
+        bool blockedNE = level.ObjectsAt(NECorner).Where(obj => obj.BlocksMotion(level)).Any();
+        if (!blockedEast && !blockedNE)
         {
             Location nextLocation = new(Col: player.Location.Col.NextEast(level.Width), Row: player.Location.Row);
             Level nextState = level.Replace(this, this with { Location = nextLocation, LockedToPlayer = false });
@@ -97,8 +99,10 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
         }
 
         // If that didn't work, attempt to place West
-        bool blockedWest = player.ObjectLocatedTo(level, Direction.West) || player.MotionBlockedTo(level, Direction.West);
-        if (!blockedWest)
+        bool blockedWest = player.MotionBlockedTo(level, Direction.West);
+        Location NWCorner = new(player.Location.Col.NextWest(), player.Location.Row.NextNorth());
+        bool blockedNW = level.ObjectsAt(NWCorner).Where(obj => obj.BlocksMotion(level)).Any();
+        if (!blockedWest && !blockedNW)
         {
             Location nextLocation = new(Col: player.Location.Col.NextWest(), Row: player.Location.Row);
             Level nextState = level.Replace(this, this with { Location = nextLocation, LockedToPlayer = false });
@@ -119,9 +123,7 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
     {
         Player player = level.Player;
         bool cannotLift = 
-            player.ObjectLocatedTo(level, Direction.North) || 
             player.MotionBlockedTo(level, Direction.North) || 
-            this.ObjectLocatedTo(level, Direction.North) ||
             this.MotionBlockedTo(level, Direction.North);
         if (cannotLift)
             return Behaviors.NoReaction(level);

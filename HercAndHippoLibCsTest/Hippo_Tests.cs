@@ -1,10 +1,12 @@
 ﻿/*
  * Tests:
- * Do not pick up hippo if player is blocked above
- * Do not pick up hippo if hippo is blocked above
- * Put hippo down East if not blocked East
- * Put hippo down West if blocked East but not West
- * Do not put hippo down if blocked both East and West
+ * Pick up hippo to West
+ * Do not pick up hippo West if player blocked above
+ * Do not pick up hippo West if hippo blocked above
+ * 
+ * Put hippo down East if not blocked East and intervening corner is clear
+ * Put hippo down West if blocked East but not West and if intervening corner is clear
+ * Do not put hippo down if blocked both East and West (or put down above blockage)
  * After hippo is put down, only one hippo exists on the level.
  *      (Currently there's a bug where, if player is atop a block with space on both sides, hippo is placed both east and west!)
  * Hippo health decrements when shot
@@ -68,7 +70,7 @@ public class Hippo_Tests
     }
 
     [TestMethod]
-    public void PlayerCanPickUpHippo_Test()
+    public void PlayerCanPickUpEastHippo_Test()
     {
         // Arrange
         Player player = Player.Default(new Location(Col: 3, Row: 10)) with { JumpStrength = 5 };
