@@ -154,8 +154,8 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
         Direction whither = approachFrom.Mirror();
         Player player = curState.Player;
         bool hasHippo = TryGetHippo(curState, out Hippo? hippo);
-        HippoMotionBlockages hippoBlocks = Hippo.Blockages(hippo, curState);
-        bool blockedByHippo = hippoBlocks.HippoBlocksTo(whither);    
+        HippoMotionBlockages hippoBlockages = HippoMotionBlockages.GetBlockages(hippo, curState);
+        bool blockedByHippo = hippoBlockages.HippoBlocksTo(whither);    
         
         // If no obstacles, move
         if (!player.ObjectLocatedTo(curState, whither) && !blockedByHippo)

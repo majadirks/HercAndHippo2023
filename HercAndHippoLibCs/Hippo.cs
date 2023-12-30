@@ -10,6 +10,16 @@ public record HippoMotionBlockages(bool BlockedNorth, bool BlockedEast, bool Blo
                Direction.West => BlockedWest,
                _ => false
            };
+
+    public static HippoMotionBlockages GetBlockages(Hippo? hippo, Level level)
+    {
+        if (hippo == null) return new HippoMotionBlockages(false, false, false);
+        bool blockedNorth = hippo.LockedToPlayer && hippo.MotionBlockedTo(level, Direction.North);
+        bool blockedEast = hippo.LockedToPlayer && hippo.MotionBlockedTo(level, Direction.East);
+        bool blockedWest = hippo.LockedToPlayer && hippo.MotionBlockedTo(level, Direction.West);
+        return new(BlockedNorth: blockedNorth, BlockedEast: blockedEast, BlockedWest: blockedWest);
+    }
+
 }
 public record Hippo(Location Location, Health Health, bool LockedToPlayer) : HercAndHippoObj, ILocatable, ITouchable, ICyclable, IShootable, IConsoleDisplayable
 {
@@ -27,15 +37,6 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
     {
         Level ifPlayerWereNorthOne = level.WithPlayer(level.Player with { Location = this.Location });
         return ifPlayerWereNorthOne.Player.MotionBlockedTo(ifPlayerWereNorthOne, Direction.North);
-    }
-
-    public static HippoMotionBlockages Blockages(Hippo? hippo, Level level)
-    {
-        if (hippo == null) return new HippoMotionBlockages(false, false, false);
-        bool blockedNorth = hippo.LockedToPlayer && hippo.MotionBlockedTo(level, Direction.North);
-        bool blockedEast = hippo.LockedToPlayer && hippo.MotionBlockedTo(level, Direction.East);
-        bool blockedWest = hippo.LockedToPlayer && hippo.MotionBlockedTo(level, Direction.West);
-        return new(BlockedNorth: blockedNorth, BlockedEast: blockedEast, BlockedWest: blockedWest);
     }
 
     public Level Cycle(Level level, ActionInput actionInput)
