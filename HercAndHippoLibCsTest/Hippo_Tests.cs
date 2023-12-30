@@ -1,7 +1,5 @@
 ﻿/*
  * Tests:
- * Do not pick up hippo East if NE corner is blocked
- * Do not pick up hippo West if NW corner is blocked
  * If player falls onto hippo, player takes hippo (from 3 above, 2 above, directly above)
  * If player walks over Hippo, picks up hippo:
  * 
