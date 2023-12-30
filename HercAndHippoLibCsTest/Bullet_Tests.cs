@@ -51,7 +51,13 @@ namespace HercAndHippoLibCsTest
             Player player = new((3, 2), health: 100, ammoCount: 1, inventory: Inventory.EmptyInventory);
             ShotCounter initialCounter = new((2, 2), Count: initialCount);
             ShotCounter cycledCounter = initialCounter with { Count = initialCount + 1 };
-            Level level = new(player, gravity: Gravity.None, secondaryObjects: new HashSet<HercAndHippoObj>() { initialCounter });
+            Level level = new(player, 
+                gravity: Gravity.None, 
+                secondaryObjects: new HashSet<HercAndHippoObj>() 
+                { 
+                    initialCounter, 
+                    new Wall(Color.Black, (20, 20)) 
+                });
             Bullet bullet = new(initialCounter.Location, Direction.West);
             Assert.IsTrue(level.Contains(initialCounter));
             Assert.IsFalse(level.Contains(cycledCounter));

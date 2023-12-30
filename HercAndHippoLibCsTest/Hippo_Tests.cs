@@ -88,7 +88,8 @@ public class Hippo_Tests
             });
 
         // Act: Move to pick up hippo
-        level = level.RefreshCyclables(ActionInput.MoveEast);
+        level = level.RefreshCyclables(ActionInput.MoveEast); // Hippo locks to player
+        level = level.RefreshCyclables(ActionInput.NoAction); // Hippo moves above player
 
         // Assert: Hippo is now locked to player
         Assert.IsTrue(level.TryGetHippo(out Hippo? hippo));

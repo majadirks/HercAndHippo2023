@@ -43,15 +43,21 @@ namespace HercAndHippoLibCs
         public Level RefreshCyclables(ActionInput actionInput, CancellationToken? cancellationToken = null)
         {
             CancellationToken token = cancellationToken ?? CancellationToken.None;
-            var nextState = Player.Cycle(this, actionInput);
-            nextState = nextState.SecondaryObjects // Do not refresh in parallel; this could cause objects to interfere with nearby copies of themselves, and can make updating slower
+            // First cycle non-player objects
+            var nextState = SecondaryObjects // Do not refresh in parallel; this could cause objects to interfere with nearby copies of themselves, and can make updating slower
                 .Where(disp => disp.IsCyclable)
                 .Cast<ICyclable>()
                 .TakeWhile(dummy => !token.IsCancellationRequested)
                 .Aggregate(
-                seed: nextState, 
+                seed: this, 
                 func: (state, nextCyclable) => nextCyclable.Cycle(state, actionInput));
-            
+            // Then cycle player
+            nextState = Player.Cycle(nextState, actionInput);
+            // Finally, if hippo is locked to player, hippo should move in response to any player motion
+            if (nextState.TryGetHippo(out Hippo? hippo) && hippo != null && hippo.LockedToPlayer)
+            {
+                nextState = hippo.LockAbovePlayer(nextState);
+            }
             nextState.Cycles = Cycles + 1;
             return nextState;
         }

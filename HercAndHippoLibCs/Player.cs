@@ -179,20 +179,20 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
     {
         Player player = level.Player;
         if (!player.HasAmmo) return level;
-        int col = player.Location.Col;
-        int row = player.Location.Row;
+        Column col = player.Location.Col;
+        Row row = player.Location.Row;
         int bulletStartCol = whither switch
         {
-            Direction.East => col + 1,
-            Direction.West => col - 1,
+            Direction.East => col.NextEast(level.Width),
+            Direction.West => col.NextWest(),
             Direction.North => col,
             Direction.South => col,
             _ => throw new NotImplementedException(),
         };
         int bulletStartRow = whither switch
         {
-            Direction.North => row - 1,
-            Direction.South => row + 1,
+            Direction.North => row.NextNorth(),
+            Direction.South => row.NextSouth(level.Height),
             Direction.East => row,
             Direction.West => row,
             _ => throw new NotImplementedException()

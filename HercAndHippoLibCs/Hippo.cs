@@ -47,7 +47,7 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
             return PutDown(level);
         else if (LockedToPlayer || Location == level.Player.Location)
         {
-            (Hippo _, Level locked) = LockAbovePlayer(level);
+            Level locked = LockAbovePlayer(level);
             return locked;
         }
         else if (level.GravityApplies()) // Not locked to player; fall due to gravity if relevant
@@ -74,12 +74,13 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
         return level.Replace(this, this with { Location = nextLocation });
     }
 
-    private (Hippo, Level) LockAbovePlayer(Level level)
+    public Level LockAbovePlayer(Level level)
     {
         Player player = level.Player;
         Location nextLocation = new(Col: player.Location.Col, Row: player.Location.Row.NextNorth());
         Hippo lockedHippo = this with { Location = nextLocation, LockedToPlayer = true };
-        return (lockedHippo, level.Replace(this, lockedHippo));
+        Level withLockedHippo = level.Replace(this, lockedHippo);
+        return  withLockedHippo;
     }
 
     private Level PutDown(Level level)
@@ -122,7 +123,7 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
             return Behaviors.NoReaction(level);
         else
         {
-            (Hippo _, Level locked) = LockAbovePlayer(level);
+            Level locked = LockAbovePlayer(level);
             return locked;
         }
     }
