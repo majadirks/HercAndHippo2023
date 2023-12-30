@@ -115,7 +115,7 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
                     }
                 }
             }
-            else if (nextState.GravityApplies()) // No kinetic energy; fall due to gravity until blocked
+            else if (actionInput == ActionInput.MoveSouth || nextState.GravityApplies()) // No kinetic energy; fall due to gravity until blocked
             {
                 bool fell = false;
                 Location startLocation = nextState.Player.Location;
@@ -134,7 +134,7 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
                 }
 
                 // If player fell and is blocked below by an ITouchable, call its OnTouch() method
-                if (fell)
+                if (fell || actionInput == ActionInput.MoveSouth)
                 {
                     Location below = new(nextState.Player.Location.Col, nextState.Player.Location.Row.NextSouth(level.Height));
                     IEnumerable<ITouchable> touchables = nextState.ObjectsAt(below).Where(obj => obj.IsTouchable && obj.BlocksMotion(nextState)).Cast<ITouchable>();
