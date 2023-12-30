@@ -161,9 +161,9 @@ public class Hippo_Tests
         // Assert: Hippo is now locked to player
         Assert.IsTrue(level.TryGetHippo(out hippo));
         Assert.IsNotNull(hippo != null);
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
+        #pragma warning disable CS8602 // Dereference of a possibly null reference.
         Assert.IsFalse(hippo.LockedToPlayer);
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
+        #pragma warning restore CS8602 // Dereference of a possibly null reference.
         Assert.AreEqual(new Location(4, 10), hippo.Location);
     }
 }
