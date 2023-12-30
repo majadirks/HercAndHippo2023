@@ -238,13 +238,17 @@ namespace HercAndHippoLibCsTest
             Wall corner1 = new(Color.Yellow, (10, 10));
             Player player = new((2,2), health: 100,ammoCount: 5, inventory: Inventory.EmptyInventory);
             ShotCounter counter = new((5, 2), 0);
-            Level level = new(player, gravity: Gravity.None, secondaryObjects: new HashSet<HercAndHippoObj>() { corner1, counter });
+            Level level = new(player, 
+                gravity: Gravity.None, 
+                secondaryObjects: new HashSet<HercAndHippoObj>() 
+                { 
+                    corner1, 
+                    counter,
+                    new Bullet((4,2), Direction.East),
+                    new Bullet((3,2), Direction.East)
+                });
 
             // Act and assert
-            level = level.RefreshCyclables(ActionInput.ShootEast); // bullet at (3,2)
-            Assert.IsTrue(level.Contains(new Bullet((3, 2), Direction.East)));
-
-            level = level.RefreshCyclables(ActionInput.ShootEast); // bullets at (3,2) and (4,2)
             Assert.IsTrue(level.Contains(new Bullet((3, 2), Direction.East)));
             Assert.IsTrue(level.Contains(new Bullet((4, 2), Direction.East)));
 

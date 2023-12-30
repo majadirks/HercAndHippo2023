@@ -43,14 +43,15 @@ namespace HercAndHippoLibCs
         public Level RefreshCyclables(ActionInput actionInput, CancellationToken? cancellationToken = null)
         {
             CancellationToken token = cancellationToken ?? CancellationToken.None;
-            var nextState = SecondaryObjects // Do not refresh in parallel; this could cause objects to interfere with nearby copies of themselves, and can make updating slower
+            var nextState = Player.Cycle(this, actionInput);
+            nextState = SecondaryObjects // Do not refresh in parallel; this could cause objects to interfere with nearby copies of themselves, and can make updating slower
                 .Where(disp => disp.IsCyclable)
                 .Cast<ICyclable>()
                 .TakeWhile(dummy => !token.IsCancellationRequested)
                 .Aggregate(
-                seed: this, 
+                seed: nextState, 
                 func: (state, nextCyclable) => nextCyclable.Cycle(state, actionInput));
-            nextState = Player.Cycle(nextState, actionInput);
+            
             nextState.Cycles = Cycles + 1;
             return nextState;
         }
