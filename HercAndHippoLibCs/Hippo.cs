@@ -34,8 +34,12 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
     public override bool BlocksMotion(Level level)
     {
         // Do not block a player immediately above
-        if (this.Below(level.Player.Location)) return false;
-
+        if (this.Below(level.Player.Location)) 
+            return false;
+        else if (level.Player.Below(this.Location))
+            return this.MotionBlockedTo(level, Direction.North);
+        else if (!CanBePickedUp(level))
+            return true;
         Direction whither = this.Flee(level);
         return this.MotionBlockedTo(level, whither);
     }
@@ -117,22 +121,29 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
         => level.Without(shotBy).Replace(this, this with { Health = this.Health - 5 });
 
     public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy) => PickUp(level);
-    private Level PickUp(Level level)
+    private bool CanBePickedUp(Level level)
     {
         Player player = level.Player;
+
+        if (this.Below(player.Location))
+            return true;
+
         bool isEast = Location.Col > player.Location.Col;
         bool isWest = !isEast;
+        
 
         Location NECorner = new(player.Location.Col.NextEast(level.Width), player.Location.Row.NextNorth());
         Location NWCorner = new(player.Location.Col.NextWest(), player.Location.Row.NextNorth());
         Location interveningCorner = isEast ? NECorner : NWCorner;
 
-        bool playerAbove = this.Below(player.Location);
-        bool cannotLift = playerAbove ? false : // always possible to lift if player is directly above
-            player.MotionBlockedTo(level, Direction.North) || 
+        bool cannotLift = player.MotionBlockedTo(level, Direction.North) ||
             this.MotionBlockedTo(level, Direction.North) ||
             level.ObjectsAt(interveningCorner).Where(obj => obj.BlocksMotion(level)).Any();
-        if (cannotLift)
+        return !cannotLift;
+    }
+    private Level PickUp(Level level)
+    {
+        if (!CanBePickedUp(level))
             return Behaviors.NoReaction(level);
         else
         {
