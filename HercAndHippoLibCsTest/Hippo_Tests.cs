@@ -109,6 +109,35 @@ public class Hippo_Tests
     }
 
     [TestMethod]
+    public void PlayerCanPickUpWestHippo_Test()
+    {
+        // Arrange
+        Player player = Player.Default(new Location(Col: 5, Row: 10)) with { JumpStrength = 5 };
+        Level level = new(
+            player,
+            gravity: new Gravity(Strength: 1, WaitCycles: 1),
+            secondaryObjects: new()
+            {
+                new Hippo(Location: (4,10), Health: 10, LockedToPlayer: false),
+
+                new Wall(Color.White, (1,11)),
+                new Wall(Color.White, (2,11)),
+                new Wall(Color.White, (3,11)),
+                new Wall(Color.White, (4,11)),
+                new Wall(Color.White, (5,11)),
+            });
+
+        // Act: Move to pick up hippo
+        level = level.RefreshCyclables(ActionInput.MoveWest);
+
+        // Assert: Hippo is now locked to player
+        Assert.IsTrue(level.TryGetHippo(out Hippo? hippo));
+        Assert.IsTrue(hippo != null && hippo.LockedToPlayer);
+        Assert.AreEqual(new Location(4, 10), level.Player.Location);
+        Assert.AreEqual(new Location(4, 9), hippo.Location);
+    }
+
+    [TestMethod]
     public void DoNotPickUpHippoIfPlayerBlockedAbove_Test()
     {
         // Arrange
