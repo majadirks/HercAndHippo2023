@@ -244,8 +244,8 @@ namespace HercAndHippoLibCsTest
                 { 
                     corner1, 
                     counter,
-                    new Bullet((4,2), Direction.East),
-                    new Bullet((3,2), Direction.East)
+                    new Bullet((3,2), Direction.East),
+                    new Bullet((4,2), Direction.East)
                 });
 
             // Act and assert
