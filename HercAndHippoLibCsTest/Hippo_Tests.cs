@@ -3,6 +3,7 @@
  * Pick up hippo to West
  * Do not pick up hippo West if player blocked above
  * Do not pick up hippo West if hippo blocked above
+ * If player falls onto hippo, player takes hippo
  * 
  * Put hippo down East if not blocked East and intervening corner is clear
  * Put hippo down West if blocked East but not West and if intervening corner is clear

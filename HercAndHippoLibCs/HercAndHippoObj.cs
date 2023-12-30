@@ -1,4 +1,6 @@
-﻿namespace HercAndHippoLibCs
+﻿using System.Diagnostics;
+
+namespace HercAndHippoLibCs
 {
     public abstract record HercAndHippoObj 
     {
@@ -15,7 +17,7 @@
         public bool IsCyclable { get; init; }
 
         public abstract bool BlocksMotion(Level level);
-
+       
         public bool ObjectLocatedTo(Level level, Direction where)
             => this is ILocatable locatable && 
             where switch

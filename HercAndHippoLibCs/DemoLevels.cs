@@ -243,9 +243,21 @@ public static class DemoLevels
             new Wall(Color.Cyan, (18, 11)),
             new Wall(Color.Cyan, (19, 11)),
             new Wall(Color.Cyan, (20, 11)),
+            new Wall(Color.Cyan, (21, 11)),
+            new Wall(Color.Cyan, (22, 11)),
+            new Wall(Color.Cyan, (23, 11)),
+            new Wall(Color.Cyan, (24, 11)),
+            new Wall(Color.Cyan, (25, 11)),
+            new Wall(Color.Cyan, (26, 11)),
+            new Wall(Color.Cyan, (27, 11)),
+            new Wall(Color.Cyan, (28, 11)),
+            new Wall(Color.Cyan, (29, 11)),
+            new Wall(Color.Cyan, (30, 11)),
 
+            new Wall(Color.White, (3, 6)),
+            new Wall(Color.White, (9, 8)),
             new Wall(Color.White, (18, 9)),
-            new Wall(Color.White, (9, 8))
+            new Wall(Color.White, (22, 10))
         }
         );
 }
