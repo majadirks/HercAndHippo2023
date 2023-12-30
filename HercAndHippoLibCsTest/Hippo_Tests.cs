@@ -41,7 +41,7 @@ public class Hippo_Tests
         Player player = Player.Default(new Location(Col: 3, Row: 10)) with { JumpStrength = 5 };
         Level level = new(
             player,
-            gravity: Gravity.Default,
+            gravity: new Gravity(Strength: 1, WaitCycles: 1),
             secondaryObjects: new()
             {
                 new Hippo(Location: (4,10), Health: 10, LockedToPlayer: false),
@@ -54,6 +54,18 @@ public class Hippo_Tests
             });
 
         level = level.RefreshCyclables(ActionInput.MoveEast);
-        //Assert.IsTrue(Player.TryGetHippo(level, out Hippo hippo)); 
+        Assert.IsTrue(level.TryGetHippo(out Hippo? hippo));
+        Assert.IsTrue(hippo != null && hippo.LockedToPlayer);
+
+        // Act: Jump
+        level = level.RefreshCyclables(ActionInput.MoveNorth);
+        level = level.RefreshCyclables(ActionInput.NoAction);
+        level = level.RefreshCyclables(ActionInput.NoAction);
+
+        // Assert: Player has jumped, and hippo has jumped with player
+        Assert.AreEqual(new Location(4,7), level.Player.Location);
+        Assert.IsTrue(level.TryGetHippo(out hippo));
+        Assert.IsTrue(hippo != null && hippo.LockedToPlayer);
+        Assert.AreEqual(new Location(4, 6), hippo.Location);
     }
 }
