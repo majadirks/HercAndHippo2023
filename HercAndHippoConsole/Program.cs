@@ -7,16 +7,18 @@ const int MESSAGE_MARGIN = 3;
 const int REFRESH_FREQUENCY_HZ = 50;
 
 // Initialize data
-CycleTimer cycleTimer = new(frequencyHz: REFRESH_FREQUENCY_HZ);
-ConsoleKeyInfo keyInfo;
 Level state = DemoLevels.ManyObjectsStressTest();
 double averageCycleTime = ApproximateCycleTime(state);
-FutureStates futures;
+CycleTimer cycleTimer = new(frequencyHz: REFRESH_FREQUENCY_HZ);
+
 ScrollStatus scrollStatus = ScrollStatus.Default(state.Player.Location);
 BufferStats bufferStats = new(bufferSizeChanged: true, bufferWidth: Console.BufferWidth, bufferHeight: Console.BufferHeight);
 DisplayPlan displayPlan = new(state, scrollStatus, bufferStats);
 Console.OutputEncoding = System.Text.Encoding.UTF8;
 ActionInput lastAction = ActionInput.NoAction;
+
+ConsoleKeyInfo keyInfo;
+FutureStates futures;
 
 // Initialize display
 ResetConsoleColors();
