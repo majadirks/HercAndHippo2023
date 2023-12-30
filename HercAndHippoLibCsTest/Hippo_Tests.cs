@@ -1,7 +1,8 @@
 ﻿/*
  * Tests:
  * Do not pick up hippo if player blocked above
- * Do not pick up hippo if hippo blocked above
+ * Do not pick up hippo East if NE corner is blocked
+ * Do not pick up hippo West if NW corner is blocked
  * If player falls onto hippo, player takes hippo (from 3 above, 2 above, directly above)
  * If player walks over Hippo, picks up hippo:
  * 
@@ -249,6 +250,36 @@ public class Hippo_Tests
             secondaryObjects: new()
             {
                 new Wall(Color.White, (4,9)),
+                new Hippo(Location: (4,10), Health: 10, LockedToPlayer: false),
+
+                new Wall(Color.White, (1,11)),
+                new Wall(Color.White, (2,11)),
+                new Wall(Color.White, (3,11)),
+                new Wall(Color.White, (4,11)),
+                new Wall(Color.White, (5,11)),
+            });
+
+        // Act: Move to pick up hippo
+        level = level.RefreshCyclables(ActionInput.MoveEast);
+
+        // Assert: Hippo is not locked to player
+        Assert.IsTrue(level.TryGetHippo(out Hippo? hippo));
+        Assert.IsFalse(hippo == null || hippo.LockedToPlayer);
+        Assert.AreEqual(new Location(3, 10), level.Player.Location); // player did not move (blocked by hippo)
+        Assert.AreEqual(new Location(4, 10), hippo.Location); // hippo did not move
+    }
+
+    [TestMethod]
+    public void CannotPickUpHippoIfPlayerBlockedAbove_Test()
+    {
+        // Arrange
+        Player player = Player.Default(new Location(Col: 3, Row: 10)) with { JumpStrength = 5 };
+        Level level = new(
+            player,
+            gravity: new Gravity(Strength: 1, WaitCycles: 1),
+            secondaryObjects: new()
+            {
+                new Wall(Color.White, (3,9)),
                 new Hippo(Location: (4,10), Health: 10, LockedToPlayer: false),
 
                 new Wall(Color.White, (1,11)),
