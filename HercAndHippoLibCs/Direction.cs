@@ -48,4 +48,7 @@ public static class DirectionExtensions
         else
             throw new NotSupportedException($"An unexpectederror occurred in method {nameof(Seek)}.");
     }
+
+    public static Direction Flee<T>(this T hho, Level level) where T : HercAndHippoObj, ILocatable
+        => hho.Seek(level).Mirror();
 }

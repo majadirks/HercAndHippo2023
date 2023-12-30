@@ -33,7 +33,7 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
 
     public override bool BlocksMotion(Level level)
     {
-        Direction whither = this.Seek(level).Mirror();
+        Direction whither = this.Flee(level);
         return this.MotionBlockedTo(level, whither);
     }
 
