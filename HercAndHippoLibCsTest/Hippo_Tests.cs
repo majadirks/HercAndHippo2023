@@ -2,7 +2,7 @@
  * Tests:
  * Can jump while hippo is locked
  * Pick up hippo on touch if neither player nor hippo is blocked above, and corner between player and hippo is clear
- * Do not pick up hippo if player is blocked above or is if the intervening corner is blocked
+ * Do not pick up hippo if player is blocked above
  * Do not pick up hippo if hippo is blocked above
  * Put hippo down East if not blocked East
  * Put hippo down West if blocked East but not West
@@ -36,6 +36,24 @@ public class Hippo_Tests
 
     [TestMethod]
     public void PlayerCanJumpWithHippo_Test()
-    { 
+    {
+        // Arrange
+        Player player = Player.Default(new Location(Col: 3, Row: 10)) with { JumpStrength = 5 };
+        Level level = new(
+            player,
+            gravity: Gravity.Default,
+            secondaryObjects: new()
+            {
+                new Hippo(Location: (4,10), Health: 10, LockedToPlayer: false),
+
+                new Wall(Color.White, (1,11)),
+                new Wall(Color.White, (2,11)),
+                new Wall(Color.White, (3,11)),
+                new Wall(Color.White, (4,11)),
+                new Wall(Color.White, (5,11)),
+            });
+
+        level = level.RefreshCyclables(ActionInput.MoveEast);
+        //Assert.IsTrue(Player.TryGetHippo(level, out Hippo hippo)); 
     }
 }

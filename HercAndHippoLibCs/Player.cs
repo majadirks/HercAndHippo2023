@@ -142,18 +142,14 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
         };
     public override bool BlocksMotion(Level level) => level.Player != this;
 
-    public static bool TryGetHippo(Level level, out Hippo? hippo)
-    {
-        hippo = (Hippo?)level.LevelObjects.Where(obj => obj is Hippo h && h.LockedToPlayer).SingleOrDefault();
-        return hippo != null;
-    }
+
 
     // Private static helpers
     private static Level TryMoveTo(Location newLocation, Direction approachFrom, Level curState)
     {
         Direction whither = approachFrom.Mirror();
         Player player = curState.Player;
-        bool hasHippo = TryGetHippo(curState, out Hippo? hippo);
+        bool hasHippo = curState.TryGetHippo(out Hippo? hippo) && hippo != null && hippo.LockedToPlayer;
         HippoMotionBlockages hippoBlockages = HippoMotionBlockages.GetBlockages(hippo, curState);
         bool blockedByHippo = hippoBlockages.HippoBlocksTo(whither);    
         

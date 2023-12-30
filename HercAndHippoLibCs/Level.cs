@@ -69,6 +69,11 @@ namespace HercAndHippoLibCs
         private static int GetWidth(HashSet<HercAndHippoObj> ds) => ds.Where(ds => ds is ILocatable d).Cast<ILocatable>().Select(d => d.Location.Col).Max() ?? 0;
         private static int GetHeight(HashSet<HercAndHippoObj> ds) => ds.Where(ds => ds is ILocatable d).Cast<ILocatable>().Select(d => d.Location.Row).Max() ?? 0;
         public static readonly Level Default = new(Player.Default(1, 1), Gravity.None, new());
+        public bool TryGetHippo(out Hippo? hippo)
+        {
+            hippo = (Hippo?)LevelObjects.Where(obj => obj is Hippo h).SingleOrDefault();
+            return hippo != null;
+        }
     }
 
     public static class HashSetExtensions
