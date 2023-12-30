@@ -1,6 +1,5 @@
 ﻿/*
  * Tests:
- * Do not pick up hippo if player blocked above
  * Do not pick up hippo East if NE corner is blocked
  * Do not pick up hippo West if NW corner is blocked
  * If player falls onto hippo, player takes hippo (from 3 above, 2 above, directly above)
@@ -298,4 +297,5 @@ public class Hippo_Tests
         Assert.AreEqual(new Location(3, 10), level.Player.Location); // player did not move (blocked by hippo)
         Assert.AreEqual(new Location(4, 10), hippo.Location); // hippo did not move
     }
+
 }

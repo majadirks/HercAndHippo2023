@@ -124,21 +124,10 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
     private bool CanBePickedUp(Level level)
     {
         Player player = level.Player;
-
         if (this.Below(player.Location))
             return true;
-
-        bool isEast = Location.Col > player.Location.Col;
-        bool isWest = !isEast;
-        
-
-        Location NECorner = new(player.Location.Col.NextEast(level.Width), player.Location.Row.NextNorth());
-        Location NWCorner = new(player.Location.Col.NextWest(), player.Location.Row.NextNorth());
-        Location interveningCorner = isEast ? NECorner : NWCorner;
-
         bool cannotLift = player.MotionBlockedTo(level, Direction.North) ||
-            this.MotionBlockedTo(level, Direction.North) ||
-            level.ObjectsAt(interveningCorner).Where(obj => obj.BlocksMotion(level)).Any();
+            this.MotionBlockedTo(level, Direction.North);
         return !cannotLift;
     }
     private Level PickUp(Level level)
