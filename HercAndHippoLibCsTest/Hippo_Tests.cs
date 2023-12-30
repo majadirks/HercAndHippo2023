@@ -1,6 +1,5 @@
 ﻿/*
  * Tests:
- * Pick up hippo on touch if neither player nor hippo is blocked above, and corner between player and hippo is clear
  * Do not pick up hippo if player is blocked above
  * Do not pick up hippo if hippo is blocked above
  * Put hippo down East if not blocked East
@@ -95,5 +94,42 @@ public class Hippo_Tests
         Assert.IsTrue(hippo != null && hippo.LockedToPlayer);
         Assert.AreEqual(new Location(4,10), level.Player.Location);
         Assert.AreEqual(new Location(4, 9), hippo.Location);
+    }
+
+    [TestMethod]
+    public void DoNotPickUpHippoIfPlayerBlockedAbove_Test()
+    {
+        // Arrange
+        Player player = Player.Default(new Location(Col: 3, Row: 10)) with { JumpStrength = 5 };
+        Level level = new(
+            player,
+            gravity: new Gravity(Strength: 1, WaitCycles: 1),
+            secondaryObjects: new()
+            {
+                new Wall(Color.Cyan, Location: new(4,9)),
+                new Hippo(Location: (4,10), Health: 10, LockedToPlayer: false),
+
+                new Wall(Color.White, (1,11)),
+                new Wall(Color.White, (2,11)),
+                new Wall(Color.White, (3,11)),
+                new Wall(Color.White, (4,11)),
+                new Wall(Color.White, (5,11)),
+            });
+
+        level.TryGetHippo(out Hippo? hippo);
+        Assert.IsNotNull(hippo);
+        Assert.IsTrue(hippo.MotionBlockedTo(level, Direction.North));
+
+        // Act: Move to pick up hippo
+        level = level.RefreshCyclables(ActionInput.MoveEast);
+        level = level.RefreshCyclables(ActionInput.NoAction);
+
+        // Assert: Hippo is now locked to player
+        Assert.IsTrue(level.TryGetHippo(out hippo));
+        Assert.IsNotNull(hippo != null);
+        #pragma warning disable CS8602 // Dereference of a possibly null reference.
+        Assert.IsFalse(hippo.LockedToPlayer);
+        #pragma warning restore CS8602 // Dereference of a possibly null reference.
+        Assert.AreEqual(new Location(4, 10), hippo.Location);
     }
 }
