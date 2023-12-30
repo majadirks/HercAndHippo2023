@@ -33,8 +33,11 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
 
     public override bool BlocksMotion(Level level)
     {
+        // Do not block a player immediately above
+        if (this.Below(level.Player.Location)) return false;
+
         Direction whither = this.Flee(level);
-        return LockedToPlayer && this.MotionBlockedTo(level, whither);
+        return this.MotionBlockedTo(level, whither);
     }
 
     public Level Cycle(Level level, ActionInput actionInput)
@@ -114,7 +117,6 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
         => level.Without(shotBy).Replace(this, this with { Health = this.Health - 5 });
 
     public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy) => PickUp(level);
-
     private Level PickUp(Level level)
     {
         Player player = level.Player;
@@ -125,7 +127,7 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
         Location NWCorner = new(player.Location.Col.NextWest(), player.Location.Row.NextNorth());
         Location interveningCorner = isEast ? NECorner : NWCorner;
 
-        bool playerAbove = player.Location.Col == Location.Col && Location.Row.NextNorth() == player.Location.Row;
+        bool playerAbove = this.Below(player.Location);
         bool cannotLift = playerAbove ? false : // always possible to lift if player is directly above
             player.MotionBlockedTo(level, Direction.North) || 
             this.MotionBlockedTo(level, Direction.North) ||

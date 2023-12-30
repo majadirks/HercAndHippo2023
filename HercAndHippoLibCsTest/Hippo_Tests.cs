@@ -3,7 +3,7 @@
  * Pick up hippo to West
  * Do not pick up hippo West if player blocked above
  * Do not pick up hippo West if hippo blocked above
- * If player falls onto hippo, player takes hippo
+ * If player falls onto hippo, player takes hippo (from 3 above, 2 above, directly above)
  * If player walks over Hippo, picks up hippo:
  * 
  *   ☻   >    ☻    >   H
@@ -31,8 +31,8 @@
  * Test behavior of HippoBlocksTo() method in HippoMotionBlockages record
  * If hippo falls on player, player takes Hippo.
  * If player jumps into falling hippo, player takes Hippo.
- * Hippo blocks motion when locked to player and blocked in opposite direction (whither),
- * Hippo blocks motion if not locked to player & not able to picked up:
+ * Hippo blocks motion when  blocked in opposite direction (whither),
+ * but does not block player when player is above
  *    
  *      █
  *     ☻H   < player cannot move East

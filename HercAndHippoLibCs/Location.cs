@@ -41,5 +41,13 @@ public record Location(Column Col, Row Row)
         int horizontal = Math.Abs(a.Col - b.Col);
         return vertical + horizontal;
     }
+
+
+}
+
+public static class LocationExtensions
+{
+    public static bool Below(this ILocatable obj, Location location) =>
+        obj.Location.Col == location.Col && obj.Location.Row.NextNorth() == location.Row;
 }
 
