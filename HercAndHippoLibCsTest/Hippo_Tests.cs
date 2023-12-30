@@ -32,7 +32,7 @@
  * If hippo falls on player, player takes Hippo.
  * If player jumps into falling hippo, player takes Hippo.
  * Hippo blocks motion when locked to player and blocked in opposite direction (whither),
- * Hippo blocksm otion if not locked to player & not able to picked up:
+ * Hippo blocks motion if not locked to player & not able to picked up:
  *    
  *      █
  *     ☻H   < player cannot move East
