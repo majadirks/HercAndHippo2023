@@ -115,8 +115,10 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
                     }
                 }
             }
-            else  if (nextState.GravityApplies()) // No kinetic energy; fall due to gravity until blocked
+            else if (nextState.GravityApplies()) // No kinetic energy; fall due to gravity until blocked
             {
+                bool fell = false;
+                Location startLocation = nextState.Player.Location;
                 for (int i = 0;
                     i < nextState.Gravity.Strength &&
                     !nextState.Player.MotionBlockedTo(nextState,Direction.South);
@@ -127,10 +129,21 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
                         newLocation: nextLocation,
                         approachFrom: Direction.North,
                         curState: nextState);
+                    Location endLocation = nextState.Player.Location;
+                    fell = startLocation != endLocation;
+                }
+
+                // If player fell and is blocked below by an ITouchable, call its OnTouch() method
+                if (fell)
+                {
+                    Location below = new(nextState.Player.Location.Col, nextState.Player.Location.Row.NextSouth(level.Height));
+                    IEnumerable<ITouchable> touchables = nextState.ObjectsAt(below).Where(obj => obj.IsTouchable).Cast<ITouchable>();
+                    foreach (var touchable in touchables)
+                    {
+                        nextState = touchable.OnTouch(nextState, Direction.North, nextState.Player);
+                    }
                 }
             }
-
-            
             return nextState;
         } 
     }
@@ -170,6 +183,7 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
         }
 
         // If not blocked, move
+        player = nextState.Player;
         if (!player.MotionBlockedTo(nextState, whither) && !blockedByHippo)
             nextState = nextState.WithPlayer(player with { Location = newLocation });
         
