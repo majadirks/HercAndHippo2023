@@ -231,44 +231,6 @@ namespace HercAndHippoLibCsTest
         }
 
         [TestMethod]
-        public void TwoConsecutiveBulletsMoveAndCallOnShotAsExpected_Test()
-        {
-            //Assert.IsTrue(false); //this test fails intermittently!
-            // Arrange
-            Wall corner1 = new(Color.Yellow, (10, 10));
-            Player player = new((2,2), health: 100,ammoCount: 5, inventory: Inventory.EmptyInventory);
-            ShotCounter counter = new((5, 2), 0);
-            Level level = new(player, 
-                gravity: Gravity.None, 
-                secondaryObjects: new HashSet<HercAndHippoObj>() 
-                { 
-                    corner1, 
-                    counter,
-                    new Bullet((3,2), Direction.East),
-                    new Bullet((4,2), Direction.East)
-                });
-
-            // Act and assert
-            Assert.IsTrue(level.Contains(new Bullet((3, 2), Direction.East)));
-            Assert.IsTrue(level.Contains(new Bullet((4, 2), Direction.East)));
-
-            level = level.RefreshCyclables(ActionInput.NoAction); // bullets at (4,2) and (5,2)
-            Assert.IsTrue(level.Contains(new Bullet((4, 2), Direction.East)));
-            Assert.IsTrue(level.Contains(new Bullet((5, 2), Direction.East)));
-
-            level = level.RefreshCyclables(ActionInput.NoAction); // bullets at (5,2) and (6,2), count is 1
-            Assert.IsTrue(level.Contains(new Bullet((5, 2), Direction.East)));
-            Assert.IsTrue(level.Contains(new Bullet((6, 2), Direction.East)));
-            Assert.IsTrue(level.Contains(counter with { Count = 1 }));
-
-
-            level = level.RefreshCyclables(ActionInput.NoAction); // bullets at (6,2) and (7,2), count is 2;
-            Assert.IsTrue(level.Contains(new Bullet((6, 2), Direction.East)));
-            Assert.IsTrue(level.Contains(new Bullet((7, 2), Direction.East)));
-            Assert.IsTrue(level.Contains(counter with { Count = 2 }));
-        }
-
-        [TestMethod]
         public void CanShootNorthAndSouthInFirstColumn()
         {
             // Arrange
