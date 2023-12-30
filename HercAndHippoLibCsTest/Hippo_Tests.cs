@@ -118,7 +118,7 @@ public class Hippo_Tests
         Assert.IsTrue(player.MotionBlockedTo(level, Direction.North));
 
         // Act: Move to pick up hippo
-        level = level.RefreshCyclables(ActionInput.MoveEast);
+        level = level.RefreshCyclables(ActionInput.MoveEast); 
         level = level.RefreshCyclables(ActionInput.NoAction);
 
         // Assert: Hippo is now locked to player

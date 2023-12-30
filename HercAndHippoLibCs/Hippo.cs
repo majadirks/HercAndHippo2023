@@ -45,7 +45,7 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
             return Behaviors.Die(level, this);
         else if (LockedToPlayer && actionInput == ActionInput.DropHippo)
             return PutDown(level);
-        else if (LockedToPlayer || Location == level.Player.Location)
+        else if (LockedToPlayer)
         {
             Level locked = LockAbovePlayer(level);
             return locked;
@@ -118,7 +118,11 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
     private Level PickUp(Level level)
     {
         Player player = level.Player;
-        bool cannotLift = player.ObjectLocatedTo(level, Direction.North) || player.MotionBlockedTo(level, Direction.North);
+        bool cannotLift = 
+            player.ObjectLocatedTo(level, Direction.North) || 
+            player.MotionBlockedTo(level, Direction.North) || 
+            this.ObjectLocatedTo(level, Direction.North) ||
+            this.MotionBlockedTo(level, Direction.North);
         if (cannotLift)
             return Behaviors.NoReaction(level);
         else
