@@ -44,7 +44,7 @@ namespace HercAndHippoLibCs
         {
             CancellationToken token = cancellationToken ?? CancellationToken.None;
             var nextState = Player.Cycle(this, actionInput);
-            nextState = SecondaryObjects // Do not refresh in parallel; this could cause objects to interfere with nearby copies of themselves, and can make updating slower
+            nextState = nextState.SecondaryObjects // Do not refresh in parallel; this could cause objects to interfere with nearby copies of themselves, and can make updating slower
                 .Where(disp => disp.IsCyclable)
                 .Cast<ICyclable>()
                 .TakeWhile(dummy => !token.IsCancellationRequested)
