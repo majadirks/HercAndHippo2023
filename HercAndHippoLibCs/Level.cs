@@ -52,7 +52,7 @@ namespace HercAndHippoLibCs
                 seed: this, 
                 func: (state, nextCyclable) => nextCyclable.Cycle(state, actionInput));
             // Then cycle player
-            nextState = Player.Cycle(nextState, actionInput);
+            nextState = nextState.Player.Cycle(nextState, actionInput);
             // Finally, if hippo is locked to player, hippo should move in response to any player motion
             if (nextState.TryGetHippo(out Hippo? hippo) && hippo != null && hippo.LockedToPlayer)
             {

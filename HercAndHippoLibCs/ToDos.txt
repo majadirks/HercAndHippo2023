@@ -9,6 +9,7 @@
 
 
 - Hippo - write tests! (See Hippo_Tests.cs)
+- Test that Driver moves player after cycle
 
 - Trophies and transporters
 - Gravity; player dies if gravity > 0 and reaches bottom row, or gravity < 0 and reaches top row
