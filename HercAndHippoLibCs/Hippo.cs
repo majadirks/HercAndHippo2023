@@ -31,8 +31,6 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
 
     public bool StopsBullet => true;
 
-    public string Id => "Hippo";
-
     public override bool BlocksMotion(Level level)
     {
         Level ifPlayerWereNorthOne = level.WithPlayer(level.Player with { Location = this.Location });
@@ -94,7 +92,6 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
         {
             Location nextLocation = new(Col: player.Location.Col.NextEast(level.Width), Row: player.Location.Row);
             Level nextState = level.Replace(this, this with { Location = nextLocation, LockedToPlayer = false });
-            nextState = nextState.WithPlayer(nextState.Player.DropItem<Hippo>(Id).newPlayerState);
             return nextState;
         }
 
@@ -106,7 +103,6 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
         {
             Location nextLocation = new(Col: player.Location.Col.NextWest(), Row: player.Location.Row);
             Level nextState = level.Replace(this, this with { Location = nextLocation, LockedToPlayer = false });
-            nextState = nextState.WithPlayer(nextState.Player.DropItem<Hippo>(Id).newPlayerState);
             return nextState;
         }
 
@@ -122,9 +118,17 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
     private Level PickUp(Level level)
     {
         Player player = level.Player;
+        bool isEast = Location.Col > player.Location.Col;
+        bool isWest = !isEast;
+
+        Location NECorner = new(player.Location.Col.NextEast(level.Width), player.Location.Row.NextNorth());
+        Location NWCorner = new(player.Location.Col.NextWest(), player.Location.Row.NextNorth());
+        Location interveningCorner = isEast ? NECorner : NWCorner;
+
         bool cannotLift = 
             player.MotionBlockedTo(level, Direction.North) || 
-            this.MotionBlockedTo(level, Direction.North);
+            this.MotionBlockedTo(level, Direction.North) ||
+            level.ObjectsAt(interveningCorner).Where(obj => obj.BlocksMotion(level)).Any();
         if (cannotLift)
             return Behaviors.NoReaction(level);
         else
