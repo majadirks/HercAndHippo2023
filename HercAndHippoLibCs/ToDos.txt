@@ -14,6 +14,7 @@ Tests:
 	- Test that, when falling due to gravity,
 	     if player stops at motion-blocking object,
 		 its OnTouch() method is called once
+    - In level with gravity, if player is blocked South, can MoveSouth to touch that object
 
 - Trophies and transporters
 - Gravity; player dies if gravity > 0 and reaches bottom row, or gravity < 0 and reaches top row
