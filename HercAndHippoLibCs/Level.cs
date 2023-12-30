@@ -9,6 +9,7 @@ namespace HercAndHippoLibCs
         public int Height { get; init; }
         public Gravity Gravity { get; init; }
         public int Cycles { get; private set; }
+        public void ForceSetCycles(int cycles) => Cycles = cycles;
         private HashSet<HercAndHippoObj> SecondaryObjects { get; init; } // secondary, ie not the player
         public Level(Player player, Gravity gravity, HashSet<HercAndHippoObj> secondaryObjects)
         {
