@@ -125,7 +125,8 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
         Location NWCorner = new(player.Location.Col.NextWest(), player.Location.Row.NextNorth());
         Location interveningCorner = isEast ? NECorner : NWCorner;
 
-        bool cannotLift = 
+        bool playerAbove = player.Location.Col == Location.Col && Location.Row.NextNorth() == player.Location.Row;
+        bool cannotLift = playerAbove ? false : // always possible to lift if player is directly above
             player.MotionBlockedTo(level, Direction.North) || 
             this.MotionBlockedTo(level, Direction.North) ||
             level.ObjectsAt(interveningCorner).Where(obj => obj.BlocksMotion(level)).Any();

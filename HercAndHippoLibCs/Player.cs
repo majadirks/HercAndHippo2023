@@ -130,7 +130,7 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
                         approachFrom: Direction.North,
                         curState: nextState);
                     Location endLocation = nextState.Player.Location;
-                    fell = startLocation != endLocation;
+                    fell = startLocation.Row < endLocation.Row;
                 }
 
                 // If player fell and is blocked below by an ITouchable, call its OnTouch() method
