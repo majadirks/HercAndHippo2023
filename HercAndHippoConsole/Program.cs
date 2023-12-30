@@ -7,7 +7,7 @@ const int MESSAGE_MARGIN = 3;
 const int REFRESH_FREQUENCY_HZ = 50;
 
 // Initialize data
-Level state = DemoLevels.ManyObjectsStressTest();
+Level state = DemoLevels.IntroducingTheHippo;
 double averageCycleTime = ApproximateCycleTime(state);
 CycleTimer cycleTimer = new(frequencyHz: REFRESH_FREQUENCY_HZ);
 
