@@ -9,6 +9,7 @@
 
 
 - Hippo - write tests! (See Hippo_Tests.cs)
+- Test Seek direction
 - Test that Driver moves player after cycle
 
 - Trophies and transporters

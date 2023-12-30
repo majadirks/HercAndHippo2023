@@ -1,6 +1,6 @@
 ﻿namespace HercAndHippoLibCs;
 
-public enum Direction { Idle, North, East, South, West, Seek, Flee }
+public enum Direction { Idle, North, East, South, West}
 
 public static class DirectionExtensions
 {
@@ -11,9 +11,12 @@ public static class DirectionExtensions
             Direction.South => Direction.North,
             Direction.East => Direction.West,
             Direction.West => Direction.East,
-            Direction.Seek => Direction.Flee,
-            Direction.Flee => Direction.Seek,
             Direction.Idle => Direction.Idle,
             _ => throw new NotSupportedException()
         };
+
+    public static Direction Seek(this HercAndHippoObj hho, Player player)
+    {
+        throw new NotImplementedException();
+    }
 }

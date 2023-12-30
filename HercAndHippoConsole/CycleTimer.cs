@@ -4,14 +4,12 @@ namespace HercAndHippoConsole
 {
     internal class CycleTimer
     {
-        private readonly int frequencyHz;
         private readonly Stopwatch sw;
         public int MillisecondsPerCycle { get; init; }
         public CycleTimer(int frequencyHz)
         {
             sw = new Stopwatch();
             sw.Start();
-            this.frequencyHz = frequencyHz;
             MillisecondsPerCycle = 1000 / frequencyHz;
         }
 
