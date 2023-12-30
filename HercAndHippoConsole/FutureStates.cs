@@ -6,19 +6,19 @@ internal class FutureStates
 {
     private readonly Level initialState;
     private readonly Dictionary<ActionInput, Task<Level>> futures;
-    private readonly CancellationTokenSource cts;
+    private readonly CancellationTokenSource? cts;
     public Level GetState(ActionInput actionInput)
     {
         // If next state has been calculated, return it
         if (futures.TryGetValue(actionInput, out Task<Level>? value) && value.IsCompleted)
         {
             var ret = value.Result;
-            cts.Cancel(); //cancel others
+            cts?.Cancel(); //cancel others
             return ret;
         }
         else // next state has not been fully calculated.
         {
-            cts.Cancel();
+            cts?.Cancel();
             return initialState.RefreshCyclables(actionInput);
         }
             
@@ -38,11 +38,12 @@ internal class FutureStates
     public FutureStates(Level state, ActionInput mostRecent, double averageCycleTime, double msPerCycle)
     {
         futures = new();
-        cts = new();
+        cts = null;
         initialState = state;
         bool parallelEnabled = averageCycleTime * possibleInputs.Length < msPerCycle;
         if (!parallelEnabled) return; // Doing all the calculations takes too long to be worthwhile
 
+        cts = new();
         Task<Level> fromMostRecent = Task.Run(() => state.RefreshCyclables(mostRecent));
         futures.Add(mostRecent, fromMostRecent);
         for (int i = 0; i < possibleInputs.Length; i++)
