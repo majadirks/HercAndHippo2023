@@ -137,7 +137,7 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
                 if (fell)
                 {
                     Location below = new(nextState.Player.Location.Col, nextState.Player.Location.Row.NextSouth(level.Height));
-                    IEnumerable<ITouchable> touchables = nextState.ObjectsAt(below).Where(obj => obj.IsTouchable).Cast<ITouchable>();
+                    IEnumerable<ITouchable> touchables = nextState.ObjectsAt(below).Where(obj => obj.IsTouchable && obj.BlocksMotion(nextState)).Cast<ITouchable>();
                     foreach (var touchable in touchables)
                     {
                         nextState = touchable.OnTouch(nextState, Direction.North, nextState.Player);
