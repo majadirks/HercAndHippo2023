@@ -25,12 +25,23 @@ internal class FutureStates
     }
         
     private static readonly ActionInput[] possibleInputs = (ActionInput[])Enum.GetValues(typeof(ActionInput));
-    public FutureStates(Level state, ActionInput mostRecent, bool parallelEnabled)
+    /// <summary>
+    /// Anticipate possible future states based on all possible inputs, 
+    /// if doing so is likely to be "fast" (ie possible to compute all in less than one cycle).
+    /// Prioritize computing the state from the most recent input, on the assumption
+    /// that a player will often use the same input multiple times consecutively.
+    /// </summary>
+    /// <param name="state">Current game state</param>
+    /// <param name="mostRecent">Most recent input</param>
+    /// <param name="averageCycleTime">Average time to calculate a cycle</param>
+    /// <param name="msPerCycle">Ideal interval between cycles</param>
+    public FutureStates(Level state, ActionInput mostRecent, double averageCycleTime, double msPerCycle)
     {
         futures = new();
         cts = new();
         initialState = state;
-        if (!parallelEnabled) return;
+        bool parallelEnabled = averageCycleTime * possibleInputs.Length < msPerCycle;
+        if (!parallelEnabled) return; // Doing all the calculations takes too long to be worthwhile
 
         Task<Level> fromMostRecent = Task.Run(() => state.RefreshCyclables(mostRecent));
         futures.Add(mostRecent, fromMostRecent);
