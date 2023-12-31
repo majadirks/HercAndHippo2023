@@ -902,4 +902,42 @@ public class Hippo_Tests
             Assert.AreEqual((int)hippo.Location.Col, col);
         }
     }
+
+    [TestMethod]
+    public void HippoFallsDueToGravity_Test()
+    {
+        /*
+      *  
+      *  H      >      
+      *  ☻      >   ☻   
+      *  █      >   █H   
+      * █████   >  █████
+      *  
+      */
+
+        // Arrange
+        Player player = Player.Default(new(2, 2));
+        Level level = new(
+            player: player,
+            gravity: new Gravity(Strength: 1, WaitCycles: 1),
+            secondaryObjects: new()
+            {
+                new Hippo((2,1), Health: 5, LockedToPlayer: true),
+                new Wall(Color.White, (2,3)),
+
+                new Wall(Color.White, (1,4)),
+                new Wall(Color.White, (2,4)),
+                new Wall(Color.White, (3,4)),
+                new Wall(Color.White, (4,4)),
+            } );
+
+        // Act: Drop hippo
+        level = level.RefreshCyclables(ActionInput.DropHippo);
+        level = level.RefreshCyclables(ActionInput.NoAction);
+
+        // Assert: Hippo has fallen
+        level.TryGetHippo(out Hippo? hippo);
+        Assert.IsNotNull(hippo);
+        Assert.AreEqual(new Location(3, 3), hippo.Location);
+    }
 }
