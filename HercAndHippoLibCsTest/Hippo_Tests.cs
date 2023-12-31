@@ -329,4 +329,64 @@ public class Hippo_Tests
         Assert.AreEqual(new Location(3, 9), hippo.Location);
     }
 
+    [TestMethod]
+    public void TakeHippoWhenFallingFrom2Above_Test()
+    {
+        // Arrange
+        Level level = new(
+            player: Player.Default(new Location(Col: 3, Row: 8)) with { JumpStrength = 5 },
+            gravity: new Gravity(Strength: 1, WaitCycles: 1),
+            secondaryObjects: new()
+            {
+                new Hippo(Location: (3,10), Health: 10, LockedToPlayer: false),
+
+                new Wall(Color.White, (1,11)),
+                new Wall(Color.White, (2,11)),
+                new Wall(Color.White, (3,11)),
+                new Wall(Color.White, (4,11)),
+                new Wall(Color.White, (5,11)),
+            });
+        level.ForceSetCycles(1); // Gravity doesn't apply on cycle 0, so force set to 1
+
+        // Act: Player falls
+        level = level.RefreshCyclables(ActionInput.NoAction);
+        Assert.AreEqual(new Location(3, 9), level.Player.Location);
+        level = level.RefreshCyclables(ActionInput.NoAction);
+        Assert.AreEqual(new Location(3, 10), level.Player.Location);
+
+        // Assert: Hippo is now locked to player
+        Assert.IsTrue(level.TryGetHippo(out Hippo? hippo));
+        Assert.IsTrue(hippo != null && hippo.LockedToPlayer);
+        Assert.AreEqual(new Location(3, 9), hippo.Location);
+    }
+
+    [TestMethod]
+    public void TakeHippoWhenFallingFromDirectlyAbove_Test()
+    {
+        // Arrange
+        Level level = new(
+            player: Player.Default(new Location(Col: 3, Row: 9)) with { JumpStrength = 5 },
+            gravity: new Gravity(Strength: 1, WaitCycles: 1),
+            secondaryObjects: new()
+            {
+                new Hippo(Location: (3,10), Health: 10, LockedToPlayer: false),
+
+                new Wall(Color.White, (1,11)),
+                new Wall(Color.White, (2,11)),
+                new Wall(Color.White, (3,11)),
+                new Wall(Color.White, (4,11)),
+                new Wall(Color.White, (5,11)),
+            });
+        level.ForceSetCycles(1); // Gravity doesn't apply on cycle 0, so force set to 1
+
+        // Act: Player falls into hippo
+        level = level.RefreshCyclables(ActionInput.NoAction);
+        Assert.AreEqual(new Location(3, 10), level.Player.Location);
+
+        // Assert: Hippo is now locked to player
+        Assert.IsTrue(level.TryGetHippo(out Hippo? hippo));
+        Assert.IsTrue(hippo != null && hippo.LockedToPlayer);
+        Assert.AreEqual(new Location(3, 9), hippo.Location);
+    }
+
 }
