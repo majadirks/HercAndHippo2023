@@ -1,7 +1,5 @@
 ﻿/*
  * Tests:
- * Test behavior of HippoBlocksTo() method in HippoMotionBlockages record
- * Test behavior of HippoBlocksTo() method in HippoMotionBlockages record when there is no hippo
  * If hippo falls on player (not jumping), player takes Hippo.
  */
 
@@ -1018,6 +1016,34 @@ public class Hippo_Tests
         Assert.IsFalse(level.TryGetHippo(out hippo));
         blockages = HippoMotionBlockages.GetBlockages(hippo, level);
         Assert.AreEqual(new HippoMotionBlockages(BlockedNorth: false, BlockedEast: false, BlockedWest: false), blockages);
+
+        // Local method
+        BreakableWall FindBreakableWall() => (BreakableWall)level.LevelObjects.Where(obj => obj is BreakableWall).Single();
+    }
+
+    [TestMethod]
+    public void GetBlockagesByDirection_HippoPresent_LockedToPlayer_Test()
+    {
+        // Arrange
+        Hippo hippo = new((2, 2), Health: 5, LockedToPlayer: true);
+        Level level = new(Player.Default(2, 3), Gravity.Default, new()
+        {
+            hippo,
+            new BreakableWall(Color.Yellow, (2,1)),
+            new Wall(Color.Black, (5,5))
+        });
+
+        // Act and Assert
+        var blockages = HippoMotionBlockages.GetBlockages(hippo, level);
+        Assert.IsTrue(blockages.HippoBlocksTo(Direction.North));
+
+        level = level.Replace(FindBreakableWall(), new BreakableWall(Color.Yellow, (3, 2)));
+        blockages = HippoMotionBlockages.GetBlockages(hippo, level);
+        Assert.IsTrue(blockages.HippoBlocksTo(Direction.East));
+
+        level = level.Replace(FindBreakableWall(), new BreakableWall(Color.Yellow, (1, 2)));
+        blockages = HippoMotionBlockages.GetBlockages(hippo, level);
+        Assert.IsTrue(blockages.HippoBlocksTo(Direction.West));
 
         // Local method
         BreakableWall FindBreakableWall() => (BreakableWall)level.LevelObjects.Where(obj => obj is BreakableWall).Single();
