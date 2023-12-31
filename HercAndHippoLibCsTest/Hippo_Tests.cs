@@ -707,4 +707,57 @@ public class Hippo_Tests
         Assert.IsFalse(level.TryGetHippo(out hippo));
         Assert.IsNull(hippo);
     }
+
+    [TestMethod]
+    public void WhenPlayerJumps_HippoBlocksAboveWhenHippoBlockedAbove_Test()
+    {
+        // Arrange
+        Player player = Player.Default(new Location(Col: 3, Row: 10)) with { JumpStrength = 5 };
+        Level level = new(
+            player,
+            gravity: new Gravity(Strength: 1, WaitCycles: 1),
+            secondaryObjects: new()
+            {
+                new Hippo(Location: (4,10), Health: 10, LockedToPlayer: false),
+
+                new Wall(Color.White, (1,11)),
+                new Wall(Color.White, (2,11)),
+                new Wall(Color.White, (3,11)),
+                new Wall(Color.White, (4,11)),
+                new Wall(Color.White, (5,11)),
+
+                new Wall(Color.White, (4, 7))
+            });
+
+        level = level.RefreshCyclables(ActionInput.MoveEast);
+        Assert.IsTrue(level.TryGetHippo(out Hippo? hippo));
+        Assert.IsTrue(hippo != null && hippo.LockedToPlayer);
+        Assert.AreEqual(new Location(4, 9), hippo.Location);
+        Assert.IsFalse(hippo.MotionBlockedTo(level, Direction.North));
+        Assert.IsFalse(level.Player.MotionBlockedTo(level, Direction.North));
+
+        // Act: Jump
+        level = level.RefreshCyclables(ActionInput.MoveNorth);
+        level.TryGetHippo(out  hippo);
+        Assert.IsNotNull(hippo);
+        Assert.AreEqual(new Location(4, 8), hippo.Location);
+
+        // Assert: hippo and player both blocked North
+        Assert.IsTrue(hippo.MotionBlockedTo(level, Direction.North));
+        Assert.IsTrue(level.Player.MotionBlockedTo(level, Direction.North));
+
+        // Act: Wait a cycle for fall to begin
+        level = level.RefreshCyclables(ActionInput.NoAction);
+        level.TryGetHippo(out hippo);
+        Assert.IsNotNull(hippo);
+        Assert.AreEqual(new Location(4, 8), hippo.Location);
+        Assert.AreEqual(new Location(4, 9), level.Player.Location);
+
+        level = level.RefreshCyclables(ActionInput.NoAction);
+        level.TryGetHippo(out hippo);
+        Assert.IsNotNull(hippo);
+        Assert.AreEqual(new Location(4, 9), hippo.Location);
+        Assert.AreEqual(new Location(4, 10), level.Player.Location);
+        Assert.AreEqual(0, (int)level.Player.KineticEnergy);
+    }
 }
