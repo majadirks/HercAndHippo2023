@@ -3,8 +3,6 @@
  * (If player blocked East, but not hippo, can set hippo down atop blockage)
  * (If player blocked West, hippo blocked East, can set hippo down atop west blockage)
  *
- * Hippo is subject to gravity (if dropped over hole, falls)
- * Player TryGetHippo() returns a hippo if present, null if not
  * Test behavior of HippoBlocksTo() method in HippoMotionBlockages record
  * If hippo falls on player (not jumping), player takes Hippo.
  */
@@ -940,4 +938,5 @@ public class Hippo_Tests
         Assert.IsNotNull(hippo);
         Assert.AreEqual(new Location(3, 3), hippo.Location);
     }
+
 }
