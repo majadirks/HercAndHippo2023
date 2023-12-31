@@ -1,10 +1,4 @@
-﻿/*
- * Tests:
- * If hippo falls on player (not jumping), player takes Hippo.
- */
-
-
-namespace HercAndHippoLibCsTest;
+﻿namespace HercAndHippoLibCsTest;
 
 [TestClass]
 public class Hippo_Tests
@@ -934,6 +928,31 @@ public class Hippo_Tests
         level.TryGetHippo(out Hippo? hippo);
         Assert.IsNotNull(hippo);
         Assert.AreEqual(new Location(3, 3), hippo.Location);
+    }
+
+    [TestMethod]
+    public void PlayerTakesHippoIfHippoFallsOnPlayer_Test()
+    {
+        // Arrange
+        Level level = new(
+            player: Player.Default((1, 4)),
+            gravity: new Gravity(Strength: 1, WaitCycles: 1),
+            secondaryObjects: new()
+            {
+                new Wall(Color.White, (1, 5)),
+                new Hippo((1,1), Health: 5, LockedToPlayer: false)
+            });
+
+        // Act: Let the hippo fall into the player
+        level = level.RefreshCyclables(ActionInput.NoAction);
+        level = level.RefreshCyclables(ActionInput.NoAction);
+        level = level.RefreshCyclables(ActionInput.NoAction);
+        level = level.RefreshCyclables(ActionInput.NoAction);
+
+        // Assert
+        Assert.IsTrue(level.TryGetHippo(out Hippo? hippo));
+        Assert.IsNotNull(hippo);
+        Assert.IsTrue(hippo.LockedToPlayer);
     }
 
     [TestMethod]

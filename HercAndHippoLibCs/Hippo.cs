@@ -65,19 +65,22 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
                 i++)
             {
                 nextState = TryMoveSouth(nextState);
-            }
+            }           
             return nextState;
         }
         else
             return Behaviors.NoReaction(level);
     }
 
-    private Level TryMoveSouth(Level level) 
+    private static Level TryMoveSouth(Level level) 
     {
-        if (this.MotionBlockedTo(level, Direction.South))
+        level.TryGetHippo(out Hippo? hippo);
+        if (hippo == null)
+            throw new NullReferenceException();
+        if (hippo.MotionBlockedTo(level, Direction.South))
             return Behaviors.NoReaction(level);
-        Location nextLocation = new(Location.Col, Location.Row.NextSouth(level.Height));
-        return level.Replace(this, this with { Location = nextLocation });
+        Location nextLocation = new(hippo.Location.Col, hippo.Location.Row.NextSouth(level.Height));
+        return level.Replace(hippo, hippo with { Location = nextLocation, LockedToPlayer = nextLocation == level.Player.Location });
     }
 
     public Level LockAbovePlayer(Level level)
