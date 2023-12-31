@@ -53,7 +53,7 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
             return PutDown(level);
         else if (LockedToPlayer)
         {
-            Level locked = LockAbovePlayer(level);
+            Level locked = LockAbovePlayer(this, level);
             return locked;
         }
         else if (level.GravityApplies()) // Not locked to player; fall due to gravity if relevant
@@ -83,17 +83,19 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
         return level.Replace(hippo, hippo with { Location = nextLocation, LockedToPlayer = nextLocation == level.Player.Location });
     }
 
-    public Level LockAbovePlayer(Level level)
+    public static Level LockAbovePlayer(Hippo hippo, Level level)
     {
         Player player = level.Player;
         Location nextLocation = new(Col: player.Location.Col, Row: player.Location.Row.NextNorth());
-        Hippo lockedHippo = this with { Location = nextLocation, LockedToPlayer = true };
-        Level withLockedHippo = level.Replace(this, lockedHippo);
+        Hippo lockedHippo = hippo with { Location = nextLocation, LockedToPlayer = true };
+        Level withLockedHippo = level.Replace(hippo, lockedHippo);
         return  withLockedHippo;
     }
 
-    private Level PutDown(Level level)
+    private static Level PutDown(Level level)
     {
+        level.TryGetHippo(out Hippo? hippo);
+        if (hippo == null) throw new NullReferenceException();
         Player player = level.Player;
         // First, attempt to place East
         bool blockedEast = player.MotionBlockedTo(level,Direction.East);
@@ -102,7 +104,7 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
         if (!blockedEast && !blockedNE)
         {
             Location nextLocation = new(Col: player.Location.Col.NextEast(level.Width), Row: player.Location.Row);
-            Level nextState = level.Replace(this, this with { Location = nextLocation, LockedToPlayer = false });
+            Level nextState = level.Replace(hippo, hippo with { Location = nextLocation, LockedToPlayer = false });
             return nextState;
         }
 
@@ -113,7 +115,7 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
         if (!blockedWest && !blockedNW)
         {
             Location nextLocation = new(Col: player.Location.Col.NextWest(), Row: player.Location.Row);
-            Level nextState = level.Replace(this, this with { Location = nextLocation, LockedToPlayer = false });
+            Level nextState = level.Replace(hippo, hippo with { Location = nextLocation, LockedToPlayer = false });
             return nextState;
         }
 
@@ -125,22 +127,26 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
         => level.Without(shotBy).Replace(this, this with { Health = this.Health - HEALTH_PENALTY_ON_SHOT });
 
     public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy) => PickUp(level);
-    private bool CanBePickedUp(Level level)
+    private static bool CanBePickedUp(Level level)
     {
+        level.TryGetHippo(out Hippo? hippo);
+        if (hippo == null) throw new NullReferenceException();
         Player player = level.Player;
-        if (this.Below(player.Location))
+        if (hippo.Below(player.Location))
             return true;
         bool cannotLift = player.MotionBlockedTo(level, Direction.North) ||
-            this.MotionBlockedTo(level, Direction.North);
+            hippo.MotionBlockedTo(level, Direction.North);
         return !cannotLift;
     }
-    private Level PickUp(Level level)
+    private static Level PickUp(Level level)
     {
+        level.TryGetHippo(out Hippo? hippo);
+        if (hippo == null) throw new NullReferenceException();
         if (!CanBePickedUp(level))
             return Behaviors.NoReaction(level);
         else
         {
-            Level locked = LockAbovePlayer(level);
+            Level locked = LockAbovePlayer(hippo, level);
             return locked;
         }
     }
