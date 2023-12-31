@@ -1,10 +1,8 @@
 ﻿/*
  * Tests:
- * If player blocked East, but not hippo, can set hippo down atop blockage
- * If player blocked West, hippo blocked East, can set hippo down atop west blockage
- * 
- * After hippo is put down, only one hippo exists on the level.
- *      (Currently there's a bug where, if player is atop a block with space on both sides, hippo is placed both east and west!)
+ * (If player blocked East, but not hippo, can set hippo down atop blockage)
+ * (If player blocked West, hippo blocked East, can set hippo down atop west blockage)
+ *
  * Hippo health decrements when shot
  * Hippo dies when out of health
  * If player is jumping or moving while hippo is locked on top:
@@ -423,7 +421,7 @@ public class Hippo_Tests
     public void PutDownHippoEast_Test()
     {
         // Arrange
-        Player player = Player.Default(new Location(Col: 3, Row: 10)) with { JumpStrength = 5 };
+        Player player = Player.Default(new Location(Col: 3, Row: 10));
         Level level = new(
             player,
             gravity: new Gravity(Strength: 1, WaitCycles: 1),
@@ -614,5 +612,40 @@ public class Hippo_Tests
         Assert.IsTrue(hippo != null);
         Assert.AreEqual(new Location(4, 10), hippo.Location);
         Assert.IsFalse(hippo.LockedToPlayer);
+    }
+
+    [TestMethod]
+    public void SingleHippoExistsAfterDropping()
+    {
+        // Arrange
+        Player player = Player.Default(new Location(Col: 3, Row: 10));
+        Level level = new(
+            player,
+            gravity: new Gravity(Strength: 1, WaitCycles: 1),
+            secondaryObjects: new()
+            {
+                new Hippo(Location: (4,10), Health: 10, LockedToPlayer: false),
+
+                new Wall(Color.White, (1,11)),
+                new Wall(Color.White, (2,11)),
+                new Wall(Color.White, (3,11)),
+                new Wall(Color.White, (4,11)),
+                new Wall(Color.White, (5,11)),
+            });
+        Assert.AreEqual(1, level.LevelObjects.Where(obj => obj is Hippo).Count());
+
+        // Pick up hippo
+        level = level.RefreshCyclables(ActionInput.MoveEast);
+        Assert.IsTrue(level.TryGetHippo(out Hippo? hippo));
+        Assert.IsTrue(hippo != null && hippo.LockedToPlayer);
+        Assert.AreEqual(new Location(4, 10), level.Player.Location);
+        Assert.AreEqual(new Location(4, 9), hippo.Location);
+        Assert.AreEqual(1, level.LevelObjects.Where(obj => obj is Hippo).Count());
+
+        // Act: Put down hippo
+        level = level.RefreshCyclables(ActionInput.DropHippo);
+
+        // Assert
+        Assert.AreEqual(1, level.LevelObjects.Where(obj => obj is Hippo).Count());
     }
 }
