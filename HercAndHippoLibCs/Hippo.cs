@@ -23,6 +23,7 @@ public record HippoMotionBlockages(bool BlockedNorth, bool BlockedEast, bool Blo
 }
 public record Hippo(Location Location, Health Health, bool LockedToPlayer) : HercAndHippoObj, ILocatable, ITouchable, ICyclable, IShootable, IConsoleDisplayable
 {
+    public const int HEALTH_PENALTY_ON_SHOT = 5;
     public Color Color => Color.Magenta;
 
     public Color BackgroundColor => Color.DarkBlue;
@@ -118,7 +119,7 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
     }
 
     public Level OnShot(Level level, Direction shotFrom, Bullet shotBy)
-        => level.Without(shotBy).Replace(this, this with { Health = this.Health - 5 });
+        => level.Without(shotBy).Replace(this, this with { Health = this.Health - HEALTH_PENALTY_ON_SHOT });
 
     public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy) => PickUp(level);
     private bool CanBePickedUp(Level level)

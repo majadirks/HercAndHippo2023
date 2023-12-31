@@ -673,5 +673,39 @@ public class Hippo_Tests
         // Assert
         Assert.IsTrue(level.TryGetHippo(out Hippo? hippo));
         Assert.IsTrue(hippo != null && hippo.Health < hippoStartHealth);
+        Assert.AreEqual(hippo.Health, hippoStartHealth - Hippo.HEALTH_PENALTY_ON_SHOT);
+    }
+
+    [TestMethod]
+    public void HippoDiesWhenOutOfHealth()
+    {
+        // Arrange
+        Player player = Player.Default(new Location(Col: 3, Row: 10)) with { AmmoCount = 5 };
+        Health hippoStartHealth = Hippo.HEALTH_PENALTY_ON_SHOT;
+        Level level = new(
+            player,
+            gravity: new Gravity(Strength: 1, WaitCycles: 1),
+            secondaryObjects: new()
+            {
+                new Hippo(Location: (5,10), Health: hippoStartHealth, LockedToPlayer: false),
+
+                new Wall(Color.White, (1,11)),
+                new Wall(Color.White, (2,11)),
+                new Wall(Color.White, (3,11)),
+                new Wall(Color.White, (4,11)),
+                new Wall(Color.White, (5,11)),
+            });
+        Assert.IsTrue(level.TryGetHippo(out Hippo? hippo));
+        Assert.IsNotNull(hippo);
+        // Act
+        level = level.RefreshCyclables(ActionInput.ShootEast);
+        level = level.RefreshCyclables(ActionInput.NoAction);
+        level = level.RefreshCyclables(ActionInput.NoAction);
+        // At this point hippo may still exist but be out of health. Will die in next cycle
+        level = level.RefreshCyclables(ActionInput.NoAction);
+
+        // Assert
+        Assert.IsFalse(level.TryGetHippo(out hippo));
+        Assert.IsNull(hippo);
     }
 }
