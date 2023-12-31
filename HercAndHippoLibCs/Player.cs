@@ -184,7 +184,7 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
 
         // If not blocked, move
         player = nextState.Player;
-        hippoBlockages = HippoMotionBlockages.GetBlockages(curState);
+        hippoBlockages = HippoMotionBlockages.GetBlockages(nextState);
         blockedByHippo = hippoBlockages.HippoBlocksTo(whither);
         if (!player.MotionBlockedTo(nextState, whither) && !blockedByHippo)
             nextState = nextState.WithPlayer(player with { Location = newLocation });
@@ -215,7 +215,7 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
         };
 
         level = level
-            .AddObject(new Bullet((bulletStartCol, bulletStartRow), whither))
+            .AddSecondaryObject(new Bullet((bulletStartCol, bulletStartRow), whither))
             .WithPlayer(player with { AmmoCount = player.AmmoCount - 1 });
         return level;
     }

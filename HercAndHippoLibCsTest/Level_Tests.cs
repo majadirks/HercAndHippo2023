@@ -37,7 +37,7 @@ namespace HercAndHippoLibCsTest
             Bullet bulletSouthOfBoundary = new(Location: (expectedWidth, expectedHeight + 1), Direction.South);
 
             // Act
-            level = level.AddObject(bulletEastOfBoundary).AddObject(bulletSouthOfBoundary);
+            level = level.AddSecondaryObject(bulletEastOfBoundary).AddSecondaryObject(bulletSouthOfBoundary);
 
             // Assert: There is a bullet east of the bounds of the level, but width has not changed.
             Assert.IsTrue(level.LevelObjects.Contains(bulletEastOfBoundary));

@@ -38,12 +38,25 @@ namespace HercAndHippoLibCs
         /// Somewhat slow; probably better to act on player and secondary objects separately 
         /// when performance is critical.
         /// </summary>
-        public HashSet<HercAndHippoObj> LevelObjects => SecondaryObjects.AddObject(Player);
+        public HashSet<HercAndHippoObj> LevelObjects => SecondaryObjects.AddObjects(Hippo, Player);
         public Level WithPlayer(Player player) => new (player: player, hippo: Hippo, secondaryObjects: this.SecondaryObjects, width: Width, height: Height, cycles: Cycles, gravity: Gravity);
         public IEnumerable<HercAndHippoObj> ObjectsAt(Location location) => LevelObjects.Where(d => d is ILocatable dAtLoc && dAtLoc.Location.Equals(location));
-        public Level Without(HercAndHippoObj toRemove) => new(player: this.Player, hippo: Hippo, secondaryObjects: SecondaryObjects.RemoveObject(toRemove), Width, Height, Cycles, Gravity);
-        public Level AddObject(HercAndHippoObj toAdd) => new(player: this.Player, hippo: Hippo, secondaryObjects: SecondaryObjects.AddObject(toAdd), Width, Height, Cycles, Gravity);
-        public Level Replace(HercAndHippoObj toReplace, HercAndHippoObj toAdd) => this.Without(toReplace).AddObject(toAdd);
+        public Level Without(HercAndHippoObj toRemove)
+        {
+            if (toRemove is Hippo)
+                return new Level(player: Player, gravity: Gravity, secondaryObjects: SecondaryObjects, hippo: null);
+            else
+                return new(player: this.Player, hippo: Hippo, secondaryObjects: SecondaryObjects.RemoveObject(toRemove), Width, Height, Cycles, Gravity);
+        }
+        public Level AddSecondaryObject(HercAndHippoObj toAdd) => new(player: this.Player, hippo: Hippo, secondaryObjects: SecondaryObjects.AddObject(toAdd), Width, Height, Cycles, Gravity);
+        public Level Replace(HercAndHippoObj toReplace, HercAndHippoObj toAdd)
+        {
+            if (toReplace is Hippo && toAdd is Hippo newHippo)           
+                return new(player: Player, hippo: newHippo, gravity: Gravity, secondaryObjects: SecondaryObjects);
+            else
+                return this.Without(toReplace).AddSecondaryObject(toAdd);
+            
+        }
         public Level RefreshCyclables(ActionInput actionInput, CancellationToken? cancellationToken = null)
         {
             CancellationToken token = cancellationToken ?? CancellationToken.None;
@@ -55,6 +68,9 @@ namespace HercAndHippoLibCs
                 .Aggregate(
                 seed: this, 
                 func: (state, nextCyclable) => nextCyclable.Cycle(state, actionInput));
+            // Then cycle hippo if relevant
+            if (nextState.Hippo != null)
+                nextState = nextState.Hippo.Cycle(nextState, actionInput);
             // Then cycle player
             nextState = nextState.Player.Cycle(nextState, actionInput);
             // Finally, if hippo is locked to player, hippo should move in response to any player motion
@@ -89,6 +105,8 @@ namespace HercAndHippoLibCs
     public static class HashSetExtensions
     {
         public static HashSet<T> AddObject<T>(this HashSet<T> collection, T toAdd) => new(collection, collection.Comparer) { toAdd };
+        public static HashSet<T> AddObjects<T>(this HashSet<T> collection, params T?[] toAdd) 
+            => new(collection.Concat(toAdd.Where(item => item !=null).Cast<T>()), collection.Comparer);
         public static HashSet<T> RemoveObject<T>(this HashSet<T> collection, T toRemove)
         {
             HashSet<T> removed = new(collection, collection.Comparer);
