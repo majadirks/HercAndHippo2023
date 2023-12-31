@@ -1,8 +1,5 @@
 ﻿/*
  * Tests:
- * (If player blocked East, but not hippo, can set hippo down atop blockage)
- * (If player blocked West, hippo blocked East, can set hippo down atop west blockage)
- *
  * Test behavior of HippoBlocksTo() method in HippoMotionBlockages record
  * If hippo falls on player (not jumping), player takes Hippo.
  */
