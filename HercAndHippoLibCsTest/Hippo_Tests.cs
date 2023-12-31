@@ -27,7 +27,6 @@ namespace HercAndHippoLibCsTest;
 [TestClass]
 public class Hippo_Tests
 {
-
     [TestMethod]
     public void PlayerCanJumpWithHippo_Test()
     {
