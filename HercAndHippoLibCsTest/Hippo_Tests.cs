@@ -3,7 +3,6 @@
  * (If player blocked East, but not hippo, can set hippo down atop blockage)
  * (If player blocked West, hippo blocked East, can set hippo down atop west blockage)
  *
- * Hippo health decrements when shot
  * Hippo dies when out of health
  * If player is jumping or moving while hippo is locked on top:
  *   Hippo prevents upward motion if its motion is blocked above
@@ -646,5 +645,33 @@ public class Hippo_Tests
         Assert.IsTrue(level.TryGetHippo(out hippo));
         Assert.IsFalse(hippo == null || hippo.LockedToPlayer);
         Assert.AreEqual(1, level.LevelObjects.Where(obj => obj is Hippo).Count());
+    }
+
+    [TestMethod]
+    public void HippoHealthDecreasesWhenShot()
+    {
+        // Arrange
+        Player player = Player.Default(new Location(Col: 3, Row: 10)) with { AmmoCount = 5 };
+        Health hippoStartHealth = 10;
+        Level level = new(
+            player,
+            gravity: new Gravity(Strength: 1, WaitCycles: 1),
+            secondaryObjects: new()
+            {
+                new Hippo(Location: (5,10), Health: hippoStartHealth, LockedToPlayer: false),
+
+                new Wall(Color.White, (1,11)),
+                new Wall(Color.White, (2,11)),
+                new Wall(Color.White, (3,11)),
+                new Wall(Color.White, (4,11)),
+                new Wall(Color.White, (5,11)),
+            });
+        // Act
+        level = level.RefreshCyclables(ActionInput.ShootEast);
+        level = level.RefreshCyclables(ActionInput.NoAction);
+        level = level.RefreshCyclables(ActionInput.NoAction);
+        // Assert
+        Assert.IsTrue(level.TryGetHippo(out Hippo? hippo));
+        Assert.IsTrue(hippo != null && hippo.Health < hippoStartHealth);
     }
 }
