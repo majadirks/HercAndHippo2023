@@ -946,15 +946,15 @@ public class Hippo_Tests
         });
 
         // Act and Assert
-        var blockages = HippoMotionBlockages.GetBlockages(hippo, level);
+        var blockages = HippoMotionBlockages.GetBlockages(level);
         Assert.AreEqual(new HippoMotionBlockages(BlockedNorth: true, BlockedEast: false, BlockedWest: false), blockages);
 
         level = level.Replace(FindBreakableWall(), new BreakableWall(Color.Yellow, (3, 2)));
-        blockages = HippoMotionBlockages.GetBlockages(hippo, level);
+        blockages = HippoMotionBlockages.GetBlockages(level);
         Assert.AreEqual(new HippoMotionBlockages(BlockedNorth: false, BlockedEast: true, BlockedWest: false), blockages);
 
         level = level.Replace(FindBreakableWall(), new BreakableWall(Color.Yellow, (1, 2)));
-        blockages = HippoMotionBlockages.GetBlockages(hippo, level);
+        blockages = HippoMotionBlockages.GetBlockages(level);
         Assert.AreEqual(new HippoMotionBlockages(BlockedNorth: false, BlockedEast: false, BlockedWest: true), blockages);
 
         // Local method
@@ -977,15 +977,15 @@ public class Hippo_Tests
         });
 
         // Act and Assert
-        var blockages = HippoMotionBlockages.GetBlockages(hippo, level);
+        var blockages = HippoMotionBlockages.GetBlockages(level);
         Assert.AreEqual(new HippoMotionBlockages(BlockedNorth: false, BlockedEast: false, BlockedWest: false), blockages);
 
         level = level.Replace(FindBreakableWall(), new BreakableWall(Color.Yellow, (3, 2)));
-        blockages = HippoMotionBlockages.GetBlockages(hippo, level);
+        blockages = HippoMotionBlockages.GetBlockages(level);
         Assert.AreEqual(new HippoMotionBlockages(BlockedNorth: false, BlockedEast: false, BlockedWest: false), blockages);
 
         level = level.Replace(FindBreakableWall(), new BreakableWall(Color.Yellow, (1, 2)));
-        blockages = HippoMotionBlockages.GetBlockages(hippo, level);
+        blockages = HippoMotionBlockages.GetBlockages(level);
         Assert.AreEqual(new HippoMotionBlockages(BlockedNorth: false, BlockedEast: false, BlockedWest: false), blockages);
 
         // Local method
@@ -1008,17 +1008,17 @@ public class Hippo_Tests
 
         // Act and Assert
         Assert.IsFalse(level.TryGetHippo(out Hippo? hippo));  
-        var blockages = HippoMotionBlockages.GetBlockages(hippo, level);
+        var blockages = HippoMotionBlockages.GetBlockages(level);
         Assert.AreEqual(new HippoMotionBlockages(BlockedNorth: false, BlockedEast: false, BlockedWest: false), blockages);
 
         level = level.Replace(FindBreakableWall(), new BreakableWall(Color.Yellow, (3, 2)));
         Assert.IsFalse(level.TryGetHippo(out hippo));
-        blockages = HippoMotionBlockages.GetBlockages(hippo, level);
+        blockages = HippoMotionBlockages.GetBlockages(level);
         Assert.AreEqual(new HippoMotionBlockages(BlockedNorth: false, BlockedEast: false, BlockedWest: false), blockages);
 
         level = level.Replace(FindBreakableWall(), new BreakableWall(Color.Yellow, (1, 2)));
         Assert.IsFalse(level.TryGetHippo(out hippo));
-        blockages = HippoMotionBlockages.GetBlockages(hippo, level);
+        blockages = HippoMotionBlockages.GetBlockages(level);
         Assert.AreEqual(new HippoMotionBlockages(BlockedNorth: false, BlockedEast: false, BlockedWest: false), blockages);
 
         // Local method
@@ -1041,15 +1041,15 @@ public class Hippo_Tests
         });
 
         // Act and Assert
-        var blockages = HippoMotionBlockages.GetBlockages(hippo, level);
+        var blockages = HippoMotionBlockages.GetBlockages(level);
         Assert.IsTrue(blockages.HippoBlocksTo(Direction.North));
 
         level = level.Replace(FindBreakableWall(), new BreakableWall(Color.Yellow, (3, 2)));
-        blockages = HippoMotionBlockages.GetBlockages(hippo, level);
+        blockages = HippoMotionBlockages.GetBlockages(level);
         Assert.IsTrue(blockages.HippoBlocksTo(Direction.East));
 
         level = level.Replace(FindBreakableWall(), new BreakableWall(Color.Yellow, (1, 2)));
-        blockages = HippoMotionBlockages.GetBlockages(hippo, level);
+        blockages = HippoMotionBlockages.GetBlockages(level);
         Assert.IsTrue(blockages.HippoBlocksTo(Direction.West));
 
         // Local method

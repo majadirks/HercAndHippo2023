@@ -11,8 +11,9 @@ public record HippoMotionBlockages(bool BlockedNorth, bool BlockedEast, bool Blo
                _ => false
            };
 
-    public static HippoMotionBlockages GetBlockages(Hippo? hippo, Level level)
+    public static HippoMotionBlockages GetBlockages(Level level)
     {
+        Hippo? hippo = level.Hippo;
         if (hippo == null) return new HippoMotionBlockages(false, false, false);
         bool blockedNorth = hippo.LockedToPlayer && hippo.MotionBlockedTo(level, Direction.North);
         bool blockedEast = hippo.LockedToPlayer && hippo.MotionBlockedTo(level, Direction.East);

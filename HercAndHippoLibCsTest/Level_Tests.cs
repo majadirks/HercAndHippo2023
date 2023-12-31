@@ -95,7 +95,7 @@ namespace HercAndHippoLibCsTest
         public void TryGetHippo_ReturnsHippoIfPresent_Test()
         {
             // Arrange
-            Level level = new(Player.Default(1, 1), hippo: null, gravity: Gravity.Default, secondaryObjects: new() { new Hippo((2, 2), 5, false) });
+            Level level = new(Player.Default(1, 1), hippo: new Hippo((2, 2), 5, false), gravity: Gravity.Default, secondaryObjects: new() { });
             // Act
             Assert.IsTrue(level.TryGetHippo(out Hippo? hippo));
             // Assert
