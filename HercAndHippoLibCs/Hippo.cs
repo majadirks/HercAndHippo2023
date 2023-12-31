@@ -11,8 +11,9 @@ public record HippoMotionBlockages(bool BlockedNorth, bool BlockedEast, bool Blo
                _ => false
            };
 
-    public static HippoMotionBlockages GetBlockages(Hippo? hippo, Level level)
+    public static HippoMotionBlockages GetBlockages(Level level)
     {
+        Hippo? hippo = level.Hippo;
         if (hippo == null) return new HippoMotionBlockages(false, false, false);
         bool blockedNorth = hippo.LockedToPlayer && hippo.MotionBlockedTo(level, Direction.North);
         bool blockedEast = hippo.LockedToPlayer && hippo.MotionBlockedTo(level, Direction.East);
@@ -53,7 +54,7 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
             return PutDown(level);
         else if (LockedToPlayer)
         {
-            Level locked = LockAbovePlayer(this, level);
+            Level locked = LockAbovePlayer(level);
             return locked;
         }
         else if (level.GravityApplies()) // Not locked to player; fall due to gravity if relevant
@@ -74,7 +75,7 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
 
     private static Level TryMoveSouth(Level level) 
     {
-        level.TryGetHippo(out Hippo? hippo);
+        Hippo? hippo = level.Hippo;
         if (hippo == null)
             throw new NullReferenceException();
         if (hippo.MotionBlockedTo(level, Direction.South))
@@ -83,8 +84,11 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
         return level.Replace(hippo, hippo with { Location = nextLocation, LockedToPlayer = nextLocation == level.Player.Location });
     }
 
-    public static Level LockAbovePlayer(Hippo hippo, Level level)
+    public static Level LockAbovePlayer(Level level)
     {
+        level.TryGetHippo(out Hippo? hippo);
+        if (hippo == null)
+            throw new NullReferenceException();
         Player player = level.Player;
         Location nextLocation = new(Col: player.Location.Col, Row: player.Location.Row.NextNorth());
         Hippo lockedHippo = hippo with { Location = nextLocation, LockedToPlayer = true };
@@ -146,7 +150,7 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
             return Behaviors.NoReaction(level);
         else
         {
-            Level locked = LockAbovePlayer(hippo, level);
+            Level locked = LockAbovePlayer(level);
             return locked;
         }
     }

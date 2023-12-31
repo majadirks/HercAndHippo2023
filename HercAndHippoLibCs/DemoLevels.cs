@@ -216,11 +216,10 @@ public static class DemoLevels
 
     public static readonly Level IntroducingTheHippo = new(
         player: Player.Default(5,10),
+        hippo: new Hippo((7, 10), Health: 15, LockedToPlayer: false),
         gravity: Gravity.Default,
         secondaryObjects: new()
         {
-            new Hippo((7,10), Health: 15, LockedToPlayer: false),
-
             new Ammo((3, 10), Count: 15),
 
             new Wall(Color.Cyan, (1, 11)),
