@@ -1,6 +1,5 @@
 ﻿/*
  * Tests:
- * If player falls onto hippo, player takes hippo (from 3 above, 2 above, directly above)
  * If player walks over Hippo, picks up hippo:
  * 
  *   ☻   >    ☻    >   H
@@ -387,6 +386,19 @@ public class Hippo_Tests
         Assert.IsTrue(level.TryGetHippo(out Hippo? hippo));
         Assert.IsTrue(hippo != null && hippo.LockedToPlayer);
         Assert.AreEqual(new Location(3, 9), hippo.Location);
+    }
+
+    [TestMethod]
+    public void PlayerPicksUpHippoByWalkingOver_Test()
+    {
+        /*
+         *  *   ☻   >    ☻    >   H
+            *   █H  >   █H    >  █☻
+            *   
+        */
+
+
+
     }
 
 }
