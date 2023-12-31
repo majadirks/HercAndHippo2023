@@ -75,7 +75,7 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
 
     private static Level TryMoveSouth(Level level) 
     {
-        level.TryGetHippo(out Hippo? hippo);
+        Hippo? hippo = level.Hippo;
         if (hippo == null)
             throw new NullReferenceException();
         if (hippo.MotionBlockedTo(level, Direction.South))

@@ -10,7 +10,11 @@ namespace HercAndHippoLibCs
         public int Height { get; init; }
         public Gravity Gravity { get; init; }
         public int Cycles { get; private set; }
-        public void ForceSetCycles(int cycles) => Cycles = cycles;
+        public Level ForceSetCycles(int cycles)
+        {
+            Cycles = cycles;
+            return this;
+        }
         private HashSet<HercAndHippoObj> SecondaryObjects { get; init; } // secondary, ie not the player or hippo
         public Level(Player player, Gravity gravity, HashSet<HercAndHippoObj> secondaryObjects, Hippo? hippo = null)
         {
@@ -52,7 +56,7 @@ namespace HercAndHippoLibCs
         public Level Replace(HercAndHippoObj toReplace, HercAndHippoObj toAdd)
         {
             if (toReplace is Hippo && toAdd is Hippo newHippo)           
-                return new(player: Player, hippo: newHippo, gravity: Gravity, secondaryObjects: SecondaryObjects);
+                return new(player: Player, hippo: newHippo, gravity: Gravity, secondaryObjects: SecondaryObjects, cycles: Cycles, height:Height, width: Width);
             else
                 return this.Without(toReplace).AddSecondaryObject(toAdd);
             

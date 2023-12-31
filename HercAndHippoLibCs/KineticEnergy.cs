@@ -7,4 +7,5 @@ public readonly struct KineticEnergy
     public static implicit operator int(KineticEnergy kineticEnergy) => kineticEnergy.energy;
     public static implicit operator KineticEnergy(int energy) => new(energy);
     public static readonly KineticEnergy None = new(0);
+    public override string ToString() => energy.ToString();
 }
