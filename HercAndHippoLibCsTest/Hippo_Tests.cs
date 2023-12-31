@@ -3,9 +3,7 @@
  * (If player blocked East, but not hippo, can set hippo down atop blockage)
  * (If player blocked West, hippo blocked East, can set hippo down atop west blockage)
  *
- * If player is jumping or moving while hippo is locked on top:
- *   Hippo prevents upward motion if its motion is blocked above
- *   Hippo prevents east/west motion if it is blocked east/west
+ * Hippo prevents east/west motion if it is blocked east/west
  * When hippo is picked up, it is present in inventory and LockedToPlayer is true.
  * If player moves, Location updates for Hippo in LevelObjects
  * When hippo is dropped, it is no longer present in inventory and LockedToPlayer is false
