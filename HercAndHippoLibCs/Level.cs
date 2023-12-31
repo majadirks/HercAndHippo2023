@@ -99,11 +99,6 @@ namespace HercAndHippoLibCs
         public override string ToString() => $"Level with Player at {Player.Location}; Object count = {SecondaryObjects.Count}.";
         private static int GetWidth(HashSet<HercAndHippoObj> ds) => ds.Where(ds => ds is ILocatable d).Cast<ILocatable>().Select(d => d.Location.Col).Max() ?? 0;
         private static int GetHeight(HashSet<HercAndHippoObj> ds) => ds.Where(ds => ds is ILocatable d).Cast<ILocatable>().Select(d => d.Location.Row).Max() ?? 0;
-        public bool TryGetHippo(out Hippo? hippo)
-        {
-            hippo = Hippo;
-            return hippo != null;
-        }
     }
 
     public static class HashSetExtensions

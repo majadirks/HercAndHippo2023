@@ -162,7 +162,7 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
     {
         Direction whither = approachFrom.Mirror();
         Player player = curState.Player;
-        bool hasHippo = curState.TryGetHippo(out Hippo? hippo) && hippo != null && hippo.LockedToPlayer;
+        bool hasHippo = curState.Hippo != null && curState.Hippo.LockedToPlayer;
         HippoMotionBlockages hippoBlockages = HippoMotionBlockages.GetBlockages(curState);
         bool blockedByHippo = hippoBlockages.HippoBlocksTo(whither);    
         

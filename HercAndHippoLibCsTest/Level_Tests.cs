@@ -91,31 +91,5 @@ namespace HercAndHippoLibCsTest
             }
         }
 
-        [TestMethod]
-        public void TryGetHippo_ReturnsHippoIfPresent_Test()
-        {
-            // Arrange
-            Level level = new(Player.Default(1, 1), hippo: new Hippo((2, 2), 5, false), gravity: Gravity.Default, secondaryObjects: new() { });
-            // Act
-            Assert.IsTrue(level.TryGetHippo(out Hippo? hippo));
-            // Assert
-            Assert.IsNotNull(hippo);
-        }
-
-        [TestMethod]
-        public void TryGetHippo_ReturnsNullIfHippoNotPresent_Test()
-        {
-            // Arrange
-            Level level = new(
-                player: Player.Default(1, 1), 
-                hippo: null, 
-                gravity: Gravity.Default, 
-                secondaryObjects: new() { new Wall(Color.White, (2, 2)) });
-            // Act
-            Assert.IsFalse(level.TryGetHippo(out Hippo? hippo));
-            // Assert
-            Assert.IsNull(hippo);
-        }
-
     }
 }
