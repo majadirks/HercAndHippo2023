@@ -3,7 +3,6 @@
  * (If player blocked East, but not hippo, can set hippo down atop blockage)
  * (If player blocked West, hippo blocked East, can set hippo down atop west blockage)
  *
- * Hippo dies when out of health
  * If player is jumping or moving while hippo is locked on top:
  *   Hippo prevents upward motion if its motion is blocked above
  *   Hippo prevents east/west motion if it is blocked east/west
