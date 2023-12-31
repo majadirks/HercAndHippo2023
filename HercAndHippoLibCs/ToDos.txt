@@ -11,6 +11,7 @@
 - Implement and test "seek" behavior for bullet
 
 - Console app: Allow user to press "W" to access list of levels, including DemoLevels and levels from TestMethods
+  - Possibly useful: https://learn.microsoft.com/en-us/dotnet/api/system.reflection.localvariableinfo?view=net-8.0&redirectedfrom=MSDN
 
 Tests:
 	- Hippo - write tests! (See Hippo_Tests.cs)
