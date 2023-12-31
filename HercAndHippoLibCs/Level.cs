@@ -5,24 +5,27 @@ namespace HercAndHippoLibCs
     public class Level
     {
         public Player Player { get; init; }
+        public Hippo? Hippo { get; init; }
         public int Width { get; init; }
         public int Height { get; init; }
         public Gravity Gravity { get; init; }
         public int Cycles { get; private set; }
         public void ForceSetCycles(int cycles) => Cycles = cycles;
         private HashSet<HercAndHippoObj> SecondaryObjects { get; init; } // secondary, ie not the player
-        public Level(Player player, Gravity gravity, HashSet<HercAndHippoObj> secondaryObjects)
+        public Level(Player player, Gravity gravity, HashSet<HercAndHippoObj> secondaryObjects, Hippo? hippo = null)
         {
             Player = player;
+            Hippo = hippo;
             SecondaryObjects = secondaryObjects;
             Width = GetWidth(secondaryObjects);
             Height = GetHeight(secondaryObjects);
             Gravity = gravity;
             Cycles = 0;
         }
-        private Level(Player player, HashSet<HercAndHippoObj> secondaryObjects, int width, int height, int cycles, Gravity gravity)
+        private Level(Player player, Hippo? hippo, HashSet<HercAndHippoObj> secondaryObjects, int width, int height, int cycles, Gravity gravity)
         {
             Player = player;
+            Hippo = hippo;
             SecondaryObjects = secondaryObjects;
             Width = width;
             Height = height;
@@ -36,10 +39,10 @@ namespace HercAndHippoLibCs
         /// when performance is critical.
         /// </summary>
         public HashSet<HercAndHippoObj> LevelObjects => SecondaryObjects.AddObject(Player);
-        public Level WithPlayer(Player player) => new (player: player, secondaryObjects: this.SecondaryObjects, width: Width, height: Height, cycles: Cycles, gravity: Gravity);
+        public Level WithPlayer(Player player) => new (player: player, hippo: Hippo, secondaryObjects: this.SecondaryObjects, width: Width, height: Height, cycles: Cycles, gravity: Gravity);
         public IEnumerable<HercAndHippoObj> ObjectsAt(Location location) => LevelObjects.Where(d => d is ILocatable dAtLoc && dAtLoc.Location.Equals(location));
-        public Level Without(HercAndHippoObj toRemove) => new(player: this.Player, secondaryObjects: SecondaryObjects.RemoveObject(toRemove), Width, Height, Cycles, Gravity);
-        public Level AddObject(HercAndHippoObj toAdd) => new(player: this.Player, secondaryObjects: SecondaryObjects.AddObject(toAdd), Width, Height, Cycles, Gravity);
+        public Level Without(HercAndHippoObj toRemove) => new(player: this.Player, hippo: Hippo, secondaryObjects: SecondaryObjects.RemoveObject(toRemove), Width, Height, Cycles, Gravity);
+        public Level AddObject(HercAndHippoObj toAdd) => new(player: this.Player, hippo: Hippo, secondaryObjects: SecondaryObjects.AddObject(toAdd), Width, Height, Cycles, Gravity);
         public Level Replace(HercAndHippoObj toReplace, HercAndHippoObj toAdd) => this.Without(toReplace).AddObject(toAdd);
         public Level RefreshCyclables(ActionInput actionInput, CancellationToken? cancellationToken = null)
         {
@@ -55,7 +58,8 @@ namespace HercAndHippoLibCs
             // Then cycle player
             nextState = nextState.Player.Cycle(nextState, actionInput);
             // Finally, if hippo is locked to player, hippo should move in response to any player motion
-            if (nextState.TryGetHippo(out Hippo? hippo) && hippo != null && hippo.LockedToPlayer)
+            Hippo? hippo = nextState.Hippo;
+            if (hippo != null && hippo.LockedToPlayer)
             {
                 nextState = Hippo.LockAbovePlayer(nextState);
             }
@@ -75,10 +79,9 @@ namespace HercAndHippoLibCs
         public override string ToString() => $"Level with Player at {Player.Location}; Object count = {SecondaryObjects.Count}.";
         private static int GetWidth(HashSet<HercAndHippoObj> ds) => ds.Where(ds => ds is ILocatable d).Cast<ILocatable>().Select(d => d.Location.Col).Max() ?? 0;
         private static int GetHeight(HashSet<HercAndHippoObj> ds) => ds.Where(ds => ds is ILocatable d).Cast<ILocatable>().Select(d => d.Location.Row).Max() ?? 0;
-        public static readonly Level Default = new(Player.Default(1, 1), Gravity.None, new());
         public bool TryGetHippo(out Hippo? hippo)
         {
-            hippo = (Hippo?)LevelObjects.Where(obj => obj is Hippo h).SingleOrDefault();
+            hippo = Hippo;
             return hippo != null;
         }
     }

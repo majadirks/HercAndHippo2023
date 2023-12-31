@@ -12,7 +12,7 @@ namespace HercAndHippoLibCsTest
             int expectedWidth = 4;
             int expectedHeight = 7;
             Player player = new((1, 1), health: 100, ammoCount: 0, inventory: EmptyInventory);
-            Level level = new(player: player, gravity: Gravity.None, secondaryObjects: new HashSet<HercAndHippoObj>()
+            Level level = new(player: player, hippo: null, gravity: Gravity.None, secondaryObjects: new HashSet<HercAndHippoObj>()
             {
                 new Wall(Color.Yellow, new Location(Col: expectedWidth, Row: expectedHeight))
             }) ;
@@ -29,7 +29,7 @@ namespace HercAndHippoLibCsTest
             int expectedWidth = 4;
             int expectedHeight = 7;
             Player player = new(new Location(Col: expectedWidth, Row: expectedHeight), health: 100, ammoCount: 5, inventory: EmptyInventory);
-            Level level = new(player: player, gravity: Gravity.None, secondaryObjects: new HashSet<HercAndHippoObj>()
+            Level level = new(player: player, hippo: null, gravity: Gravity.None, secondaryObjects: new HashSet<HercAndHippoObj>()
             {
                 new Wall(Color.Yellow, new Location(Col: expectedWidth, Row: expectedHeight))
             });
@@ -61,7 +61,7 @@ namespace HercAndHippoLibCsTest
             int startCount = 0;
             CycleCounter initialCounter = new((2, 2), startCount);
             CycleCounter cycledCounter = new((2, 2), startCount + 1);
-            Level level = new(player: player, gravity: Gravity.None, secondaryObjects: new HashSet<HercAndHippoObj>() { initialCounter });
+            Level level = new(player: player, hippo: null, gravity: Gravity.None, secondaryObjects: new HashSet<HercAndHippoObj>() { initialCounter });
 
             // Check that we set this up correctly
             Assert.IsTrue(level.Contains(initialCounter));
@@ -80,7 +80,7 @@ namespace HercAndHippoLibCsTest
         {
             // Arrange
             Player player = Player.Default((1, 1));
-            Level level = new(player, gravity: Gravity.None, secondaryObjects: new());
+            Level level = new(player, hippo: null, gravity: Gravity.None, secondaryObjects: new());
 
             for (int i = 0; i < 100; i++)
             {
@@ -95,7 +95,7 @@ namespace HercAndHippoLibCsTest
         public void TryGetHippo_ReturnsHippoIfPresent_Test()
         {
             // Arrange
-            Level level = new(Player.Default(1, 1), Gravity.Default, new() { new Hippo((2, 2), 5, false) });
+            Level level = new(Player.Default(1, 1), hippo: null, gravity: Gravity.Default, secondaryObjects: new() { new Hippo((2, 2), 5, false) });
             // Act
             Assert.IsTrue(level.TryGetHippo(out Hippo? hippo));
             // Assert
@@ -106,7 +106,11 @@ namespace HercAndHippoLibCsTest
         public void TryGetHippo_ReturnsNullIfHippoNotPresent_Test()
         {
             // Arrange
-            Level level = new(Player.Default(1, 1), Gravity.Default, new() { new Wall(Color.White, (2, 2)) });
+            Level level = new(
+                player: Player.Default(1, 1), 
+                hippo: null, 
+                gravity: Gravity.Default, 
+                secondaryObjects: new() { new Wall(Color.White, (2, 2)) });
             // Act
             Assert.IsFalse(level.TryGetHippo(out Hippo? hippo));
             // Assert

@@ -10,11 +10,10 @@ public class Hippo_Tests
         Player player = Player.Default(new Location(Col: 3, Row: 10)) with { JumpStrength = 5 };
         Level level = new(
             player,
+            hippo: new Hippo(Location: (4, 10), Health: 10, LockedToPlayer: false),
             gravity: new Gravity(Strength: 1, WaitCycles: 1),
             secondaryObjects: new()
             {
-                new Hippo(Location: (4,10), Health: 10, LockedToPlayer: false),
-
                 new Wall(Color.White, (1,11)),
                 new Wall(Color.White, (2,11)),
                 new Wall(Color.White, (3,11)),
@@ -65,11 +64,10 @@ public class Hippo_Tests
         Player player = Player.Default(new Location(Col: 3, Row: 10)) with { JumpStrength = 5 };
         Level level = new(
             player,
+            hippo: new Hippo(Location: (4, 10), Health: 10, LockedToPlayer: false),
             gravity: new Gravity(Strength: 1, WaitCycles: 1),
             secondaryObjects: new()
             {
-                new Hippo(Location: (4,10), Health: 10, LockedToPlayer: false),
-
                 new Wall(Color.White, (1,11)),
                 new Wall(Color.White, (2,11)),
                 new Wall(Color.White, (3,11)),
@@ -95,10 +93,9 @@ public class Hippo_Tests
         Level level = new(
             player,
             gravity: new Gravity(Strength: 1, WaitCycles: 1),
+            hippo: new Hippo(Location: (4, 10), Health: 10, LockedToPlayer: false),
             secondaryObjects: new()
             {
-                new Hippo(Location: (4,10), Health: 10, LockedToPlayer: false),
-
                 new Wall(Color.White, (1,11)),
                 new Wall(Color.White, (2,11)),
                 new Wall(Color.White, (3,11)),
@@ -123,11 +120,10 @@ public class Hippo_Tests
         Player player = Player.Default(new Location(Col: 3, Row: 10)) with { JumpStrength = 5 };
         Level level = new(
             player,
+            hippo: new Hippo(Location: (3, 7), Health: 10, LockedToPlayer: false),
             gravity: new Gravity(Strength: 1, WaitCycles: 1),
             secondaryObjects: new()
             {
-                new Hippo(Location: (3,7), Health: 10, LockedToPlayer: false),
-
                 new Wall(Color.White, (1,11)),
                 new Wall(Color.White, (2,11)),
                 new Wall(Color.White, (3,11)),
@@ -157,12 +153,11 @@ public class Hippo_Tests
         Player player = Player.Default(new Location(Col: 3, Row: 10)) with { JumpStrength = 5 };
         Level level = new(
             player,
+            hippo: new Hippo(Location: (4, 10), Health: 10, LockedToPlayer: false),
             gravity: new Gravity(Strength: 1, WaitCycles: 1),
             secondaryObjects: new()
             {
                 new Wall(Color.Cyan, Location: new(3,9)),
-                new Hippo(Location: (4,10), Health: 10, LockedToPlayer: false),
-
                 new Wall(Color.White, (1,11)),
                 new Wall(Color.White, (2,11)),
                 new Wall(Color.White, (3,11)),
@@ -191,12 +186,11 @@ public class Hippo_Tests
         Player player = Player.Default(new Location(Col: 3, Row: 10)) with { JumpStrength = 5 };
         Level level = new(
             player,
+            hippo: new Hippo(Location: (4, 10), Health: 10, LockedToPlayer: false),
             gravity: new Gravity(Strength: 1, WaitCycles: 1),
             secondaryObjects: new()
             {
                 new Wall(Color.Cyan, Location: new(4,9)),
-                new Hippo(Location: (4,10), Health: 10, LockedToPlayer: false),
-
                 new Wall(Color.White, (1,11)),
                 new Wall(Color.White, (2,11)),
                 new Wall(Color.White, (3,11)),
@@ -228,12 +222,11 @@ public class Hippo_Tests
         Player player = Player.Default(new Location(Col: 3, Row: 10)) with { JumpStrength = 5 };
         Level level = new(
             player,
+            hippo: new Hippo(Location: (4, 10), Health: 10, LockedToPlayer: false),
             gravity: new Gravity(Strength: 1, WaitCycles: 1),
             secondaryObjects: new()
             {
-                new Wall(Color.White, (4,9)),
-                new Hippo(Location: (4,10), Health: 10, LockedToPlayer: false),
-
+                new Wall(Color.White, (4,9)),              
                 new Wall(Color.White, (1,11)),
                 new Wall(Color.White, (2,11)),
                 new Wall(Color.White, (3,11)),
@@ -258,12 +251,11 @@ public class Hippo_Tests
         Player player = Player.Default(new Location(Col: 3, Row: 10)) with { JumpStrength = 5 };
         Level level = new(
             player,
+            hippo: new Hippo(Location: (4, 10), Health: 10, LockedToPlayer: false),
             gravity: new Gravity(Strength: 1, WaitCycles: 1),
             secondaryObjects: new()
             {
                 new Wall(Color.White, (3,9)),
-                new Hippo(Location: (4,10), Health: 10, LockedToPlayer: false),
-
                 new Wall(Color.White, (1,11)),
                 new Wall(Color.White, (2,11)),
                 new Wall(Color.White, (3,11)),
@@ -287,11 +279,10 @@ public class Hippo_Tests
         // Arrange
         Level level = new(
             player : Player.Default(new Location(Col: 3, Row: 7)) with { JumpStrength = 5 },
+            hippo: new Hippo(Location: (3, 10), Health: 10, LockedToPlayer: false),
             gravity: new Gravity(Strength: 1, WaitCycles: 1),
             secondaryObjects: new()
             {
-                new Hippo(Location: (3,10), Health: 10, LockedToPlayer: false),
-
                 new Wall(Color.White, (1,11)),
                 new Wall(Color.White, (2,11)),
                 new Wall(Color.White, (3,11)),
@@ -320,11 +311,10 @@ public class Hippo_Tests
         // Arrange
         Level level = new(
             player: Player.Default(new Location(Col: 3, Row: 8)) with { JumpStrength = 5 },
+            hippo: new Hippo(Location: (3, 10), Health: 10, LockedToPlayer: false),
             gravity: new Gravity(Strength: 1, WaitCycles: 1),
             secondaryObjects: new()
             {
-                new Hippo(Location: (3,10), Health: 10, LockedToPlayer: false),
-
                 new Wall(Color.White, (1,11)),
                 new Wall(Color.White, (2,11)),
                 new Wall(Color.White, (3,11)),
@@ -351,11 +341,10 @@ public class Hippo_Tests
         // Arrange
         Level level = new(
             player: Player.Default(new Location(Col: 3, Row: 9)) with { JumpStrength = 5 },
+            hippo: new Hippo(Location: (3, 10), Health: 10, LockedToPlayer: false),
             gravity: new Gravity(Strength: 1, WaitCycles: 1),
             secondaryObjects: new()
             {
-                new Hippo(Location: (3,10), Health: 10, LockedToPlayer: false),
-
                 new Wall(Color.White, (1,11)),
                 new Wall(Color.White, (2,11)),
                 new Wall(Color.White, (3,11)),
@@ -385,12 +374,11 @@ public class Hippo_Tests
         // Arrange
         Level level = new(
             player: Player.Default(new Location(Col: 3, Row: 9)) with { JumpStrength = 5 },
+            hippo: new Hippo(Location: (4, 10), Health: 10, LockedToPlayer: false),
             gravity: new Gravity(Strength: 1, WaitCycles: 1),
             secondaryObjects: new()
             {
                 new Wall(Color.White, Location: new(3,10)),
-                new Hippo(Location: (4,10), Health: 10, LockedToPlayer: false),
-
                 new Wall(Color.White, (1,11)),
                 new Wall(Color.White, (2,11)),
                 new Wall(Color.White, (3,11)),
@@ -419,11 +407,10 @@ public class Hippo_Tests
         Player player = Player.Default(new Location(Col: 3, Row: 10));
         Level level = new(
             player,
+            hippo: new Hippo(Location: (4, 10), Health: 10, LockedToPlayer: false),
             gravity: new Gravity(Strength: 1, WaitCycles: 1),
             secondaryObjects: new()
             {
-                new Hippo(Location: (4,10), Health: 10, LockedToPlayer: false),
-
                 new Wall(Color.White, (1,11)),
                 new Wall(Color.White, (2,11)),
                 new Wall(Color.White, (3,11)),
@@ -455,11 +442,10 @@ public class Hippo_Tests
         Player player = Player.Default(new Location(Col: 3, Row: 10)) with { JumpStrength = 5 };
         Level level = new(
             player,
+            hippo: new Hippo(Location: (4, 10), Health: 10, LockedToPlayer: false),
             gravity: new Gravity(Strength: 1, WaitCycles: 1),
             secondaryObjects: new()
             {
-                new Hippo(Location: (4,10), Health: 10, LockedToPlayer: false),
-
                 new Wall(Color.White, Location: (5,9)),
                 new Wall(Color.White, Location: (5,10)),
 
@@ -508,11 +494,10 @@ public class Hippo_Tests
         Player player = Player.Default(new Location(Col: 3, Row: 10)) with { JumpStrength = 5 };
         Level level = new(
             player,
+            hippo: new Hippo(Location: (3, 9), Health: 10, LockedToPlayer: true),
             gravity: new Gravity(Strength: 1, WaitCycles: 1),
             secondaryObjects: new()
             {
-                new Hippo(Location: (3,9), Health: 10, LockedToPlayer: true),
-
                 new Wall(Color.White, (2,9)),
                 new Wall(Color.White, (4,9)),
 
@@ -544,13 +529,11 @@ public class Hippo_Tests
         Player player = Player.Default(new Location(Col: 3, Row: 10));
         Level level = new(
             player,
+            hippo: new Hippo(Location: (4, 10), Health: 10, LockedToPlayer: false),
             gravity: new Gravity(Strength: 1, WaitCycles: 1),
             secondaryObjects: new()
             {
-                new Hippo(Location: (4,10), Health: 10, LockedToPlayer: false),
-
                 new Wall(Color.White, (4,9)),
-
                 new Wall(Color.White, (1,11)),
                 new Wall(Color.White, (2,11)),
                 new Wall(Color.White, (3,11)),
@@ -584,10 +567,9 @@ public class Hippo_Tests
         Level level = new(
             player,
             gravity: new Gravity(Strength: 1, WaitCycles: 1),
+            hippo: new Hippo(Location: (4, 10), Health: 10, LockedToPlayer: false),
             secondaryObjects: new()
             {
-                new Hippo(Location: (4,10), Health: 10, LockedToPlayer: false),
-
                 new Wall(Color.White, (4,9)),
 
                 new Wall(Color.White, (1,11)),
@@ -617,10 +599,9 @@ public class Hippo_Tests
         Level level = new(
             player,
             gravity: new Gravity(Strength: 1, WaitCycles: 1),
+            hippo: new Hippo(Location: (4, 10), Health: 10, LockedToPlayer: false),
             secondaryObjects: new()
             {
-                new Hippo(Location: (4,10), Health: 10, LockedToPlayer: false),
-
                 new Wall(Color.White, (1,11)),
                 new Wall(Color.White, (2,11)),
                 new Wall(Color.White, (3,11)),
@@ -652,11 +633,10 @@ public class Hippo_Tests
         Health hippoStartHealth = 10;
         Level level = new(
             player,
+            hippo: new Hippo(Location: (5, 10), Health: hippoStartHealth, LockedToPlayer: false),
             gravity: new Gravity(Strength: 1, WaitCycles: 1),
             secondaryObjects: new()
             {
-                new Hippo(Location: (5,10), Health: hippoStartHealth, LockedToPlayer: false),
-
                 new Wall(Color.White, (1,11)),
                 new Wall(Color.White, (2,11)),
                 new Wall(Color.White, (3,11)),
@@ -681,11 +661,10 @@ public class Hippo_Tests
         Health hippoStartHealth = Hippo.HEALTH_PENALTY_ON_SHOT;
         Level level = new(
             player,
+            hippo: new Hippo(Location: (5, 10), Health: hippoStartHealth, LockedToPlayer: false),
             gravity: new Gravity(Strength: 1, WaitCycles: 1),
             secondaryObjects: new()
             {
-                new Hippo(Location: (5,10), Health: hippoStartHealth, LockedToPlayer: false),
-
                 new Wall(Color.White, (1,11)),
                 new Wall(Color.White, (2,11)),
                 new Wall(Color.White, (3,11)),
@@ -713,11 +692,10 @@ public class Hippo_Tests
         Player player = Player.Default(new Location(Col: 3, Row: 10)) with { JumpStrength = 5 };
         Level level = new(
             player,
+            hippo: new Hippo(Location: (4, 10), Health: 10, LockedToPlayer: false),
             gravity: new Gravity(Strength: 1, WaitCycles: 1),
             secondaryObjects: new()
-            {
-                new Hippo(Location: (4,10), Health: 10, LockedToPlayer: false),
-
+            {               
                 new Wall(Color.White, (1,11)),
                 new Wall(Color.White, (2,11)),
                 new Wall(Color.White, (3,11)),
@@ -774,10 +752,9 @@ public class Hippo_Tests
         Level level = new(
             player,
             gravity: new Gravity(Strength: 1, WaitCycles: 1),
+            hippo: new Hippo(Location: (4, 10), Health: 10, LockedToPlayer: false),
             secondaryObjects: new()
             {
-                new Hippo(Location: (4,10), Health: 10, LockedToPlayer: false),
-
                 new Wall(Color.White, (3,9)), // above player
                 new Wall(Color.White, (5,10)), // east of hippo                
 
@@ -817,11 +794,10 @@ public class Hippo_Tests
         Player player = Player.Default(new Location(Col: 3, Row: 10));
         Level level = new(
             player,
+            hippo: new Hippo(Location: (2, 10), Health: 10, LockedToPlayer: false),
             gravity: new Gravity(Strength: 1, WaitCycles: 1),
             secondaryObjects: new()
             {
-                new Hippo(Location: (2,10), Health: 10, LockedToPlayer: false),
-
                 new Wall(Color.White, (3,9)), // above player
                 new Wall(Color.White, (1,10)), // west of hippo                
 
@@ -854,11 +830,10 @@ public class Hippo_Tests
         Player player = Player.Default(new Location(Col: 3, Row: 10)) with { JumpStrength = 5 };
         Level level = new(
             player,
+            hippo: new Hippo(Location: (3, 9), Health: 10, LockedToPlayer: true),
             gravity: new Gravity(Strength: 1, WaitCycles: 1),
             secondaryObjects: new()
             {
-                new Hippo(Location: (3,9), Health: 10, LockedToPlayer: true),      
-
                 new Wall(Color.White, (1,11)),
                 new Wall(Color.White, (2,11)),
                 new Wall(Color.White, (3,11)),
@@ -908,10 +883,10 @@ public class Hippo_Tests
         Player player = Player.Default(new(2, 2));
         Level level = new(
             player: player,
+            hippo: new Hippo((2, 1), Health: 5, LockedToPlayer: true),
             gravity: new Gravity(Strength: 1, WaitCycles: 1),
             secondaryObjects: new()
             {
-                new Hippo((2,1), Health: 5, LockedToPlayer: true),
                 new Wall(Color.White, (2,3)),
 
                 new Wall(Color.White, (1,4)),
@@ -936,11 +911,11 @@ public class Hippo_Tests
         // Arrange
         Level level = new(
             player: Player.Default((1, 4)),
+            hippo: new Hippo((1, 1), Health: 5, LockedToPlayer: false),
             gravity: new Gravity(Strength: 1, WaitCycles: 1),
             secondaryObjects: new()
             {
-                new Wall(Color.White, (1, 5)),
-                new Hippo((1,1), Health: 5, LockedToPlayer: false)
+                new Wall(Color.White, (1, 5)),  
             });
 
         // Act: Let the hippo fall into the player
@@ -960,9 +935,12 @@ public class Hippo_Tests
     {
         // Arrange
         Hippo hippo = new((2, 2), Health: 5, LockedToPlayer: true);
-        Level level = new(Player.Default(2,3), Gravity.Default, new()
+        Level level = new(
+            player: Player.Default(2,3), 
+            hippo: hippo,
+            gravity: Gravity.Default, 
+            secondaryObjects: new()
         {
-            hippo,
             new BreakableWall(Color.Yellow, (2,1)),
             new Wall(Color.Black, (5,5))
         });
@@ -988,9 +966,12 @@ public class Hippo_Tests
     {
         // Arrange
         Hippo hippo = new((2, 2), Health: 5, LockedToPlayer: false);
-        Level level = new(Player.Default(1, 1), Gravity.Default, new()
+        Level level = new(
+            player: Player.Default(1, 1), 
+            hippo: hippo,
+            gravity: Gravity.Default, 
+            secondaryObjects: new()
         {
-            hippo,
             new BreakableWall(Color.Yellow, (2,1)),
             new Wall(Color.Black, (5,5))
         });
@@ -1015,7 +996,11 @@ public class Hippo_Tests
     public void GetBlockages_HippoAbsent_Test()
     {
         // Arrange
-        Level level = new(Player.Default(1, 1), Gravity.Default, new()
+        Level level = new(
+            player: Player.Default(1, 1), 
+            hippo: null,
+            gravity: Gravity.Default, 
+            secondaryObjects: new()
         {
             new BreakableWall(Color.Yellow, (2,1)),
             new Wall(Color.Black, (5,5))
@@ -1045,9 +1030,12 @@ public class Hippo_Tests
     {
         // Arrange
         Hippo hippo = new((2, 2), Health: 5, LockedToPlayer: true);
-        Level level = new(Player.Default(2, 3), Gravity.Default, new()
+        Level level = new(
+            player: Player.Default(2, 3), 
+            hippo: hippo,
+            gravity: Gravity.Default, 
+            secondaryObjects: new()
         {
-            hippo,
             new BreakableWall(Color.Yellow, (2,1)),
             new Wall(Color.Black, (5,5))
         });
