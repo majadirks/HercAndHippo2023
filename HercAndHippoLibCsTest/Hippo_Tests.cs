@@ -760,7 +760,7 @@ public class Hippo_Tests
     }
 
     [TestMethod]
-    public void HippoCanBePickedUp_WhenHippoBlockedEastAndPlayerBlockedAbove_Test()
+    public void HippoCanBePickedUp_WhenHippoBlockedEastAndPlayerBlockedAbove_HippoEastOfPlayer_Test()
     {
         /*
         *  
