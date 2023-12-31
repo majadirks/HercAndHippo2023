@@ -3,7 +3,6 @@
  * (If player blocked East, but not hippo, can set hippo down atop blockage)
  * (If player blocked West, hippo blocked East, can set hippo down atop west blockage)
  *
- * If player moves, Hippo moves too (location updates)
  * Hippo is subject to gravity (if dropped over hole, falls)
  * Player TryGetHippo() returns a hippo if present, null if not
  * Test behavior of HippoBlocksTo() method in HippoMotionBlockages record
@@ -48,6 +47,26 @@ public class Hippo_Tests
         Assert.IsTrue(level.TryGetHippo(out hippo));
         Assert.IsTrue(hippo != null && hippo.LockedToPlayer);
         Assert.AreEqual(new Location(4, 6), hippo.Location);
+
+        // Act: Continue the jump 
+        level = level.RefreshCyclables(ActionInput.NoAction);
+        level = level.RefreshCyclables(ActionInput.NoAction);
+
+        // Assert: Hippo still above player
+        Assert.AreEqual(new Location(4, 5), level.Player.Location);
+        Assert.IsTrue(level.TryGetHippo(out hippo));
+        Assert.IsTrue(hippo != null && hippo.LockedToPlayer);
+        Assert.AreEqual(new Location(4, 4), hippo.Location);
+        Assert.AreEqual(new KineticEnergy(0), level.Player.KineticEnergy); // reached apex of jump
+
+        // Now fall begins
+        level = level.RefreshCyclables(ActionInput.NoAction);
+
+        // Assert: Hippo still above player during fall
+        Assert.AreEqual(new Location(4, 6), level.Player.Location);
+        Assert.IsTrue(level.TryGetHippo(out hippo));
+        Assert.IsTrue(hippo != null && hippo.LockedToPlayer);
+        Assert.AreEqual(new Location(4, 5), hippo.Location);
     }
 
     [TestMethod]
@@ -849,10 +868,7 @@ public class Hippo_Tests
             gravity: new Gravity(Strength: 1, WaitCycles: 1),
             secondaryObjects: new()
             {
-                new Hippo(Location: (3,9), Health: 10, LockedToPlayer: true),
-
-                new Wall(Color.White, (3,9)), // above player
-                new Wall(Color.White, (5,10)), // east of hippo                
+                new Hippo(Location: (3,9), Health: 10, LockedToPlayer: true),      
 
                 new Wall(Color.White, (1,11)),
                 new Wall(Color.White, (2,11)),
@@ -862,5 +878,28 @@ public class Hippo_Tests
             });
         level.TryGetHippo(out Hippo? hippo);
         Assert.IsNotNull(hippo);
+        Assert.IsTrue(hippo.LockedToPlayer);
+
+        for (int col = 4; col <= 5; col++)
+        {
+            // Act
+            level = level.RefreshCyclables(ActionInput.MoveEast);
+            // Assert
+            Assert.AreEqual((int) level.Player.Location.Col, col);
+            level.TryGetHippo(out hippo);
+            Assert.IsNotNull(hippo);
+            Assert.AreEqual((int)hippo.Location.Col, col);
+        }
+
+        for (int col = 4; col >= 1; col--)
+        {
+            // Act
+            level = level.RefreshCyclables(ActionInput.MoveWest);
+            // Assert
+            Assert.AreEqual((int)level.Player.Location.Col, col);
+            level.TryGetHippo(out hippo);
+            Assert.IsNotNull(hippo);
+            Assert.AreEqual((int)hippo.Location.Col, col);
+        }
     }
 }
