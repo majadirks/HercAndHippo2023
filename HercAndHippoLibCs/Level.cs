@@ -57,7 +57,7 @@ namespace HercAndHippoLibCs
             // Finally, if hippo is locked to player, hippo should move in response to any player motion
             if (nextState.TryGetHippo(out Hippo? hippo) && hippo != null && hippo.LockedToPlayer)
             {
-                nextState = Hippo.LockAbovePlayer(hippo, nextState);
+                nextState = Hippo.LockAbovePlayer(nextState);
             }
             nextState.Cycles = Cycles + 1;
             return nextState;
