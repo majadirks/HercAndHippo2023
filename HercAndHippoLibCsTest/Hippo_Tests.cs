@@ -1,7 +1,5 @@
 ﻿/*
  * Tests:
- * Put hippo down East if not blocked East and intervening corner is clear
- * Put hippo down West if blocked East but not West and if intervening corner is clear
  * Do not put hippo down if blocked both East and West (or put down above blockage)
  * After hippo is put down, only one hippo exists on the level.
  *      (Currently there's a bug where, if player is atop a block with space on both sides, hippo is placed both east and west!)
