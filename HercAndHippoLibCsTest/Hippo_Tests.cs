@@ -21,9 +21,7 @@
  * If hippo falls on player, player takes Hippo.
  * Hippo blocks motion when  blocked in opposite direction (whither),
  * but does not block player when player is above
- *    
- *      █
- *     ☻H   < player cannot move East
+
  */
 
 namespace HercAndHippoLibCsTest;
@@ -550,7 +548,7 @@ public class Hippo_Tests
          */
 
         // Arrange
-        Player player = Player.Default(new Location(Col: 3, Row: 10)) with { JumpStrength = 5 };
+        Player player = Player.Default(new Location(Col: 3, Row: 10));
         Level level = new(
             player,
             gravity: new Gravity(Strength: 1, WaitCycles: 1),
@@ -588,6 +586,33 @@ public class Hippo_Tests
             *      █
             *      H☻   < player cannot move West
          */
-        throw new NotImplementedException();
+        // Arrange
+        Player player = Player.Default(new Location(Col: 5, Row: 10));
+        Level level = new(
+            player,
+            gravity: new Gravity(Strength: 1, WaitCycles: 1),
+            secondaryObjects: new()
+            {
+                new Hippo(Location: (4,10), Health: 10, LockedToPlayer: false),
+
+                new Wall(Color.White, (4,9)),
+
+                new Wall(Color.White, (1,11)),
+                new Wall(Color.White, (2,11)),
+                new Wall(Color.White, (3,11)),
+                new Wall(Color.White, (4,11)),
+                new Wall(Color.White, (5,11)),
+            });
+        Assert.IsTrue(level.Player.MotionBlockedTo(level, Direction.West));
+
+        // Act: try to move East
+        level = level.RefreshCyclables(ActionInput.MoveWest);
+
+        // Assert: Hippo has blocked motion
+        Assert.AreEqual(player.Location, level.Player.Location);
+        Assert.IsTrue(level.TryGetHippo(out Hippo? hippo));
+        Assert.IsTrue(hippo != null);
+        Assert.AreEqual(new Location(4, 10), hippo.Location);
+        Assert.IsFalse(hippo.LockedToPlayer);
     }
 }
