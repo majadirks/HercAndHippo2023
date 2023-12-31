@@ -34,5 +34,20 @@ public record Location(Column Col, Row Row)
 {
     public static implicit operator Location((int col, int row) tuple) => new(tuple.col, tuple.row);
     public override string ToString() => $"(col {Col}, row {Row})";
+
+    public static int ManhattanDistance(Location a, Location b)
+    {
+        int vertical = Math.Abs(a.Row - b.Row);
+        int horizontal = Math.Abs(a.Col - b.Col);
+        return vertical + horizontal;
+    }
+
+
+}
+
+public static class LocationExtensions
+{
+    public static bool Below(this ILocatable obj, Location location) =>
+        obj.Location.Col == location.Col && obj.Location.Row.NextNorth() == location.Row;
 }
 

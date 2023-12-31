@@ -9,6 +9,7 @@ namespace HercAndHippoLibCs
         public int Height { get; init; }
         public Gravity Gravity { get; init; }
         public int Cycles { get; private set; }
+        public void ForceSetCycles(int cycles) => Cycles = cycles;
         private HashSet<HercAndHippoObj> SecondaryObjects { get; init; } // secondary, ie not the player
         public Level(Player player, Gravity gravity, HashSet<HercAndHippoObj> secondaryObjects)
         {
@@ -28,6 +29,12 @@ namespace HercAndHippoLibCs
             Gravity = gravity;
             Cycles = cycles;
         }
+
+        /// <summary>
+        /// Return a HashSet containing the player and all secondary objects. 
+        /// Somewhat slow; probably better to act on player and secondary objects separately 
+        /// when performance is critical.
+        /// </summary>
         public HashSet<HercAndHippoObj> LevelObjects => SecondaryObjects.AddObject(Player);
         public Level WithPlayer(Player player) => new (player: player, secondaryObjects: this.SecondaryObjects, width: Width, height: Height, cycles: Cycles, gravity: Gravity);
         public IEnumerable<HercAndHippoObj> ObjectsAt(Location location) => LevelObjects.Where(d => d is ILocatable dAtLoc && dAtLoc.Location.Equals(location));
@@ -37,10 +44,21 @@ namespace HercAndHippoLibCs
         public Level RefreshCyclables(ActionInput actionInput, CancellationToken? cancellationToken = null)
         {
             CancellationToken token = cancellationToken ?? CancellationToken.None;
-            var nextState = LevelObjects // Do not refresh in parallel; this could cause objects to interfere with nearby copies of themselves, and can make updating slower
-            .Where(disp => disp.IsCyclable)
-            .Cast<ICyclable>()
-            .Aggregate(seed: this, func: (state, nextCyclable) => token.IsCancellationRequested ? Default : nextCyclable.Cycle(state, actionInput));
+            // First cycle non-player objects
+            var nextState = SecondaryObjects // Do not refresh in parallel; this could cause objects to interfere with nearby copies of themselves, and can make updating slower
+                .Where(disp => disp.IsCyclable)
+                .Cast<ICyclable>()
+                .TakeWhile(dummy => !token.IsCancellationRequested)
+                .Aggregate(
+                seed: this, 
+                func: (state, nextCyclable) => nextCyclable.Cycle(state, actionInput));
+            // Then cycle player
+            nextState = nextState.Player.Cycle(nextState, actionInput);
+            // Finally, if hippo is locked to player, hippo should move in response to any player motion
+            if (nextState.TryGetHippo(out Hippo? hippo) && hippo != null && hippo.LockedToPlayer)
+            {
+                nextState = Hippo.LockAbovePlayer(hippo, nextState);
+            }
             nextState.Cycles = Cycles + 1;
             return nextState;
         }
@@ -58,6 +76,11 @@ namespace HercAndHippoLibCs
         private static int GetWidth(HashSet<HercAndHippoObj> ds) => ds.Where(ds => ds is ILocatable d).Cast<ILocatable>().Select(d => d.Location.Col).Max() ?? 0;
         private static int GetHeight(HashSet<HercAndHippoObj> ds) => ds.Where(ds => ds is ILocatable d).Cast<ILocatable>().Select(d => d.Location.Row).Max() ?? 0;
         public static readonly Level Default = new(Player.Default(1, 1), Gravity.None, new());
+        public bool TryGetHippo(out Hippo? hippo)
+        {
+            hippo = (Hippo?)LevelObjects.Where(obj => obj is Hippo h).SingleOrDefault();
+            return hippo != null;
+        }
     }
 
     public static class HashSetExtensions

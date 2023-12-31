@@ -40,8 +40,6 @@ public record Bullet(Location Location, Direction Whither) : HercAndHippoObj, IL
             Direction.East => Location with { Col = Location.Col + 1 },
             Direction.West => Location with { Col = Location.Col - 1 },
             Direction.Idle => Location,
-            Direction.Seek => throw new NotImplementedException(), // todo
-            Direction.Flee => throw new NotImplementedException(), // todo
             _ => throw new NotImplementedException()
         };
 

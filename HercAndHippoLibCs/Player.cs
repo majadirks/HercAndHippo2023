@@ -115,8 +115,10 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
                     }
                 }
             }
-            else  if (nextState.GravityApplies()) // No kinetic energy; fall due to gravity until blocked
+            else if (actionInput == ActionInput.MoveSouth || nextState.GravityApplies()) // No kinetic energy; fall due to gravity until blocked
             {
+                bool fell = false;
+                Location startLocation = nextState.Player.Location;
                 for (int i = 0;
                     i < nextState.Gravity.Strength &&
                     !nextState.Player.MotionBlockedTo(nextState,Direction.South);
@@ -127,10 +129,21 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
                         newLocation: nextLocation,
                         approachFrom: Direction.North,
                         curState: nextState);
+                    Location endLocation = nextState.Player.Location;
+                    fell = startLocation.Row < endLocation.Row;
+                }
+
+                // If player fell and is blocked below by an ITouchable, call its OnTouch() method
+                if (fell || actionInput == ActionInput.MoveSouth)
+                {
+                    Location below = new(nextState.Player.Location.Col, nextState.Player.Location.Row.NextSouth(level.Height));
+                    IEnumerable<ITouchable> touchables = nextState.ObjectsAt(below).Where(obj => obj.IsTouchable && obj.BlocksMotion(nextState)).Cast<ITouchable>();
+                    foreach (var touchable in touchables)
+                    {
+                        nextState = touchable.OnTouch(nextState, Direction.North, nextState.Player);
+                    }
                 }
             }
-
-            
             return nextState;
         } 
     }
@@ -142,20 +155,16 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
         };
     public override bool BlocksMotion(Level level) => level.Player != this;
 
-    public static bool TryGetHippo(Level level, out Hippo? hippo)
-    {
-        hippo = (Hippo?)level.LevelObjects.Where(obj => obj is Hippo h && h.LockedToPlayer).SingleOrDefault();
-        return hippo != null;
-    }
+
 
     // Private static helpers
     private static Level TryMoveTo(Location newLocation, Direction approachFrom, Level curState)
     {
         Direction whither = approachFrom.Mirror();
         Player player = curState.Player;
-        bool hasHippo = TryGetHippo(curState, out Hippo? hippo);
-        HippoMotionBlockages hippoBlocks = Hippo.Blockages(hippo, curState);
-        bool blockedByHippo = hippoBlocks.HippoBlocksTo(whither);    
+        bool hasHippo = curState.TryGetHippo(out Hippo? hippo) && hippo != null && hippo.LockedToPlayer;
+        HippoMotionBlockages hippoBlockages = HippoMotionBlockages.GetBlockages(hippo, curState);
+        bool blockedByHippo = hippoBlockages.HippoBlocksTo(whither);    
         
         // If no obstacles, move
         if (!player.ObjectLocatedTo(curState, whither) && !blockedByHippo)
@@ -174,6 +183,7 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
         }
 
         // If not blocked, move
+        player = nextState.Player;
         if (!player.MotionBlockedTo(nextState, whither) && !blockedByHippo)
             nextState = nextState.WithPlayer(player with { Location = newLocation });
         
@@ -183,20 +193,20 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
     {
         Player player = level.Player;
         if (!player.HasAmmo) return level;
-        int col = player.Location.Col;
-        int row = player.Location.Row;
+        Column col = player.Location.Col;
+        Row row = player.Location.Row;
         int bulletStartCol = whither switch
         {
-            Direction.East => col + 1,
-            Direction.West => col - 1,
+            Direction.East => col.NextEast(level.Width),
+            Direction.West => col.NextWest(),
             Direction.North => col,
             Direction.South => col,
             _ => throw new NotImplementedException(),
         };
         int bulletStartRow = whither switch
         {
-            Direction.North => row - 1,
-            Direction.South => row + 1,
+            Direction.North => row.NextNorth(),
+            Direction.South => row.NextSouth(level.Height),
             Direction.East => row,
             Direction.West => row,
             _ => throw new NotImplementedException()

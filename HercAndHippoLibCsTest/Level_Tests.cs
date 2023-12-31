@@ -90,5 +90,28 @@ namespace HercAndHippoLibCsTest
                 level = level.RefreshCyclables(ActionInput.NoAction);
             }
         }
+
+        [TestMethod]
+        public void TryGetHippo_ReturnsHippoIfPresent_Test()
+        {
+            // Arrange
+            Level level = new(Player.Default(1, 1), Gravity.Default, new() { new Hippo((2, 2), 5, false) });
+            // Act
+            Assert.IsTrue(level.TryGetHippo(out Hippo? hippo));
+            // Assert
+            Assert.IsNotNull(hippo);
+        }
+
+        [TestMethod]
+        public void TryGetHippo_ReturnsNullIfHippoNotPresent_Test()
+        {
+            // Arrange
+            Level level = new(Player.Default(1, 1), Gravity.Default, new() { new Wall(Color.White, (2, 2)) });
+            // Act
+            Assert.IsFalse(level.TryGetHippo(out Hippo? hippo));
+            // Assert
+            Assert.IsNull(hippo);
+        }
+
     }
 }

@@ -10,9 +10,20 @@ public record HippoMotionBlockages(bool BlockedNorth, bool BlockedEast, bool Blo
                Direction.West => BlockedWest,
                _ => false
            };
+
+    public static HippoMotionBlockages GetBlockages(Hippo? hippo, Level level)
+    {
+        if (hippo == null) return new HippoMotionBlockages(false, false, false);
+        bool blockedNorth = hippo.LockedToPlayer && hippo.MotionBlockedTo(level, Direction.North);
+        bool blockedEast = hippo.LockedToPlayer && hippo.MotionBlockedTo(level, Direction.East);
+        bool blockedWest = hippo.LockedToPlayer && hippo.MotionBlockedTo(level, Direction.West);
+        return new(BlockedNorth: blockedNorth, BlockedEast: blockedEast, BlockedWest: blockedWest);
+    }
+
 }
 public record Hippo(Location Location, Health Health, bool LockedToPlayer) : HercAndHippoObj, ILocatable, ITouchable, ICyclable, IShootable, IConsoleDisplayable
 {
+    public const int HEALTH_PENALTY_ON_SHOT = 5;
     public Color Color => Color.Magenta;
 
     public Color BackgroundColor => Color.DarkBlue;
@@ -21,21 +32,17 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
 
     public bool StopsBullet => true;
 
-    public string Id => "Hippo";
-
     public override bool BlocksMotion(Level level)
     {
-        Level ifPlayerWereNorthOne = level.WithPlayer(level.Player with { Location = this.Location });
-        return ifPlayerWereNorthOne.Player.MotionBlockedTo(ifPlayerWereNorthOne, Direction.North);
-    }
-
-    public static HippoMotionBlockages Blockages(Hippo? hippo, Level level)
-    {
-        if (hippo == null) return new HippoMotionBlockages(false, false, false);
-        bool blockedNorth = hippo.LockedToPlayer && hippo.MotionBlockedTo(level, Direction.North);
-        bool blockedEast = hippo.LockedToPlayer && hippo.MotionBlockedTo(level, Direction.East);
-        bool blockedWest = hippo.LockedToPlayer && hippo.MotionBlockedTo(level, Direction.West);
-        return new(BlockedNorth: blockedNorth, BlockedEast: blockedEast, BlockedWest: blockedWest);
+        // Do not block a player immediately above
+        if (this.Below(level.Player.Location)) 
+            return false;
+        else if (level.Player.Below(this.Location))
+            return this.MotionBlockedTo(level, Direction.North);
+        else if (!CanBePickedUp(level))
+            return true;
+        Direction whither = this.Flee(level);
+        return this.MotionBlockedTo(level, whither);
     }
 
     public Level Cycle(Level level, ActionInput actionInput)
@@ -46,7 +53,7 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
             return PutDown(level);
         else if (LockedToPlayer)
         {
-            (Hippo _, Level locked) = LockAbovePlayer(level);
+            Level locked = LockAbovePlayer(this, level);
             return locked;
         }
         else if (level.GravityApplies()) // Not locked to player; fall due to gravity if relevant
@@ -58,49 +65,57 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
                 i++)
             {
                 nextState = TryMoveSouth(nextState);
-            }
+            }           
             return nextState;
         }
         else
             return Behaviors.NoReaction(level);
     }
 
-    private Level TryMoveSouth(Level level) 
+    private static Level TryMoveSouth(Level level) 
     {
-        if (this.MotionBlockedTo(level, Direction.South))
+        level.TryGetHippo(out Hippo? hippo);
+        if (hippo == null)
+            throw new NullReferenceException();
+        if (hippo.MotionBlockedTo(level, Direction.South))
             return Behaviors.NoReaction(level);
-        Location nextLocation = new(Location.Col, Location.Row.NextSouth(level.Height));
-        return level.Replace(this, this with { Location = nextLocation });
+        Location nextLocation = new(hippo.Location.Col, hippo.Location.Row.NextSouth(level.Height));
+        return level.Replace(hippo, hippo with { Location = nextLocation, LockedToPlayer = nextLocation == level.Player.Location });
     }
 
-    private (Hippo, Level) LockAbovePlayer(Level level)
+    public static Level LockAbovePlayer(Hippo hippo, Level level)
     {
         Player player = level.Player;
         Location nextLocation = new(Col: player.Location.Col, Row: player.Location.Row.NextNorth());
-        Hippo lockedHippo = this with { Location = nextLocation, LockedToPlayer = true };
-        return (lockedHippo, level.Replace(this, lockedHippo));
+        Hippo lockedHippo = hippo with { Location = nextLocation, LockedToPlayer = true };
+        Level withLockedHippo = level.Replace(hippo, lockedHippo);
+        return  withLockedHippo;
     }
 
-    private Level PutDown(Level level)
+    private static Level PutDown(Level level)
     {
+        level.TryGetHippo(out Hippo? hippo);
+        if (hippo == null) throw new NullReferenceException();
         Player player = level.Player;
         // First, attempt to place East
-        bool blockedEast = player.ObjectLocatedTo(level, Direction.East) || player.MotionBlockedTo(level,Direction.East);
-        if (!blockedEast)
+        bool blockedEast = player.MotionBlockedTo(level,Direction.East);
+        Location NECorner = new(player.Location.Col.NextEast(level.Width), player.Location.Row.NextNorth());
+        bool blockedNE = level.ObjectsAt(NECorner).Where(obj => obj.BlocksMotion(level)).Any();
+        if (!blockedEast && !blockedNE)
         {
             Location nextLocation = new(Col: player.Location.Col.NextEast(level.Width), Row: player.Location.Row);
-            Level nextState = level.Replace(this, this with { Location = nextLocation, LockedToPlayer = false });
-            nextState = nextState.WithPlayer(nextState.Player.DropItem<Hippo>(Id).newPlayerState);
+            Level nextState = level.Replace(hippo, hippo with { Location = nextLocation, LockedToPlayer = false });
             return nextState;
         }
 
         // If that didn't work, attempt to place West
-        bool blockedWest = player.ObjectLocatedTo(level, Direction.West) || player.MotionBlockedTo(level, Direction.West);
-        if (!blockedWest)
+        bool blockedWest = player.MotionBlockedTo(level, Direction.West);
+        Location NWCorner = new(player.Location.Col.NextWest(), player.Location.Row.NextNorth());
+        bool blockedNW = level.ObjectsAt(NWCorner).Where(obj => obj.BlocksMotion(level)).Any();
+        if (!blockedWest && !blockedNW)
         {
             Location nextLocation = new(Col: player.Location.Col.NextWest(), Row: player.Location.Row);
-            Level nextState = level.Replace(this, this with { Location = nextLocation, LockedToPlayer = false });
-            nextState = nextState.WithPlayer(nextState.Player.DropItem<Hippo>(Id).newPlayerState);
+            Level nextState = level.Replace(hippo, hippo with { Location = nextLocation, LockedToPlayer = false });
             return nextState;
         }
 
@@ -109,19 +124,29 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
     }
 
     public Level OnShot(Level level, Direction shotFrom, Bullet shotBy)
-        => level.Without(shotBy).Replace(this, this with { Health = this.Health - 5 });
+        => level.Without(shotBy).Replace(this, this with { Health = this.Health - HEALTH_PENALTY_ON_SHOT });
 
     public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy) => PickUp(level);
-
-    private Level PickUp(Level level)
+    private static bool CanBePickedUp(Level level)
     {
+        level.TryGetHippo(out Hippo? hippo);
+        if (hippo == null) throw new NullReferenceException();
         Player player = level.Player;
-        bool cannotLift = player.ObjectLocatedTo(level, Direction.North) || player.MotionBlockedTo(level, Direction.North);
-        if (cannotLift)
+        if (hippo.Below(player.Location))
+            return true;
+        bool cannotLift = player.MotionBlockedTo(level, Direction.North) ||
+            hippo.MotionBlockedTo(level, Direction.North);
+        return !cannotLift;
+    }
+    private static Level PickUp(Level level)
+    {
+        level.TryGetHippo(out Hippo? hippo);
+        if (hippo == null) throw new NullReferenceException();
+        if (!CanBePickedUp(level))
             return Behaviors.NoReaction(level);
         else
         {
-            (Hippo _, Level locked) = LockAbovePlayer(level);
+            Level locked = LockAbovePlayer(hippo, level);
             return locked;
         }
     }
