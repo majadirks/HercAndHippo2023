@@ -75,9 +75,7 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
 
     private static Level TryMoveSouth(Level level) 
     {
-        Hippo? hippo = level.Hippo;
-        if (hippo == null)
-            throw new NullReferenceException();
+        Hippo? hippo = level.Hippo ?? throw new NullReferenceException();
         if (hippo.MotionBlockedTo(level, Direction.South))
             return Behaviors.NoReaction(level);
         Location nextLocation = new(hippo.Location.Col, hippo.Location.Row.NextSouth(level.Height));
@@ -86,9 +84,7 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
 
     public static Level LockAbovePlayer(Level level)
     {
-        level.TryGetHippo(out Hippo? hippo);
-        if (hippo == null)
-            throw new NullReferenceException();
+        Hippo? hippo = level.Hippo ?? throw new NullReferenceException();
         Player player = level.Player;
         Location nextLocation = new(Col: player.Location.Col, Row: player.Location.Row.NextNorth());
         Hippo lockedHippo = hippo with { Location = nextLocation, LockedToPlayer = true };
@@ -98,8 +94,7 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
 
     private static Level PutDown(Level level)
     {
-        level.TryGetHippo(out Hippo? hippo);
-        if (hippo == null) throw new NullReferenceException();
+        Hippo? hippo = level.Hippo ?? throw new NullReferenceException();
         Player player = level.Player;
         // First, attempt to place East
         bool blockedEast = player.MotionBlockedTo(level,Direction.East);
@@ -133,8 +128,7 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
     public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy) => PickUp(level);
     private static bool CanBePickedUp(Level level)
     {
-        level.TryGetHippo(out Hippo? hippo);
-        if (hippo == null) throw new NullReferenceException();
+        Hippo? hippo = level.Hippo ??  throw new NullReferenceException();
         Player player = level.Player;
         if (hippo.Below(player.Location))
             return true;
@@ -143,16 +137,6 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
         return !cannotLift;
     }
     private static Level PickUp(Level level)
-    {
-        level.TryGetHippo(out Hippo? hippo);
-        if (hippo == null) throw new NullReferenceException();
-        if (!CanBePickedUp(level))
-            return Behaviors.NoReaction(level);
-        else
-        {
-            Level locked = LockAbovePlayer(level);
-            return locked;
-        }
-    }
+        => CanBePickedUp(level) ? LockAbovePlayer(level) : Behaviors.NoReaction(level);
 }
 
