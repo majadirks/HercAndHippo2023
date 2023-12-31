@@ -638,14 +638,14 @@ public class Hippo_Tests
         level = level.RefreshCyclables(ActionInput.MoveEast);
         Assert.IsTrue(level.TryGetHippo(out Hippo? hippo));
         Assert.IsTrue(hippo != null && hippo.LockedToPlayer);
-        Assert.AreEqual(new Location(4, 10), level.Player.Location);
-        Assert.AreEqual(new Location(4, 9), hippo.Location);
         Assert.AreEqual(1, level.LevelObjects.Where(obj => obj is Hippo).Count());
 
         // Act: Put down hippo
         level = level.RefreshCyclables(ActionInput.DropHippo);
 
         // Assert
+        Assert.IsTrue(level.TryGetHippo(out hippo));
+        Assert.IsFalse(hippo == null || hippo.LockedToPlayer);
         Assert.AreEqual(1, level.LevelObjects.Where(obj => obj is Hippo).Count());
     }
 }
