@@ -1,6 +1,8 @@
 ﻿/*
  * Tests:
- * Do not put hippo down if blocked both East and West (or put down above blockage)
+ * If player blocked East, but not hippo, can set hippo down atop blockage
+ * If player blocked West, hippo blocked East, can set hippo down atop west blockage
+ * 
  * After hippo is put down, only one hippo exists on the level.
  *      (Currently there's a bug where, if player is atop a block with space on both sides, hippo is placed both east and west!)
  * Hippo health decrements when shot
@@ -499,6 +501,44 @@ public class Hippo_Tests
         Assert.IsFalse(hippo == null || hippo.LockedToPlayer);
         Assert.AreEqual(new Location(4, 10), level.Player.Location);
         Assert.AreEqual(new Location(3, 10), hippo.Location);
+    }
+
+    [TestMethod]
+    public void CannotDropHippoWhenHippoBlockedToBothSides()
+    {
+        /*
+            *  
+            *  █H█
+            *   ☻
+            *  ████
+            *  
+        */
+        // Arrange
+        Player player = Player.Default(new Location(Col: 3, Row: 10)) with { JumpStrength = 5 };
+        Level level = new(
+            player,
+            gravity: new Gravity(Strength: 1, WaitCycles: 1),
+            secondaryObjects: new()
+            {
+                new Hippo(Location: (3,9), Health: 10, LockedToPlayer: true),
+
+                new Wall(Color.White, (2,9)),
+                new Wall(Color.White, (4,9)),
+
+                new Wall(Color.White, (1,11)),
+                new Wall(Color.White, (2,11)),
+                new Wall(Color.White, (3,11)),
+                new Wall(Color.White, (4,11)),
+                new Wall(Color.White, (5,11)),
+            });
+
+        // Act: Try to drop hippo
+        level = level.RefreshCyclables(ActionInput.DropHippo);
+
+        // Assert: Hippo still locked to player and positioned above
+        level.TryGetHippo(out Hippo? hippo);
+        Assert.IsTrue(hippo != null && hippo.LockedToPlayer);
+        Assert.IsTrue(level.Player.Below(hippo.Location));
     }
 
 }
