@@ -1,10 +1,5 @@
 ﻿/*
  * Tests:
- * If player walks over Hippo, picks up hippo:
- * 
- *   ☻   >    ☻    >   H
- *   █H  >   █H    >  █☻
- * 
  * Put hippo down East if not blocked East and intervening corner is clear
  * Put hippo down West if blocked East but not West and if intervening corner is clear
  * Do not put hippo down if blocked both East and West (or put down above blockage)
@@ -394,10 +389,35 @@ public class Hippo_Tests
         /*
          *  *   ☻   >    ☻    >   H
             *   █H  >   █H    >  █☻
-            *   
+            *  █████   ███      ███
         */
+        // Arrange
+        Level level = new(
+            player: Player.Default(new Location(Col: 3, Row: 9)) with { JumpStrength = 5 },
+            gravity: new Gravity(Strength: 1, WaitCycles: 1),
+            secondaryObjects: new()
+            {
+                new Wall(Color.White, Location: new(3,10)),
+                new Hippo(Location: (4,10), Health: 10, LockedToPlayer: false),
 
+                new Wall(Color.White, (1,11)),
+                new Wall(Color.White, (2,11)),
+                new Wall(Color.White, (3,11)),
+                new Wall(Color.White, (4,11)),
+                new Wall(Color.White, (5,11)),
+            });
 
+        // Act: Player walks over hippo
+        level = level.RefreshCyclables(ActionInput.MoveEast);
+        Assert.AreEqual(new Location(4, 9), level.Player.Location);
+        // and then falls
+        level = level.RefreshCyclables(ActionInput.NoAction);
+                
+        // Assert: Hippo is now locked to player
+        Assert.IsTrue(level.TryGetHippo(out Hippo? hippo));
+        Assert.IsTrue(hippo != null && hippo.LockedToPlayer);
+        Assert.AreEqual(new Location(4, 9), hippo.Location);
+        Assert.AreEqual(new Location(4, 10), level.Player.Location);
 
     }
 
