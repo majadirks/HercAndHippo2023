@@ -71,6 +71,15 @@ public class Direction_Tests
         Assert.AreEqual(new Location(9, 2), iterated.Location);
         Assert.AreEqual(3, newDist);
 
+        // Act
+        level = level.Replace(iterated,
+            iterated with { Location = iterated.SuperSeek(level, lookahead, out newDist, cameFrom: iterated.Location) });
+        iterated = FindBullet();
+
+        // Assert: North is blocked, so went West
+        Assert.AreEqual(new Location(8, 2), iterated.Location);
+        Assert.AreEqual(2, newDist);
+
         // Local method
         Bullet FindBullet() => (Bullet)level.LevelObjects.Where(obj => obj is Bullet).Single();
     }
