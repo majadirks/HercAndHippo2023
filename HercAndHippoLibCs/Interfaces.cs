@@ -2,7 +2,7 @@
 {
     public interface ILocatable
     {
-        public Location Location { get;  }
+        public Location Location { get; init; }
     }
 
     public interface IConsoleDisplayable : ILocatable
