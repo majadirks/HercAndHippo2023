@@ -108,7 +108,18 @@ public class Level
     public override bool Equals([NotNullWhen(true)] object? obj) => obj is Level other && other.HasSameStateAs(this);
     public static bool operator ==(Level left, Level right) => left.Equals(right);
     public static bool operator !=(Level left, Level right) => !(left == right);
-    public override int GetHashCode() => LevelObjects.GetHashCode();
+    public override int GetHashCode()
+    {
+        unchecked
+        {
+            int hash = Player.GetHashCode();
+            if (Hippo != null) hash &= Hippo.GetHashCode();
+            hash = SecondaryObjects.Aggregate(
+                seed: hash,
+                func: (cur, hho) => cur ^ hho.GetHashCode());
+            return hash;
+        }
+    }
     public override string ToString()
     {
         string hippoStr = Hippo == null ? "" : $" and Hippo at {Hippo.Location}, " + (Hippo.LockedToPlayer ? "locked to player." : "not locked to player");
