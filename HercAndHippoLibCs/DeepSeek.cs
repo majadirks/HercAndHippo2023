@@ -7,6 +7,7 @@ public record DeepSeekResults(Direction Direction, Location Location, int Metric
 public static class DeepSeekExtensions
 {
     private record DeepSeekParams(HercAndHippoObj Hho, Level Level, int Depth, Location CameFrom);
+    private static readonly Dictionary<DeepSeekParams, DeepSeekResults> deepSeekCache = new();
 
     /// <summary>>
     /// Similar to seek, but recursively attempts to minimize 
@@ -111,7 +112,4 @@ public static class DeepSeekExtensions
         deepSeekCache.Add(ssps, results);
         return results;
     }
-
-
-    private static readonly Dictionary<DeepSeekParams, DeepSeekResults> deepSeekCache = new();
 }
