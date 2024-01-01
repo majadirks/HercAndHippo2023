@@ -114,9 +114,8 @@ public class Level
         {
             int hash = Player.GetHashCode();
             if (Hippo != null) hash &= Hippo.GetHashCode();
-            hash = SecondaryObjects.Aggregate(
-                seed: hash,
-                func: (cur, hho) => cur ^ hho.GetHashCode());
+            foreach (var hho in SecondaryObjects)
+                hash ^= hho.GetHashCode();
             return hash;
         }
     }
