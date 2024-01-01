@@ -130,5 +130,27 @@ namespace HercAndHippoLibCsTest
             // Act and Assert.
             Assert.ThrowsException<NotSupportedException>(() => level.Without(player));
         }
+
+        [TestMethod]
+        public void RemoveHippo_Test()
+        {
+            // Arrange
+            Player player = Player.Default(1, 1);
+            Hippo hippo = new((2, 2), 5, false);
+            Level level = new(
+                player: player,
+                hippo: hippo,
+                gravity: Gravity.Default,
+                secondaryObjects: new() { new Wall(Color.Yellow, (2, 3))});
+
+            Assert.IsNotNull(level.Hippo);
+            Assert.IsTrue(level.LevelObjects.Where(obj => obj is Hippo).Any());
+
+            // Act
+            level = level.Without(hippo);
+            // Assert
+            Assert.IsNull(level.Hippo);
+            Assert.IsFalse(level.LevelObjects.Where(obj => obj is Hippo).Any());
+        }
     }
 }
