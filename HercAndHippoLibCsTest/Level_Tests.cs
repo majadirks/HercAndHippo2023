@@ -217,5 +217,43 @@ namespace HercAndHippoLibCsTest
             Assert.ThrowsException<ArgumentNullException>(() => level.Replace(null, ammo));
             #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
         }
+
+        [TestMethod]
+        public void CannotReplacePlayerWithNonPlayer()
+        {
+            // Arrange
+            Ammo ammo = new((2, 1), 5);
+            Level level = new(
+                player: Player.Default(1, 1),
+                hippo: new((2, 2), 5, false),
+                gravity: Gravity.Default,
+                secondaryObjects: new()
+                {
+                    new Wall(Color.Yellow, (2, 3)),
+                    ammo
+                });
+
+            // Act and assert
+            Assert.ThrowsException<NotSupportedException>(() => level.Replace(level.Player, ammo));
+        }
+
+        [TestMethod]
+        public void CannotReplaceNonPlayerWithPlayer()
+        {
+            // Arrange
+            Ammo ammo = new((2, 1), 5);
+            Level level = new(
+                player: Player.Default(1, 1),
+                hippo: new((2, 2), 5, false),
+                gravity: Gravity.Default,
+                secondaryObjects: new()
+                {
+                    new Wall(Color.Yellow, (2, 3)),
+                    ammo
+                });
+
+            // Act and assert
+            Assert.ThrowsException<NotSupportedException>(() => level.Replace(ammo, level.Player));
+        }
     }
 }
