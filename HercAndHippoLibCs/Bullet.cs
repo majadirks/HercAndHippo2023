@@ -1,4 +1,6 @@
-﻿namespace HercAndHippoLibCs;
+﻿using System.ComponentModel.Design;
+
+namespace HercAndHippoLibCs;
 
 public record Bullet(Location Location, Direction Whither) : HercAndHippoObj, ILocatable, ICyclable, IConsoleDisplayable
 {
@@ -22,26 +24,36 @@ public record Bullet(Location Location, Direction Whither) : HercAndHippoObj, IL
 
         // Die if at boundary
         if (ReachedBoundary(nextState.Width, nextState.Height))
-            nextState = nextState.Without(this);       
-
+            return nextState.Without(this);
+        
+            
+        // If direction is Seek or Flee, figure out which way that is and just go straight in that direction
+        Direction dir = Whither;
+        if (Whither == Direction.Seek)
+            dir = this.Seek(nextState, out int _);
+        else if (Whither == Direction.Flee)
+            dir = this.Flee(nextState);
+            
         // Continue moving in current direction if it hasn't been stopped
         nextState = nextState.Contains(this) ?
-            nextState.Replace(this, this with { Location = NextLocation }) : // If bullet wasn't stopped, continue
+            nextState.Replace(this, this with { Whither = dir, Location = NextLocation(Location, dir) }) :
             nextState; // If bullet was stopped, don't regenerate it
 
         return nextState;
     }
 
-    private Location NextLocation
-        => Whither switch
+    private static Location NextLocation(Location startLoc, Direction dir)
+    {
+        return dir switch
         {
-            Direction.North => Location with { Row = Location.Row - 1 },
-            Direction.South => Location with { Row = Location.Row + 1 },
-            Direction.East => Location with { Col = Location.Col + 1 },
-            Direction.West => Location with { Col = Location.Col - 1 },
-            Direction.Idle => Location,
+            Direction.North => startLoc with { Row = startLoc.Row - 1 },
+            Direction.South => startLoc with { Row = startLoc.Row + 1 },
+            Direction.East => startLoc with { Col = startLoc.Col + 1 },
+            Direction.West => startLoc with { Col = startLoc.Col - 1 },
+            Direction.Idle => startLoc,
             _ => throw new NotImplementedException()
         };
+    }
 
     private bool ReachedBoundary(int levelWidth, int levelHeight)
     {

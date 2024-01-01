@@ -1,4 +1,5 @@
 -= Desired features =-
+- Method to get direction pointing fromone location to another
 - Research reading multiple console keys at once (for jumping/moving simultaneously)
 - Research faster console writing:
 	* https://stackoverflow.com/questions/29920056/c-sharp-something-faster-than-console-write
@@ -11,13 +12,13 @@
 - Implement and test "seek" behavior for bullet
 
 Tests:
-	- Hippo - write tests! (See Hippo_Tests.cs)
-	- Test Seek() and Flee() methods
+	- Test ManhattanDistance()
 	- Test that Driver moves player after cycle
 	- Test that, when falling due to gravity,
 	     if player stops at motion-blocking object,
 		 its OnTouch() method is called once
     - In level with gravity, if player is blocked South, can MoveSouth to touch that object
+	- Test hippo falling to end of level (never blocked South) - what do we expect, and what actually happens?
 
 - Trophies and transporters
 - Gravity; player dies if gravity > 0 and reaches bottom row, or gravity < 0 and reaches top row
