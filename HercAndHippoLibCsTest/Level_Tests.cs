@@ -1,6 +1,5 @@
 ﻿/*
  * - Level: 
-		test Without() with hippo, player, other object
 		test Replace() with hippo, player, other object, null, hippo/non-hippo, player/non-payer
 		test GetHashCode(): with hippo, without, with player in same place vs not, same secondary objects vs not
  */
@@ -145,12 +144,36 @@ namespace HercAndHippoLibCsTest
 
             Assert.IsNotNull(level.Hippo);
             Assert.IsTrue(level.LevelObjects.Where(obj => obj is Hippo).Any());
+            Assert.IsTrue(level.Contains(hippo));
 
             // Act
             level = level.Without(hippo);
             // Assert
             Assert.IsNull(level.Hippo);
-            Assert.IsFalse(level.LevelObjects.Where(obj => obj is Hippo).Any());
+            Assert.IsFalse(level.Contains(hippo));
+            Assert.IsFalse(level.LevelObjects.Where(obj => obj is Hippo).Any()); 
+        }
+
+        [TestMethod]
+        public void RemoveSecondaryObject_Test()
+        {
+            // Arrange
+            Ammo ammo = new((2, 1), 5);
+            Level level = new(
+                player: Player.Default(1, 1),
+                hippo: new((2, 2), 5, false),
+                gravity: Gravity.Default,
+                secondaryObjects: new() 
+                { 
+                    new Wall(Color.Yellow, (2, 3)),
+                    ammo
+                });
+            Assert.IsTrue(level.Contains(ammo));
+
+            // Act
+            level = level.Without(ammo);
+            // Assert
+            Assert.IsFalse(level.Contains(ammo));
         }
     }
 }
