@@ -17,10 +17,11 @@ public record Velocity
     }
     public Velocity NextVelocity(Player player, Level level, ActionInput actionInput)
     {
+        HippoMotionBlockages blockages = HippoMotionBlockages.GetBlockages(level);
         bool applyFriction = !level.HasGravity || player.MotionBlockedTo(level, Direction.South);
-        if (actionInput == ActionInput.MoveEast && player.MotionBlockedTo(level, Direction.East))
+        if (actionInput == ActionInput.MoveEast && (player.MotionBlockedTo(level, Direction.East) || blockages.BlockedEast))
             return 0;
-        else if (actionInput == ActionInput.MoveWest && player.MotionBlockedTo(level, Direction.West))
+        else if (actionInput == ActionInput.MoveWest && (player.MotionBlockedTo(level, Direction.West) || blockages.BlockedWest))
             return 0;
         else return actionInput switch
         {
