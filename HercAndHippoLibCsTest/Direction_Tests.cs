@@ -80,6 +80,22 @@ public class Direction_Tests
         Assert.AreEqual(new Location(8, 2), iterated.Location);
         Assert.AreEqual(2, newDist);
 
+        // Act
+        level = level.Replace(iterated,
+            iterated with { Location = iterated.SuperSeek(level, lookahead, out newDist, cameFrom: iterated.Location) });
+        iterated = FindBullet();        
+        level = level.Replace(iterated,
+            iterated with { Location = iterated.SuperSeek(level, lookahead, out newDist, cameFrom: iterated.Location) });
+        iterated = FindBullet();
+        level = level.Replace(iterated,
+            iterated with { Location = iterated.SuperSeek(level, lookahead, out newDist, cameFrom: iterated.Location) });
+        iterated = FindBullet();
+        level = level.Replace(iterated,
+            iterated with { Location = iterated.SuperSeek(level, lookahead, out newDist, cameFrom: iterated.Location) });
+        iterated = FindBullet();
+
+        Assert.AreEqual(level.Player.Location, iterated.Location);
+
         // Local method
         Bullet FindBullet() => (Bullet)level.LevelObjects.Where(obj => obj is Bullet).Single();
     }
