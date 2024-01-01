@@ -11,7 +11,6 @@
 - Implement and test "seek" behavior for bullet
 
 Tests:
-	- Test Seek(), SuperSeek() and Flee() methods (with bullet)
 	- Test ManhattanDistance()
 	- Test that Driver moves player after cycle
 	- Test that, when falling due to gravity,
