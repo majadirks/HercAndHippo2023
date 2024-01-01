@@ -1,4 +1,11 @@
-﻿using static HercAndHippoLibCs.Inventory;
+﻿/*
+ * - Level: 
+		test Without() with hippo, player, other object, null
+		test Replace() with hippo, player, other object, null, hippo/non-hippo, player/non-payer
+		test GetHashCode(): with hippo, without, with player in same place vs not, same secondary objects vs not
+ */
+
+using static HercAndHippoLibCs.Inventory;
 
 namespace HercAndHippoLibCsTest
 {
@@ -91,5 +98,23 @@ namespace HercAndHippoLibCsTest
             }
         }
 
+        [TestMethod]
+        public void AttemptToRemoveNullThrowsException()
+        {
+            // Arrange
+            Player player = Player.Default(1, 1);
+            Level level = new(
+                player: player,
+                hippo: null,
+                gravity: Gravity.None,
+                secondaryObjects: new());
+            // Act and Assert.
+            #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
+            Assert.ThrowsException<ArgumentNullException>(() => level.Without(null));
+            #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
+            #pragma warning disable CS8604 // Possible null reference argument.
+            Assert.ThrowsException<ArgumentNullException>(() => level.Without(level.Hippo));
+            #pragma warning restore CS8604 // Possible null reference argument.
+        }
     }
 }
