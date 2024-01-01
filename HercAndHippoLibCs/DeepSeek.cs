@@ -2,67 +2,24 @@
 
 namespace HercAndHippoLibCs;
 
+public record DeepSeekResults(Direction Direction, Location Location, int Metric); 
+
 public static class DeepSeekExtensions
 {
     private record DeepSeekParams(HercAndHippoObj Hho, Level Level, int Depth, Location CameFrom);
-
-    /// <summary>
-    /// If the given object is unable to move, this method returns Direction.Idle.
-    /// If the given object is able to move but its legal moves to not bring it closer
-    /// to the Player, this method returns Direction.Idle;
-    /// Otherwise, it returns a direction in which the object is able to move
-    /// and which brings it closer to the player,
-    /// as measured using the Manhattan Distance / Taxi Cab Metric.
-    /// </summary>
-    public static Direction Seek<T>(this T hho, Level level, out int newDist) where T : HercAndHippoObj, ILocatable
-    {
-        Player player = level.Player;
-        int initialDistance = ManhattanDistance(hho.Location, player.Location);
-        if (hho.Location == player.Location || hho is Player)
-        {
-            newDist = 0;
-            return Direction.Idle;
-        }
-
-        Location nextNorth = new(hho.Location.Col, hho.Location.Row.NextNorth());
-        Location nextEast = new(hho.Location.Col.NextEast(level.Width), hho.Location.Row);
-        Location nextSouth = new(hho.Location.Col, hho.Location.Row.NextSouth(level.Height));
-        Location nextWest = new(hho.Location.Col.NextWest(), hho.Location.Row);
-
-        int northDist = hho.MotionBlockedTo(level, Direction.North) ? int.MaxValue : ManhattanDistance(nextNorth, player.Location);
-        int eastDist = hho.MotionBlockedTo(level, Direction.East) ? int.MaxValue : ManhattanDistance(nextEast, player.Location);
-        int southDist = hho.MotionBlockedTo(level, Direction.South) ? int.MaxValue : ManhattanDistance(nextSouth, player.Location);
-        int westDist = hho.MotionBlockedTo(level, Direction.West) ? int.MaxValue : ManhattanDistance(nextWest, player.Location);
-
-        int[] distances = new int[] { northDist, eastDist, southDist, westDist };
-        newDist = distances.Min();
-        if (newDist == int.MaxValue || newDist == initialDistance)
-            return Direction.Idle;
-        else if (newDist == northDist)
-            return Direction.North;
-        else if (newDist == eastDist)
-            return Direction.East;
-        else if (newDist == southDist)
-            return Direction.South;
-        else if (newDist == westDist)
-            return Direction.West;
-        else
-            throw new NotSupportedException($"An unexpected error occurred in method {nameof(Seek)}.");
-    }
 
     /// <summary>>
     /// Similar to seek, but recursively attempts to minimize 
     /// distance to player after (lookahead) moves ahead
     /// </summary>
-    public static Location DeepSeek<T>(this T hho, Level level, int depth, out int newDist, Location cameFrom) where T : HercAndHippoObj, ILocatable
-        => DeepSeek<T>(new(hho, level, depth, cameFrom), out newDist);
+    public static DeepSeekResults DeepSeek<T>(this T hho, Level level, int depth, Location cameFrom) where T : HercAndHippoObj, ILocatable
+        => DeepSeek<T>(new(hho, level, depth, cameFrom));
 
-    private static Location DeepSeek<T>(DeepSeekParams ssps, out int newDist) where T : HercAndHippoObj, ILocatable
+    private static DeepSeekResults DeepSeek<T>(DeepSeekParams ssps) where T : HercAndHippoObj, ILocatable
     {
-        if (deepSeekCache.TryGetValue(ssps, out (Location, int) value))
+        if (deepSeekCache.TryGetValue(ssps, out DeepSeekResults? value) && value != null)
         {
-            newDist = value.Item2;
-            return value.Item1;
+            return value;
         }
 
         T hho = (T)ssps.Hho;
@@ -73,13 +30,11 @@ public static class DeepSeekExtensions
         int initialDistance = ManhattanDistance(hho.Location, player.Location);
         if (hho.Location == player.Location)
         {
-            newDist = 0;
-            return hho.Location;
+            return new DeepSeekResults(Direction.Idle, hho.Location, 0);
         }
         else if (depth == 0)
         {
-            newDist = initialDistance;
-            return hho.Location;
+            return new DeepSeekResults(Direction.Idle, hho.Location, initialDistance);
         }
         Location nextNorth = new(hho.Location.Col, hho.Location.Row.NextNorth());
         Location nextEast = new(hho.Location.Col.NextEast(level.Width), hho.Location.Row);
@@ -95,50 +50,68 @@ public static class DeepSeekExtensions
         {
             T newHho = hho with { Location = nextNorth };
             Level newLevel = level.Replace(hho, newHho);
-            DeepSeek(newHho, newLevel, depth - 1, out int dist, cameFrom: hho.Location);
-            northDist = dist;
+            var northResults = DeepSeek(newHho, newLevel, depth - 1, cameFrom: hho.Location);
+            northDist = northResults.Metric;
         }
         if (!hho.MotionBlockedTo(level, Direction.East) && cameFrom != nextEast)
         {
             T newHho = hho with { Location = nextEast };
             Level newLevel = level.Replace(hho, newHho);
-            DeepSeek(newHho, newLevel, depth - 1, out int dist, cameFrom: hho.Location);
-            eastDist = dist;
+            var eastResults = DeepSeek(newHho, newLevel, depth - 1, cameFrom: hho.Location);
+            eastDist = eastResults.Metric;
         }
         if (!hho.MotionBlockedTo(level, Direction.South) && cameFrom != nextSouth)
         {
             T newHho = hho with { Location = nextSouth };
             Level newLevel = level.Replace(hho, newHho);
-            DeepSeek(newHho, newLevel, depth - 1, out int dist, cameFrom: hho.Location);
-            southDist = dist;
+            var southResults = DeepSeek(newHho, newLevel, depth - 1, cameFrom: hho.Location);
+            southDist = southResults.Metric;
         }
         if (!hho.MotionBlockedTo(level, Direction.West) && cameFrom != nextWest)
         {
             T newHho = hho with { Location = nextWest };
             Level newLevel = level.Replace(hho, newHho);
-            DeepSeek(newHho, newLevel, depth - 1, out int dist, cameFrom: hho.Location);
-            westDist = dist;
+            var westResults = DeepSeek(newHho, newLevel, depth - 1, cameFrom: hho.Location);
+            westDist = westResults.Metric;
         }
 
         int[] distances = new int[] { northDist, eastDist, southDist, westDist };
-        newDist = distances.Min();
+        int newDist = distances.Min();
         Location newLoc = hho.Location;
+        Direction newDir = Direction.Idle;
         if (newDist == int.MaxValue || newDist == initialDistance)
+        {
             newLoc = hho.Location;
+            newDir = Direction.Idle;
+        }
         else if (newDist == northDist)
+        {
             newLoc = nextNorth;
+            newDir = Direction.North;
+        }
         else if (newDist == eastDist)
+        {
             newLoc = nextEast;
+            newDir = Direction.East;
+        }
         else if (newDist == southDist)
+        {
             newLoc = nextSouth;
+            newDir = Direction.South;
+        }
         else if (newDist == westDist)
+        {
             newLoc = nextWest;
+            newDir = Direction.West;
+        }
         else
             throw new NotSupportedException($"An unexpected error occurred in method {nameof(DeepSeek)}.");
+        DeepSeekResults results = new(Direction: newDir, Location: newLoc, Metric: newDist);
 
-        deepSeekCache.Add(ssps, (newLoc, newDist));
-        return newLoc;
+        deepSeekCache.Add(ssps, results);
+        return results;
     }
 
-    private static readonly Dictionary<DeepSeekParams, (Location, int)> deepSeekCache = new();
+
+    private static readonly Dictionary<DeepSeekParams, DeepSeekResults> deepSeekCache = new();
 }
