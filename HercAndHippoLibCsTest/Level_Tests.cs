@@ -1,6 +1,5 @@
 ﻿/*
  * - Level: 
-		test Replace() with hippo, player, other object, null, hippo/non-hippo, player/non-payer
 		test GetHashCode(): with hippo, without, with player in same place vs not, same secondary objects vs not
  */
 
@@ -340,6 +339,31 @@ namespace HercAndHippoLibCsTest
             // Assert
             Assert.IsNotNull(fromReplace.Hippo);
             Assert.AreEqual(new Location(3, 1), fromReplace.Hippo.Location);
+        }
+
+        [TestMethod]
+        public void ReplaceSecondaryObject_Test()
+        {
+            // Arrange
+            Ammo ammo = new((2, 1), 5);
+            Level level = new(
+                player: Player.Default(1, 1),
+                hippo: new((2, 2), 5, false),
+                gravity: Gravity.Default,
+                secondaryObjects: new()
+                {
+                    new Wall(Color.Yellow, (2, 3)),
+                    ammo
+                });
+            Bullet bullet = new(new Location(3, 1), Direction.West);
+            Assert.IsTrue(level.Contains(ammo));
+            Assert.IsFalse(level.Contains(bullet));
+            
+            // Act
+            level = level.Replace(ammo, bullet);
+            // Assert
+            Assert.IsFalse(level.Contains(ammo));
+            Assert.IsTrue(level.Contains(bullet));
         }
     }
 }
