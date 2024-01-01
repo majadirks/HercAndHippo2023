@@ -1,9 +1,4 @@
-﻿/*
- * - Level: 
-		test GetHashCode(): with hippo, without, with player in same place vs not, same secondary objects vs not
- */
-
-using static HercAndHippoLibCs.Inventory;
+﻿using static HercAndHippoLibCs.Inventory;
 
 namespace HercAndHippoLibCsTest
 {
@@ -364,6 +359,181 @@ namespace HercAndHippoLibCsTest
             // Assert
             Assert.IsFalse(level.Contains(ammo));
             Assert.IsTrue(level.Contains(bullet));
+        }
+
+        [TestMethod]
+        public void HashCodesEqual_EqualPlayers_EqualHippos_EqualObjects_EqualGravity_Test()
+        {
+            // Arrange
+            Player player = Player.Default(1, 1);
+            Hippo hippo = new((2, 1), 5, false);
+            Wall w1 = new(Color.Yellow, (1, 2));
+            Wall w2 = new(Color.Yellow, (2, 2));
+            Wall w3 = new(Color.Yellow, (3, 2));
+
+            Level l1 = new(
+                player: player,
+                hippo: hippo,
+                gravity: Gravity.Default,
+                secondaryObjects: new() { w1, w2, w3 });
+            Level l2 = new(
+                player: player,
+                hippo: hippo,
+                gravity: Gravity.Default,
+                secondaryObjects: new() { w3, w2, w1 }); // same objects, different order
+
+            // Act
+            int hash1 = l1.GetHashCode();
+            int hash2 = l2.GetHashCode();
+
+            // Assert
+            Assert.AreEqual(hash1, hash2);
+        }
+
+
+        [TestMethod]
+        public void HashCodesNotEqual_EqualPlayers_EqualHippos_EqualObjects_GravityNotEqual_Test()
+        {
+            // Arrange
+            Player player = Player.Default(1, 1);
+            Hippo hippo = new((2, 1), 5, false);
+            Wall w1 = new(Color.Yellow, (1, 2));
+            Wall w2 = new(Color.Yellow, (2, 2));
+            Wall w3 = new(Color.Yellow, (3, 2));
+
+            Level l1 = new(
+                player: player,
+                hippo: hippo,
+                gravity: new Gravity(Strength: 1, WaitCycles: 1),
+                secondaryObjects: new() { w1, w2, w3 });
+            Level l2 = new(
+                player: player,
+                hippo: hippo,
+                gravity: new Gravity(Strength: 1, WaitCycles: 2),
+                secondaryObjects: new() { w3, w2, w1 }); // same objects, different order
+
+            // Act
+            int hash1 = l1.GetHashCode();
+            int hash2 = l2.GetHashCode();
+
+            // Assert
+            Assert.AreNotEqual(hash1, hash2);
+        }
+
+        [TestMethod]
+        public void HashCodesNotEqual_EqualPlayers_EqualHippos_ObjectsNotEqual_GravityEqual_Test()
+        {
+            // Arrange
+            Player player = Player.Default(1, 1);
+            Hippo hippo = new((2, 1), 5, false);
+            Wall w1 = new(Color.Yellow, (1, 2));
+            Wall w2 = new(Color.Yellow, (2, 2));
+            Wall w3 = new(Color.Yellow, (3, 2));
+            Wall w4 = new(Color.Yellow, (4, 2));
+
+            Level l1 = new(
+                player: player,
+                hippo: hippo,
+                gravity: Gravity.Default,
+                secondaryObjects: new() { w1, w2, w3 });
+            Level l2 = new(
+                player: player,
+                hippo: hippo,
+                gravity: Gravity.Default,
+                secondaryObjects: new() { w1, w2, w4 });
+
+            // Act
+            int hash1 = l1.GetHashCode();
+            int hash2 = l2.GetHashCode();
+
+            // Assert
+            Assert.AreNotEqual(hash1, hash2);
+        }
+
+        [TestMethod]
+        public void HashCodesNotEqual_PlayersNotEqual_EqualHippos_ObjectsEqual_GravityEqual_Test()
+        {
+            // Arrange
+            Hippo hippo = new((2, 1), 5, false);
+            Wall w1 = new(Color.Yellow, (1, 2));
+            Wall w2 = new(Color.Yellow, (2, 2));
+            Wall w3 = new(Color.Yellow, (3, 2));
+
+            Level l1 = new(
+                player: Player.Default(1,1),
+                hippo: hippo,
+                gravity: Gravity.Default,
+                secondaryObjects: new() { w1, w2, w3 });
+            Level l2 = new(
+                player: Player.Default(3,1),
+                hippo: hippo,
+                gravity: Gravity.Default,
+                secondaryObjects: new() { w1, w2, w3 });
+
+            // Act
+            int hash1 = l1.GetHashCode();
+            int hash2 = l2.GetHashCode();
+
+            // Assert
+            Assert.AreNotEqual(hash1, hash2);
+        }
+
+        [TestMethod]
+        public void HashCodesNotEqual_PlayersEqual_HipposNotEqual_ObjectsEqual_GravityEqual_Test()
+        {
+            // Arrange
+            Player player = Player.Default(1, 1);
+            Hippo h1 = new((2, 1), 5, false);
+            Hippo h2 = new((3, 1), 5, false);
+            Wall w1 = new(Color.Yellow, (1, 2));
+            Wall w2 = new(Color.Yellow, (2, 2));
+            Wall w3 = new(Color.Yellow, (3, 2));
+
+            Level l1 = new(
+                player: player,
+                hippo: h1,
+                gravity: Gravity.Default,
+                secondaryObjects: new() { w1, w2, w3 });
+            Level l2 = new(
+                player: player,
+                hippo: h2,
+                gravity: Gravity.Default,
+                secondaryObjects: new() { w1, w2, w3 });
+
+            // Act
+            int hash1 = l1.GetHashCode();
+            int hash2 = l2.GetHashCode();
+
+            // Assert
+            Assert.AreNotEqual(hash1, hash2);
+        }
+
+        [TestMethod]
+        public void HashCodesNotEqual_PlayersEqual_OneHippoNullOtherNotNull_ObjectsEqual_GravityEqual_Test()
+        {
+            // Arrange
+            Player player = Player.Default(1, 1);
+            Wall w1 = new(Color.Yellow, (1, 2));
+            Wall w2 = new(Color.Yellow, (2, 2));
+            Wall w3 = new(Color.Yellow, (3, 2));
+
+            Level l1 = new(
+                player: player,
+                hippo: new((2, 1), 5, false),
+                gravity: Gravity.Default,
+                secondaryObjects: new() { w1, w2, w3 });
+            Level l2 = new(
+                player: player,
+                hippo: null,
+                gravity: Gravity.Default,
+                secondaryObjects: new() { w1, w2, w3 });
+
+            // Act
+            int hash1 = l1.GetHashCode();
+            int hash2 = l2.GetHashCode();
+
+            // Assert
+            Assert.AreNotEqual(hash1, hash2);
         }
     }
 }

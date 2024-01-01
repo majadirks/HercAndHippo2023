@@ -112,7 +112,7 @@ public class Level
     {
         unchecked
         {
-            int hash = Player.GetHashCode();
+            int hash = Player.GetHashCode() ^ Gravity.GetHashCode();
             if (Hippo != null) hash &= Hippo.GetHashCode();
             foreach (var hho in SecondaryObjects)
                 hash ^= hho.GetHashCode();
