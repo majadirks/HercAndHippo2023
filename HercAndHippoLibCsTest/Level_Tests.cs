@@ -291,5 +291,31 @@ namespace HercAndHippoLibCsTest
             // Act and assert
             Assert.ThrowsException<NotSupportedException>(() => level.Replace(ammo, hippo));
         }
+
+        [TestMethod]
+        public void ReplacePlayer_Test()
+        {
+            // Arrange
+            Player p1 = Player.Default(1, 1);
+            Level level = new(
+                    player: p1,
+                    hippo: null,
+                    gravity: Gravity.None,
+                    secondaryObjects: new()
+                    {
+                        new Wall(Color.Yellow, (1,2)),
+                        new Wall(Color.Yellow, (2,2)),
+                        new Wall(Color.Yellow, (3,2))
+                    }
+                );
+            Player p2 = Player.Default(2, 1);
+            // Act
+            Level fromReplace = level.Replace(p1, p2);
+            Level fromWithPlayer = level.WithPlayer(p2);
+            // Assert
+            Assert.AreEqual(new Location(2,1), fromReplace.Player.Location);
+            Assert.AreEqual(new Location(2, 1), fromWithPlayer.Player.Location);
+            Assert.AreEqual(fromReplace, fromWithPlayer);
+        }
     }
 }
