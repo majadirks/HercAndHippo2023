@@ -66,9 +66,9 @@ public class Level
             throw new NotSupportedException();
         else if (toReplace is Hippo ^ toAdd is Hippo)
             throw new NotSupportedException();
-        else if (toReplace is Player && toAdd is Player newPlayer)
+        else if (toAdd is Player newPlayer) // from above logic, toReplace must also be a player
             return new Level(player: newPlayer, hippo: Hippo, gravity: Gravity, secondaryObjects: SecondaryObjects, width: Width, height: Height, cycles: Cycles);
-        else if (toReplace is Hippo && toAdd is Hippo newHippo)
+        else if (toAdd is Hippo newHippo) // from aboveLogic, toReplace must also be a hippo
             return new(player: Player, hippo: newHippo, gravity: Gravity, secondaryObjects: SecondaryObjects, cycles: Cycles, height: Height, width: Width);
         else
             return this.Without(toReplace).AddSecondaryObject(toAdd);      

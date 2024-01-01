@@ -317,5 +317,29 @@ namespace HercAndHippoLibCsTest
             Assert.AreEqual(new Location(2, 1), fromWithPlayer.Player.Location);
             Assert.AreEqual(fromReplace, fromWithPlayer);
         }
+
+        [TestMethod]
+        public void ReplaceHippo_Test()
+        {
+            // Arrange
+            Hippo h1 = new((2, 1), 5, false);
+            Level level = new(
+                    player: Player.Default(1, 1),
+                    hippo: h1,
+                    gravity: Gravity.Default,
+                    secondaryObjects: new()
+                    {
+                        new Wall(Color.Yellow, (1,2)),
+                        new Wall(Color.Yellow, (2,2)),
+                        new Wall(Color.Yellow, (3,2))
+                    }
+                );
+            Hippo h2 = new((3, 1), 5, false);
+            // Act
+            Level fromReplace = level.Replace(h1, h2);
+            // Assert
+            Assert.IsNotNull(fromReplace.Hippo);
+            Assert.AreEqual(new Location(3, 1), fromReplace.Hippo.Location);
+        }
     }
 }
