@@ -35,7 +35,7 @@ public class Direction_Tests
     }
 
     [TestMethod]
-    public void SuperSeek_Reasonable_2Iterations_Test()
+    public void SuperSeek_Reasonable_3Iterations_Test()
     {
         // Arrange
         int lookahead = 3;
