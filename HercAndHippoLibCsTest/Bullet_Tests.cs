@@ -362,5 +362,6 @@ namespace HercAndHippoLibCsTest
             // Local method
             Bullet FindBullet() => (Bullet)level.LevelObjects.Where(obj => obj is Bullet).Single();
         }
+
     }
 }

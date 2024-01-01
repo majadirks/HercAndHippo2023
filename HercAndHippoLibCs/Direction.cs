@@ -4,7 +4,7 @@ namespace HercAndHippoLibCs;
 public enum Direction { Idle, North, East, South, West, Seek, Flee}
 public static class DirectionExtensions
 {
-    private record SuperSeekParams(HercAndHippoObj Hho, Level Level, int Lookahead);
+    private record SuperSeekParams(HercAndHippoObj Hho, Level Level, int Lookahead, Location CameFrom);
     public static Direction Mirror(this Direction toMirror)
         => toMirror switch
         {
@@ -66,12 +66,12 @@ public static class DirectionExtensions
     /// Similar to seek, but recursively attempts to minimize 
     /// distance to player after (lookahead) moves ahead
     /// </summary>
-    public static Direction SuperSeek<T>(this T hho, Level level, int lookahead, out int newDist) where T : HercAndHippoObj, ILocatable
-        => SuperSeek<T>(new(hho, level, lookahead), out newDist);
+    public static Location SuperSeek<T>(this T hho, Level level, int lookahead, out int newDist, Location cameFrom) where T : HercAndHippoObj, ILocatable
+        => SuperSeek<T>(new(hho, level, lookahead, cameFrom), out newDist);
 
-    private static Direction SuperSeek<T>(SuperSeekParams ssps, out int newDist) where T : HercAndHippoObj, ILocatable
+    private static Location SuperSeek<T>(SuperSeekParams ssps, out int newDist) where T : HercAndHippoObj, ILocatable
     {
-        if (superSeekCache.TryGetValue(ssps, out (Direction, int) value))
+        if (superSeekCache.TryGetValue(ssps, out (Location, int) value))
         {
             newDist = value.Item2;
             return value.Item1;
@@ -81,20 +81,17 @@ public static class DirectionExtensions
         Level level = ssps.Level;
         int lookahead = ssps.Lookahead;
         Player player = level.Player;
+        Location cameFrom = ssps.CameFrom;
         int initialDistance = ManhattanDistance(hho.Location, player.Location);
-        if (lookahead < 1)
-        {
-            newDist = initialDistance;
-            return Direction.Idle;
-        }
-        else if (lookahead == 1)
-        {
-            return Seek(hho, level, out newDist);
-        }
-        else if (hho.Location == player.Location || hho is Player)
+        if (hho.Location == player.Location)
         {
             newDist = 0;
-            return Direction.Idle;
+            return hho.Location;
+        }
+        else if (lookahead == 0)
+        {
+            newDist = initialDistance;
+            return hho.Location;
         }
         Location nextNorth = new(hho.Location.Col, hho.Location.Row.NextNorth());
         Location nextEast = new(hho.Location.Col.NextEast(level.Width), hho.Location.Row);
@@ -106,52 +103,56 @@ public static class DirectionExtensions
         int southDist = int.MaxValue;
         int westDist = int.MaxValue;
 
-        if (!hho.MotionBlockedTo(level, Direction.North))
+        if (!hho.MotionBlockedTo(level, Direction.North) && cameFrom != nextNorth)
         {
             T newHho = hho with { Location = nextNorth };
             Level newLevel = level.Replace(hho, newHho);
-            SuperSeek(newHho, newLevel, lookahead - 1, out northDist);
+            SuperSeek(newHho, newLevel, lookahead - 1, out int dist, cameFrom: hho.Location);
+            northDist = dist;
         }
-        if (!hho.MotionBlockedTo(level, Direction.East))
+        if (!hho.MotionBlockedTo(level, Direction.East) && cameFrom != nextEast)
         {
             T newHho = hho with { Location = nextEast };
             Level newLevel = level.Replace(hho, newHho);
-            SuperSeek(newHho, newLevel, lookahead - 1, out eastDist);
+            SuperSeek(newHho, newLevel, lookahead - 1, out int dist, cameFrom: hho.Location);
+            eastDist = dist;
         }
-        if (!hho.MotionBlockedTo(level, Direction.South))
+        if (!hho.MotionBlockedTo(level, Direction.South) && cameFrom != nextSouth)
         {
             T newHho = hho with { Location = nextSouth };
             Level newLevel = level.Replace(hho, newHho);
-            SuperSeek(newHho, newLevel, lookahead - 1, out southDist);
+            SuperSeek(newHho, newLevel, lookahead - 1, out int dist, cameFrom: hho.Location);
+            southDist = dist;
         }
-        if (!hho.MotionBlockedTo(level, Direction.West))
+        if (!hho.MotionBlockedTo(level, Direction.West) && cameFrom != nextWest)
         {
             T newHho = hho with { Location = nextWest };
             Level newLevel = level.Replace(hho, newHho);
-            SuperSeek(newHho, newLevel, lookahead - 1, out westDist);
+            SuperSeek(newHho, newLevel, lookahead - 1, out int dist, cameFrom: hho.Location);
+            westDist = dist;
         }
 
         int[] distances = new int[] { northDist, eastDist, southDist, westDist };
         newDist = distances.Min();
-        Direction newDir = Direction.Idle;
+        Location newLoc = hho.Location;
         if (newDist == int.MaxValue || newDist == initialDistance)
-            newDir = Direction.Idle;
+            newLoc = hho.Location;
         else if (newDist == northDist)
-            newDir = Direction.North;
+            newLoc = nextNorth;
         else if (newDist == eastDist)
-            newDir = Direction.East;
+            newLoc = nextEast;
         else if (newDist == southDist)
-            newDir = Direction.South;
+            newLoc = nextSouth;
         else if (newDist == westDist)
-            newDir = Direction.West;
+            newLoc = nextWest;
         else
             throw new NotSupportedException($"An unexpected error occurred in method {nameof(SuperSeek)}.");
 
-        superSeekCache.Add(ssps, (newDir, newDist));
-        return newDir;
+        superSeekCache.Add(ssps, (newLoc, newDist));
+        return newLoc;
     }
 
-    private static readonly Dictionary<SuperSeekParams, (Direction, int)> superSeekCache = new();
+    private static readonly Dictionary<SuperSeekParams, (Location, int)> superSeekCache = new();
 
     public static Direction Flee<T>(this T hho, Level level) where T : HercAndHippoObj, ILocatable
         => hho.Seek(level, out int _).Mirror();
