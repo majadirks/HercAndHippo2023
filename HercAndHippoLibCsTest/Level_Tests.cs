@@ -255,5 +255,41 @@ namespace HercAndHippoLibCsTest
             // Act and assert
             Assert.ThrowsException<NotSupportedException>(() => level.Replace(ammo, level.Player));
         }
+
+        [TestMethod]
+        public void CannotReplaceHippoWithNonHippo()
+        {
+            // Arrange
+            Player player = Player.Default(1, 1);
+            Hippo hippo = new((2, 2), 5, false);
+            Ammo ammo = new((2, 1), 5);
+            Level level = new(
+                player: player,
+                hippo: hippo,
+                gravity: Gravity.Default,
+                secondaryObjects: new() { ammo, new Wall(Color.Yellow, (2, 3)) });
+
+            // Act and assert
+            Assert.IsNotNull(level.Hippo);
+            Assert.ThrowsException<NotSupportedException>(() => level.Replace(level.Hippo, ammo));
+        }
+
+        [TestMethod]
+        public void CannotReplaceNonHippoWithHippo()
+        {
+            // Arrange
+            Player player = Player.Default(1, 1);
+           
+            Ammo ammo = new((2, 1), 5);
+            Level level = new(
+                player: player,
+                hippo: null,
+                gravity: Gravity.Default,
+                secondaryObjects: new() { ammo, new Wall(Color.Yellow, (2, 3)) });
+            Hippo hippo = new((2, 2), 5, false);
+
+            // Act and assert
+            Assert.ThrowsException<NotSupportedException>(() => level.Replace(ammo, hippo));
+        }
     }
 }
