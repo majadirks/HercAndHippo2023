@@ -55,7 +55,7 @@ public class Direction_Tests
         Assert.AreEqual(Direction.Idle, initial.Whither);
 
         // Act
-        level = level.Replace(initial, initial with { Location = initial.SuperSeek(level, lookahead, out int newDist, cameFrom: initial.Location) });
+        level = level.Replace(initial, initial with { Location = initial.DeepSeek(level, lookahead, out int newDist, cameFrom: initial.Location) });
 
         // Assert: West and North are blocked, so went South
         Bullet iterated = FindBullet();
@@ -64,7 +64,7 @@ public class Direction_Tests
 
         // Act
         level = level.Replace(iterated, 
-            iterated with { Location = iterated.SuperSeek(level, lookahead, out newDist, cameFrom: iterated.Location) });
+            iterated with { Location = iterated.DeepSeek(level, lookahead, out newDist, cameFrom: iterated.Location) });
         iterated = FindBullet();
 
         // Assert: North is blocked, so went West
@@ -73,7 +73,7 @@ public class Direction_Tests
 
         // Act
         level = level.Replace(iterated,
-            iterated with { Location = iterated.SuperSeek(level, lookahead, out newDist, cameFrom: iterated.Location) });
+            iterated with { Location = iterated.DeepSeek(level, lookahead, out newDist, cameFrom: iterated.Location) });
         iterated = FindBullet();
 
         // Assert: North is blocked, so went West
@@ -82,16 +82,16 @@ public class Direction_Tests
 
         // Act
         level = level.Replace(iterated,
-            iterated with { Location = iterated.SuperSeek(level, lookahead, out newDist, cameFrom: iterated.Location) });
+            iterated with { Location = iterated.DeepSeek(level, lookahead, out newDist, cameFrom: iterated.Location) });
         iterated = FindBullet();        
         level = level.Replace(iterated,
-            iterated with { Location = iterated.SuperSeek(level, lookahead, out newDist, cameFrom: iterated.Location) });
+            iterated with { Location = iterated.DeepSeek(level, lookahead, out newDist, cameFrom: iterated.Location) });
         iterated = FindBullet();
         level = level.Replace(iterated,
-            iterated with { Location = iterated.SuperSeek(level, lookahead, out newDist, cameFrom: iterated.Location) });
+            iterated with { Location = iterated.DeepSeek(level, lookahead, out newDist, cameFrom: iterated.Location) });
         iterated = FindBullet();
         level = level.Replace(iterated,
-            iterated with { Location = iterated.SuperSeek(level, lookahead, out newDist, cameFrom: iterated.Location) });
+            iterated with { Location = iterated.DeepSeek(level, lookahead, out newDist, cameFrom: iterated.Location) });
         iterated = FindBullet();
 
         Assert.AreEqual(level.Player.Location, iterated.Location);

@@ -4,7 +4,7 @@ namespace HercAndHippoLibCs;
 public enum Direction { Idle, North, East, South, West, Seek, Flee}
 public static class DirectionExtensions
 {
-    private record SuperSeekParams(HercAndHippoObj Hho, Level Level, int Lookahead, Location CameFrom);
+    private record DeepSeekParams(HercAndHippoObj Hho, Level Level, int Lookahead, Location CameFrom);
     public static Direction Mirror(this Direction toMirror)
         => toMirror switch
         {
@@ -66,12 +66,12 @@ public static class DirectionExtensions
     /// Similar to seek, but recursively attempts to minimize 
     /// distance to player after (lookahead) moves ahead
     /// </summary>
-    public static Location SuperSeek<T>(this T hho, Level level, int lookahead, out int newDist, Location cameFrom) where T : HercAndHippoObj, ILocatable
-        => SuperSeek<T>(new(hho, level, lookahead, cameFrom), out newDist);
+    public static Location DeepSeek<T>(this T hho, Level level, int lookahead, out int newDist, Location cameFrom) where T : HercAndHippoObj, ILocatable
+        => DeepSeek<T>(new(hho, level, lookahead, cameFrom), out newDist);
 
-    private static Location SuperSeek<T>(SuperSeekParams ssps, out int newDist) where T : HercAndHippoObj, ILocatable
+    private static Location DeepSeek<T>(DeepSeekParams ssps, out int newDist) where T : HercAndHippoObj, ILocatable
     {
-        if (superSeekCache.TryGetValue(ssps, out (Location, int) value))
+        if (deepSeekCache.TryGetValue(ssps, out (Location, int) value))
         {
             newDist = value.Item2;
             return value.Item1;
@@ -107,28 +107,28 @@ public static class DirectionExtensions
         {
             T newHho = hho with { Location = nextNorth };
             Level newLevel = level.Replace(hho, newHho);
-            SuperSeek(newHho, newLevel, lookahead - 1, out int dist, cameFrom: hho.Location);
+            DeepSeek(newHho, newLevel, lookahead - 1, out int dist, cameFrom: hho.Location);
             northDist = dist;
         }
         if (!hho.MotionBlockedTo(level, Direction.East) && cameFrom != nextEast)
         {
             T newHho = hho with { Location = nextEast };
             Level newLevel = level.Replace(hho, newHho);
-            SuperSeek(newHho, newLevel, lookahead - 1, out int dist, cameFrom: hho.Location);
+            DeepSeek(newHho, newLevel, lookahead - 1, out int dist, cameFrom: hho.Location);
             eastDist = dist;
         }
         if (!hho.MotionBlockedTo(level, Direction.South) && cameFrom != nextSouth)
         {
             T newHho = hho with { Location = nextSouth };
             Level newLevel = level.Replace(hho, newHho);
-            SuperSeek(newHho, newLevel, lookahead - 1, out int dist, cameFrom: hho.Location);
+            DeepSeek(newHho, newLevel, lookahead - 1, out int dist, cameFrom: hho.Location);
             southDist = dist;
         }
         if (!hho.MotionBlockedTo(level, Direction.West) && cameFrom != nextWest)
         {
             T newHho = hho with { Location = nextWest };
             Level newLevel = level.Replace(hho, newHho);
-            SuperSeek(newHho, newLevel, lookahead - 1, out int dist, cameFrom: hho.Location);
+            DeepSeek(newHho, newLevel, lookahead - 1, out int dist, cameFrom: hho.Location);
             westDist = dist;
         }
 
@@ -146,13 +146,13 @@ public static class DirectionExtensions
         else if (newDist == westDist)
             newLoc = nextWest;
         else
-            throw new NotSupportedException($"An unexpected error occurred in method {nameof(SuperSeek)}.");
+            throw new NotSupportedException($"An unexpected error occurred in method {nameof(DeepSeek)}.");
 
-        superSeekCache.Add(ssps, (newLoc, newDist));
+        deepSeekCache.Add(ssps, (newLoc, newDist));
         return newLoc;
     }
 
-    private static readonly Dictionary<SuperSeekParams, (Location, int)> superSeekCache = new();
+    private static readonly Dictionary<DeepSeekParams, (Location, int)> deepSeekCache = new();
 
     public static Direction Flee<T>(this T hho, Level level) where T : HercAndHippoObj, ILocatable
         => hho.Seek(level, out int _).Mirror();
