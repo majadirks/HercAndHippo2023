@@ -1,7 +1,7 @@
 ﻿using static HercAndHippoLibCs.Location;
 namespace HercAndHippoLibCs;
 
-public enum Direction { Idle, North, East, South, West}
+public enum Direction { Idle, North, East, South, West, Seek, Flee}
 public static class DirectionExtensions
 {
     private record SuperSeekParams(HercAndHippoObj Hho, Level Level, int Lookahead);
@@ -13,6 +13,8 @@ public static class DirectionExtensions
             Direction.East => Direction.West,
             Direction.West => Direction.East,
             Direction.Idle => Direction.Idle,
+            Direction.Seek => Direction.Flee,
+            Direction.Flee => Direction.Seek,
             _ => throw new NotSupportedException()
         };
 

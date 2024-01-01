@@ -331,7 +331,36 @@ namespace HercAndHippoLibCsTest
             //Assert
             Assert.IsTrue(level.Contains(topRight with { Count = 1 }));
             Assert.IsTrue(level.Contains(bottomLeft with { Count = 1 }));
+        }
 
+        [TestMethod]
+        public void BulletSeeksWest_Test()
+        {
+            // Arrange
+            Level level = new(
+                player: Player.Default(5, 1),
+                hippo: null,
+                gravity: Gravity.Default,
+                secondaryObjects: new()
+                {
+                    new Wall(Color.Yellow, (5,2)),
+                    new Wall(Color.Black, (20,20)),
+                    new Bullet((10, 1), Direction.Seek)
+                });
+            Bullet initial = FindBullet();
+            Assert.AreEqual(new Location(10, 1), initial.Location);
+            Assert.AreEqual(Direction.Seek, initial.Whither);
+
+            // Act
+            level = level.RefreshCyclables(ActionInput.NoAction);
+
+            // Assert
+            Bullet iterated = FindBullet();
+            Assert.AreEqual(new Location(9, 1), iterated.Location);
+            Assert.AreEqual(Direction.West, iterated.Whither);
+
+            // Local method
+            Bullet FindBullet() => (Bullet)level.LevelObjects.Where(obj => obj is Bullet).Single();
         }
     }
 }

@@ -4,7 +4,9 @@
 public class Direction_Tests
 {
     [TestMethod]
-    public void Seek_Test()
+    public void Seek_PlayerNorth_Test()
     {
+        // Arrange
+
     }
 }
