@@ -11,6 +11,9 @@
 - Implement and test "seek" behavior for bullet
 
 Tests:
+	- Level: 
+		test Remove() with hippo, player, other object, null
+		test Replace() with hippo, player, other object, null, hippo/non-hippo, player/non-payer
 	- Hippo - write tests! (See Hippo_Tests.cs)
 	- Test Seek() and Flee() methods
 	- Test that Driver moves player after cycle

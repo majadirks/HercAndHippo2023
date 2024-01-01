@@ -43,10 +43,14 @@ public class Level
     /// </summary>
     public HashSet<HercAndHippoObj> LevelObjects => SecondaryObjects.AddObjects(Hippo, Player);
     public Level WithPlayer(Player player) => new (player: player, hippo: Hippo, secondaryObjects: this.SecondaryObjects, width: Width, height: Height, cycles: Cycles, gravity: Gravity);
-    public IEnumerable<HercAndHippoObj> ObjectsAt(Location location) => LevelObjects.Where(d => d is ILocatable dAtLoc && dAtLoc.Location.Equals(location));
+    public IEnumerable<HercAndHippoObj> ObjectsAt(Location location) => LevelObjects.Where(d => d.IsLocatable && ((ILocatable)d).Location.Equals(location));
     public Level Without(HercAndHippoObj toRemove)
     {
-        if (toRemove is Hippo)
+        if (toRemove == null)
+            throw new ArgumentNullException(nameof(toRemove));
+        else if (toRemove is Player)
+            throw new NotSupportedException($"Cannot remove player from level using method '{nameof(Without)}'");
+        else if (toRemove is Hippo)
             return new Level(player: Player, gravity: Gravity, secondaryObjects: SecondaryObjects, hippo: null);
         else
             return new(player: this.Player, hippo: Hippo, secondaryObjects: SecondaryObjects.RemoveObject(toRemove), Width, Height, Cycles, Gravity);
@@ -54,22 +58,32 @@ public class Level
     public Level AddSecondaryObject(HercAndHippoObj toAdd) => new(player: this.Player, hippo: Hippo, secondaryObjects: SecondaryObjects.AddObject(toAdd), Width, Height, Cycles, Gravity);
     public Level Replace(HercAndHippoObj toReplace, HercAndHippoObj toAdd)
     {
-        if (toReplace is Hippo && toAdd is Hippo newHippo)           
-            return new(player: Player, hippo: newHippo, gravity: Gravity, secondaryObjects: SecondaryObjects, cycles: Cycles, height:Height, width: Width);
+        if (toReplace == null)
+            throw new ArgumentNullException(nameof(toReplace));
+        else if (toAdd == null)
+            throw new ArgumentNullException(nameof(toAdd));
+        else if (toReplace is Player ^ toAdd is Player)
+            throw new NotSupportedException();
+        else if (toReplace is Hippo ^ toAdd is Hippo)
+            throw new NotSupportedException();
+        else if (toReplace is Player && toAdd is Player newPlayer)
+            return new Level(player: newPlayer, hippo: Hippo, gravity: Gravity, secondaryObjects: SecondaryObjects, width: Width, height: Height, cycles: Cycles);
+        else if (toReplace is Hippo && toAdd is Hippo newHippo)
+            return new(player: Player, hippo: newHippo, gravity: Gravity, secondaryObjects: SecondaryObjects, cycles: Cycles, height: Height, width: Width);
         else
-            return this.Without(toReplace).AddSecondaryObject(toAdd);
-        
+            return this.Without(toReplace).AddSecondaryObject(toAdd);      
     }
     public Level RefreshCyclables(ActionInput actionInput, CancellationToken? cancellationToken = null)
     {
         CancellationToken token = cancellationToken ?? CancellationToken.None;
+        Level nextState = this;
         // First cycle non-player objects
-        var nextState = SecondaryObjects // Do not refresh in parallel; this could cause objects to interfere with nearby copies of themselves, and can make updating slower
+        nextState = SecondaryObjects // Do not refresh in parallel; this could cause objects to interfere with nearby copies of themselves, and can make updating slower
             .Where(disp => disp.IsCyclable)
             .Cast<ICyclable>()
             .TakeWhile(dummy => !token.IsCancellationRequested)
             .Aggregate(
-            seed: this, 
+            seed: nextState, 
             func: (state, nextCyclable) => nextCyclable.Cycle(state, actionInput));
         // Then cycle hippo if relevant
         if (nextState.Hippo != null)
@@ -95,7 +109,13 @@ public class Level
     public static bool operator ==(Level left, Level right) => left.Equals(right);
     public static bool operator !=(Level left, Level right) => !(left == right);
     public override int GetHashCode() => LevelObjects.GetHashCode();
-    public override string ToString() => $"Level with Player at {Player.Location}; Object count = {SecondaryObjects.Count}.";
-    private static int GetWidth(HashSet<HercAndHippoObj> ds) => ds.Where(ds => ds is ILocatable d).Cast<ILocatable>().Select(d => d.Location.Col).Max() ?? 0;
-    private static int GetHeight(HashSet<HercAndHippoObj> ds) => ds.Where(ds => ds is ILocatable d).Cast<ILocatable>().Select(d => d.Location.Row).Max() ?? 0;
+    public override string ToString()
+    {
+        string hippoStr = Hippo == null ? "" : $" and Hippo at {Hippo.Location}, " + (Hippo.LockedToPlayer ? "locked to player." : "not locked to player");
+        string gravityStr = GravityApplies() ? "Gravity applies." : "Gravity does not apply.";
+        string desc = $"Level with Player at {Player.Location}{hippoStr}; Object count = {SecondaryObjects.Count}, Cycles = {Cycles}. {gravityStr}.";
+        return desc;
+    }
+    private static int GetWidth(HashSet<HercAndHippoObj> ds) => ds.Where(ds => ds.IsLocatable).Cast<ILocatable>().Select(d => d.Location.Col).Max() ?? 0;
+    private static int GetHeight(HashSet<HercAndHippoObj> ds) => ds.Where(ds => ds.IsLocatable).Cast<ILocatable>().Select(d => d.Location.Row).Max() ?? 0;
 }
