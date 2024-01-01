@@ -16,6 +16,14 @@ public static class DirectionExtensions
             _ => throw new NotSupportedException()
         };
 
+    /// <summary>
+    /// If the given object is unable to move, this method returns Direction.Idle.
+    /// If the given object is able to move but its legal moves to not bring it closer
+    /// to the Player, this method returns Direction.Idle;
+    /// Otherwise, it returns a direction in which the object is able to move
+    /// and which brings it closer to the player,
+    /// as measured using the Manhattan Distance / Taxi Cab Metric.
+    /// </summary>
     public static Direction Seek<T>(this T hho, Level level) where T: HercAndHippoObj, ILocatable
     {
         Player player = level.Player;
@@ -35,7 +43,7 @@ public static class DirectionExtensions
 
         int[] distances = new int[] { northDist, eastDist, southDist, westDist };
         int min = distances.Min();
-        if (min == int.MaxValue)
+        if (min == int.MaxValue || min == initialDistance)
             return Direction.Idle;
         else if (min == northDist)
             return Direction.North;
