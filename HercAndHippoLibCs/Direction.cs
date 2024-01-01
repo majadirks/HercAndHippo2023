@@ -4,7 +4,7 @@ namespace HercAndHippoLibCs;
 public enum Direction { Idle, North, East, South, West}
 public static class DirectionExtensions
 {
-    private record SuperSeekParams(dynamic Hho, Level Level, int Lookahead);
+    private record SuperSeekParams(HercAndHippoObj Hho, Level Level, int Lookahead);
     public static Direction Mirror(this Direction toMirror)
         => toMirror switch
         {
@@ -75,7 +75,7 @@ public static class DirectionExtensions
             return value.Item1;
         }
 
-        T hho = ssps.Hho;
+        T hho = (T)ssps.Hho;
         Level level = ssps.Level;
         int lookahead = ssps.Lookahead;
         Player player = level.Player;
