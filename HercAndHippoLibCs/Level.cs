@@ -46,7 +46,7 @@ public class Level
         else if (toRemove is Player)
             throw new NotSupportedException($"Cannot remove player from level using method '{nameof(Without)}'");
         else if (toRemove is Hippo)
-            return new Level(player: Player, gravity: Gravity, secondaryObjects: SecondaryObjects, hippo: null);
+            return new Level(player: Player, gravity: Gravity, secondaryObjects: SecondaryObjects, hippo: null, width: Width, height: Height, cycles: Cycles);
         else
             return new(player: this.Player, hippo: Hippo, secondaryObjects: SecondaryObjects.RemoveObject(toRemove), Width, Height, Cycles, Gravity);
     }
@@ -66,7 +66,11 @@ public class Level
         else if (toAdd is Hippo newHippo) // from aboveLogic, toReplace must also be a hippo
             return new(player: Player, hippo: newHippo, gravity: Gravity, secondaryObjects: SecondaryObjects, cycles: Cycles, height: Height, width: Width);
         else
-            return this.Without(toReplace).AddSecondaryObject(toAdd);      
+        {
+            var updatedSo = SecondaryObjects.Where(obj => obj != toReplace).Append(toAdd).ToHashSet();
+            return new(player: Player, hippo: Hippo, gravity: Gravity, secondaryObjects: updatedSo, width: Width, height: Height, cycles: Cycles);
+        }
+                 
     }
     public Level RefreshCyclables(ActionInput actionInput, CancellationToken? cancellationToken = null)
     {
