@@ -14,6 +14,7 @@ CycleTimer cycleTimer = new(frequencyHz: REFRESH_FREQUENCY_HZ);
 ScrollStatus scrollStatus = ScrollStatus.Default(state.Player.Location);
 BufferStats bufferStats = new(bufferSizeChanged: true, bufferWidth: Console.BufferWidth, bufferHeight: Console.BufferHeight);
 DisplayPlan displayPlan = new(state, scrollStatus, bufferStats);
+DisplayPlan nextDisplayPlan;
 Console.OutputEncoding = System.Text.Encoding.UTF8;
 ActionInput lastAction = ActionInput.NoAction;
 
@@ -30,8 +31,10 @@ ShowMessage("Use arrow keys to move, shift + arrow keys to shoot, 'q' to quit.")
 while (true)
 {
     futures = new(
-        state: state, 
-        mostRecent: lastAction, 
+        initialState: state, 
+        scrollStatus: scrollStatus,
+        bufferStats: bufferStats,
+        mostRecentInput: lastAction, 
         averageCycleTime: averageCycleTime, 
         msPerCycle: cycleTimer.MillisecondsPerCycle); // calculate possible next states
 
@@ -41,9 +44,7 @@ while (true)
     keyInfo = Console.KeyAvailable ? Console.ReadKey() : keyInfo; // Get next key input
     if (keyInfo.KeyChar == 'q') break; // Quit on q
     lastAction = keyInfo.ToActionInput();
-    state = futures.GetState(lastAction); // Update level state using key input
-    scrollStatus = scrollStatus.Update(state.Player.Location, bufferStats); // Plan to scroll screen if needed.
-    DisplayPlan nextDisplayPlan = new(state, scrollStatus, bufferStats);
+    (state, scrollStatus, nextDisplayPlan) = futures.GetDisplayPlan(lastAction);
     displayPlan.RefreshDisplay(nextDisplayPlan); // Re-display anything that changed
 }
 ResetConsoleColors(); // Clean up
