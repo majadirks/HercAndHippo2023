@@ -93,6 +93,7 @@ public static class DemoLevels
             new BreakableWall(Color.Blue, (280, 40)),
             new BreakableWall(Color.Blue, (290, 40)),
             new BreakableWall(Color.Blue, (300, 40))
+
         });
 
     public static readonly Level Clones = new(
@@ -220,7 +221,7 @@ public static class DemoLevels
         gravity: Gravity.Default,
         secondaryObjects: new()
         {
-            new Ammo((7, 10), Count: 15),
+            new Ammo((7, 10), Count: 500),
 
             new Wall(Color.Cyan, (1, 11)),
             new Wall(Color.Cyan, (2, 11)),
@@ -310,6 +311,8 @@ public static class DemoLevels
             new BreakableWall(Color.Green,(50,15)),
             new BreakableWall(Color.Green,(51,15)),
             new BreakableWall(Color.Green,(52,15)),
+
+            new Wall(Color.Yellow, (400, 1))
         }
         );
 }
