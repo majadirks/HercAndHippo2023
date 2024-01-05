@@ -38,7 +38,7 @@ while (true)
     keyInfo = cycleTimer.AwaitCycle(); // Update once per 20 ms, return key input
     bufferStats.Refresh(); // Check if buffer size changed
     displayPlan = new(state, scrollStatus, bufferStats); // save current screen layout
-    //keyInfo = Console.KeyAvailable ? Console.ReadKey() : default; // Get next key input
+    keyInfo = Console.KeyAvailable ? Console.ReadKey() : keyInfo; // Get next key input
     if (keyInfo.KeyChar == 'q') break; // Quit on q
     lastAction = keyInfo.ToActionInput();
     state = futures.GetState(lastAction); // Update level state using key input
