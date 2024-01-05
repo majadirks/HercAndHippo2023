@@ -41,7 +41,7 @@ internal class FutureStates
         cts = null;
         initialState = state;
         bool parallelEnabled = averageCycleTime * possibleInputs.Length < msPerCycle;
-        parallelEnabled = false; // debug
+        //parallelEnabled = false; // debug
         if (!parallelEnabled) return; // Doing all the calculations takes too long to be worthwhile
 
         cts = new();

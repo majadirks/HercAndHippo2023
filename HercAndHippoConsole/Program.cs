@@ -7,7 +7,7 @@ const int MESSAGE_MARGIN = 3;
 const int REFRESH_FREQUENCY_HZ = 50;
 
 // Initialize data
-Level state = DemoLevels.IntroducingTheHippo;
+Level state = DemoLevels.ManyObjectsStressTest();
 double averageCycleTime = ApproximateCycleTime(state);
 CycleTimer cycleTimer = new(frequencyHz: REFRESH_FREQUENCY_HZ);
 
@@ -35,10 +35,10 @@ while (true)
         averageCycleTime: averageCycleTime, 
         msPerCycle: cycleTimer.MillisecondsPerCycle); // calculate possible next states
 
-    cycleTimer.AwaitCycle(); // Update once per 20 ms
+    keyInfo = cycleTimer.AwaitCycle(); // Update once per 20 ms, return key input
     bufferStats.Refresh(); // Check if buffer size changed
     displayPlan = new(state, scrollStatus, bufferStats); // save current screen layout
-    keyInfo = Console.KeyAvailable ? Console.ReadKey() : default; // Get next key input
+    keyInfo = Console.KeyAvailable ? Console.ReadKey() : keyInfo; // Get next key input
     if (keyInfo.KeyChar == 'q') break; // Quit on q
     lastAction = keyInfo.ToActionInput();
     state = futures.GetState(lastAction); // Update level state using key input

@@ -215,12 +215,12 @@ public static class DemoLevels
         });
 
     public static readonly Level IntroducingTheHippo = new(
-        player: Player.Default(5,10),
-        hippo: new Hippo((7, 10), Health: 15, LockedToPlayer: false),
+        player: Player.Default(5, 10) with { JumpStrength = 6 },
+        hippo: new Hippo((3, 10), Health: 15, LockedToPlayer: false),
         gravity: Gravity.Default,
         secondaryObjects: new()
         {
-            new Ammo((3, 10), Count: 15),
+            new Ammo((7, 10), Count: 15),
 
             new Wall(Color.Cyan, (1, 11)),
             new Wall(Color.Cyan, (2, 11)),
@@ -253,10 +253,63 @@ public static class DemoLevels
             new Wall(Color.Cyan, (29, 11)),
             new Wall(Color.Cyan, (30, 11)),
 
-            new Wall(Color.White, (3, 6)),
+            new BreakableWall(Color.Green, (1, 5)),
+            new BreakableWall(Color.Green, (2, 6)),
+            new BreakableWall(Color.Green, (3, 7)),
+
             new Wall(Color.White, (9, 8)),
             new Wall(Color.White, (18, 9)),
-            new Wall(Color.White, (22, 10))
+            new Wall(Color.White, (22, 10)),
+
+            new BreakableWall(Color.Green,(27,10)),
+            new BreakableWall(Color.Green,(28,9)),
+            new BreakableWall(Color.Green,(29,8)),
+            new BreakableWall(Color.Green,(30,8)),
+            new BreakableWall(Color.Green,(31,8)),
+            new BreakableWall(Color.Green,(32,8)),
+            new BreakableWall(Color.Green,(33,8)),
+            new BreakableWall(Color.Green,(34,8)),
+            new BreakableWall(Color.Green,(35,8)),
+            new BreakableWall(Color.Green,(36,8)),
+            new BreakableWall(Color.Green,(37,8)),
+            new BreakableWall(Color.Green,(38,8)),
+            new BreakableWall(Color.Green,(39,8)),
+            new BreakableWall(Color.Green,(40,8)),
+            new BreakableWall(Color.Green,(41,8)),
+            new BreakableWall(Color.Green,(42,8)),
+            new BreakableWall(Color.Green,(43,8)),
+            new BreakableWall(Color.Green,(44,8)),
+            new BreakableWall(Color.Green,(45,8)),
+            new BreakableWall(Color.Green,(46,8)),
+            new BreakableWall(Color.Green,(47,8)),
+            new BreakableWall(Color.Green,(48,8)),
+            new BreakableWall(Color.Green,(49,8)),
+            new BreakableWall(Color.Green,(50,8)),
+            new BreakableWall(Color.Green,(52,8)),
+
+            new BreakableWall(Color.Green,(30,15)),
+            new BreakableWall(Color.Green,(31,15)),
+            new BreakableWall(Color.Green,(32,15)),
+            new BreakableWall(Color.Green,(33,15)),
+            new BreakableWall(Color.Green,(34,15)),
+            new BreakableWall(Color.Green,(35,15)),
+            new BreakableWall(Color.Green,(36,15)),
+            new BreakableWall(Color.Green,(37,15)),
+            new BreakableWall(Color.Green,(38,15)),
+            new BreakableWall(Color.Green,(39,15)),
+            new BreakableWall(Color.Green,(40,15)),
+            new BreakableWall(Color.Green,(41,15)),
+            new BreakableWall(Color.Green,(42,15)),
+            new BreakableWall(Color.Green,(43,15)),
+            new BreakableWall(Color.Green,(44,15)),
+            new BreakableWall(Color.Green,(45,15)),
+            new BreakableWall(Color.Green,(46,15)),
+            new BreakableWall(Color.Green,(47,15)),
+            new BreakableWall(Color.Green,(48,15)),
+            new BreakableWall(Color.Green,(49,15)),
+            new BreakableWall(Color.Green,(50,15)),
+            new BreakableWall(Color.Green,(51,15)),
+            new BreakableWall(Color.Green,(52,15)),
         }
         );
 }
