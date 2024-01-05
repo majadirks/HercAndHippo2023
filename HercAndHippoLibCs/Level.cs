@@ -17,7 +17,7 @@ public class Level
         return this;
     }
     private IEnumerable<HercAndHippoObj> SecondaryObjects { get; init; } // secondary, ie not the player or hippo
-    public Level(Player player, Gravity gravity, IEnumerable<HercAndHippoObj> secondaryObjects, Hippo? hippo = null)
+    public Level(Player player, Gravity gravity, HashSet<HercAndHippoObj> secondaryObjects, Hippo? hippo = null)
     {
         Player = player;
         Hippo = hippo;
@@ -48,7 +48,7 @@ public class Level
         else if (toRemove is Player)
             throw new NotSupportedException($"Cannot remove player from level using method '{nameof(Without)}'");
         else if (toRemove is Hippo)
-            return new Level(player: Player, gravity: Gravity, secondaryObjects: SecondaryObjects, hippo: null);
+            return new Level(player: Player, gravity: Gravity, secondaryObjects: SecondaryObjects, hippo: null, width: Width, height: Height, cycles: Cycles);
         else
             return new(player: this.Player, hippo: Hippo, secondaryObjects: SecondaryObjects.Where(item => item != toRemove).ToArray(), Width, Height, Cycles, Gravity);
     }
