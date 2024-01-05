@@ -36,12 +36,7 @@ public class Level
         Cycles = cycles;
     }
 
-    /// <summary>
-    /// Return a HashSet containing the player and all secondary objects. 
-    /// Somewhat slow; probably better to act on player and secondary objects separately 
-    /// when performance is critical.
-    /// </summary>
-    public HashSet<HercAndHippoObj> LevelObjects => SecondaryObjects.AddObjects(Hippo, Player);
+    public IEnumerable<HercAndHippoObj> LevelObjects => Hippo == null ? SecondaryObjects.Append(Player) : SecondaryObjects.Append(Hippo).Append(Player);
     public Level WithPlayer(Player player) => new (player: player, hippo: Hippo, secondaryObjects: this.SecondaryObjects, width: Width, height: Height, cycles: Cycles, gravity: Gravity);
     public IEnumerable<HercAndHippoObj> ObjectsAt(Location location) => LevelObjects.Where(d => d.IsLocatable && ((ILocatable)d).Location.Equals(location));
     public Level Without(HercAndHippoObj toRemove)
