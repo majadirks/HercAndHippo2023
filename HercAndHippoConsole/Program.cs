@@ -22,7 +22,7 @@ FutureStates futures;
 
 // Initialize display
 ResetConsoleColors();
-displayPlan.RefreshDisplay(state, scrollStatus);
+displayPlan.RefreshDisplay(displayPlan);
 ShowMessage("Use arrow keys to move, shift + arrow keys to shoot, 'q' to quit.");
 
 
@@ -43,7 +43,8 @@ while (true)
     lastAction = keyInfo.ToActionInput();
     state = futures.GetState(lastAction); // Update level state using key input
     scrollStatus = scrollStatus.Update(state.Player.Location, bufferStats); // Plan to scroll screen if needed.
-    displayPlan.RefreshDisplay(newState: state, newScrollStatus: scrollStatus); // Re-display anything that changed
+    DisplayPlan nextDisplayPlan = new(state, scrollStatus, bufferStats);
+    displayPlan.RefreshDisplay(nextDisplayPlan); // Re-display anything that changed
 }
 ResetConsoleColors(); // Clean up
 
