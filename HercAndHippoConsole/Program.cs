@@ -36,7 +36,7 @@ while (true)
         bufferStats: bufferStats,
         mostRecentInput: lastAction, 
         averageCycleTime: averageCycleTime, 
-        msPerCycle: cycleTimer.MillisecondsPerCycle); // calculate possible next states
+        msPerCycle: cycleTimer.MillisecondsPerCycle); // plan for possible next states
 
     keyInfo = cycleTimer.AwaitCycle(); // Update once per 20 ms, return key input
     bufferStats.Refresh(); // Check if buffer size changed
