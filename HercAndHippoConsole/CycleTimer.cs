@@ -29,15 +29,7 @@ namespace HercAndHippoConsole
 
         public ConsoleKeyInfo AwaitCycle()
         {
-            ConsoleKeyInfo keyInfo = default;
-            
-            while (!Cycled())
-            {
-             if (sw.ElapsedMilliseconds > halfwayStart && sw.ElapsedMilliseconds < halfwayEnd)
-                    keyInfo = Console.KeyAvailable ? Console.ReadKey() : default;
-            }
-            if (keyInfo != default)
-                return keyInfo;
+            while (!Cycled()) {}
             return Console.KeyAvailable ? Console.ReadKey() : default; 
         }
     }
