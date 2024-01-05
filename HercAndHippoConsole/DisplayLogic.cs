@@ -68,9 +68,9 @@ internal readonly struct DisplayPlan
         this.bufferStats = bufferStats;
     }
 
-    public void RefreshDisplay(Level newState, ScrollStatus newScrollStatus)
+    public void RefreshDisplay(DisplayPlan newDisplayPlan)
     {
-        DisplayPlan newDisplayPlan = new(newState, newScrollStatus, bufferStats);
+        
         bool forceRefresh = bufferStats.BufferSizeChanged;
         
         var oldDisplay = this.planArray;
