@@ -223,6 +223,8 @@ public static class DemoLevels
         {
             new Ammo((7, 10), Count: 500),
 
+            new Gem(Color.Red, (9, 10), Health: 5),
+
             new Wall(Color.Cyan, (1, 11)),
             new Wall(Color.Cyan, (2, 11)),
             new Wall(Color.Cyan, (3, 11)),
@@ -254,9 +256,11 @@ public static class DemoLevels
             new Wall(Color.Cyan, (29, 11)),
             new Wall(Color.Cyan, (30, 11)),
 
+            new Gem(Color.DarkMagenta, Location: (1,4), Health: 5),
             new BreakableWall(Color.Green, (1, 5)),
             new BreakableWall(Color.Green, (2, 6)),
             new BreakableWall(Color.Green, (3, 7)),
+            new Gem(Color.Red, (5,7), Health: 5),
 
             new Wall(Color.White, (9, 8)),
             new Wall(Color.White, (18, 9)),
