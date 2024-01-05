@@ -10,7 +10,7 @@ internal class FutureStates
     private readonly BufferStats bufferStats;
     private readonly Dictionary<ActionInput, Task<StateAndPlan>> futures;
     private readonly CancellationTokenSource? cts;
-    public StateAndPlan GetDisplayPlan(ActionInput actionInput)
+    public StateAndPlan GetFuturePlan(ActionInput actionInput)
     {
         // If next state has been calculated, return it
         if (futures.TryGetValue(actionInput, out Task<StateAndPlan>? value) && value.IsCompleted)

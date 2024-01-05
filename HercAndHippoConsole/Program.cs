@@ -44,7 +44,7 @@ while (true)
     keyInfo = Console.KeyAvailable ? Console.ReadKey() : keyInfo; // Get next key input
     if (keyInfo.KeyChar == 'q') break; // Quit on q
     lastAction = keyInfo.ToActionInput();
-    (state, scrollStatus, nextDisplayPlan) = futures.GetDisplayPlan(lastAction);
+    (state, scrollStatus, nextDisplayPlan) = futures.GetFuturePlan(lastAction);
     displayPlan.RefreshDisplay(nextDisplayPlan); // Re-display anything that changed
 }
 ResetConsoleColors(); // Clean up
