@@ -23,6 +23,7 @@ FutureStates futures;
 
 // Initialize display
 ResetConsoleColors();
+bool refreshed;
 displayPlan.RefreshDisplay(displayPlan);
 ShowMessage("Use arrow keys to move, shift + arrow keys to shoot, 'q' to quit.");
 
@@ -45,7 +46,12 @@ while (true)
     if (keyInfo.KeyChar == 'q') break; // Quit on q
     lastAction = keyInfo.ToActionInput();
     (state, scrollStatus, nextDisplayPlan) = futures.GetFuturePlan(lastAction);
-    displayPlan.RefreshDisplay(nextDisplayPlan); // Re-display anything that changed
+    refreshed = displayPlan.RefreshDisplay(nextDisplayPlan); // Re-display anything that changed
+    while (!refreshed)
+    {
+        nextDisplayPlan = new DisplayPlan(state, scrollStatus, bufferStats);
+        refreshed = displayPlan.RefreshDisplay(nextDisplayPlan);
+    }
 }
 ResetConsoleColors(); // Clean up
 

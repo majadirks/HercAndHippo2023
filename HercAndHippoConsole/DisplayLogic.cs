@@ -32,7 +32,14 @@ internal class BufferStats
         BufferWidth = newBW;
         BufferHeight = newBH;
    
-    } 
+    }
+
+    public void ForceRefresh()
+    {
+        Refresh();
+        BufferSizeChanged = true;
+    }
+    
 }
 
 internal readonly struct DisplayPlan
@@ -68,7 +75,14 @@ internal readonly struct DisplayPlan
         this.bufferStats = bufferStats;
     }
 
-    public void RefreshDisplay(DisplayPlan newDisplayPlan)
+    /// <summary>
+    /// Assuming this instance of DisplayPlan is represented in the console display,
+    /// update the console by comparing this DisplayPlan to the given newDisplayPlan
+    /// and changing anything that needs to be changed.
+    /// If this is done successfully, return true. Return false
+    /// if an exception is encountered. eg if the Console size changed.
+    /// </summary>
+    public bool RefreshDisplay(DisplayPlan newDisplayPlan)
     {
         
         bool forceRefresh = bufferStats.BufferSizeChanged;
@@ -79,45 +93,49 @@ internal readonly struct DisplayPlan
         int maxCol = bufferStats.BufferWidth - VIEW_MARGIN;
         int maxRow = bufferStats.BufferHeight - VIEW_MARGIN;
 
-        // Rather than using the cached maxCol and maxRow values calculated above,
-        // the following method recalculates the buffer width and height when it is needed
-        // to prevent attempting to set the cursor position to an offscreen location (which throws an exception).
-        static bool InView(int col, int row) 
-            => col < Console.BufferWidth - VIEW_MARGIN && row < Console.BufferHeight - VIEW_MARGIN;
-
         if (forceRefresh)
         {
             DisplayUtilities.ResetConsoleColors();
             Console.Clear();
         }
-        for (int row = 0; row < maxRow; row++)
+        try
         {
-            for (int col = 0; col < maxCol; col++)
+            for (int row = 0; row < maxRow; row++)
             {
-                IConsoleDisplayable oldDisp = oldDisplay[col, row];
-                IConsoleDisplayable newDisp = newDisplay[col, row];
-                if ((newDisp != default && (forceRefresh || (oldDisp != newDisp))) &&
-                    InView(col, row))
+                for (int col = 0; col < maxCol; col++)
                 {
-                    // Something is here that wasn't here before, so show it
-                    Console.SetCursorPosition(col, row);
-                    Console.BackgroundColor = newDisp.BackgroundColor.ToConsoleColor();
-                    Console.ForegroundColor = newDisp.Color.ToConsoleColor();
-                    Console.Write(newDisp.ConsoleDisplayString);
-                }
-                if ((newDisp == default && oldDisp != default) &&
-                    InView(col, row))
-                {
-                    // Something used to be here, but now nothing is here, so clear the spot
-                    Console.SetCursorPosition(col, row);
-                    Console.BackgroundColor = ConsoleColor.Black;
-                    Console.ForegroundColor = ConsoleColor.Black;
-                    Console.Write(" ");
-                }
-            } // end for (columns)
-        } // end for (rows)
-
-        Console.SetCursorPosition(1, Console.BufferHeight - 1); // Move the cursor so it doesn't always appear next to the player
-
+                    IConsoleDisplayable? oldDisp = forceRefresh ? null : oldDisplay[col, row];
+                    IConsoleDisplayable newDisp = newDisplay[col, row];
+                    if (newDisp != default && (forceRefresh || oldDisp != newDisp))
+                    {
+                        // Something is here that wasn't here before, so show it
+                        Console.SetCursorPosition(col, row);
+                        Console.BackgroundColor = newDisp.BackgroundColor.ToConsoleColor();
+                        Console.ForegroundColor = newDisp.Color.ToConsoleColor();
+                        Console.Write(newDisp.ConsoleDisplayString);
+                    }
+                    if (newDisp == default && oldDisp != default)
+                    {
+                        // Something used to be here, but now nothing is here, so clear the spot
+                        Console.SetCursorPosition(col, row);
+                        Console.BackgroundColor = ConsoleColor.Black;
+                        Console.ForegroundColor = ConsoleColor.Black;
+                        Console.Write(" ");
+                    }
+                } // end for (columns)
+            } // end for (rows)
+            return true;
+        }
+        catch
+        {
+            DisplayUtilities.ResetConsoleColors();
+            Console.Clear();
+            bufferStats.ForceRefresh();
+            return false;
+        }
+        finally
+        {
+            Console.SetCursorPosition(1, Console.BufferHeight - 1); // Move the cursor so it doesn't always appear next to the player
+        }
     } // end method RefreshDisplay()
 } // end struct DisplayPlan
