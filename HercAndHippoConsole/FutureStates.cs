@@ -2,27 +2,43 @@
 
 namespace HercAndHippoConsole;
 
-internal record StateAndPlan(Level State, ScrollStatus ScrollStatus, DisplayPlan Plan);
+internal record StateAndDiffs(Level State, ScrollStatus ScrollStatus, IEnumerable<DisplayDiff> Diffs);
 internal class FutureStates
 {
+    private readonly DisplayPlan initialPlan;
     private readonly Level initialState;
     private readonly ScrollStatus initialScrollStatus;
     private readonly BufferStats bufferStats;
-    private readonly Dictionary<ActionInput, Task<StateAndPlan>> futures;
+    private readonly Dictionary<ActionInput, Task<StateAndDiffs>> futures;
     private readonly CancellationTokenSource? cts;
-    public StateAndPlan GetFuturePlan(ActionInput actionInput)
+    public bool ParallelEnabled { get; private set; }
+    public StateAndDiffs GetFutureDiffs(ActionInput actionInput)
     {
-        // If next state has been calculated, return it
-        if (futures.TryGetValue(actionInput, out Task<StateAndPlan>? value) && value.IsCompleted)
+        // If relevant diffs for this action input have been calculated, return them
+        if (futures.TryGetValue(actionInput, out Task<StateAndDiffs>? value) && value.IsCompleted)
         {
-            var ret = value.Result;
-            cts?.Cancel(); //cancel others
-            return ret;
+            if (value.IsCompleted)
+            {
+                var ret = value.Result;
+                cts?.Cancel(); //cancel others
+                return ret;
+            }
+            else // relevant diff calculation started but did not complete, so wait for it to finish
+            {
+                value.Wait();
+                cts?.Cancel();
+                return value.Result;
+            }
         }
-        else // next state has not been fully calculated.
+        else // relevant diff calculation didn't even start! Do it now
         {
             cts?.Cancel();
-            return GetDisplayPlan(initialState, actionInput, initialScrollStatus, bufferStats);
+            return GetDiffs(
+                initialPlan: initialPlan,
+                initialState: initialState, 
+                actionInput: actionInput, 
+                initialScrollStatus: initialScrollStatus, 
+                bufferStats: bufferStats);
         }
             
     }
@@ -38,20 +54,26 @@ internal class FutureStates
     /// <param name="mostRecentInput">Most recent input</param>
     /// <param name="averageCycleTime">Average time to calculate a cycle</param>
     /// <param name="msPerCycle">Ideal interval between cycles</param>
-    public FutureStates(Level initialState, ScrollStatus scrollStatus, BufferStats bufferStats, ActionInput mostRecentInput, double averageCycleTime, double msPerCycle)
+    public FutureStates(DisplayPlan initialPlan, Level initialState, ScrollStatus scrollStatus, BufferStats bufferStats, ActionInput mostRecentInput, double averageCycleTime, double msPerCycle)
     {
         futures = new();
         cts = null;
+        this.initialPlan = initialPlan;
         this.initialState = initialState;
         initialScrollStatus = scrollStatus;
         this.bufferStats = bufferStats;
-        bool parallelEnabled = averageCycleTime * possibleInputs.Length < msPerCycle;
+        ParallelEnabled = averageCycleTime * possibleInputs.Length < msPerCycle;
         //parallelEnabled = false; // debug
-        if (!parallelEnabled) return; // Doing all the calculations takes too long to be worthwhile
+        if (!ParallelEnabled) return; // Doing all the calculations takes too long to be worthwhile
 
         cts = new();
-        Task<StateAndPlan> fromMostRecent =
-            Task.Run(() => GetDisplayPlan(initialState, mostRecentInput, initialScrollStatus, bufferStats));
+        Task<StateAndDiffs> fromMostRecent =
+            Task.Run(() => GetDiffs(
+                initialPlan: initialPlan,
+                initialState: initialState, 
+                actionInput: mostRecentInput, 
+                initialScrollStatus: initialScrollStatus, 
+                bufferStats: bufferStats));
         futures.Add(mostRecentInput, fromMostRecent);
 
         for (int i = 0; i < possibleInputs.Length; i++)
@@ -61,14 +83,21 @@ internal class FutureStates
                 continue;
             else
                 futures.Add(actionInput, 
-                    Task.Run(() => GetDisplayPlan(initialState, actionInput, initialScrollStatus, bufferStats)));
+                    Task.Run(() => GetDiffs(
+                        initialPlan: initialPlan,
+                        initialState: initialState, 
+                        actionInput: actionInput, 
+                        initialScrollStatus: initialScrollStatus, 
+                        bufferStats: bufferStats)));
         }
     }
 
-    private static StateAndPlan GetDisplayPlan(Level initialState, ActionInput actionInput, ScrollStatus initialScrollStatus, BufferStats bufferStats)
+    private static StateAndDiffs GetDiffs(DisplayPlan initialPlan, Level initialState, ActionInput actionInput, ScrollStatus initialScrollStatus, BufferStats bufferStats)
     {
         Level nextState = initialState.RefreshCyclables(actionInput);
         ScrollStatus nextScrollStatus = initialScrollStatus.Update(nextState.Player.Location, bufferStats);
-        return new(State: nextState, ScrollStatus: nextScrollStatus, Plan: new DisplayPlan(nextState, nextScrollStatus, bufferStats));
+        DisplayPlan newPlan = new(nextState, nextScrollStatus, bufferStats);
+        var diffs = initialPlan.GetDiffs(newPlan);
+        return new(State: nextState, ScrollStatus: nextScrollStatus, Diffs: diffs);
     }
 }
