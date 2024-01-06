@@ -49,7 +49,7 @@ Tests to write:
 - Torches and darkness
 - Gems
 - Boulders and pushables
-- Enemies: archers, poodles
+- Enemies: archers
 - Lives
 - Scrolls
 - Message text
