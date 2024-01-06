@@ -42,7 +42,7 @@ internal class BufferStats
     
 }
 
-internal readonly struct DisplayPlan
+internal class DisplayPlan
 {
     private readonly IConsoleDisplayable[,] planArray;
     private readonly BufferStats bufferStats;
@@ -86,9 +86,9 @@ internal readonly struct DisplayPlan
     {
         
         bool forceRefresh = bufferStats.BufferSizeChanged;
-        
-        var oldDisplay = this.planArray;
-        var newDisplay = newDisplayPlan.planArray;
+
+        IConsoleDisplayable[,] oldDisplay = this.planArray;
+        IConsoleDisplayable[,] newDisplay = newDisplayPlan.planArray;
 
         int maxCol = bufferStats.BufferWidth - VIEW_MARGIN;
         int maxRow = bufferStats.BufferHeight - VIEW_MARGIN;
