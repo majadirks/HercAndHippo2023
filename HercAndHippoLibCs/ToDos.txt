@@ -22,6 +22,7 @@ Tests to write:
 		- Groodle dies when shot
 		- Groodle is subject to gravity
 		- Groodle dies if it falls into abyss
+		- Groodle passes over ammo without interacting with it; ammo remains on level
 	- Gem tests:
 		- Gives health to player and removes self from level when touched
 		- Does not block player movement

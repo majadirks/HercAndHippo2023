@@ -14,7 +14,7 @@ public record Ammo(Location Location, AmmoCount Count) : HercAndHippoObj, ILocat
             {
                 AmmoCount = level.Player.AmmoCount + Count
             }),
-            _ => Behaviors.NoReaction(level)
+            _ => level.NoReaction()
         };
 
 }

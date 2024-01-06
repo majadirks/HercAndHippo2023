@@ -1,7 +1,7 @@
 ﻿namespace HercAndHippoLibCs;
 public static class Behaviors
 {      
-    public static Level NoReaction(Level level) => level;
+    public static Level NoReaction(this Level level) => level;
     public static Level AllowBulletToPass<T>(T shot, Level level, Bullet shotBy) where T:HercAndHippoObj, ILocatable
         => level.Replace(shotBy, shotBy with { Location = shot.Location });
     public static Level Die<T>(this T toDie, Level level) where T : HercAndHippoObj, ILocatable
@@ -52,13 +52,13 @@ public static class Behaviors
         if (toDie.Location.Row == level.Height)
             return toDie.Die(level);
         else
-            return Behaviors.NoReaction(level);
+            return level.NoReaction();
     }
 
     private static Level TryMoveSouth<T>(this T toFall, Level level) where T : HercAndHippoObj, ILocatable
     {
         if (toFall.MotionBlockedTo(level, Direction.South))
-            return Behaviors.NoReaction(level);
+            return level.NoReaction();
         Location nextLocation = new(toFall.Location.Col, toFall.Location.Row.NextSouth(level.Height));
         return level.Replace(toFall, toFall with { Location = nextLocation});
     }
