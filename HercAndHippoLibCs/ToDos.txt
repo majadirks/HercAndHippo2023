@@ -43,6 +43,7 @@ Tests to write:
 	- Console (in new project): does not crash on resize (larger or smaller)
 	- Test Behavior MutualTouch
 
+- Update DeepSeek to work with any ILocatable, not just Player. Seek should call DeepSeek with depth = 1. Test.
 - Trophies and transporters
 - Gravity; player dies if gravity > 0 and reaches bottom row, or gravity < 0 and reaches top row
 - Torches and darkness
