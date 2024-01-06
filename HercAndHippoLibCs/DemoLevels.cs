@@ -291,7 +291,18 @@ public static class DemoLevels
             new BreakableWall(Color.Green,(49,8)),
             new BreakableWall(Color.Green,(50,8)),
             new BreakableWall(Color.Green,(52,8)),
+            new BreakableWall(Color.Green,(53,8)),
+            new BreakableWall(Color.Green,(54,8)),
+            new BreakableWall(Color.Green,(55,8)),
+            new BreakableWall(Color.Green,(56,8)),
+            new BreakableWall(Color.Green,(57,8)),
+            new BreakableWall(Color.Green,(58,8)),
+            new BreakableWall(Color.Green,(59,8)),
+            new BreakableWall(Color.Green,(60,8)),
+            new BreakableWall(Color.Green,(61,7)),
 
+            new BreakableWall(Color.Green, (29,14)),
+            new Groodle((30,14), Direction.East),
             new BreakableWall(Color.Green,(30,15)),
             new BreakableWall(Color.Green,(31,15)),
             new BreakableWall(Color.Green,(32,15)),
@@ -315,6 +326,34 @@ public static class DemoLevels
             new BreakableWall(Color.Green,(50,15)),
             new BreakableWall(Color.Green,(51,15)),
             new BreakableWall(Color.Green,(52,15)),
+            new BreakableWall(Color.Green,(53,14)),
+
+
+
+            new BreakableWall(Color.Green,(30,21)),
+            new BreakableWall(Color.Green,(31,21)),
+            new BreakableWall(Color.Green,(32,21)),
+            new BreakableWall(Color.Green,(33,21)),
+            new BreakableWall(Color.Green,(34,21)),
+            new BreakableWall(Color.Green,(35,21)),
+            new BreakableWall(Color.Green,(36,21)),
+            new BreakableWall(Color.Green,(37,21)),
+            new BreakableWall(Color.Green,(38,21)),
+            new BreakableWall(Color.Green,(39,21)),
+            new BreakableWall(Color.Green,(40,21)),
+            new BreakableWall(Color.Green,(41,21)),
+            new BreakableWall(Color.Green,(42,21)),
+            new BreakableWall(Color.Green,(43,21)),
+            new BreakableWall(Color.Green,(44,21)),
+            new BreakableWall(Color.Green,(45,21)),
+            new BreakableWall(Color.Green,(46,21)),
+            new BreakableWall(Color.Green,(47,21)),
+            new BreakableWall(Color.Green,(48,21)),
+            new BreakableWall(Color.Green,(49,21)),
+            new BreakableWall(Color.Green,(50,21)),
+            new BreakableWall(Color.Green,(51,21)),
+            new BreakableWall(Color.Green,(52,21)),
+
 
             new Wall(Color.Yellow, (400, 1))
         }

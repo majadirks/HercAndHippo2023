@@ -33,7 +33,7 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
 
     public bool StopsBullet => true;
 
-    public override bool BlocksMotion(Level level)
+    public override bool BlocksMotion(Level level, ILocatable toBlock)
     {
         // Do not block a player immediately above
         if (this.Below(level.Player.Location)) 
@@ -42,7 +42,7 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
             return this.MotionBlockedTo(level, Direction.North);
         else if (!CanBePickedUp(level))
             return true;
-        Direction whither = this.Flee(level);
+        Direction whither = this.Flee(level, toBlock);
         return this.MotionBlockedTo(level, whither);
     }
 
@@ -66,7 +66,12 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
                 i++)
             {
                 nextState = TryMoveSouth(nextState);
-            }           
+            }
+
+            // If we are falling into the abyss, die, unless locked to a player,
+            if (nextState.Hippo != null && !nextState.Hippo.LockedToPlayer)
+                nextState = Behaviors.FallIntoAbyssAtBottomRow(nextState, nextState.Hippo);
+            
             return nextState;
         }
         else
@@ -99,7 +104,7 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
         // First, attempt to place East
         bool blockedEast = player.MotionBlockedTo(level,Direction.East);
         Location NECorner = new(player.Location.Col.NextEast(level.Width), player.Location.Row.NextNorth());
-        bool blockedNE = level.ObjectsAt(NECorner).Where(obj => obj.BlocksMotion(level)).Any();
+        bool blockedNE = level.ObjectsAt(NECorner).Where(obj => obj.BlocksMotion(level, level.Player)).Any();
         if (!blockedEast && !blockedNE)
         {
             Location nextLocation = new(Col: player.Location.Col.NextEast(level.Width), Row: player.Location.Row);
@@ -110,7 +115,7 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
         // If that didn't work, attempt to place West
         bool blockedWest = player.MotionBlockedTo(level, Direction.West);
         Location NWCorner = new(player.Location.Col.NextWest(), player.Location.Row.NextNorth());
-        bool blockedNW = level.ObjectsAt(NWCorner).Where(obj => obj.BlocksMotion(level)).Any();
+        bool blockedNW = level.ObjectsAt(NWCorner).Where(obj => obj.BlocksMotion(level, level.Player)).Any();
         if (!blockedWest && !blockedNW)
         {
             Location nextLocation = new(Col: player.Location.Col.NextWest(), Row: player.Location.Row);

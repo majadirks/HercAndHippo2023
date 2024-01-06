@@ -7,7 +7,7 @@
 
         public bool StopsBullet => true;
 
-        public override bool BlocksMotion(Level level) => true;
+        public override bool BlocksMotion(Level level, ILocatable toBlock) => true;
 
         public Level OnShot(Level level, Direction shotFrom, Bullet shotBy) => Behaviors.Die(level, this);
         public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy) => Behaviors.NoReaction(level);    

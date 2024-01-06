@@ -2,7 +2,7 @@
 
 public record Driver(Direction Whither, int Modulus, int Count = 0) : HercAndHippoObj, ICyclable
 {
-    public override bool BlocksMotion(Level level) => false;
+    public override bool BlocksMotion(Level level, ILocatable toBlock) => false;
 
     public Level Cycle(Level level, ActionInput actionInput)
     {
