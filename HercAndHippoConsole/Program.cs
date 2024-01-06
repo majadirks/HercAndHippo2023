@@ -33,6 +33,7 @@ ShowMessage("Use arrow keys to move, shift + arrow keys to shoot, 'q' to quit.")
 while (true)
 {
     futures = new(
+        initialPlan: displayPlan,
         initialState: state, 
         scrollStatus: scrollStatus,
         bufferStats: bufferStats,
@@ -46,8 +47,7 @@ while (true)
     keyInfo = Console.KeyAvailable ? Console.ReadKey() : keyInfo; // Get next key input
     if (keyInfo.KeyChar == 'q') break; // Quit on q
     lastAction = keyInfo.ToActionInput();
-    (state, scrollStatus, nextDisplayPlan) = futures.GetFuturePlan(lastAction);
-    diffs = displayPlan.GetDiffs(nextDisplayPlan);
+    (state, scrollStatus, diffs) = futures.GetFutureDiffs(lastAction);;
     refreshed = displayPlan.RefreshDisplay(diffs); // Re-display anything that changed
     while (!refreshed) 
     {
