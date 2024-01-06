@@ -21,7 +21,7 @@
         private Level TakeKeyAndDie(Level level, Player player)
         {
             (bool _, ITakeable? _, Player newPlayerState) = player.DropItem<Key>(BackgroundColor);
-            Level newState = Behaviors.Die(level, this).WithPlayer(newPlayerState);
+            Level newState = this.Die(level).WithPlayer(newPlayerState);
             return newState;
         }
     }

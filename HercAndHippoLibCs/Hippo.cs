@@ -49,7 +49,7 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
     public Level Cycle(Level level, ActionInput actionInput)
     {
         if (!Health.HasHealth)
-            return Behaviors.Die(level, this);
+            return this.Die(level);
         else if (LockedToPlayer && actionInput == ActionInput.DropHippo)
             return PutDown(level);
         else if (LockedToPlayer)

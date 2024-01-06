@@ -55,7 +55,7 @@ namespace HercAndHippoLibCsTest
             Level initialState = new(player: startPlayer, gravity: Gravity.None, secondaryObjects: new() { door });
             Level expectedNextState = initialState.Without(door);
             // Act
-            Level actualNextState = Behaviors.Die(level: initialState, toDie: door);
+            Level actualNextState = door.Die(level: initialState);
             // Assert
             Assert.AreEqual(expectedNextState, actualNextState);
         }

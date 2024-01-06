@@ -4,7 +4,7 @@ public static class Behaviors
     public static Level NoReaction(Level level) => level;
     public static Level AllowBulletToPass<T>(T shot, Level level, Bullet shotBy) where T:HercAndHippoObj, ILocatable
         => level.Replace(shotBy, shotBy with { Location = shot.Location });
-    public static Level Die<T>(Level level, T toDie) where T : HercAndHippoObj, ILocatable
+    public static Level Die<T>(this T toDie, Level level) where T : HercAndHippoObj, ILocatable
     {
         if (toDie is Player player)
         {
@@ -50,7 +50,7 @@ public static class Behaviors
     public static Level FallIntoAbyssAtBottomRow<T>(Level level, T toDie) where T : HercAndHippoObj, ILocatable
     {
         if (toDie.Location.Row == level.Height)
-            return Behaviors.Die(level, toDie);
+            return toDie.Die(level);
         else
             return Behaviors.NoReaction(level);
     }
