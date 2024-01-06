@@ -47,8 +47,9 @@ while (true)
     lastAction = keyInfo.ToActionInput();
     (state, scrollStatus, nextDisplayPlan) = futures.GetFuturePlan(lastAction);
     refreshed = displayPlan.RefreshDisplay(nextDisplayPlan); // Re-display anything that changed
-    while (!refreshed)
+    while (!refreshed) 
     {
+        bufferStats.ForceRefresh();
         nextDisplayPlan = new DisplayPlan(state, scrollStatus, bufferStats);
         refreshed = displayPlan.RefreshDisplay(nextDisplayPlan);
     }

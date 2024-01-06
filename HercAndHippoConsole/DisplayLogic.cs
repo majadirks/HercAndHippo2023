@@ -130,7 +130,6 @@ internal readonly struct DisplayPlan
         {
             DisplayUtilities.ResetConsoleColors();
             Console.Clear();
-            bufferStats.ForceRefresh();
             return false;
         }
         finally
