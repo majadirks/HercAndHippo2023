@@ -333,6 +333,7 @@ public static class DemoLevels
             new BreakableWall(Color.Green,(49,15)),
             new BreakableWall(Color.Green,(50,15)),
             new BreakableWall(Color.Green,(51,15)),
+            new Ammo((51, 14), Count: 5),
             new BreakableWall(Color.Green,(52,15)),
             new BreakableWall(Color.Green,(53,14)),
 
