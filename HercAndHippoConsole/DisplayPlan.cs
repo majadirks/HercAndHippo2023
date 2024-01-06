@@ -3,19 +3,24 @@ using static HercAndHippoConsole.Constants;
 
 namespace HercAndHippoConsole;
 
+internal record DisplayDiff(int Col, int Row, IConsoleDisplayable? OldDisplayable, IConsoleDisplayable? NewDisplayable);
+
 internal class DisplayPlan
 {
     private readonly IConsoleDisplayable[,] planArray;
     private readonly BufferStats bufferStats;
+    private IEnumerable<DisplayDiff>? diffs;
+
     public static Location GetScreenCenter(int bufferWidth, int bufferHeight)
         => ((bufferWidth - VIEW_MARGIN) / 2, (bufferHeight - VIEW_MARGIN) / 2);
 
     public DisplayPlan(Level state, ScrollStatus scrollStatus, BufferStats bufferStats)
     {
-        IConsoleDisplayable[,] planArray = new IConsoleDisplayable[bufferStats.BufferWidth, bufferStats.BufferHeight];           
+        IConsoleDisplayable[,] planArray = new IConsoleDisplayable[bufferStats.BufferWidth, bufferStats.BufferHeight];
+        diffs = null;
         Location screenCenter = GetScreenCenter(bufferStats.BufferWidth, bufferStats.BufferHeight);
         Location logicalCenter = scrollStatus.LogicalCenter;
-
+        
         foreach (IConsoleDisplayable levelObj in state.LevelObjects.Where(obj => obj is IConsoleDisplayable).Cast<IConsoleDisplayable>())
         {
             // Note that these are ints, not instances of the Column/Row type.
@@ -36,6 +41,57 @@ internal class DisplayPlan
         this.bufferStats = bufferStats;
     }
 
+    public IEnumerable<DisplayDiff> GetDiffs(DisplayPlan newDisplayPlan)
+    {
+        bool calculated = false;
+
+        while (!calculated)
+        {
+            try
+            {
+                // ToDo: tune capacity with some sort of moving average
+                List<DisplayDiff> diffs = new();
+                bool forceRefresh = bufferStats.BufferSizeChanged;
+
+                IConsoleDisplayable[,] oldDisplay = this.planArray;
+                IConsoleDisplayable[,] newDisplay = newDisplayPlan.planArray;
+
+                int maxCol = bufferStats.BufferWidth - VIEW_MARGIN;
+                int maxRow = bufferStats.BufferHeight - VIEW_MARGIN;
+                for (int row = 0; row < maxRow; row++)
+                {
+                    for (int col = 0; col < maxCol; col++)
+                    {
+                        IConsoleDisplayable? oldDisp = forceRefresh ? null : oldDisplay[col, row];
+                        IConsoleDisplayable newDisp = newDisplay[col, row];
+                        if (newDisp != default && (forceRefresh || oldDisp != newDisp))
+                        {
+                            // Something is here that wasn't here before, so plan to show it
+                            diffs.Add(new DisplayDiff(Col: col, Row: row, OldDisplayable: oldDisp, NewDisplayable: newDisp));
+                        }
+                        if (newDisp == default && oldDisp != default)
+                        {
+                            // Something used to be here, but now nothing is here,
+                            // so plan to clear the spot
+                            diffs.Add(new DisplayDiff(Col: col, Row: row, OldDisplayable: oldDisp, NewDisplayable: null));
+                        }
+                    } // end for (columns)
+                } // end for (rows)
+                this.diffs = diffs;
+                calculated = true;
+                return this.diffs;
+            }
+            catch
+            {
+                calculated = false;
+                bufferStats.ForceRefresh();
+            } 
+        }
+        if (this.diffs == null)
+            throw new Exception("Unexpected exception.");
+        return this.diffs;
+    }
+
     /// <summary>
     /// Assuming this instance of DisplayPlan is represented in the console display,
     /// update the console by comparing this DisplayPlan to the given newDisplayPlan
@@ -43,16 +99,11 @@ internal class DisplayPlan
     /// If this is done successfully, return true. Return false
     /// if an exception is encountered. eg if the Console size changed.
     /// </summary>
-    public bool RefreshDisplay(DisplayPlan newDisplayPlan)
+    public bool RefreshDisplay()
     {
-        
+        if (diffs == null)
+            throw new NullReferenceException("Differences were not calulated.");
         bool forceRefresh = bufferStats.BufferSizeChanged;
-
-        IConsoleDisplayable[,] oldDisplay = this.planArray;
-        IConsoleDisplayable[,] newDisplay = newDisplayPlan.planArray;
-
-        int maxCol = bufferStats.BufferWidth - VIEW_MARGIN;
-        int maxRow = bufferStats.BufferHeight - VIEW_MARGIN;
 
         if (forceRefresh)
         {
@@ -61,30 +112,30 @@ internal class DisplayPlan
         }
         try
         {
-            for (int row = 0; row < maxRow; row++)
+            var enumerable = diffs ?? Array.Empty<DisplayDiff>();
+            foreach (var diff in enumerable)
             {
-                for (int col = 0; col < maxCol; col++)
+                int row = diff.Row;
+                int col = diff.Col;
+                IConsoleDisplayable? oldDisp = diff.OldDisplayable;
+                IConsoleDisplayable? newDisp = diff.NewDisplayable;
+                if (newDisp != default && (forceRefresh || oldDisp != newDisp))
                 {
-                    IConsoleDisplayable? oldDisp = forceRefresh ? null : oldDisplay[col, row];
-                    IConsoleDisplayable newDisp = newDisplay[col, row];
-                    if (newDisp != default && (forceRefresh || oldDisp != newDisp))
-                    {
-                        // Something is here that wasn't here before, so show it
-                        Console.SetCursorPosition(col, row);
-                        Console.BackgroundColor = newDisp.BackgroundColor.ToConsoleColor();
-                        Console.ForegroundColor = newDisp.Color.ToConsoleColor();
-                        Console.Write(newDisp.ConsoleDisplayString);
-                    }
-                    if (newDisp == default && oldDisp != default)
-                    {
-                        // Something used to be here, but now nothing is here, so clear the spot
-                        Console.SetCursorPosition(col, row);
-                        Console.BackgroundColor = ConsoleColor.Black;
-                        Console.ForegroundColor = ConsoleColor.Black;
-                        Console.Write(" ");
-                    }
-                } // end for (columns)
-            } // end for (rows)
+                    // Something is here that wasn't here before, so show it
+                    Console.SetCursorPosition(col, row);
+                    Console.BackgroundColor = newDisp.BackgroundColor.ToConsoleColor();
+                    Console.ForegroundColor = newDisp.Color.ToConsoleColor();
+                    Console.Write(newDisp.ConsoleDisplayString);
+                }
+                if ((newDisp == null || newDisp == default) && oldDisp != default)
+                {
+                    // Something used to be here, but now nothing is here, so clear the spot
+                    Console.SetCursorPosition(col, row);
+                    Console.BackgroundColor = ConsoleColor.Black;
+                    Console.ForegroundColor = ConsoleColor.Black;
+                    Console.Write(" ");
+                }
+            }
             return true;
         }
         catch
