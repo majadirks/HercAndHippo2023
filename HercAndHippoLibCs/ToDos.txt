@@ -13,6 +13,12 @@
 - Implement and test "seek" behavior for bullet
 
 Tests:
+	- Groodle tests:
+		- Groodle removes health from hippo if poodle touches hippo
+		- Groodle removes health from hippo if hippo touches poodle
+		- Groodle removes health from player if poodle touches player
+		- Groodle removes health from player if player touches poodle
+		- Groodle dies when shot
 	- Gem tests:
 		- Gives health to player and removes self from level when touched
 		- Does not block player movement

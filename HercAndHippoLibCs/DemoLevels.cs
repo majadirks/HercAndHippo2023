@@ -292,6 +292,8 @@ public static class DemoLevels
             new BreakableWall(Color.Green,(50,8)),
             new BreakableWall(Color.Green,(52,8)),
 
+            new BreakableWall(Color.Green, (29,14)),
+            new Groodle((30,14), Direction.East),
             new BreakableWall(Color.Green,(30,15)),
             new BreakableWall(Color.Green,(31,15)),
             new BreakableWall(Color.Green,(32,15)),
@@ -315,6 +317,7 @@ public static class DemoLevels
             new BreakableWall(Color.Green,(50,15)),
             new BreakableWall(Color.Green,(51,15)),
             new BreakableWall(Color.Green,(52,15)),
+            new BreakableWall(Color.Green,(53,14)),
 
             new Wall(Color.Yellow, (400, 1))
         }
