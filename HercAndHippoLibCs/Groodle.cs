@@ -23,9 +23,9 @@ public record Groodle(Location Location, Direction Whither) : HercAndHippoObj, I
         Level nextLevel = level;
         Groodle nextGroodle = this;
         if (Location == nextLevel.Player.Location)
-            nextLevel = OnTouch(level, Direction.Idle, nextLevel.Player);
+            nextLevel = OnTouch(nextLevel, Direction.Idle, nextLevel.Player);
         if (Location == nextLevel.Hippo?.Location)
-            nextLevel = OnTouch(level, Direction.Idle, nextLevel.Hippo);
+            nextLevel = OnTouch(nextLevel, Direction.Idle, nextLevel.Hippo);
 
         if (Whither == Direction.East)
         {
@@ -33,6 +33,7 @@ public record Groodle(Location Location, Direction Whither) : HercAndHippoObj, I
                 this.MotionBlockedTo(nextLevel, Direction.East) ?
                 this with { Whither = Direction.West } :
                 this with { Location = new(Location.Col.NextEast(nextLevel.Width), Location.Row) };
+            nextLevel = nextLevel.Replace(this, nextGroodle);
         }
         else if (Whither == Direction.West)
         {
@@ -40,10 +41,11 @@ public record Groodle(Location Location, Direction Whither) : HercAndHippoObj, I
                 this.MotionBlockedTo(nextLevel, Direction.West) ?
                 this with { Whither = Direction.East } :
                 this with { Location = new(Location.Col.NextWest(), Location.Row) };
+            nextLevel = nextLevel.Replace(this, nextGroodle);
         }
-        
-        // ToDo: gravity
-        return nextLevel.Replace(this, nextGroodle);
+
+        nextLevel = Behaviors.ApplyGravity(nextLevel, nextGroodle);
+        return nextLevel;
     }
 
     public Level OnShot(Level level, Direction shotFrom, Bullet shotBy) => Behaviors.Die(level, this);
