@@ -30,7 +30,6 @@ IEnumerable<DisplayDiff> diffs = displayPlan.GetDiffs(displayPlan);
 displayPlan.RefreshDisplay(diffs);
 ShowMessage("Use arrow keys to move, shift + arrow keys to shoot, 'q' to quit.");
 
-
 // Main loop
 while (true)
 {
