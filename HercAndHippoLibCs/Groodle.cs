@@ -34,22 +34,7 @@ public record Groodle(Location Location, Direction Whither) : HercAndHippoObj, I
             {
                 nextGroodle = this with { Whither = Direction.West };
                 nextLevel = nextLevel.Replace(this, nextGroodle);
-
-                var touchables = nextLevel
-                   .ObjectsAt(nextEast)
-                   .Where(obj => obj.IsTouchable)
-                   .Cast<ITouchable>()
-                   .ToList();
-                // Call touch methods for any touchables at nextEast
-                nextLevel = touchables
-                    .Aggregate(
-                    seed: nextLevel,
-                    func: (state, touchable) => touchable.OnTouch(state, Direction.West, nextGroodle));
-                // Call Groodle OnTouch methods for any touchables at nextWest
-                nextLevel = touchables
-                    .Aggregate(
-                    seed: nextLevel,
-                    func: (state, touchable) => nextGroodle.OnTouch(state, Direction.West, touchable));
+                nextLevel = nextGroodle.MutualTouch(nextLevel, nextEast, touchFrom: Direction.West);
             }
             else
             {
@@ -64,21 +49,7 @@ public record Groodle(Location Location, Direction Whither) : HercAndHippoObj, I
             {
                 nextGroodle = this with { Whither = Direction.East };
                 nextLevel = nextLevel.Replace(this, nextGroodle);
-                var touchables = nextLevel
-                    .ObjectsAt(nextWest)
-                    .Where(obj => obj.IsTouchable)
-                    .Cast<ITouchable>()
-                    .ToList();
-                // Call touch methods for any touchables at nextWest
-                nextLevel = touchables
-                    .Aggregate(
-                    seed: nextLevel,
-                    func: (state, touchable) => touchable.OnTouch(state, Direction.East, nextGroodle));
-                // Call Groodle OnTouch methods for any touchables at nextWest
-                nextLevel = touchables
-                    .Aggregate(
-                    seed: nextLevel,
-                    func: (state, touchable) => nextGroodle.OnTouch(state, Direction.East, touchable));
+                nextLevel = nextGroodle.MutualTouch(nextLevel, nextWest, touchFrom: Direction.East);
             }
             else
             {
@@ -87,7 +58,7 @@ public record Groodle(Location Location, Direction Whither) : HercAndHippoObj, I
             }
         }
 
-        nextLevel = Behaviors.ApplyGravity(nextLevel, nextGroodle);
+        nextLevel = nextGroodle.ApplyGravity(nextLevel);
         return nextLevel;
     }
 

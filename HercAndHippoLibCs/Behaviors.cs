@@ -17,7 +17,7 @@ public static class Behaviors
         }
     }
 
-    public static Level ApplyGravity<T>(Level level, T toFall) where T : HercAndHippoObj, ILocatable
+    public static Level ApplyGravity<T>(this T toFall, Level level) where T : HercAndHippoObj, ILocatable
     {
         if (!level.GravityApplies())
             return level;
@@ -28,7 +28,7 @@ public static class Behaviors
             !toFall.MotionBlockedTo(level, Direction.South);
             i++)
         {
-            nextState = TryMoveSouth(nextState, toFall);
+            nextState = toFall.TryMoveSouth(nextState);
         }
 
         // If reached southernmost row, die (fall into the abyss)
@@ -55,11 +55,32 @@ public static class Behaviors
             return Behaviors.NoReaction(level);
     }
 
-    private static Level TryMoveSouth<T>(Level level, T toFall) where T : HercAndHippoObj, ILocatable
+    private static Level TryMoveSouth<T>(this T toFall, Level level) where T : HercAndHippoObj, ILocatable
     {
         if (toFall.MotionBlockedTo(level, Direction.South))
             return Behaviors.NoReaction(level);
         Location nextLocation = new(toFall.Location.Col, toFall.Location.Row.NextSouth(level.Height));
         return level.Replace(toFall, toFall with { Location = nextLocation});
+    }
+
+    public static Level MutualTouch<T>(this T toucher, Level level, Location location, Direction touchFrom) where T : HercAndHippoObj, ILocatable, ITouchable
+    {
+        Level nextLevel = level;
+        var touchables = nextLevel
+                   .ObjectsAt(location)
+                   .Where(obj => obj.IsTouchable)
+                   .Cast<ITouchable>()
+                   .ToList();
+        // Call touch methods for any touchables at nextEast
+        nextLevel = touchables
+            .Aggregate(
+            seed: nextLevel,
+            func: (state, touchable) => touchable.OnTouch(state, touchFrom, toucher));
+        // Call Groodle OnTouch methods for any touchables at nextWest
+        nextLevel = touchables
+            .Aggregate(
+            seed: nextLevel,
+            func: (state, touchable) => toucher.OnTouch(state, touchFrom.Mirror(), touchable));
+        return nextLevel;
     }
 }
