@@ -11,16 +11,26 @@ internal class FutureStates
     private readonly BufferStats bufferStats;
     private readonly Dictionary<ActionInput, Task<StateAndDiffs>> futures;
     private readonly CancellationTokenSource? cts;
+    public bool ParallelEnabled { get; private set; }
     public StateAndDiffs GetFutureDiffs(ActionInput actionInput)
     {
-        // If next state has been calculated, return it
+        // If relevant diffs for this action input have been calculated, return them
         if (futures.TryGetValue(actionInput, out Task<StateAndDiffs>? value) && value.IsCompleted)
         {
-            var ret = value.Result;
-            cts?.Cancel(); //cancel others
-            return ret;
+            if (value.IsCompleted)
+            {
+                var ret = value.Result;
+                cts?.Cancel(); //cancel others
+                return ret;
+            }
+            else // relevant diff calculation started but did not complete, so wait for it to finish
+            {
+                value.Wait();
+                cts?.Cancel();
+                return value.Result;
+            }
         }
-        else // next state has not been fully calculated.
+        else // relevant diff calculation didn't even start! Do it now
         {
             cts?.Cancel();
             return GetDiffs(
@@ -52,9 +62,9 @@ internal class FutureStates
         this.initialState = initialState;
         initialScrollStatus = scrollStatus;
         this.bufferStats = bufferStats;
-        bool parallelEnabled = averageCycleTime * possibleInputs.Length < msPerCycle;
+        ParallelEnabled = averageCycleTime * possibleInputs.Length < msPerCycle;
         //parallelEnabled = false; // debug
-        if (!parallelEnabled) return; // Doing all the calculations takes too long to be worthwhile
+        if (!ParallelEnabled) return; // Doing all the calculations takes too long to be worthwhile
 
         cts = new();
         Task<StateAndDiffs> fromMostRecent =

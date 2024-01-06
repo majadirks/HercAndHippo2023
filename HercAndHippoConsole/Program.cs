@@ -4,13 +4,14 @@ using static HercAndHippoConsole.DisplayUtilities;
 using System.Diagnostics;
 
 const int MESSAGE_MARGIN = 3;
-const int REFRESH_FREQUENCY_HZ = 50;
+const int REFRESH_FREQUENCY_HZ = 40;
 
 // Initialize data
 Level state = DemoLevels.IntroducingTheHippo;
-double averageCycleTime = ApproximateCycleTime(state);
-CycleTimer cycleTimer = new(frequencyHz: REFRESH_FREQUENCY_HZ);
 
+CycleTimer cycleTimer = new(frequencyHz: REFRESH_FREQUENCY_HZ);
+AverageCycleTimer averageCycleTimer = new(iterationCount: 10);
+double averageCycleTime = averageCycleTimer.InitialEstimate(state);
 ScrollStatus scrollStatus = ScrollStatus.Default(state.Player.Location);
 BufferStats bufferStats = new(bufferSizeChanged: true, bufferWidth: Console.BufferWidth, bufferHeight: Console.BufferHeight);
 DisplayPlan displayPlan = new(state, scrollStatus, bufferStats);
@@ -20,6 +21,7 @@ ActionInput lastAction = ActionInput.NoAction;
 
 ConsoleKeyInfo keyInfo;
 FutureStates futures;
+
 
 // Initialize display
 ResetConsoleColors();
@@ -40,8 +42,8 @@ while (true)
         mostRecentInput: lastAction, 
         averageCycleTime: averageCycleTime, 
         msPerCycle: cycleTimer.MillisecondsPerCycle); // plan for possible next states
-
     keyInfo = cycleTimer.AwaitCycle(); // Update once per 20 ms, return key input
+    averageCycleTimer.StartTick();
     bufferStats.Refresh(); // Check if buffer size changed
     displayPlan = new(state, scrollStatus, bufferStats); // save current screen layout
     keyInfo = Console.KeyAvailable ? Console.ReadKey() : keyInfo; // Get next key input
@@ -49,6 +51,7 @@ while (true)
     lastAction = keyInfo.ToActionInput();
     (state, scrollStatus, diffs) = futures.GetFutureDiffs(lastAction);;
     refreshed = displayPlan.RefreshDisplay(diffs); // Re-display anything that changed
+    
     while (!refreshed) 
     {
         bufferStats.ForceRefresh();
@@ -64,7 +67,8 @@ while (true)
     {
         ShowMessage("Use arrow keys to move, shift + arrow keys to shoot, 'q' to quit.");
     }
-    
+
+    averageCycleTime = averageCycleTimer.EndTick(state);
 }
 ResetConsoleColors(); // Clean up
 
@@ -83,15 +87,4 @@ static void ClearCurrentConsoleLine()
     Console.SetCursorPosition(0, Console.CursorTop);
     Console.Write(new string(' ', Console.WindowWidth));
     Console.SetCursorPosition(0, currentLineCursor);
-}
-
-static double ApproximateCycleTime(Level level, int iterationCount = 10)
-{
-    Stopwatch sw = new();
-    sw.Start();
-    for (int i = 0; i < iterationCount; i++)
-        level = level.RefreshCyclables(ActionInput.NoAction);
-    sw.Stop();
-    long totalTime = sw.ElapsedMilliseconds;
-    return totalTime * 1.0 / iterationCount;
 }
