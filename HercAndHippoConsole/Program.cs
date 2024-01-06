@@ -24,8 +24,8 @@ FutureStates futures;
 // Initialize display
 ResetConsoleColors();
 bool refreshed;
-displayPlan.GetDiffs(displayPlan);
-displayPlan.RefreshDisplay();
+IEnumerable<DisplayDiff> diffs = displayPlan.GetDiffs(displayPlan);
+displayPlan.RefreshDisplay(diffs);
 ShowMessage("Use arrow keys to move, shift + arrow keys to shoot, 'q' to quit.");
 
 
@@ -47,14 +47,14 @@ while (true)
     if (keyInfo.KeyChar == 'q') break; // Quit on q
     lastAction = keyInfo.ToActionInput();
     (state, scrollStatus, nextDisplayPlan) = futures.GetFuturePlan(lastAction);
-    displayPlan.GetDiffs(nextDisplayPlan);
-    refreshed = displayPlan.RefreshDisplay(); // Re-display anything that changed
+    diffs = displayPlan.GetDiffs(nextDisplayPlan);
+    refreshed = displayPlan.RefreshDisplay(diffs); // Re-display anything that changed
     while (!refreshed) 
     {
         bufferStats.ForceRefresh();
         nextDisplayPlan = new DisplayPlan(state, scrollStatus, bufferStats);
-        displayPlan.GetDiffs(nextDisplayPlan);
-        refreshed = displayPlan.RefreshDisplay();
+        diffs = displayPlan.GetDiffs(nextDisplayPlan);
+        refreshed = displayPlan.RefreshDisplay(diffs);
     }
     if (state.GetMessage() is Message message)
     {

@@ -10,6 +10,7 @@ internal class DisplayPlan
     private readonly IConsoleDisplayable[,] planArray;
     private readonly BufferStats bufferStats;
     private IEnumerable<DisplayDiff>? diffs;
+    private static Dictionary<DisplayDiff, IEnumerable<DisplayDiff>> diffCache;
 
     public static Location GetScreenCenter(int bufferWidth, int bufferHeight)
         => ((bufferWidth - VIEW_MARGIN) / 2, (bufferHeight - VIEW_MARGIN) / 2);
@@ -18,6 +19,7 @@ internal class DisplayPlan
     {
         IConsoleDisplayable[,] planArray = new IConsoleDisplayable[bufferStats.BufferWidth, bufferStats.BufferHeight];
         diffs = null;
+        diffCache = new();
         Location screenCenter = GetScreenCenter(bufferStats.BufferWidth, bufferStats.BufferHeight);
         Location logicalCenter = scrollStatus.LogicalCenter;
         
@@ -77,9 +79,8 @@ internal class DisplayPlan
                         }
                     } // end for (columns)
                 } // end for (rows)
-                this.diffs = diffs;
                 calculated = true;
-                return this.diffs;
+                return diffs;
             }
             catch
             {
@@ -89,7 +90,7 @@ internal class DisplayPlan
         }
         if (this.diffs == null)
             throw new Exception("Unexpected exception.");
-        return this.diffs;
+        return diffs;
     }
 
     /// <summary>
@@ -99,10 +100,8 @@ internal class DisplayPlan
     /// If this is done successfully, return true. Return false
     /// if an exception is encountered. eg if the Console size changed.
     /// </summary>
-    public bool RefreshDisplay()
+    public bool RefreshDisplay(IEnumerable<DisplayDiff> diffs)
     {
-        if (diffs == null)
-            throw new NullReferenceException("Differences were not calulated.");
         bool forceRefresh = bufferStats.BufferSizeChanged;
 
         if (forceRefresh)
