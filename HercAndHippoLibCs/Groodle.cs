@@ -43,7 +43,6 @@ public record Groodle(Location Location, Direction Whither) : HercAndHippoObj, I
         }
         
         // ToDo: gravity
-        // ToDo: interact with hippo if blocked
         return nextLevel.Replace(this, nextGroodle);
     }
 
