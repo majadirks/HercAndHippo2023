@@ -66,7 +66,9 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
                 i++)
             {
                 nextState = TryMoveSouth(nextState);
-            }           
+            }
+            if (nextState.Hippo != null)
+                nextState = Behaviors.FallIntoAbyssAtBottomRow(nextState, nextState.Hippo);
             return nextState;
         }
         else
