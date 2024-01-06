@@ -52,7 +52,6 @@ Tests to write:
 - Enemies: archers
 - Lives
 - Scrolls
-- Message: default cycle persistance
 - Custom programmable objects (support a superset of ZZT-OOP)
 - Objects can send each other messages and react accordingly.
 - Music / sound effects
