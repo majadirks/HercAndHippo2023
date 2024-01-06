@@ -12,7 +12,7 @@ public record Gem(Color Color, Location Location, Health Health) : HercAndHippoO
 
     public string ConsoleDisplayString => "◆";
 
-    public override bool BlocksMotion(Level level) => false;
+    public override bool BlocksMotion(Level level, ILocatable toBlock) => false;
 
     public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy)
     {

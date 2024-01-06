@@ -16,7 +16,7 @@ public record Groodle(Location Location, Direction Whither) : HercAndHippoObj, I
 
     public string ConsoleDisplayString => "τ";
 
-    public override bool BlocksMotion(Level level) => false;
+    public override bool BlocksMotion(Level level, ILocatable toBlock) => false;
 
     public Level Cycle(Level level, ActionInput actionInput)
     {

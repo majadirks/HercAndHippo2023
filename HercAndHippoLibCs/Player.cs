@@ -137,7 +137,7 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
                 if (fell || actionInput == ActionInput.MoveSouth)
                 {
                     Location below = new(nextState.Player.Location.Col, nextState.Player.Location.Row.NextSouth(level.Height));
-                    IEnumerable<ITouchable> touchables = nextState.ObjectsAt(below).Where(obj => obj.IsTouchable && obj.BlocksMotion(nextState)).Cast<ITouchable>();
+                    IEnumerable<ITouchable> touchables = nextState.ObjectsAt(below).Where(obj => obj.IsTouchable && obj.BlocksMotion(nextState, this)).Cast<ITouchable>();
                     foreach (var touchable in touchables)
                     {
                         nextState = touchable.OnTouch(nextState, Direction.North, nextState.Player);
@@ -153,9 +153,7 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
             Bullet shotBy => OnShot(level, touchedFrom.Mirror(), shotBy),
             _ => level
         };
-    public override bool BlocksMotion(Level level) => level.Player != this;
-
-
+    public override bool BlocksMotion(Level level, ILocatable toBlock) => level.Player != this;
 
     // Private static helpers
     private static Level TryMoveTo(Location newLocation, Direction approachFrom, Level curState)

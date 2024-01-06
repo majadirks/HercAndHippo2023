@@ -30,9 +30,9 @@ public record Bullet(Location Location, Direction Whither) : HercAndHippoObj, IL
         // If direction is Seek or Flee, figure out which way that is and just go straight in that direction
         Direction dir = Whither;
         if (Whither == Direction.Seek)
-            dir = this.Seek(nextState, out int _);
+            dir = this.Seek(nextState, nextState.Player, out int _);
         else if (Whither == Direction.Flee)
-            dir = this.Flee(nextState);
+            dir = this.Flee(nextState, nextState.Player);
             
         // Continue moving in current direction if it hasn't been stopped
         nextState = nextState.Contains(this) ?
@@ -64,5 +64,5 @@ public record Bullet(Location Location, Direction Whither) : HercAndHippoObj, IL
         return reachedWestBoundary || reachedEastBoundary || reachedNorthBoundary || reachedSouthBoundary;
     }
 
-    public override bool BlocksMotion(Level level) => false;
+    public override bool BlocksMotion(Level level, ILocatable toBlock) => false;
 }
