@@ -69,6 +69,7 @@ internal class FutureStates
     {
         Level nextState = initialState.RefreshCyclables(actionInput);
         ScrollStatus nextScrollStatus = initialScrollStatus.Update(nextState.Player.Location, bufferStats);
-        return new(State: nextState, ScrollStatus: nextScrollStatus, Plan: new DisplayPlan(nextState, nextScrollStatus, bufferStats));
+        DisplayPlan dp = new DisplayPlan(nextState, nextScrollStatus, bufferStats);
+        return new(State: nextState, ScrollStatus: nextScrollStatus, Plan: dp);
     }
 }
