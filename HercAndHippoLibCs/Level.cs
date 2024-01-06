@@ -130,6 +130,6 @@ public class Level
     public Message? GetMessage() 
         => (Message?)SecondaryObjects
         .Where(obj => obj is Message m && m.RemainingCycles > 0)
-        .FirstOrDefault();
+        .LastOrDefault();
 
 }

@@ -70,13 +70,13 @@ public record Groodle(Location Location, Direction Whither) : HercAndHippoObj, I
         {
             Health nextHealth = player.Health - 5;
             Player nextPlayer = player with { Health = nextHealth };
-            return level.WithPlayer(nextPlayer);
+            return level.WithPlayer(nextPlayer).AddSecondaryObject(Message.Ouch);
         }
         else if (touchedBy is Hippo hippo)
         {
             Health nextHealth = hippo.Health - 5;
             Hippo nextHippo = hippo with { Health = nextHealth };
-            return level.Replace(hippo, nextHippo);
+            return level.Replace(hippo, nextHippo).AddSecondaryObject(Message.Ouch);
         }
         else
             return level.NoReaction();

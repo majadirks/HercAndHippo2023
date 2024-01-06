@@ -1,7 +1,7 @@
 ﻿
 namespace HercAndHippoLibCs;
 
-public record Message(string Text, int RemainingCycles, bool Beep) : HercAndHippoObj, ICyclable
+public record Message(string Text, int RemainingCycles) : HercAndHippoObj, ICyclable
 {
     public override bool BlocksMotion(Level level, ILocatable toBlock) => false;
 
@@ -12,8 +12,10 @@ public record Message(string Text, int RemainingCycles, bool Beep) : HercAndHipp
         else
         {
 
-            Message nextMessage = this with { RemainingCycles = RemainingCycles - 1, Beep = false };
+            Message nextMessage = this with { RemainingCycles = RemainingCycles - 1};
             return level.Replace(this, nextMessage);
         }
-    }  
+    }
+
+    public static readonly Message Ouch = new("Ouch!", 200);
 }

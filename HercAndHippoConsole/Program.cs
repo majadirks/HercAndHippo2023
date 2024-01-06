@@ -53,6 +53,15 @@ while (true)
         nextDisplayPlan = new DisplayPlan(state, scrollStatus, bufferStats);
         refreshed = displayPlan.RefreshDisplay(nextDisplayPlan);
     }
+    if (state.GetMessage() is Message message)
+    {
+        ShowMessage(message.Text);
+    }
+    else
+    {
+        ShowMessage("Use arrow keys to move, shift + arrow keys to shoot, 'q' to quit.");
+    }
+    
 }
 ResetConsoleColors(); // Clean up
 
@@ -61,7 +70,16 @@ static void ShowMessage(string message)
 {
     ResetConsoleColors();
     Console.SetCursorPosition(1, Console.BufferHeight - MESSAGE_MARGIN);
+    ClearCurrentConsoleLine();
     Console.WriteLine(message);
+}
+
+static void ClearCurrentConsoleLine()
+{
+    int currentLineCursor = Console.CursorTop;
+    Console.SetCursorPosition(0, Console.CursorTop);
+    Console.Write(new string(' ', Console.WindowWidth));
+    Console.SetCursorPosition(0, currentLineCursor);
 }
 
 static double ApproximateCycleTime(Level level, int iterationCount = 10)
