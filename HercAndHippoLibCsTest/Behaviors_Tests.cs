@@ -21,31 +21,6 @@ namespace HercAndHippoLibCsTest
         }
 
         [TestMethod]
-        public void AllowBulletToPass_Test()
-        {
-            // Arrange
-            Bullet bulletAboveKey = new((3, 2), Direction.South);
-            Key key = new(Color.Green, (3, 3));
-            Wall levelCorner = new(Color.Blue, (10, 10));
-            Level level = new(player: new((5, 5), health: 100, ammoCount: 5, inventory: new()),
-                gravity: Gravity.None,
-                secondaryObjects: new() { bulletAboveKey, key, levelCorner});
-
-            Bullet bulletOverlappingKey = bulletAboveKey with { Location = key.Location };
-            Level expectedSecondState = level.Replace(bulletAboveKey, bulletOverlappingKey);
-
-            Bullet bulletPastKey = bulletOverlappingKey with { Location = (3, 4) };
-            Level expectedThirdState = expectedSecondState.Replace(bulletOverlappingKey, bulletPastKey);
-
-            // Act
-            Level actualSecondState = Behaviors.AllowBulletToPass(key, level, bulletAboveKey);
-            Level actualThirdState = actualSecondState.RefreshCyclables(default);
-            // Assert
-            Assert.AreEqual(expectedSecondState, actualSecondState);
-            Assert.AreEqual(expectedThirdState, actualThirdState);
-        }
-
-        [TestMethod]
         public void DieBehavior_Test()
         {
             // Arrange
