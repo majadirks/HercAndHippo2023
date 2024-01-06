@@ -20,7 +20,8 @@ public record Gem(Color Color, Location Location, Health Health) : HercAndHippoO
         {
             Health newHealth = player.Health + this.Health;
             Player nextPlayer = player with { Health = newHealth };
-            return level.WithPlayer(nextPlayer).Without(this);
+            Message msg = new($"Gems give you health! Health: {player.Health}", 200);
+            return level.WithPlayer(nextPlayer).AddSecondaryObject(msg).Without(this);
         }
         else
             return level.NoReaction();

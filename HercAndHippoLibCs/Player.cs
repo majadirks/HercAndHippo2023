@@ -32,7 +32,7 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
     public override string ToString() => $"Player at location {Location} with {Health}, {AmmoCount}, Inventory Size: {Inventory.Count}";
     
     // Behaviors
-    public Level OnShot(Level level, Direction shotFrom, Bullet shotBy) => level.WithPlayer(this with { Health = Health - 5 });
+    public Level OnShot(Level level, Direction shotFrom, Bullet shotBy) => level.WithPlayer(this with { Health = Health - 5 }).AddSecondaryObject(Message.Ouch);
     public Level Cycle(Level level, ActionInput actionInput)
     {
         Velocity nextVelocity = Velocity.NextVelocity(this, level, actionInput);
