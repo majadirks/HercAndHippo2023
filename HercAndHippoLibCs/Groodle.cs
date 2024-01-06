@@ -41,7 +41,9 @@ public record Groodle(Location Location, Direction Whither) : HercAndHippoObj, I
                 this with { Whither = Direction.East } :
                 this with { Location = new(Location.Col.NextWest(), Location.Row) };
         }
+        
         // ToDo: gravity
+        // ToDo: interact with hippo if blocked
         return nextLevel.Replace(this, nextGroodle);
     }
 

@@ -30,7 +30,9 @@ Tests:
 	     if player stops at motion-blocking object,
 		 its OnTouch() method is called once
     - In level with gravity, if player is blocked South, can MoveSouth to touch that object
-	- Test hippo falling to end of level (never blocked South) - what do we expect, and what actually happens?
+	- Hippo:
+	   - Test hippo falling to end of level (never blocked South) - what do we expect, and what actually happens?
+	   - Blocks Groodle regardless of relative position of player
 	- Console (in new project): does not crash on resize (larger or smaller)
 
 - Trophies and transporters
