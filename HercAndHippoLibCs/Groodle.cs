@@ -29,26 +29,40 @@ public record Groodle(Location Location, Direction Whither) : HercAndHippoObj, I
 
         if (Whither == Direction.East)
         {
-            nextGroodle =
-                this.MotionBlockedTo(nextLevel, Direction.East) ?
-                this with { Whither = Direction.West } :
-                this with { Location = new(Location.Col.NextEast(nextLevel.Width), Location.Row) };
-            nextLevel = nextLevel.Replace(this, nextGroodle);
+            Location nextEast = new(Location.Col.NextEast(nextLevel.Width), Location.Row);
+            if (this.MotionBlockedTo(nextLevel, Direction.East))
+            {
+                nextGroodle = this with { Whither = Direction.West };
+                nextLevel = nextLevel.Replace(this, nextGroodle);
+                nextLevel = nextGroodle.MutualTouch(nextLevel, nextEast, touchFrom: Direction.West);
+            }
+            else
+            {
+                nextGroodle = this with { Location = nextEast };
+                nextLevel = nextLevel.Replace(this, nextGroodle);
+            }
         }
         else if (Whither == Direction.West)
         {
-            nextGroodle =
-                this.MotionBlockedTo(nextLevel, Direction.West) ?
-                this with { Whither = Direction.East } :
-                this with { Location = new(Location.Col.NextWest(), Location.Row) };
-            nextLevel = nextLevel.Replace(this, nextGroodle);
+            Location nextWest = new(Location.Col.NextWest(), Location.Row);
+            if (this.MotionBlockedTo(nextLevel, Direction.West))
+            {
+                nextGroodle = this with { Whither = Direction.East };
+                nextLevel = nextLevel.Replace(this, nextGroodle);
+                nextLevel = nextGroodle.MutualTouch(nextLevel, nextWest, touchFrom: Direction.East);
+            }
+            else
+            {
+                nextGroodle = this with { Location = nextWest };
+                nextLevel = nextLevel.Replace(this, nextGroodle);
+            }
         }
 
-        nextLevel = Behaviors.ApplyGravity(nextLevel, nextGroodle);
+        nextLevel = nextGroodle.ApplyGravity(nextLevel);
         return nextLevel;
     }
 
-    public Level OnShot(Level level, Direction shotFrom, Bullet shotBy) => Behaviors.Die(level, this);
+    public Level OnShot(Level level, Direction shotFrom, Bullet shotBy) => this.Die(level);
 
     public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy)
     {
@@ -65,6 +79,6 @@ public record Groodle(Location Location, Direction Whither) : HercAndHippoObj, I
             return level.Replace(hippo, nextHippo);
         }
         else
-            return Behaviors.NoReaction(level);
+            return level.NoReaction();
     }
 }

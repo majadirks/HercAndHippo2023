@@ -22,6 +22,7 @@ Tests to write:
 		- Groodle dies when shot
 		- Groodle is subject to gravity
 		- Groodle dies if it falls into abyss
+		- Groodle passes over ammo without interacting with it; ammo remains on level
 	- Gem tests:
 		- Gives health to player and removes self from level when touched
 		- Does not block player movement
@@ -37,8 +38,10 @@ Tests to write:
 	   - Test hippo falling to end of level: dies unless locked to player.
 	   - Test: if hippo is locked to player and reaches bottom of level, remains locked to player after toroidal wrap-around
 	   - Blocks Groodle regardless of relative position of player
+	   - When touched by non-player, does not lock to player
 	- Player wraps around level toroidally if reaches bottom
 	- Console (in new project): does not crash on resize (larger or smaller)
+	- Test Behavior MutualTouch
 
 - Trophies and transporters
 - Gravity; player dies if gravity > 0 and reaches bottom row, or gravity < 0 and reaches top row

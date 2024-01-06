@@ -8,9 +8,13 @@ public record Ammo(Location Location, AmmoCount Count) : HercAndHippoObj, ILocat
     public override bool BlocksMotion(Level level, ILocatable toBlock) => false;
 
     public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy)
-        => level.Without(this)
-                .WithPlayer(level.Player with 
-                            { 
-                                AmmoCount = level.Player.AmmoCount + Count 
-                            });
+        => touchedBy switch
+        {
+            Player p => level.Without(this).WithPlayer(p with
+            {
+                AmmoCount = level.Player.AmmoCount + Count
+            }),
+            _ => level.NoReaction()
+        };
+
 }

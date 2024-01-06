@@ -1,10 +1,10 @@
 ﻿namespace HercAndHippoLibCs;
 public static class Behaviors
 {      
-    public static Level NoReaction(Level level) => level;
+    public static Level NoReaction(this Level level) => level;
     public static Level AllowBulletToPass<T>(T shot, Level level, Bullet shotBy) where T:HercAndHippoObj, ILocatable
         => level.Replace(shotBy, shotBy with { Location = shot.Location });
-    public static Level Die<T>(Level level, T toDie) where T : HercAndHippoObj, ILocatable
+    public static Level Die<T>(this T toDie, Level level) where T : HercAndHippoObj, ILocatable
     {
         if (toDie is Player player)
         {
@@ -17,7 +17,7 @@ public static class Behaviors
         }
     }
 
-    public static Level ApplyGravity<T>(Level level, T toFall) where T : HercAndHippoObj, ILocatable
+    public static Level ApplyGravity<T>(this T toFall, Level level) where T : HercAndHippoObj, ILocatable
     {
         if (!level.GravityApplies())
             return level;
@@ -28,7 +28,7 @@ public static class Behaviors
             !toFall.MotionBlockedTo(level, Direction.South);
             i++)
         {
-            nextState = TryMoveSouth(nextState, toFall);
+            nextState = toFall.TryMoveSouth(nextState);
         }
 
         // If reached southernmost row, die (fall into the abyss)
@@ -37,7 +37,7 @@ public static class Behaviors
         return nextState;
     }
 
-    public static Level WrapAroundTorusFromBottomRow<T>(Level level, T toFall) where T : HercAndHippoObj, ILocatable
+    public static Level WrapAroundTorusFromBottomRow<T>(this T toFall, Level level) where T : HercAndHippoObj, ILocatable
     {
         if (toFall.Location.Row != level.Height) 
             return level;
@@ -50,16 +50,37 @@ public static class Behaviors
     public static Level FallIntoAbyssAtBottomRow<T>(Level level, T toDie) where T : HercAndHippoObj, ILocatable
     {
         if (toDie.Location.Row == level.Height)
-            return Behaviors.Die(level, toDie);
+            return toDie.Die(level);
         else
-            return Behaviors.NoReaction(level);
+            return level.NoReaction();
     }
 
-    private static Level TryMoveSouth<T>(Level level, T toFall) where T : HercAndHippoObj, ILocatable
+    private static Level TryMoveSouth<T>(this T toFall, Level level) where T : HercAndHippoObj, ILocatable
     {
         if (toFall.MotionBlockedTo(level, Direction.South))
-            return Behaviors.NoReaction(level);
+            return level.NoReaction();
         Location nextLocation = new(toFall.Location.Col, toFall.Location.Row.NextSouth(level.Height));
         return level.Replace(toFall, toFall with { Location = nextLocation});
+    }
+
+    public static Level MutualTouch<T>(this T toucher, Level level, Location location, Direction touchFrom) where T : HercAndHippoObj, ILocatable, ITouchable
+    {
+        Level nextLevel = level;
+        var touchables = nextLevel
+                   .ObjectsAt(location)
+                   .Where(obj => obj.IsTouchable)
+                   .Cast<ITouchable>()
+                   .ToList();
+        // Call touch methods for any touchables at nextEast
+        nextLevel = touchables
+            .Aggregate(
+            seed: nextLevel,
+            func: (state, touchable) => touchable.OnTouch(state, touchFrom, toucher));
+        // Call Groodle OnTouch methods for any touchables at nextWest
+        nextLevel = touchables
+            .Aggregate(
+            seed: nextLevel,
+            func: (state, touchable) => toucher.OnTouch(state, touchFrom.Mirror(), touchable));
+        return nextLevel;
     }
 }
