@@ -1,8 +1,9 @@
 ﻿
 namespace HercAndHippoLibCs;
 
-public record Message(string Text, int RemainingCycles) : HercAndHippoObj, ICyclable
+public record Message(string Text, int RemainingCycles = Message.DEFAULT_PERSISTANCE) : HercAndHippoObj, ICyclable
 {
+    public const int DEFAULT_PERSISTANCE = 200;
     public override bool BlocksMotion(Level level, ILocatable toBlock) => false;
 
     public Level Cycle(Level level, ActionInput actionInput)
@@ -17,5 +18,5 @@ public record Message(string Text, int RemainingCycles) : HercAndHippoObj, ICycl
         }
     }
 
-    public static readonly Message Ouch = new("Ouch!", 200);
+    public static readonly Message Ouch = new("Ouch!");
 }

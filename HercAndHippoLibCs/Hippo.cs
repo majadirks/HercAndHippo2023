@@ -145,7 +145,7 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
     private static Level PickUp(Level level)
         => CanBePickedUp(level) ? 
         LockAbovePlayer(level)
-        .AddSecondaryObject(new Message("You picked up the hippo!", 100)) : 
+        .AddSecondaryObject(new Message("You picked up the hippo!")) : 
         level.NoReaction();
 }
 
