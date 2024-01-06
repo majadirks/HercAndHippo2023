@@ -67,8 +67,11 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
             {
                 nextState = TryMoveSouth(nextState);
             }
-            if (nextState.Hippo != null)
+
+            // If we are falling into the abyss, die, unless locked to a player,
+            if (nextState.Hippo != null && !nextState.Hippo.LockedToPlayer)
                 nextState = Behaviors.FallIntoAbyssAtBottomRow(nextState, nextState.Hippo);
+            
             return nextState;
         }
         else

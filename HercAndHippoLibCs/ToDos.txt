@@ -12,13 +12,15 @@
    Console: scroll status, buffer stats, estimated cycle time, use parallel
 - Implement and test "seek" behavior for bullet
 
-Tests:
+Tests to write:
 	- Groodle tests:
 		- Groodle removes health from hippo if poodle touches hippo
 		- Groodle removes health from hippo if hippo touches poodle
 		- Groodle removes health from player if poodle touches player
 		- Groodle removes health from player if player touches poodle
 		- Groodle dies when shot
+		- Groodle is subject to gravity
+		- Groodle dies if it falls into abyss
 	- Gem tests:
 		- Gives health to player and removes self from level when touched
 		- Does not block player movement
@@ -31,8 +33,10 @@ Tests:
 		 its OnTouch() method is called once
     - In level with gravity, if player is blocked South, can MoveSouth to touch that object
 	- Hippo:
-	   - Test hippo falling to end of level (never blocked South) - what do we expect, and what actually happens?
+	   - Test hippo falling to end of level: dies unless locked to player.
+	   - Test: if hippo is locked to player and reaches bottom of level, remains locked to player after toroidal wrap-around
 	   - Blocks Groodle regardless of relative position of player
+	- Player wraps around level toroidally if reaches bottom
 	- Console (in new project): does not crash on resize (larger or smaller)
 
 - Trophies and transporters
