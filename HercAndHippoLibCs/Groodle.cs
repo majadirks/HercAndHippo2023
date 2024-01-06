@@ -79,6 +79,6 @@ public record Groodle(Location Location, Direction Whither) : HercAndHippoObj, I
             return level.Replace(hippo, nextHippo);
         }
         else
-            return Behaviors.NoReaction(level);
+            return level.NoReaction();
     }
 }

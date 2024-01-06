@@ -15,12 +15,12 @@
                 _ => true
             };
 
-        public Level OnShot(Level level, Direction shotFrom, Bullet shotBy) => Behaviors.NoReaction(level);
+        public Level OnShot(Level level, Direction shotFrom, Bullet shotBy) => level.NoReaction();
         public Level OnTouch(Level level, Direction _, ITouchable touchedBy)
             => touchedBy switch
             {
-                Player p => p.Has<Key>(BackgroundColor) ? TakeKeyAndDie(level, p) : Behaviors.NoReaction(level),
-                _ => Behaviors.NoReaction(level)
+                Player p => p.Has<Key>(BackgroundColor) ? TakeKeyAndDie(level, p) : level.NoReaction(),
+                _ => level.NoReaction()
             };
         private Level TakeKeyAndDie(Level level, Player player)
         {

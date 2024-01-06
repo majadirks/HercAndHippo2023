@@ -23,6 +23,6 @@ public record Gem(Color Color, Location Location, Health Health) : HercAndHippoO
             return level.WithPlayer(nextPlayer).Without(this);
         }
         else
-            return Behaviors.NoReaction(level);
+            return level.NoReaction();
     }
 }

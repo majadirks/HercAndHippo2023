@@ -75,14 +75,14 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
             return nextState;
         }
         else
-            return Behaviors.NoReaction(level);
+            return level.NoReaction();
     }
 
     private static Level TryMoveSouth(Level level) 
     {
         Hippo? hippo = level.Hippo ?? throw new NullReferenceException();
         if (hippo.MotionBlockedTo(level, Direction.South))
-            return Behaviors.NoReaction(level);
+            return level.NoReaction();
         Location nextLocation = new(hippo.Location.Col, hippo.Location.Row.NextSouth(level.Height));
         return level.Replace(hippo, hippo with { Location = nextLocation, LockedToPlayer = nextLocation == level.Player.Location });
     }
@@ -124,14 +124,14 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
         }
 
         // Could not put down hippo
-        return Behaviors.NoReaction(level);
+        return level.NoReaction();
     }
 
     public Level OnShot(Level level, Direction shotFrom, Bullet shotBy)
         => level.Without(shotBy).Replace(this, this with { Health = this.Health - HEALTH_PENALTY_ON_SHOT });
 
     public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy) 
-        => touchedBy is Player ? PickUp(level) : Behaviors.NoReaction(level);
+        => touchedBy is Player ? PickUp(level) : level.NoReaction();
     private static bool CanBePickedUp(Level level)
     {
         Hippo? hippo = level.Hippo ??  throw new NullReferenceException();
@@ -143,6 +143,6 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
         return !cannotLift;
     }
     private static Level PickUp(Level level)
-        => CanBePickedUp(level) ? LockAbovePlayer(level) : Behaviors.NoReaction(level);
+        => CanBePickedUp(level) ? LockAbovePlayer(level) : level.NoReaction();
 }
 
