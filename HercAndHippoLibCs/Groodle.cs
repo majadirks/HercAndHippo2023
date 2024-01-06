@@ -29,19 +29,62 @@ public record Groodle(Location Location, Direction Whither) : HercAndHippoObj, I
 
         if (Whither == Direction.East)
         {
-            nextGroodle =
-                this.MotionBlockedTo(nextLevel, Direction.East) ?
-                this with { Whither = Direction.West } :
-                this with { Location = new(Location.Col.NextEast(nextLevel.Width), Location.Row) };
-            nextLevel = nextLevel.Replace(this, nextGroodle);
+            Location nextEast = new(Location.Col.NextEast(nextLevel.Width), Location.Row);
+            if (this.MotionBlockedTo(nextLevel, Direction.East))
+            {
+                nextGroodle = this with { Whither = Direction.West };
+                nextLevel = nextLevel.Replace(this, nextGroodle);
+
+                var touchables = nextLevel
+                   .ObjectsAt(nextEast)
+                   .Where(obj => obj.IsTouchable)
+                   .Cast<ITouchable>()
+                   .ToList();
+                // Call touch methods for any touchables at nextEast
+                nextLevel = touchables
+                    .Aggregate(
+                    seed: nextLevel,
+                    func: (state, touchable) => touchable.OnTouch(state, Direction.West, nextGroodle));
+                // Call Groodle OnTouch methods for any touchables at nextWest
+                nextLevel = touchables
+                    .Aggregate(
+                    seed: nextLevel,
+                    func: (state, touchable) => nextGroodle.OnTouch(state, Direction.West, touchable));
+            }
+            else
+            {
+                nextGroodle = this with { Location = nextEast };
+                nextLevel = nextLevel.Replace(this, nextGroodle);
+            }
         }
         else if (Whither == Direction.West)
         {
-            nextGroodle =
-                this.MotionBlockedTo(nextLevel, Direction.West) ?
-                this with { Whither = Direction.East } :
-                this with { Location = new(Location.Col.NextWest(), Location.Row) };
-            nextLevel = nextLevel.Replace(this, nextGroodle);
+            Location nextWest = new(Location.Col.NextWest(), Location.Row);
+            if (this.MotionBlockedTo(nextLevel, Direction.West))
+            {
+                nextGroodle = this with { Whither = Direction.East };
+                nextLevel = nextLevel.Replace(this, nextGroodle);
+                var touchables = nextLevel
+                    .ObjectsAt(nextWest)
+                    .Where(obj => obj.IsTouchable)
+                    .Cast<ITouchable>()
+                    .ToList();
+                // Call touch methods for any touchables at nextWest
+                nextLevel = touchables
+                    .Aggregate(
+                    seed: nextLevel,
+                    func: (state, touchable) => touchable.OnTouch(state, Direction.East, nextGroodle));
+                // Call Groodle OnTouch methods for any touchables at nextWest
+                nextLevel = touchables
+                    .Aggregate(
+                    seed: nextLevel,
+                    func: (state, touchable) => nextGroodle.OnTouch(state, Direction.East, touchable));
+            }
+            else
+            {
+                nextGroodle = this with { Location = nextWest };
+                nextLevel = nextLevel.Replace(this, nextGroodle);
+            }
         }
 
         nextLevel = Behaviors.ApplyGravity(nextLevel, nextGroodle);

@@ -130,7 +130,8 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
     public Level OnShot(Level level, Direction shotFrom, Bullet shotBy)
         => level.Without(shotBy).Replace(this, this with { Health = this.Health - HEALTH_PENALTY_ON_SHOT });
 
-    public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy) => PickUp(level);
+    public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy) 
+        => touchedBy is Player ? PickUp(level) : Behaviors.NoReaction(level);
     private static bool CanBePickedUp(Level level)
     {
         Hippo? hippo = level.Hippo ??  throw new NullReferenceException();
