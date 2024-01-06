@@ -37,6 +37,16 @@ public static class Behaviors
         return nextState;
     }
 
+    public static Level WrapAroundTorusFromBottomRow<T>(Level level, T toFall) where T : HercAndHippoObj, ILocatable
+    {
+        if (toFall.Location.Row != level.Height) 
+            return level;
+        Location newLocation = new(toFall.Location.Col, 1);
+        if (level.ObjectsAt(newLocation).Where(bl => bl.BlocksMotion(level, toFall)).Any())
+            return level;
+        return level.Replace(toFall, toFall with { Location = newLocation });
+    }
+
     public static Level FallIntoAbyssAtBottomRow<T>(Level level, T toDie) where T : HercAndHippoObj, ILocatable
     {
         if (toDie.Location.Row == level.Height)
