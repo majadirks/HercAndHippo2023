@@ -12,6 +12,7 @@ public record Health : IComparable<Health>
     public bool HasHealth => HealthAmt > 0;
     public static Health operator -(Health health, int subtrahend) => Max(MIN_HEALTH, health.HealthAmt - subtrahend);
     public static Health operator +(Health health,int addend) => Min(MAX_HEALTH, health.HealthAmt + addend);
+    public static Health operator +(Health health, Health addend) => Min(MAX_HEALTH, health.HealthAmt + addend.HealthAmt);
     public static bool operator <(Health a, Health b) => a.HealthAmt < b.HealthAmt;
     public static bool operator >(Health a, Health b) => a.HealthAmt > b.HealthAmt;
     public static implicit operator Health(int health) => new(health);

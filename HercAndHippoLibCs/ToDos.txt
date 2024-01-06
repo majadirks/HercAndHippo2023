@@ -6,12 +6,18 @@
 	* https://stackoverflow.com/questions/2754518/how-can-i-write-fast-colored-output-to-console
 - Level editor
 - Status bar:
-   Player: Health, ammo, inventory, Kinetic Energy, player location, 
+   Player: Health, ammo, inventory, Kinetic Energy, player location,
    Hippo: hippo location if any, hippo locked, 
    Level: gravity, cycle count
+   Console: scroll status, buffer stats, estimated cycle time, use parallel
 - Implement and test "seek" behavior for bullet
 
 Tests:
+	- Gem tests:
+		- Gives health to player and removes self from level when touched
+		- Does not block player movement
+		- Does not block hippo movement (player can jump into gem while wearing hippo)
+		- Does not block bullets (they should just pass over)
 	- Test ManhattanDistance()
 	- Test that Driver moves player after cycle
 	- Test that, when falling due to gravity,
@@ -19,11 +25,13 @@ Tests:
 		 its OnTouch() method is called once
     - In level with gravity, if player is blocked South, can MoveSouth to touch that object
 	- Test hippo falling to end of level (never blocked South) - what do we expect, and what actually happens?
+	- Console (in new project): does not crash on resize (larger or smaller)
 
 - Trophies and transporters
 - Gravity; player dies if gravity > 0 and reaches bottom row, or gravity < 0 and reaches top row
 - Torches and darkness
 - Gems
+- Boulders and pushables
 - Enemies: archers, poodles
 - Lives
 - Scrolls
