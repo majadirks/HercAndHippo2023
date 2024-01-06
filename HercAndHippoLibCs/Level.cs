@@ -127,4 +127,9 @@ public class Level
     }
     private static int GetWidth(HashSet<HercAndHippoObj> ds) => ds.Where(ds => ds.IsLocatable).Cast<ILocatable>().Select(d => d.Location.Col).Max() ?? 0;
     private static int GetHeight(HashSet<HercAndHippoObj> ds) => ds.Where(ds => ds.IsLocatable).Cast<ILocatable>().Select(d => d.Location.Row).Max() ?? 0;
+    public Message? GetMessage() 
+        => (Message?)SecondaryObjects
+        .Where(obj => obj is Message m && m.RemainingCycles > 0)
+        .FirstOrDefault();
+
 }
