@@ -131,7 +131,7 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
         => level.Without(shotBy).Replace(this, this with { Health = this.Health - HEALTH_PENALTY_ON_SHOT });
 
     public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy) 
-        => touchedBy is Player ? PickUp(level) : level.NoReaction();
+        => touchedBy is Player && !LockedToPlayer ? PickUp(level) : level.NoReaction();
     private static bool CanBePickedUp(Level level)
     {
         Hippo? hippo = level.Hippo ??  throw new NullReferenceException();
@@ -143,6 +143,9 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
         return !cannotLift;
     }
     private static Level PickUp(Level level)
-        => CanBePickedUp(level) ? LockAbovePlayer(level) : level.NoReaction();
+        => CanBePickedUp(level) ? 
+        LockAbovePlayer(level)
+        .AddSecondaryObject(new Message("You picked up the hippo!", 100)) : 
+        level.NoReaction();
 }
 
