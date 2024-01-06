@@ -5,7 +5,17 @@ public static class Behaviors
     public static Level AllowBulletToPass<T>(T shot, Level level, Bullet shotBy) where T:HercAndHippoObj, ILocatable
         => level.Replace(shotBy, shotBy with { Location = shot.Location });
     public static Level Die<T>(Level level, T toDie) where T : HercAndHippoObj, ILocatable
-        => level.Without(toDie);
+    {
+        if (toDie is Player player)
+        {
+            Player nextPlayer = player with { Health = 0 };
+            return level.WithPlayer(nextPlayer);
+        }
+        else
+        {
+            return level.Without(toDie);
+        }
+    }
 
     public static Level ApplyGravity<T>(Level level, T toFall) where T : HercAndHippoObj, ILocatable
     {

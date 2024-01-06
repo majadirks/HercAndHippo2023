@@ -133,6 +133,8 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
                     fell = startLocation.Row < endLocation.Row;
                 }
 
+                nextState = Behaviors.FallIntoAbyssAtBottomRow(nextState, nextState.Player);
+
                 // If player fell and is blocked below by an ITouchable, call its OnTouch() method
                 if (fell || actionInput == ActionInput.MoveSouth)
                 {
