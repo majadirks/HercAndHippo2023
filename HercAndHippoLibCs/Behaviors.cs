@@ -37,7 +37,7 @@ public static class Behaviors
         return nextState;
     }
 
-    public static Level WrapAroundTorusFromBottomRow<T>(Level level, T toFall) where T : HercAndHippoObj, ILocatable
+    public static Level WrapAroundTorusFromBottomRow<T>(this T toFall, Level level) where T : HercAndHippoObj, ILocatable
     {
         if (toFall.Location.Row != level.Height) 
             return level;
