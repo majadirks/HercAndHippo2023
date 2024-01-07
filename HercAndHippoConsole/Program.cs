@@ -80,8 +80,8 @@ static void UpdateMessageFromLevel(Level state)
     }
     else
     {
-        ShowMessage(FutureStates.GetCacheStats().ToString());
-        //ShowMessage("Use arrow keys to move, shift + arrow keys to shoot, 'q' to quit.");
+        //ShowMessage(FutureStates.GetCacheStats().ToString());
+        ShowMessage("Use arrow keys to move, shift + arrow keys to shoot, 'q' to quit.");
     }
 }
 
