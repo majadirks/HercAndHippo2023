@@ -6,8 +6,6 @@ using System.Threading.Tasks;
 
 namespace HercAndHippoLibCs;
 
-public enum WinState { Win, Lose }
-
 public record Trophy(Location Location) : HercAndHippoObj, ILocatable, ITouchable, IConsoleDisplayable
 {
     public Color Color => Color.Yellow;
@@ -26,9 +24,9 @@ public record Trophy(Location Location) : HercAndHippoObj, ILocatable, ITouchabl
         
         Hippo? hippo = level.Hippo;
         if (hippo == null)
-            return level.AddSecondaryObject(new Message("The hippo is dead! You lose!"));
+            return level.Without(this).Lose().AddSecondaryObject(new Message("The hippo is dead! You lose!"));
         else if (hippo.LockedToPlayer)
-            return level.AddSecondaryObject(new Message("You win!"));
+            return level.Without(this).Win().AddSecondaryObject(new Message("You win!"));
         else
             return level.AddSecondaryObject(new Message("Bring the hippo safely to the trophy!"));
     }
