@@ -29,7 +29,7 @@ displayPlan.RefreshDisplay(diffs);
 ShowMessage("Use arrow keys to move, shift + arrow keys to shoot, 'q' to quit.");
 
 // Main loop
-while (true)
+while (state.WinState == WinState.InProgress)
 {
     futures = new(
         initialPlan: displayPlan,
@@ -56,6 +56,12 @@ while (true)
     UpdateMessageFromLevel(state);
 }
 ResetConsoleColors(); // Clean up
+
+if (state.WinState == WinState.Won)
+    Console.WriteLine("Huzzah! You have won!");
+else
+    Console.WriteLine("You lost! Try again!");
+Console.ReadLine();
 
 // Helper Functions
 static void ShowMessage(string message)
