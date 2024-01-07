@@ -1,5 +1,4 @@
 -= Desired features =-
-- Method to get direction pointing fromone location to another
 - Research reading multiple console keys at once (for jumping/moving simultaneously)
 - Research faster console writing:
 	* https://stackoverflow.com/questions/29920056/c-sharp-something-faster-than-console-write
@@ -11,6 +10,7 @@
    Level: gravity, cycle count
    Console: scroll status, buffer stats, estimated cycle time, use parallel, refresh types (percents)
 - Implement and test "seek" behavior for bullet
+- Consider implementing a custom linked list type SecondaryObjectSet for secondary objects
 
 Tests to write:
 	- Groodle tests:
