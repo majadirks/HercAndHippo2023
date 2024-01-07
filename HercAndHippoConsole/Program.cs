@@ -7,7 +7,7 @@ const int MESSAGE_MARGIN = 3;
 const int REFRESH_FREQUENCY_HZ = 40;
 
 // Initialize data
-Level state = DemoLevels.IntroducingTheHippo;
+Level state = DemoLevels.ManyObjectsStressTest();
 
 CycleTimer cycleTimer = new(frequencyHz: REFRESH_FREQUENCY_HZ);
 ScrollStatus scrollStatus = ScrollStatus.Default(state.Player.Location);

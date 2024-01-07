@@ -50,6 +50,14 @@ public class SecondaryObjectsSet : IEnumerable, IEnumerable<HercAndHippoObj>
         return new(newobjs);
     }
 
+    public SecondaryObjectsSet ReplaceMany(SecondaryObjectsSet toRemove, SecondaryObjectsSet toAdd)
+    {
+        HashSet<HercAndHippoObj> toRemoveHs = toRemove.ToHashSet();
+        SecondaryObjectsSet newSos = new(objs.Where(obj => !toRemoveHs.Contains(obj)).Concat(toAdd));
+        return new(newSos);
+    }
+
+    public void Clear() => objs.Clear();
 
     public int GetWidth() 
         => objs.Where(ds => ds.IsLocatable).Cast<ILocatable>().Select(d => (int)d.Location.Col + 1).Max();

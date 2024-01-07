@@ -16,6 +16,13 @@ public class Level
         return this;
     }
     private SecondaryObjectsSet SecondaryObjects { get; init; } // secondary, ie not the player or hippo
+    private static SecondaryObjectsSet PlannedToBeRemoved { get; set; }
+    private static SecondaryObjectsSet PlannedToBeAdded { get; set; }
+    static Level()
+    {
+        PlannedToBeRemoved = new();
+        PlannedToBeAdded = new();
+    }
     public Level(Player player, Gravity gravity, SecondaryObjectsSet secondaryObjects, Hippo? hippo = null)
     {
         Player = player;
@@ -27,7 +34,7 @@ public class Level
         Cycles = 0;
         WinState = WinState.InProgress;
     }
-    private Level(Player player, Hippo? hippo, SecondaryObjectsSet secondaryObjects, int width, int height, int cycles, Gravity gravity, WinState winSate)
+    private Level(Player player, Hippo? hippo, SecondaryObjectsSet secondaryObjects, int width, int height, int cycles, Gravity gravity, WinState winState)
     {
         Player = player;
         Hippo = hippo;
@@ -36,11 +43,11 @@ public class Level
         Height = height;
         Gravity = gravity;
         Cycles = cycles;
-        WinState = winSate;
+        WinState = winState;
     }
 
     public IEnumerable<HercAndHippoObj> LevelObjects => Hippo == null ? SecondaryObjects.Append(Player) : SecondaryObjects.Append(Hippo).Append(Player);
-    public Level WithPlayer(Player player) => new (player: player, hippo: Hippo, secondaryObjects: this.SecondaryObjects, width: Width, height: Height, cycles: Cycles, gravity: Gravity, winSate: WinState);
+    public Level WithPlayer(Player player) => new (player: player, hippo: Hippo, secondaryObjects: this.SecondaryObjects, width: Width, height: Height, cycles: Cycles, gravity: Gravity, winState: WinState);
     public IEnumerable<HercAndHippoObj> ObjectsAt(Location location) => LevelObjects.Where(d => d.IsLocatable && ((ILocatable)d).Location.Equals(location));
     public Level Without(HercAndHippoObj toRemove)
     {
@@ -49,11 +56,11 @@ public class Level
         else if (toRemove is Player)
             throw new NotSupportedException($"Cannot remove player from level using method '{nameof(Without)}'");
         else if (toRemove is Hippo)
-            return new Level(player: Player, gravity: Gravity, secondaryObjects: SecondaryObjects, hippo: null, width: Width, height: Height, cycles: Cycles, winSate: WinState);
+            return new Level(player: Player, gravity: Gravity, secondaryObjects: SecondaryObjects, hippo: null, width: Width, height: Height, cycles: Cycles, winState: WinState);
         else
-            return new(player: this.Player, hippo: Hippo, secondaryObjects: SecondaryObjects.RemoveObject(toRemove), Width, Height, Cycles, Gravity, winSate: WinState);
+            return new(player: this.Player, hippo: Hippo, secondaryObjects: SecondaryObjects.RemoveObject(toRemove), Width, Height, Cycles, Gravity, winState: WinState);
     }
-    public Level AddSecondaryObject(HercAndHippoObj toAdd) => new(player: this.Player, hippo: Hippo, secondaryObjects: SecondaryObjects.AddObject(toAdd), Width, Height, Cycles, Gravity, winSate: WinState);
+    public Level AddSecondaryObject(HercAndHippoObj toAdd) => new(player: this.Player, hippo: Hippo, secondaryObjects: SecondaryObjects.AddObject(toAdd), Width, Height, Cycles, Gravity, winState: WinState);
     public Level Replace(HercAndHippoObj toReplace, HercAndHippoObj toAdd)
     {
         if (toReplace == null)
@@ -65,21 +72,47 @@ public class Level
         else if (toReplace is Hippo ^ toAdd is Hippo)
             throw new NotSupportedException();
         else if (toAdd is Player newPlayer) // from above logic, toReplace must also be a player
-            return new Level(player: newPlayer, hippo: Hippo, gravity: Gravity, secondaryObjects: SecondaryObjects, width: Width, height: Height, cycles: Cycles, winSate: WinState);
+            return new Level(player: newPlayer, hippo: Hippo, gravity: Gravity, secondaryObjects: SecondaryObjects, width: Width, height: Height, cycles: Cycles, winState: WinState);
         else if (toAdd is Hippo newHippo) // from aboveLogic, toReplace must also be a hippo
-            return new(player: Player, hippo: newHippo, gravity: Gravity, secondaryObjects: SecondaryObjects, cycles: Cycles, height: Height, width: Width, winSate: WinState);
+            return new(player: Player, hippo: newHippo, gravity: Gravity, secondaryObjects: SecondaryObjects, cycles: Cycles, height: Height, width: Width, winState: WinState);
         else
         {
             var updatedSo = SecondaryObjects.Replace(toReplace, toAdd);
-            return new(player: Player, hippo: Hippo, gravity: Gravity, secondaryObjects: updatedSo, width: Width, height: Height, cycles: Cycles, winSate: WinState);
-        }
-                 
+            return new(player: Player, hippo: Hippo, gravity: Gravity, secondaryObjects: updatedSo, width: Width, height: Height, cycles: Cycles, winState: WinState);
+        }         
     }
+
+    // Plan to replace one object with another at the next cycle
+    public static void PlanReplace(HercAndHippoObj toReplace, HercAndHippoObj toAdd)
+    {
+        if (toReplace == null)
+            throw new ArgumentNullException(nameof(toReplace));
+        else if (toAdd == null)
+            throw new ArgumentNullException(nameof(toAdd));
+        else if (toReplace is Player || toAdd is Player)
+            throw new NotSupportedException();
+        else if (toReplace is Hippo || toAdd is Hippo)
+            throw new NotSupportedException();
+        else
+        {
+            PlannedToBeAdded.Add(toAdd);
+            PlannedToBeRemoved.Add(toReplace);
+        }
+    }
+
+    public Level ExecuteReplacements()
+    {
+        var newSo = SecondaryObjects.ReplaceMany(PlannedToBeRemoved, PlannedToBeAdded);
+        PlannedToBeAdded.Clear();
+        PlannedToBeRemoved.Clear();
+        return new Level(player: Player, hippo: Hippo, gravity: Gravity, secondaryObjects: newSo, width: Width, height: Height, cycles: Cycles, winState: WinState);
+    }
+
     public Level RefreshCyclables(ActionInput actionInput, CancellationToken? cancellationToken = null)
     {
         CancellationToken token = cancellationToken ?? CancellationToken.None;
         Level nextState = this;
-        // First cycle non-player objects
+        // First cycle non-nplayer objects
         nextState = SecondaryObjects // Do not refresh in parallel; this could cause objects to interfere with nearby copies of themselves, and can make updating slower
             .Where(disp => disp.IsCyclable)
             .Cast<ICyclable>()
@@ -87,6 +120,10 @@ public class Level
             .Aggregate(
             seed: nextState, 
             func: (state, nextCyclable) => nextCyclable.Cycle(state, actionInput));
+
+        // Perform any planned replacements
+        nextState = nextState.ExecuteReplacements();
+
         // Then cycle hippo if relevant
         if (nextState.Hippo != null)
             nextState = nextState.Hippo.Cycle(nextState, actionInput);
