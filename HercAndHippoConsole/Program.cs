@@ -7,7 +7,7 @@ const int MESSAGE_MARGIN = 3;
 const int REFRESH_FREQUENCY_HZ = 40;
 
 // Initialize data
-Level state = DemoLevels.ManyObjectsStressTest();
+Level state = DemoLevels.IntroducingTheHippo;
 
 CycleTimer cycleTimer = new(frequencyHz: REFRESH_FREQUENCY_HZ);
 ScrollStatus scrollStatus = ScrollStatus.Default(state.Player.Location);
@@ -53,15 +53,7 @@ while (true)
         diffs = displayPlan.GetDiffs(nextDisplayPlan);
         refreshed = displayPlan.RefreshDisplay(diffs);
     }
-    if (state.GetMessage() is Message message)
-    {
-        ShowMessage(message.Text);
-    }
-    else
-    {
-        ShowMessage(FutureStates.GetCacheStats().ToString());
-        //ShowMessage("Use arrow keys to move, shift + arrow keys to shoot, 'q' to quit.");
-    }
+    UpdateMessageFromLevel(state);
 }
 ResetConsoleColors(); // Clean up
 
@@ -72,6 +64,19 @@ static void ShowMessage(string message)
     Console.SetCursorPosition(1, Console.BufferHeight - MESSAGE_MARGIN);
     ClearCurrentConsoleLine();
     Console.WriteLine(message);
+}
+
+static void UpdateMessageFromLevel(Level state)
+{
+    if (state.GetMessage() is Message message)
+    {
+        ShowMessage(message.Text);
+    }
+    else
+    {
+        ShowMessage(FutureStates.GetCacheStats().ToString());
+        //ShowMessage("Use arrow keys to move, shift + arrow keys to shoot, 'q' to quit.");
+    }
 }
 
 static void ClearCurrentConsoleLine()

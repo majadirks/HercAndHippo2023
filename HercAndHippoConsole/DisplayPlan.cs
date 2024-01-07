@@ -3,7 +3,12 @@ using static HercAndHippoConsole.Constants;
 
 namespace HercAndHippoConsole;
 
-internal record DisplayDiff(int Col, int Row, IConsoleDisplayable? OldDisplayable, IConsoleDisplayable? NewDisplayable);
+internal record DisplayDiff(int Col, int Row, IConsoleDisplayable? OldDisplayable, IConsoleDisplayable? NewDisplayable)
+{
+    public bool AppearanceChanged => NewDisplayable?.Color != OldDisplayable?.Color ||
+        NewDisplayable?.BackgroundColor != OldDisplayable?.BackgroundColor ||
+        NewDisplayable?.ConsoleDisplayString != OldDisplayable?.ConsoleDisplayString;
+}
 
 internal class DisplayPlan
 {
@@ -68,8 +73,10 @@ internal class DisplayPlan
                         IConsoleDisplayable newDisp = newDisplay[col, row];
                         if (newDisp != default && (forceRefresh || oldDisp != newDisp))
                         {
+                            var diff = new DisplayDiff(Col: col, Row: row, OldDisplayable: oldDisp, NewDisplayable: newDisp);
                             // Something is here that wasn't here before, so plan to show it
-                            diffs.Add(new DisplayDiff(Col: col, Row: row, OldDisplayable: oldDisp, NewDisplayable: newDisp));
+                            if (diff.AppearanceChanged)
+                                diffs.Add(diff);
                         }
                         if (newDisp == default && oldDisp != default)
                         {
