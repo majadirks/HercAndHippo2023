@@ -338,7 +338,7 @@ public static class DemoLevels
             new BreakableWall(Color.Green,(53,14)),
 
 
-
+            new Trophy((30,20)),
             new BreakableWall(Color.Green,(30,21)),
             new BreakableWall(Color.Green,(31,21)),
             new BreakableWall(Color.Green,(32,21)),
