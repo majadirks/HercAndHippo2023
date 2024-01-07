@@ -11,7 +11,6 @@ internal class FutureStates
     private readonly BufferStats bufferStats;
     private readonly Dictionary<ActionInput, Task<StateAndDiffs>> futures;
     private readonly CancellationTokenSource? cts;
-    public bool ParallelEnabled { get; private set; }
     public StateAndDiffs GetFutureDiffs(ActionInput actionInput)
     {
         // If relevant diffs for this action input have been calculated, return them
@@ -54,7 +53,7 @@ internal class FutureStates
     /// <param name="mostRecentInput">Most recent input</param>
     /// <param name="averageCycleTime">Average time to calculate a cycle</param>
     /// <param name="msPerCycle">Ideal interval between cycles</param>
-    public FutureStates(DisplayPlan initialPlan, Level initialState, ScrollStatus scrollStatus, BufferStats bufferStats, ActionInput mostRecentInput, double averageCycleTime, double msPerCycle)
+    public FutureStates(DisplayPlan initialPlan, Level initialState, ScrollStatus scrollStatus, BufferStats bufferStats, ActionInput mostRecentInput)
     {
         futures = new();
         cts = null;
@@ -62,9 +61,7 @@ internal class FutureStates
         this.initialState = initialState;
         initialScrollStatus = scrollStatus;
         this.bufferStats = bufferStats;
-        ParallelEnabled = averageCycleTime * possibleInputs.Length < msPerCycle;
-        //parallelEnabled = false; // debug
-        if (!ParallelEnabled) return; // Doing all the calculations takes too long to be worthwhile
+        
 
         cts = new();
         Task<StateAndDiffs> fromMostRecent =
