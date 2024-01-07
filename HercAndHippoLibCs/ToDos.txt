@@ -9,7 +9,7 @@
    Player: Health, ammo, inventory, Kinetic Energy, player location,
    Hippo: hippo location if any, hippo locked, 
    Level: gravity, cycle count
-   Console: scroll status, buffer stats, estimated cycle time, use parallel
+   Console: scroll status, buffer stats, estimated cycle time, use parallel, refresh types (percents)
 - Implement and test "seek" behavior for bullet
 
 Tests to write:
