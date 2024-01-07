@@ -33,11 +33,15 @@ public record Bullet(Location Location, Direction Whither) : HercAndHippoObj, IL
             dir = this.Seek(nextState, nextState.Player, out int _);
         else if (Whither == Direction.Flee)
             dir = this.Flee(nextState, nextState.Player);
-            
+
         // Continue moving in current direction if it hasn't been stopped
         nextState = nextState.Contains(this) ?
-            nextState.Replace(this, this with { Whither = dir, Location = NextLocation(Location, dir) }) :
-            nextState; // If bullet was stopped, don't regenerate it
+             nextState.PlanReplace(this, this with
+             {
+                 Whither = dir,
+                 Location = NextLocation(Location, dir)
+             }) :
+             nextState;
 
         return nextState;
     }

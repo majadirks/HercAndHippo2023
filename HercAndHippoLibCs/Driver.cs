@@ -34,6 +34,7 @@ public record Driver(Direction Whither, int Modulus, int Count = 0) : HercAndHip
 
         };
 
-        return nextState.Player.Cycle(level, motion).Replace(this, this with { Count = nextCount, Modulus = nextMod });
+        nextState = nextState.Player.Cycle(level, motion).PlanReplace(this, this with { Count = nextCount, Modulus = nextMod });
+        return nextState;
     }
 }
