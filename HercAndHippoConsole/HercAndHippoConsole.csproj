@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="AverageCycleTimer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\HercAndHippoLibCs\HercAndHippoLibCs.csproj" />
   </ItemGroup>
 
