@@ -15,19 +15,19 @@ public class Level
         Cycles = cycles;
         return this;
     }
-    private HashSet<HercAndHippoObj> SecondaryObjects { get; init; } // secondary, ie not the player or hippo
-    public Level(Player player, Gravity gravity, HashSet<HercAndHippoObj> secondaryObjects, Hippo? hippo = null)
+    private SecondaryObjectsSet SecondaryObjects { get; init; } // secondary, ie not the player or hippo
+    public Level(Player player, Gravity gravity, SecondaryObjectsSet secondaryObjects, Hippo? hippo = null)
     {
         Player = player;
         Hippo = hippo;
         SecondaryObjects = secondaryObjects;
-        Width = GetWidth(secondaryObjects);
-        Height = GetHeight(secondaryObjects);
+        Width = secondaryObjects.GetWidth();
+        Height = secondaryObjects.GetHeight();
         Gravity = gravity;
         Cycles = 0;
         WinState = WinState.InProgress;
     }
-    private Level(Player player, Hippo? hippo, HashSet<HercAndHippoObj> secondaryObjects, int width, int height, int cycles, Gravity gravity, WinState winSate)
+    private Level(Player player, Hippo? hippo, SecondaryObjectsSet secondaryObjects, int width, int height, int cycles, Gravity gravity, WinState winSate)
     {
         Player = player;
         Hippo = hippo;
@@ -70,7 +70,7 @@ public class Level
             return new(player: Player, hippo: newHippo, gravity: Gravity, secondaryObjects: SecondaryObjects, cycles: Cycles, height: Height, width: Width, winSate: WinState);
         else
         {
-            var updatedSo = SecondaryObjects.Where(obj => obj != toReplace).Append(toAdd).ToHashSet();
+            var updatedSo = SecondaryObjects.Replace(toReplace, toAdd);
             return new(player: Player, hippo: Hippo, gravity: Gravity, secondaryObjects: updatedSo, width: Width, height: Height, cycles: Cycles, winSate: WinState);
         }
                  

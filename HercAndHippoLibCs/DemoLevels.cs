@@ -5,7 +5,7 @@ public static class DemoLevels
     public static readonly Level WallsLevel = new(
         player: new Player((4, 3), health: 100, ammoCount: 0, inventory: Inventory.EmptyInventory, jumpStrength: 5),
         gravity: Gravity.None,
-        secondaryObjects: new HashSet<HercAndHippoObj>
+        secondaryObjects: new()
         {
             new Wall(Color.Yellow, (1,1)),
             new Wall(Color.Yellow, (2,1)),
@@ -96,18 +96,6 @@ public static class DemoLevels
 
         });
 
-    public static readonly Level Clones = new(
-        player: new Player((2, 2), health: 100, ammoCount: 200, inventory: Inventory.EmptyInventory, jumpStrength: 5, kineticEnergy: 0),
-        gravity: Gravity.None,
-        secondaryObjects: new HashSet<HercAndHippoObj>()
-        {
-            new Wall(Color.DarkGreen, (100, 100)),
-            new Player((5, 5), health: 100, ammoCount: 200, inventory: Inventory.EmptyInventory, jumpStrength: 5),
-            new Player((10, 10), health: 100, ammoCount: 200, inventory: Inventory.EmptyInventory, jumpStrength: 5),
-            new Player((20, 10), health: 100, ammoCount: 200, inventory: Inventory.EmptyInventory, jumpStrength: 5),
-            new Player((30, 10), health: 100, ammoCount: 200, inventory: Inventory.EmptyInventory, jumpStrength: 5),
-        });
-
     public static  Level ManyObjectsStressTest()
     {
         int width = 120;
@@ -127,13 +115,13 @@ public static class DemoLevels
         }
         displayables.Add(new Driver(Direction.North, Modulus: 3));
         displayables.Add(new Bullet((15, height - 1), Direction.Idle));
-        return new Level(player, secondaryObjects: displayables, gravity: Gravity.None);
+        return new Level(player, secondaryObjects: new(displayables), gravity: Gravity.None);
     }
 
     public static readonly Level JumpLevel = new(
         player: new Player(location: new(5, 10), health: 100, ammoCount: 100, inventory: Inventory.EmptyInventory, jumpStrength: 5),
         gravity: Gravity.Default,
-        secondaryObjects: new HashSet<HercAndHippoObj>()
+        secondaryObjects: new()
         {
             new Wall(Color.Blue, (1,11)),
             new Wall(Color.Blue, (4,11)),
