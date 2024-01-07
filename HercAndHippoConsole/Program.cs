@@ -53,14 +53,7 @@ while (true)
         diffs = displayPlan.GetDiffs(nextDisplayPlan);
         refreshed = displayPlan.RefreshDisplay(diffs);
     }
-    if (state.GetMessage() is Message message)
-    {
-        ShowMessage(message.Text);
-    }
-    else
-    {
-        ShowMessage("Use arrow keys to move, shift + arrow keys to shoot, 'q' to quit.");
-    }
+    UpdateMessageFromLevel(state);
 }
 ResetConsoleColors(); // Clean up
 
@@ -71,6 +64,19 @@ static void ShowMessage(string message)
     Console.SetCursorPosition(1, Console.BufferHeight - MESSAGE_MARGIN);
     ClearCurrentConsoleLine();
     Console.WriteLine(message);
+}
+
+static void UpdateMessageFromLevel(Level state)
+{
+    if (state.GetMessage() is Message message)
+    {
+        ShowMessage(message.Text);
+    }
+    else
+    {
+        ShowMessage(FutureStates.GetCacheStats().ToString());
+        //ShowMessage("Use arrow keys to move, shift + arrow keys to shoot, 'q' to quit.");
+    }
 }
 
 static void ClearCurrentConsoleLine()

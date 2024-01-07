@@ -3,6 +3,16 @@
 namespace HercAndHippoConsole;
 
 internal record StateAndDiffs(Level State, ScrollStatus ScrollStatus, IEnumerable<DisplayDiff> Diffs);
+internal record CacheStats(double CachedCompleted, double CachedIncomplete, double AbInitio)
+{
+    public override string ToString()
+    {
+        int cc = (int)Math.Round(CachedCompleted * 100.0);
+        int ci = (int)Math.Round(CachedIncomplete * 100.0);
+        int ai = (int)Math.Round(AbInitio * 100.0);
+        return $"CachedCompleted: {cc}%, CachedIncomplete: {ci}%, AbInitio:{ai}%"; 
+    }
+}
 internal class FutureStates
 {
     private readonly DisplayPlan initialPlan;
@@ -11,27 +21,53 @@ internal class FutureStates
     private readonly BufferStats bufferStats;
     private readonly Dictionary<ActionInput, Task<StateAndDiffs>> futures;
     private readonly CancellationTokenSource? cts;
+
+    // Track how often we refresh in different ways
+    private enum RefreshType { CachedCompleted, CachedIncomplete, AbInitio }
+    private static Dictionary<RefreshType, int> cacheCounts;
+    static FutureStates()
+    {
+        cacheCounts = new()
+        {
+            {RefreshType.CachedCompleted,0 },
+            {RefreshType.CachedIncomplete,0},
+            {RefreshType.AbInitio,0 }
+        };
+    }
+
+    public static CacheStats GetCacheStats()
+    {
+        int sum = cacheCounts.Values.Sum();
+        double cc = cacheCounts[RefreshType.CachedCompleted] * 1.0 / sum;
+        double ci = cacheCounts[RefreshType.CachedIncomplete] * 1.0 / sum;
+        double ai = cacheCounts[RefreshType.AbInitio] * 1.0 / sum;
+        return new CacheStats(cc, ci, ai);
+    }
+
     public StateAndDiffs GetFutureDiffs(ActionInput actionInput)
     {
         // If relevant diffs for this action input have been calculated, return them
-        if (futures.TryGetValue(actionInput, out Task<StateAndDiffs>? value) && value.IsCompleted)
+        if (futures.TryGetValue(actionInput, out Task<StateAndDiffs>? value))
         {
             if (value.IsCompleted)
             {
                 var ret = value.Result;
                 cts?.Cancel(); //cancel others
+                cacheCounts[RefreshType.CachedCompleted] += 1;
                 return ret;
             }
             else // relevant diff calculation started but did not complete, so wait for it to finish
             {
                 value.Wait();
                 cts?.Cancel();
+                cacheCounts[RefreshType.CachedIncomplete] += 1;
                 return value.Result;
             }
         }
         else // relevant diff calculation didn't even start! Do it now
         {
             cts?.Cancel();
+            cacheCounts[RefreshType.AbInitio] += 1;
             return GetDiffs(
                 initialPlan: initialPlan,
                 initialState: initialState, 
@@ -43,6 +79,7 @@ internal class FutureStates
     }
         
     private static readonly ActionInput[] possibleInputs = (ActionInput[])Enum.GetValues(typeof(ActionInput));
+    
     /// <summary>
     /// Anticipate possible future states based on all possible inputs, 
     /// if doing so is likely to be "fast" (ie possible to compute all in less than one cycle).
