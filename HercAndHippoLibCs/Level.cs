@@ -81,7 +81,11 @@ public class Level
         }         
     }
 
-    // Plan to replace one object with another at the next cycle
+    /// <summary>
+    /// Plan to replace one object with another at the next cycle.
+    /// If an object has many objects to be replaced, this is faster
+    /// than replacing them individually.
+    /// </summary>
     public Level PlanReplace(HercAndHippoObj toReplace, HercAndHippoObj toAdd)
     {
         if (toReplace == null)
