@@ -47,7 +47,7 @@ internal class FutureStates
     public StateAndDiffs GetFutureDiffs(ActionInput actionInput)
     {
         // If relevant diffs for this action input have been calculated, return them
-        if (futures.TryGetValue(actionInput, out Task<StateAndDiffs>? value) && value.IsCompleted)
+        if (futures.TryGetValue(actionInput, out Task<StateAndDiffs>? value))
         {
             if (value.IsCompleted)
             {
