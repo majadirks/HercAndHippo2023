@@ -11,6 +11,7 @@
    Console: scroll status, buffer stats, estimated cycle time, use parallel, refresh types (percents)
 - Implement and test "seek" behavior for bullet
 - Consider implementing a custom linked list type SecondaryObjectSet for secondary objects
+- Consider changing Level back to a record, and re-introducing multiple-replacement
 
 Tests to write:
 	- Groodle tests:
