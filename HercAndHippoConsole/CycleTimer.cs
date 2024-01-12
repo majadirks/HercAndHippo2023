@@ -23,10 +23,9 @@ namespace HercAndHippoConsole
             return false;
         }
 
-        public ConsoleKeyInfo AwaitCycle()
+        public void AwaitCycle()
         {
             while (!Cycled()) {}
-            return Console.KeyAvailable ? Console.ReadKey() : default; 
         }
     }
 }

@@ -14,8 +14,7 @@ internal class DisplayPlan
 {
     private readonly IConsoleDisplayable[,] planArray;
     private readonly BufferStats bufferStats;
-    private IEnumerable<DisplayDiff>? diffs;
-    private static Dictionary<DisplayDiff, IEnumerable<DisplayDiff>> diffCache;
+    private readonly IEnumerable<DisplayDiff>? diffs;
 
     public static Location GetScreenCenter(int bufferWidth, int bufferHeight)
         => ((bufferWidth - VIEW_MARGIN) / 2, (bufferHeight - VIEW_MARGIN) / 2);
@@ -24,7 +23,6 @@ internal class DisplayPlan
     {
         IConsoleDisplayable[,] planArray = new IConsoleDisplayable[bufferStats.BufferWidth, bufferStats.BufferHeight];
         diffs = null;
-        diffCache = new();
         Location screenCenter = GetScreenCenter(bufferStats.BufferWidth, bufferStats.BufferHeight);
         Location logicalCenter = scrollStatus.LogicalCenter;
         

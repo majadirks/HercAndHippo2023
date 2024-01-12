@@ -24,7 +24,7 @@ internal class FutureStates
 
     // Track how often we refresh in different ways
     private enum RefreshType { CachedCompleted, CachedIncomplete, AbInitio }
-    private static Dictionary<RefreshType, int> cacheCounts;
+    private static readonly Dictionary<RefreshType, int> cacheCounts;
     static FutureStates()
     {
         cacheCounts = new()
@@ -78,7 +78,10 @@ internal class FutureStates
             
     }
         
-    private static readonly ActionInput[] possibleInputs = (ActionInput[])Enum.GetValues(typeof(ActionInput));
+    private static readonly ActionInput[] possibleInputs = Enum.GetValues(typeof(ActionInput))
+        .Cast<ActionInput>()
+        .Where(ai => ai != ActionInput.Quit)
+        .ToArray();
     
     /// <summary>
     /// Anticipate possible future states based on all possible inputs, 
