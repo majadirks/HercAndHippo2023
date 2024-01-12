@@ -7,10 +7,9 @@ mainLoop.RunGame(KeyboardInputs());
 
 static IEnumerable<ActionInput> KeyboardInputs()
 {
-    ConsoleKeyInfo keyInfo = Console.KeyAvailable ? Console.ReadKey() : default;
     while (true)
     {
-        keyInfo = Console.KeyAvailable ? Console.ReadKey() : default;
+        ConsoleKeyInfo keyInfo = Console.KeyAvailable ? Console.ReadKey() : default;
         yield return keyInfo.ToActionInput();
     }
 }
