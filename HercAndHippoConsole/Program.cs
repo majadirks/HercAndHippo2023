@@ -1,9 +1,7 @@
 ﻿using HercAndHippoLibCs;
 using HercAndHippoConsole;
-
-
 DisplayLoop mainLoop = new(DemoLevels.IntroducingTheHippo);
-mainLoop.RunGame(KeyboardInputs());
+mainLoop.RunGame(inputs: KeyboardInputs());
 
 static IEnumerable<ActionInput> KeyboardInputs()
 {

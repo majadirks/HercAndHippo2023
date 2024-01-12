@@ -82,7 +82,6 @@ internal class DisplayLoop
         Console.ReadLine();
     }
 
-
     private static void ShowMessage(string message)
     {
         ResetConsoleColors();
@@ -111,5 +110,4 @@ internal class DisplayLoop
         Console.Write(new string(' ', Console.WindowWidth));
         Console.SetCursorPosition(0, currentLineCursor);
     }
-
 }
