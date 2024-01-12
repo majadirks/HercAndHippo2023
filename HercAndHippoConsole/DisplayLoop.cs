@@ -15,6 +15,7 @@ internal class DisplayLoop
     private ScrollStatus scrollStatus;
     private DisplayPlan displayPlan;
     private ActionInput lastAction;
+    private IEnumerable<DisplayDiff> diffs;
     public DisplayLoop(Level state)
     {
         // Initialize data
@@ -28,7 +29,7 @@ internal class DisplayLoop
 
         // Initialize display
         ResetConsoleColors();
-        IEnumerable<DisplayDiff> diffs = displayPlan.GetDiffs(displayPlan);
+        diffs = displayPlan.GetDiffs(displayPlan);
         displayPlan.RefreshDisplay(diffs);
         ShowMessage("Use arrow keys to move, shift + arrow keys to shoot, 'q' to quit.");
     }
@@ -37,14 +38,8 @@ internal class DisplayLoop
         IEnumerator<ActionInput> actionEnumerator = controller.GetEnumerator();
         DisplayPlan nextDisplayPlan;
         FutureStates futures;
-
-        // Initialize display
-        ResetConsoleColors();
         bool refreshed;
         bool readInput;
-        IEnumerable<DisplayDiff> diffs = displayPlan.GetDiffs(displayPlan);
-        displayPlan.RefreshDisplay(diffs);
-        ShowMessage("Use arrow keys to move, shift + arrow keys to shoot, 'q' to quit.");
 
         // Main loop
         while (State.WinState == WinState.InProgress)
