@@ -32,9 +32,9 @@ internal class DisplayLoop
         displayPlan.RefreshDisplay(diffs);
         ShowMessage("Use arrow keys to move, shift + arrow keys to shoot, 'q' to quit.");
     }
-    public void RunGame(IEnumerable<ActionInput> inputs)
+    public void RunGame(IEnumerable<ActionInput> controller)
     {
-        IEnumerator<ActionInput> actionEnumerator = inputs.GetEnumerator();
+        IEnumerator<ActionInput> actionEnumerator = controller.GetEnumerator();
         DisplayPlan nextDisplayPlan;
         FutureStates futures;
 
