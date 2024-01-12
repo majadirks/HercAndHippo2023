@@ -128,8 +128,8 @@ public class Level
         string desc = $"Level with Player at {Player.Location}{hippoStr}; Object count = {SecondaryObjects.Count}, Cycles = {Cycles}. {gravityStr}.";
         return desc;
     }
-    private static int GetWidth(HashSet<HercAndHippoObj> ds) => ds.Where(ds => ds.IsLocatable).Cast<ILocatable>().Select(d => (int)d.Location.Col + 1).Max();
-    private static int GetHeight(HashSet<HercAndHippoObj> ds) => ds.Where(ds => ds.IsLocatable).Cast<ILocatable>().Select(d => (int)d.Location.Row + 1).Max();
+    private static int GetWidth(HashSet<HercAndHippoObj> ds) => ds.Where(ds => ds.IsLocatable).Cast<ILocatable>().Select(d => (int)d.Location.Col).Max();
+    private static int GetHeight(HashSet<HercAndHippoObj> ds) => ds.Where(ds => ds.IsLocatable).Cast<ILocatable>().Select(d => (int)d.Location.Row).Max();
     public Message? GetMessage() 
         => (Message?)SecondaryObjects
         .Where(obj => obj is Message m && m.RemainingCycles > 0)
