@@ -1,4 +1,8 @@
 -= Desired features =-
+
+- ML learning: use Python to train a model to beat a level, using reinforcement learning .
+	* https://stackoverflow.com/questions/34266589/use-net-dll-in-python
+	* https://pypi.org/project/pythonnet/
 - Research reading multiple console keys at once (for jumping/moving simultaneously)
 - Research faster console writing:
 	* https://stackoverflow.com/questions/29920056/c-sharp-something-faster-than-console-write
