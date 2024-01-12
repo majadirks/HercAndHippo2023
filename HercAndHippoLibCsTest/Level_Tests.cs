@@ -80,7 +80,7 @@ namespace HercAndHippoLibCsTest
         {
             // Arrange
             Player player = Player.Default((1, 1));
-            Level level = new(player, hippo: null, gravity: Gravity.None, secondaryObjects: new());
+            Level level = new(player, hippo: null, gravity: Gravity.None, secondaryObjects: new() { new Wall(Color.Yellow, (2, 2))});
 
             for (int i = 0; i < 100; i++)
             {
@@ -100,7 +100,7 @@ namespace HercAndHippoLibCsTest
                 player: player,
                 hippo: null,
                 gravity: Gravity.None,
-                secondaryObjects: new());
+                secondaryObjects: new() { new Wall(Color.Yellow, (2, 2)) });
             // Act and Assert.
             #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
             Assert.ThrowsException<ArgumentNullException>(() => level.Without(null));
@@ -119,7 +119,7 @@ namespace HercAndHippoLibCsTest
                 player: player,
                 hippo: null,
                 gravity: Gravity.None,
-                secondaryObjects: new());
+                secondaryObjects: new() { new Wall(Color.Yellow, (2, 2)) });
             // Act and Assert.
             Assert.ThrowsException<NotSupportedException>(() => level.Without(player));
         }
