@@ -6,6 +6,7 @@ namespace HercAndHippoConsole
     {
         public static ActionInput ToActionInput(this System.ConsoleKeyInfo keyInfo)
         {
+            if (keyInfo.KeyChar == 'q') return ActionInput.Quit;
             if (keyInfo == default) return ActionInput.NoAction;
             // Shift key pressed (shoot)
             if ((keyInfo.Modifiers & ConsoleModifiers.Shift) != 0)

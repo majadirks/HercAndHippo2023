@@ -5,6 +5,7 @@
         NoAction,
         MoveWest, MoveEast, MoveNorth, MoveSouth,
         ShootWest, ShootEast, ShootNorth, ShootSouth,
-        DropHippo
+        DropHippo,
+        Quit
     }
 }
