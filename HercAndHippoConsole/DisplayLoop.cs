@@ -6,8 +6,6 @@ namespace HercAndHippoConsole;
 internal class DisplayLoop
 {
     public const int MESSAGE_MARGIN = 3;
-    public const int REFRESH_FREQUENCY_HZ = 40;
-
     private readonly CycleTimer cycleTimer;
     private readonly BufferStats bufferStats;
 
@@ -16,11 +14,11 @@ internal class DisplayLoop
     private DisplayPlan displayPlan;
     private ActionInput lastAction;
     private IEnumerable<DisplayDiff> diffs;
-    public DisplayLoop(Level state)
+    public DisplayLoop(Level state, int frequency_hz)
     {
         // Initialize data
         State = state;
-        cycleTimer = new(frequencyHz: REFRESH_FREQUENCY_HZ);
+        cycleTimer = new(frequencyHz: frequency_hz);
         scrollStatus = ScrollStatus.Default(state.Player.Location);
         bufferStats = new(bufferSizeChanged: true, bufferWidth: Console.BufferWidth, bufferHeight: Console.BufferHeight);
         displayPlan = new(state, scrollStatus, bufferStats);
@@ -33,13 +31,11 @@ internal class DisplayLoop
         displayPlan.RefreshDisplay(diffs);
         ShowMessage("Use arrow keys to move, shift + arrow keys to shoot, 'q' to quit.");
     }
-    public void RunGame(IEnumerable<ActionInput> controller)
+    public void RunGame(GameController controller)
     {
-        IEnumerator<ActionInput> actionEnumerator = controller.GetEnumerator();
         DisplayPlan nextDisplayPlan;
         FutureStates futures;
         bool refreshed;
-        bool readInput;
 
         // Main loop
         while (State.WinState == WinState.InProgress)
@@ -53,8 +49,7 @@ internal class DisplayLoop
             cycleTimer.AwaitCycle(); // Update once per 20 ms, return key input
             bufferStats.Refresh(); // Check if buffer size changed
             displayPlan = new(State, scrollStatus, bufferStats); // save current screen layout
-            readInput = actionEnumerator.MoveNext();
-            lastAction = readInput ? actionEnumerator.Current : ActionInput.NoAction;
+            lastAction = controller.NextAction(State);
             if (lastAction == ActionInput.Quit) break;
             (State, scrollStatus, diffs) = futures.GetFutureDiffs(lastAction); ;
             refreshed = displayPlan.RefreshDisplay(diffs); // Re-display anything that changed

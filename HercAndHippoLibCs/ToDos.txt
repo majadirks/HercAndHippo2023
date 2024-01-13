@@ -25,7 +25,7 @@ Tests to write:
 		- Groodle removes health from hippo if hippo touches groodle
 		- Groodle removes health from player if groodle touches player
 		- Groodle removes health from player if player touches groodle
-		- Groodle dies when shot
+		- Groodle dies when shot (test bullet/groodle moving into same location, nearby...)
 		- Groodle is subject to gravity
 		- Groodle dies if it falls into abyss
 		- Groodle passes over ammo without interacting with it; ammo remains on level
