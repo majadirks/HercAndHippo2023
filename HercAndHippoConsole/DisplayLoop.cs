@@ -16,6 +16,8 @@ internal class DisplayLoop
     private IEnumerable<DisplayDiff> diffs;
     public DisplayLoop(Level state, int frequency_hz)
     {
+        if (frequency_hz < 1)
+            throw new ArgumentException($"Frequency must be >=1, but was given {frequency_hz}");
         // Initialize data
         State = state;
         cycleTimer = new(frequencyHz: frequency_hz);
