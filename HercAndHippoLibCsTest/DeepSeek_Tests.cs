@@ -24,7 +24,7 @@ public class DeepSeek_Tests
         Assert.AreEqual(Direction.Idle, initial.Whither);
 
         // Act
-        DeepSeekResults results = initial.DeepSeek(level, depth, cameFrom: initial.Location);
+        DeepSeekResults results = initial.DeepSeek(level, level.Player, depth, cameFrom: initial.Location);
         level = level.Replace(initial, initial with { Location = results.Location });
 
         // Assert: West and North are blocked, so went South
@@ -33,7 +33,7 @@ public class DeepSeek_Tests
         Assert.AreEqual(4, results.Metric);
 
         // Act
-        results = iterated.DeepSeek(level, depth, cameFrom: iterated.Location);
+        results = iterated.DeepSeek(level, level.Player, depth, cameFrom: iterated.Location);
         level = level.Replace(iterated,
             iterated with { Location = results.Location });
         iterated = FindBullet();
@@ -43,7 +43,7 @@ public class DeepSeek_Tests
         Assert.AreEqual(3, results.Metric);
 
         // Act
-        results = iterated.DeepSeek(level, depth, cameFrom: iterated.Location);
+        results = iterated.DeepSeek(level, level.Player, depth, cameFrom: iterated.Location);
         level = level.Replace(iterated,
             iterated with { Location = results.Location });
         iterated = FindBullet();
@@ -53,22 +53,22 @@ public class DeepSeek_Tests
         Assert.AreEqual(2, results.Metric);
 
         // Act
-        results = iterated.DeepSeek(level, depth, cameFrom: iterated.Location);
+        results = iterated.DeepSeek(level, level.Player, depth, cameFrom: iterated.Location);
         level = level.Replace(iterated,
             iterated with { Location = results.Location });
         iterated = FindBullet();
 
-        results = iterated.DeepSeek(level, depth, cameFrom: iterated.Location);
+        results = iterated.DeepSeek(level, level.Player,depth, cameFrom: iterated.Location);
         level = level.Replace(iterated,
             iterated with { Location = results.Location });
         iterated = FindBullet();
 
-        results = iterated.DeepSeek(level, depth, cameFrom: iterated.Location);
+        results = iterated.DeepSeek(level, level.Player,depth, cameFrom: iterated.Location);
         level = level.Replace(iterated,
             iterated with { Location = results.Location });
         iterated = FindBullet();
 
-        results = iterated.DeepSeek(level, depth, cameFrom: iterated.Location);
+        results = iterated.DeepSeek(level, level.Player,depth, cameFrom: iterated.Location);
         level = level.Replace(iterated,
             iterated with { Location = results.Location });
         iterated = FindBullet();
