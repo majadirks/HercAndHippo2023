@@ -28,7 +28,7 @@ public static class DirectionExtensions
     public static Direction Seek<T>(this T hho, Level level, ILocatable toSeek, out int newDist) where T : HercAndHippoObj, ILocatable
     {
         int initialDistance = ManhattanDistance(hho.Location, toSeek.Location);
-        if (hho.Location == toSeek.Location || hho is Player)
+        if (hho.Location == toSeek.Location)
         {
             newDist = 0;
             return Direction.Idle;

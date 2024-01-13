@@ -8,7 +8,9 @@ namespace HercAndHippoConsole
         private readonly ILocatable trophy;
         private readonly System.Collections.IEnumerator enumerator;
         private ActionInput lastAction;
-        public SeekTrophyController(Level state, int iterations)
+        private readonly int depth;
+        private readonly Random random;
+        public SeekTrophyController(Level state, int depth, int iterations)
         {
             ILocatable trophy = state
                 .LevelObjects
@@ -16,6 +18,8 @@ namespace HercAndHippoConsole
                 .Cast<Trophy>()
                 .Single();
             this.trophy = trophy;
+            this.depth = depth;
+            this.random = new();
 
             lastAction = ActionInput.NoAction;
 
@@ -45,9 +49,16 @@ namespace HercAndHippoConsole
         }
         private ActionInput FindNextFrom(Level state)
         {
+            if (state.WinState != WinState.InProgress)
+                return ActionInput.NoAction;
+            if (!state.Player.Health.HasHealth)
+                return ActionInput.NoAction;
             Player player = state.Player;
             Dictionary<ActionInput, int> metrics = new();
-
+            Hippo? hippo = state.Hippo;
+            if (hippo == null)
+                return ActionInput.NoAction;
+            ILocatable toSeek = hippo.LockedToPlayer ? trophy : hippo;
             Task<Level> moveNorth = Task.Run(() => state.RefreshCyclables(ActionInput.MoveNorth));
             Task<Level> moveEast = Task.Run(() => state.RefreshCyclables(ActionInput.MoveEast));
             Task<Level> moveWest = Task.Run(() => state.RefreshCyclables(ActionInput.MoveWest));
@@ -56,28 +67,27 @@ namespace HercAndHippoConsole
             Task<Level> shootSouth = Task.Run(() => state.RefreshCyclables(ActionInput.ShootSouth));
             Task.WaitAll(moveNorth, moveEast, moveWest, idle, shootWest, shootSouth);
 
-            metrics[ActionInput.MoveNorth] = Location.ManhattanDistance(moveNorth.Result.Player.Location, trophy.Location);
-            metrics[ActionInput.MoveEast] = Location.ManhattanDistance(moveEast.Result.Player.Location, trophy.Location);
-            metrics[ActionInput.MoveWest] = Location.ManhattanDistance(moveWest.Result.Player.Location, trophy.Location);
-            metrics[ActionInput.NoAction] = Location.ManhattanDistance(idle.Result.Player.Location, trophy.Location);
-            metrics[ActionInput.ShootWest] = Location.ManhattanDistance(shootWest.Result.Player.Location, trophy.Location);
-            metrics[ActionInput.ShootSouth] = Location.ManhattanDistance(shootSouth.Result.Player.Location, trophy.Location);
-            int curDist = Location.ManhattanDistance(player.Location, trophy.Location);
-            if (metrics.Values.Where(v => v != curDist).Any())
-            {
-                int min = metrics.Values.Where(v => v != curDist).Min();
-                var newInputs = metrics.Keys.Where(ai => ai != lastAction && metrics[ai] == min);
-                ActionInput best = newInputs.Any() ? newInputs.First() : metrics.Keys.Where(ai => metrics[ai]== min).First();
-                lastAction = best;
-                return best;
-            }
-            else
-            {
-                int min = metrics.Values.Min();
-                ActionInput best = metrics.Keys.Where(ai => metrics[ai] == min).First();
-                lastAction = best;
-                return best;
-            }          
+            metrics[ActionInput.MoveNorth] = moveNorth.Result.Player.DeepSeek(moveNorth.Result, toSeek, depth - 1, state.Player.Location).Metric;
+            metrics[ActionInput.MoveEast] = moveEast.Result.Player.DeepSeek(moveEast.Result, toSeek, depth - 1, state.Player.Location).Metric;
+            metrics[ActionInput.MoveWest] = moveWest.Result.Player.DeepSeek(moveWest.Result, toSeek, depth - 1, state.Player.Location).Metric;
+            metrics[ActionInput.NoAction] = idle.Result.Player.DeepSeek(idle.Result, toSeek, depth - 1, state.Player.Location).Metric;
+            metrics[ActionInput.ShootWest] = shootWest.Result.Player.DeepSeek(shootWest.Result, toSeek, depth- 1, state.Player.Location).Metric;
+            metrics[ActionInput.ShootSouth] = shootSouth.Result.Player.DeepSeek(shootSouth.Result, toSeek, depth - 1, state.Player.Location).Metric;
+
+            int min = metrics.Values.Min();
+            var minInputs = metrics.Keys.Where(ai => metrics[ai] == min);
+            var newInputs = minInputs.Where(ai => ai != lastAction);
+            ActionInput best = newInputs.Any() ? Random(newInputs) : Random(minInputs);
+            lastAction = best;
+            return best;
+        }
+
+        private ActionInput Random(IEnumerable<ActionInput> items)
+        {
+            ActionInput[] itemsArr = items.ToArray();
+            int ct = itemsArr.Length;
+            int i = random.Next(0, ct);
+            return itemsArr[i];
         }
         public override ActionInput NextAction(Level state)
         {
