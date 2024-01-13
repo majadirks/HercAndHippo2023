@@ -29,7 +29,7 @@ public static class DeepSeekExtensions
         Level level = ssps.Level;
         ILocatable toSeek = ssps.ToSeek;
         Location cameFrom = ssps.CameFrom;
-        int initialDistance = ManhattanDistance(hho.Location, toSeek.Location);
+        //int initialDistance = ManhattanDistance(hho.Location, toSeek.Location);
         if (hho.Location == toSeek.Location)
         {
             var dsr = new DeepSeekResults(Direction.Idle, hho.Location, 0);
@@ -39,7 +39,7 @@ public static class DeepSeekExtensions
         else if (depth == 0)
         {
             Direction dir = hho.Seek(level, toSeek, out int d);
-            var dsr = new DeepSeekResults(dir, hho.Location, d);
+            var dsr = new DeepSeekResults(dir, hho.Location, GetMetric(d, 0));
             deepSeekCache.TryAdd((hho.Location, toSeek.Location, depth), dsr);
             return dsr;
         }
@@ -50,8 +50,9 @@ public static class DeepSeekExtensions
 
         int northMetric = MAX_COST;
         int eastMetric = MAX_COST;
-        int southMetric = 500;
-        int westMetric = 500;
+        int southMetric = MAX_COST;
+        int westMetric = MAX_COST;
+        int idleMetric = MAX_COST;
 
         if (!hho.MotionBlockedTo(level, Direction.North) && cameFrom != nextNorth)
         {
@@ -81,12 +82,15 @@ public static class DeepSeekExtensions
             var westResults = DeepSeek(newHho, newLevel, toSeek, depth - 1, cameFrom: hho.Location);
             westMetric = westResults.Metric;
         }
+        //idle
+        var idleResults = DeepSeek(hho, level, toSeek, depth - 1, cameFrom: hho.Location);
+        idleMetric = idleResults.Metric;
 
-        int[] distances = new int[] { northMetric, eastMetric, southMetric, westMetric };
+        int[] distances = new int[] { northMetric, eastMetric, southMetric, westMetric, idleMetric };
         int newDist = distances.Min();
         Location newLoc = hho.Location;
         Direction newDir = Direction.Idle;
-        if (newDist == int.MaxValue || newDist == initialDistance)
+        if (newDist == int.MaxValue || newDist == idleMetric)
         {
             newLoc = hho.Location;
             newDir = Direction.Idle;
@@ -113,10 +117,12 @@ public static class DeepSeekExtensions
         }
         else
             throw new NotSupportedException($"An unexpected error occurred in method {nameof(DeepSeek)}.");
-        int metric = Math.Min(1 + 2 * newDist + 3 * depth, MAX_COST);
+        int metric = GetMetric(newDist, depth);
         DeepSeekResults results = new(Direction: newDir, Location: newLoc, Metric: metric);
 
         deepSeekCache.TryAdd((hho.Location, toSeek.Location, depth), results);
         return results;
+
+        static int GetMetric(int dist, int depth) => Math.Min(1 + dist + depth / 2, MAX_COST);
     }
 }
