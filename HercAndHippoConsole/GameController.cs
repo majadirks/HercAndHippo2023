@@ -19,8 +19,8 @@ internal partial class KeyboardController : GameController
     const int VK_RIGHT = 0x27;
     const int VK_DOWN = 0x28;    
 
-    [DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true, CallingConvention = CallingConvention.Winapi)]
-    public static extern short GetKeyState(int nVirtKey);
+    [LibraryImport("user32.dll")]
+    public static partial short GetKeyState(int nVirtKey);
     public override  ActionInputPair NextAction(Level state)
     {
         // https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getkeystate
