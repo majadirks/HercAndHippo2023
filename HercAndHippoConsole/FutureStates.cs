@@ -116,13 +116,14 @@ internal class FutureStates
             if (actionInput == mostRecentInputs) 
                 continue;
             else
-                futures.TryAdd(actionInput, 
-                    Task.Run(() => GetDiffs(
-                        initialPlan: initialPlan,
-                        initialState: initialState, 
-                        actionInputs: actionInput, 
-                        initialScrollStatus: initialScrollStatus, 
-                        bufferStats: bufferStats)));
+                if (!futures.ContainsKey(actionInput))
+                    futures.TryAdd(actionInput, 
+                        Task.Run(() => GetDiffs(
+                            initialPlan: initialPlan,
+                            initialState: initialState, 
+                            actionInputs: actionInput, 
+                            initialScrollStatus: initialScrollStatus, 
+                            bufferStats: bufferStats)));
         }
     }
 
