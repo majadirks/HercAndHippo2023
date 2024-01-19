@@ -2,12 +2,13 @@
 using System.Collections;
 namespace HercAndHippoConsole;
 
-internal class InputSet : IEquatable<InputSet>, IEnumerable<ActionInput>
+internal class ActionInputSet : IEquatable<ActionInputSet>, IEnumerable<ActionInput>
 {
     private readonly ActionInput[] inputs;
-    public InputSet(ActionInput first, ActionInput? secondOrNull = null)
+    public ActionInputSet(ActionInput first, ActionInput? secondOrNull = null)
     {
         ActionInput second = secondOrNull ?? ActionInput.NoAction;
+        if (second == first) second = ActionInput.NoAction;
         // Put these in some deterministic order
         bool firstFirst = (int)first < (int)second;
         inputs = firstFirst ? 
@@ -15,10 +16,10 @@ internal class InputSet : IEquatable<InputSet>, IEnumerable<ActionInput>
             new ActionInput[] { second, first };
     }
     public override int GetHashCode() => 19 * (int)inputs[0] + 31 * (int)inputs[1];
-    public bool Equals(InputSet? other) 
+    public bool Equals(ActionInputSet? other) 
         => other != null && inputs[0] == other.inputs[0] && inputs[1] == other.inputs[1];
     public override bool Equals(object? obj)
-     => obj != null && Equals(obj as InputSet);
+     => obj != null && Equals(obj as ActionInputSet);
 
     public IEnumerator<ActionInput> GetEnumerator()
         => ((IEnumerable<ActionInput>)inputs).GetEnumerator();
