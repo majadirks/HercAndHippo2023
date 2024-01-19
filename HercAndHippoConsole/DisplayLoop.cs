@@ -12,7 +12,7 @@ internal class DisplayLoop
     public Level State { get; private set; }
     private ScrollStatus scrollStatus;
     private DisplayPlan displayPlan;
-    private ActionInput lastAction;
+    private ActionInputPair lastActions;
     private IEnumerable<DisplayDiff> diffs;
     public DisplayLoop(Level state, int frequency_hz)
     {
@@ -25,7 +25,7 @@ internal class DisplayLoop
         bufferStats = new(bufferSizeChanged: true, bufferWidth: Console.BufferWidth, bufferHeight: Console.BufferHeight);
         displayPlan = new(state, scrollStatus, bufferStats);
         Console.OutputEncoding = System.Text.Encoding.UTF8;
-        lastAction = ActionInput.NoAction;
+        lastActions = new(ActionInput.NoAction);
 
         // Initialize display
         ResetConsoleColors();
@@ -47,13 +47,13 @@ internal class DisplayLoop
                 initialState: State,
                 scrollStatus: scrollStatus,
                 bufferStats: bufferStats,
-                mostRecentInput: lastAction); // plan for possible next states
+                mostRecentInputs: lastActions); // plan for possible next states
             cycleTimer.AwaitCycle(); // Update once per 20 ms, return key input
             bufferStats.Refresh(); // Check if buffer size changed
             displayPlan = new(State, scrollStatus, bufferStats); // save current screen layout
-            lastAction = controller.NextAction(State);
-            if (lastAction == ActionInput.Quit) break;
-            (State, scrollStatus, diffs) = futures.GetFutureDiffs(lastAction); ;
+            lastActions = controller.NextAction(State);
+            if (lastActions.Where(a => a == ActionInput.Quit).Any()) break;
+            (State, scrollStatus, diffs) = futures.GetFutureDiffs(lastActions);
             refreshed = displayPlan.RefreshDisplay(diffs); // Re-display anything that changed
 
             while (!refreshed)

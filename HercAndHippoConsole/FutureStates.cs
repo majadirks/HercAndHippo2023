@@ -1,4 +1,5 @@
 ﻿using HercAndHippoLibCs;
+using System.Collections.Concurrent;
 
 namespace HercAndHippoConsole;
 
@@ -19,7 +20,7 @@ internal class FutureStates
     private readonly Level initialState;
     private readonly ScrollStatus initialScrollStatus;
     private readonly BufferStats bufferStats;
-    private readonly Dictionary<ActionInput, Task<StateAndDiffs>> futures;
+    private readonly ConcurrentDictionary<ActionInputPair, Task<StateAndDiffs>> futures;
     private readonly CancellationTokenSource? cts;
 
     // Track how often we refresh in different ways
@@ -44,10 +45,10 @@ internal class FutureStates
         return new CacheStats(cc, ci, ai);
     }
 
-    public StateAndDiffs GetFutureDiffs(ActionInput actionInput)
+    public StateAndDiffs GetFutureDiffs(ActionInputPair actionInputs)
     {
         // If relevant diffs for this action input have been calculated, return them
-        if (futures.TryGetValue(actionInput, out Task<StateAndDiffs>? value))
+        if (futures.TryGetValue(actionInputs, out Task<StateAndDiffs>? value))
         {
             if (value.IsCompleted)
             {
@@ -71,17 +72,13 @@ internal class FutureStates
             return GetDiffs(
                 initialPlan: initialPlan,
                 initialState: initialState, 
-                actionInput: actionInput, 
+                actionInputs: actionInputs, 
                 initialScrollStatus: initialScrollStatus, 
                 bufferStats: bufferStats);
         }
             
     }
-        
-    private static readonly ActionInput[] possibleInputs = Enum.GetValues(typeof(ActionInput))
-        .Cast<ActionInput>()
-        .Where(ai => ai != ActionInput.Quit)
-        .ToArray();
+       
     
     /// <summary>
     /// Anticipate possible future states based on all possible inputs, 
@@ -93,7 +90,7 @@ internal class FutureStates
     /// <param name="mostRecentInput">Most recent input</param>
     /// <param name="averageCycleTime">Average time to calculate a cycle</param>
     /// <param name="msPerCycle">Ideal interval between cycles</param>
-    public FutureStates(DisplayPlan initialPlan, Level initialState, ScrollStatus scrollStatus, BufferStats bufferStats, ActionInput mostRecentInput)
+    public FutureStates(DisplayPlan initialPlan, Level initialState, ScrollStatus scrollStatus, BufferStats bufferStats, ActionInputPair mostRecentInputs)
     {
         futures = new();
         cts = null;
@@ -108,30 +105,31 @@ internal class FutureStates
             Task.Run(() => GetDiffs(
                 initialPlan: initialPlan,
                 initialState: initialState, 
-                actionInput: mostRecentInput, 
+                actionInputs: mostRecentInputs, 
                 initialScrollStatus: initialScrollStatus, 
                 bufferStats: bufferStats));
-        futures.Add(mostRecentInput, fromMostRecent);
+        futures.TryAdd(mostRecentInputs, fromMostRecent);
 
-        for (int i = 0; i < possibleInputs.Length; i++)
+        for (int i = 0; i < ActionInputPair.PossiblePairs.Length; i++)
         {
-            var actionInput = possibleInputs[i];
-            if (actionInput == mostRecentInput) 
+            var actionInput = ActionInputPair.PossiblePairs[i];
+            if (actionInput == mostRecentInputs) 
                 continue;
             else
-                futures.Add(actionInput, 
-                    Task.Run(() => GetDiffs(
-                        initialPlan: initialPlan,
-                        initialState: initialState, 
-                        actionInput: actionInput, 
-                        initialScrollStatus: initialScrollStatus, 
-                        bufferStats: bufferStats)));
+                if (!futures.ContainsKey(actionInput))
+                    futures.TryAdd(actionInput, 
+                        Task.Run(() => GetDiffs(
+                            initialPlan: initialPlan,
+                            initialState: initialState, 
+                            actionInputs: actionInput, 
+                            initialScrollStatus: initialScrollStatus, 
+                            bufferStats: bufferStats)));
         }
     }
 
-    private static StateAndDiffs GetDiffs(DisplayPlan initialPlan, Level initialState, ActionInput actionInput, ScrollStatus initialScrollStatus, BufferStats bufferStats)
+    private static StateAndDiffs GetDiffs(DisplayPlan initialPlan, Level initialState, ActionInputPair actionInputs, ScrollStatus initialScrollStatus, BufferStats bufferStats)
     {
-        Level nextState = initialState.RefreshCyclables(actionInput);
+        Level nextState = initialState.RefreshCyclables(actionInputs);
         ScrollStatus nextScrollStatus = initialScrollStatus.Update(nextState.Player.Location, bufferStats);
         DisplayPlan newPlan = new(nextState, nextScrollStatus, bufferStats);
         var diffs = initialPlan.GetDiffs(newPlan);

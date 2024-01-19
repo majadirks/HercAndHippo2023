@@ -75,23 +75,31 @@ public class Level
         }
                  
     }
-    public Level RefreshCyclables(ActionInput actionInput, CancellationToken? cancellationToken = null)
+    public Level RefreshCyclables(ActionInputPair actionInputs, CancellationToken? cancellationToken = null)
     {
         CancellationToken token = cancellationToken ?? CancellationToken.None;
         Level nextState = this;
-        // First cycle non-player objects
+        var doubleCyclePlayer = actionInputs.Second != ActionInput.NoAction;
+        // First cycle player using first input
+        nextState = nextState.Player.Cycle(nextState, actionInputs.First);
+        // Then cycle player again using the second input
+        if (doubleCyclePlayer)
+            nextState = nextState.Player.Cycle(nextState, actionInputs.Second);
+        // Then cycle hippo if relevant
+        if (nextState.Hippo != null)
+            nextState = nextState.Hippo.Cycle(nextState, actionInputs.First);
+        // Cycle a second time if locked to player
+        if (nextState.Hippo != null && nextState.Hippo.LockedToPlayer && doubleCyclePlayer)
+            nextState = nextState.Hippo.Cycle(nextState, actionInputs.Second);
+        // Then cycle non-player objects
         nextState = SecondaryObjects // Do not refresh in parallel; this could cause objects to interfere with nearby copies of themselves, and can make updating slower
             .Where(disp => disp.IsCyclable)
             .Cast<ICyclable>()
             .TakeWhile(dummy => !token.IsCancellationRequested)
             .Aggregate(
             seed: nextState, 
-            func: (state, nextCyclable) => nextCyclable.Cycle(state, actionInput));
-        // Then cycle hippo if relevant
-        if (nextState.Hippo != null)
-            nextState = nextState.Hippo.Cycle(nextState, actionInput);
-        // Then cycle player
-        nextState = nextState.Player.Cycle(nextState, actionInput);
+            func: (state, nextCyclable) => nextCyclable.Cycle(state, doubleCyclePlayer ? actionInputs.Second : actionInputs.First));
+
         // Finally, if hippo is locked to player, hippo should move in response to any player motion
         Hippo? hippo = nextState.Hippo;
         if (hippo != null && hippo.LockedToPlayer)

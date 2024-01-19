@@ -1,6 +1,12 @@
 ﻿using HercAndHippoLibCs;
-using HercAndHippoConsole;
-
-GameController keyboard = new KeyboardController();
-DisplayLoop mainLoop = new(state: DemoLevels.Clones, frequency_hz: 40);
-mainLoop.RunGame(controller: keyboard);
+namespace HercAndHippoConsole;
+public class Program
+{
+    [STAThread]
+    static void Main()
+    {
+        GameController keyboard = new KeyboardController();
+        DisplayLoop mainLoop = new(state: DemoLevels.IntroducingTheHippo, frequency_hz: 35);
+        mainLoop.RunGame(controller: keyboard);
+    }
+}

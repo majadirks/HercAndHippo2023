@@ -362,6 +362,30 @@ public static class DemoLevels
             new BreakableWall(Color.Green,(51,21)),
             new BreakableWall(Color.Green,(52,21)),
 
+            new BreakableWall(Color.Green,(29,41)),
+            new BreakableWall(Color.Green,(28,41)),
+            new BreakableWall(Color.Green,(30,41)),
+            new BreakableWall(Color.Green,(31,41)),
+            new BreakableWall(Color.Green,(32,41)),
+            new BreakableWall(Color.Green,(33,41)),
+            new BreakableWall(Color.Green,(34,41)),
+            new BreakableWall(Color.Green,(35,41)),
+            new BreakableWall(Color.Green,(36,41)),
+            new BreakableWall(Color.Green,(37,41)),
+            new BreakableWall(Color.Green,(38,41)),
+            new BreakableWall(Color.Green,(39,41)),
+            new BreakableWall(Color.Green,(40,41)),
+            new BreakableWall(Color.Green,(41,41)),
+            new BreakableWall(Color.Green,(42,41)),
+            new BreakableWall(Color.Green,(43,41)),
+            new BreakableWall(Color.Green,(44,41)),
+            new BreakableWall(Color.Green,(45,41)),
+            new BreakableWall(Color.Green,(46,41)),
+            new BreakableWall(Color.Green,(47,41)),
+            new BreakableWall(Color.Green,(48,41)),
+            new BreakableWall(Color.Green,(49,41)),
+            new BreakableWall(Color.Green,(50,41)),
+
 
             new Wall(Color.Yellow, (400, 1))
         }

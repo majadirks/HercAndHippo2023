@@ -7,7 +7,7 @@ public record Velocity
     private const int MAX_VELOCITY = 2;
     private const int MIN_VELOCITY = -2;
     private const float ZERO_THRESHOLD = 0.05f;
-    private const float ACCELERATION = 0.2f;
+    private const float ACCELERATION = 0.1f;
     public float CurrentVelocity { get; init; }
     public Velocity(float velocity)
     {
