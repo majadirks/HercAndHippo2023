@@ -21,18 +21,21 @@ internal partial class KeyboardController : GameController
 
     [LibraryImport("user32.dll")]
     public static partial short GetKeyState(int nVirtKey);
+
+    // https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getkeystate
+    // "If the high-order bit is 1, the key is down; otherwise, it is up."
+    private bool KeyDown(int nVirtKey)
+        => (((ushort)GetKeyState(nVirtKey)) >> 15) == 1;
     public override  ActionInputPair NextAction(Level state)
     {
-        // https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getkeystate
-        // "If the high-order bit is 1, the key is down; otherwise, it is up."
-        bool lshift = (((ushort)GetKeyState(VK_LSHIFT)) >> 15) == 1;
-        bool rshift = (((ushort)GetKeyState(VK_RSHIFT)) >> 15) == 1;
+        bool lshift = KeyDown(VK_LSHIFT);
+        bool rshift = KeyDown(VK_RSHIFT);
         bool shooting = lshift || rshift;
-        bool north = (((ushort)GetKeyState(VK_UP)) >> 15) == 1;
-        bool south = (((ushort)GetKeyState(VK_DOWN)) >> 15) == 1;
-        bool west = (((ushort)GetKeyState(VK_LEFT)) >> 15) == 1;
-        bool east = (((ushort)GetKeyState(VK_RIGHT)) >> 15) == 1;
-        bool droppingHippo = (((ushort)GetKeyState(VK_SPACE)) >> 15) == 1;
+        bool north = KeyDown(VK_UP);
+        bool south = KeyDown(VK_DOWN);
+        bool west = KeyDown(VK_LEFT);
+        bool east = KeyDown(VK_RIGHT);
+        bool droppingHippo = KeyDown(VK_SPACE);
       
         if (shooting) // cannot shoot while doing something else
         {
