@@ -93,7 +93,7 @@ internal class FutureStates
     /// <param name="mostRecentInput">Most recent input</param>
     /// <param name="averageCycleTime">Average time to calculate a cycle</param>
     /// <param name="msPerCycle">Ideal interval between cycles</param>
-    public FutureStates(DisplayPlan initialPlan, Level initialState, ScrollStatus scrollStatus, BufferStats bufferStats, IEnumerable<ActionInput> mostRecentInputs)
+    public FutureStates(DisplayPlan initialPlan, Level initialState, ScrollStatus scrollStatus, BufferStats bufferStats, ActionInputPair mostRecentInputs)
     {
         futures = new();
         cts = null;
@@ -108,7 +108,7 @@ internal class FutureStates
             Task.Run(() => GetDiffs(
                 initialPlan: initialPlan,
                 initialState: initialState, 
-                actionInput: mostRecentInput, 
+                actionInput: mostRecentInputs, 
                 initialScrollStatus: initialScrollStatus, 
                 bufferStats: bufferStats));
         futures.Add(mostRecentInput, fromMostRecent);
@@ -129,9 +129,9 @@ internal class FutureStates
         }
     }
 
-    private static StateAndDiffs GetDiffs(DisplayPlan initialPlan, Level initialState, ActionInput actionInput, ScrollStatus initialScrollStatus, BufferStats bufferStats)
+    private static StateAndDiffs GetDiffs(DisplayPlan initialPlan, Level initialState, ActionInputPair actionInputs, ScrollStatus initialScrollStatus, BufferStats bufferStats)
     {
-        Level nextState = initialState.RefreshCyclables(actionInput);
+        Level nextState = initialState.RefreshCyclables(actionInputs);
         ScrollStatus nextScrollStatus = initialScrollStatus.Update(nextState.Player.Location, bufferStats);
         DisplayPlan newPlan = new(nextState, nextScrollStatus, bufferStats);
         var diffs = initialPlan.GetDiffs(newPlan);

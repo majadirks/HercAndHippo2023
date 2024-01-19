@@ -1,6 +1,5 @@
-﻿using HercAndHippoLibCs;
-using System.Collections;
-namespace HercAndHippoConsole;
+﻿using System.Collections;
+namespace HercAndHippoLibCs;
 
 public class ActionInputPair : IEquatable<ActionInputPair>, IEnumerable<ActionInput>
 {
