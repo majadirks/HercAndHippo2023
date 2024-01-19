@@ -27,6 +27,8 @@ internal class DisplayLoop
         Console.OutputEncoding = System.Text.Encoding.UTF8;
         lastActions = new(ActionInput.NoAction);
 
+        ThreadPool.SetMinThreads(workerThreads: 15, completionPortThreads: 0);
+
         // Initialize display
         ResetConsoleColors();
         diffs = displayPlan.GetDiffs(displayPlan);
@@ -90,8 +92,8 @@ internal class DisplayLoop
         }
         else
         {
-            //ShowMessage(FutureStates.GetCacheStats().ToString());
-            ShowMessage("Use arrow keys to move, shift + arrow keys to shoot, 'q' to quit.");
+            ShowMessage(FutureStates.GetCacheStats().ToString());
+            //ShowMessage("Use arrow keys to move, shift + arrow keys to shoot, 'q' to quit.");
         }
     }
 

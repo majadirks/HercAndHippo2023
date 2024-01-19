@@ -17,7 +17,8 @@ internal partial class KeyboardController : GameController
     const int VK_LEFT = 0x25;
     const int VK_UP = 0x26;
     const int VK_RIGHT = 0x27;
-    const int VK_DOWN = 0x28;    
+    const int VK_DOWN = 0x28;
+    const int Q_KEY = 0x51;
 
     [LibraryImport("user32.dll")]
     public static partial short GetKeyState(int nVirtKey);
@@ -28,6 +29,7 @@ internal partial class KeyboardController : GameController
         => (((ushort)GetKeyState(nVirtKey)) >> 15) == 1;
     public override  ActionInputPair NextAction(Level state)
     {
+
         bool lshift = KeyDown(VK_LSHIFT);
         bool rshift = KeyDown(VK_RSHIFT);
         bool shooting = lshift || rshift;
@@ -36,6 +38,7 @@ internal partial class KeyboardController : GameController
         bool west = KeyDown(VK_LEFT);
         bool east = KeyDown(VK_RIGHT);
         bool droppingHippo = KeyDown(VK_SPACE);
+        bool quitting = KeyDown(Q_KEY);
       
         if (shooting) // cannot shoot while doing something else
         {
@@ -74,6 +77,8 @@ internal partial class KeyboardController : GameController
             return ActionInput.MoveSouth;
         else if (droppingHippo)
             return ActionInput.DropHippo;
+        else if (quitting)
+            return ActionInput.Quit;
         else
             return ActionInput.NoAction;
     }
