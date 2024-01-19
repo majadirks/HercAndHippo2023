@@ -5,8 +5,9 @@ namespace HercAndHippoConsole;
 internal class InputSet : IEquatable<InputSet>, IEnumerable<ActionInput>
 {
     private readonly ActionInput[] inputs;
-    public InputSet(ActionInput first, ActionInput second)
+    public InputSet(ActionInput first, ActionInput? secondOrNull = null)
     {
+        ActionInput second = secondOrNull ?? ActionInput.NoAction;
         // Put these in some deterministic order
         bool firstFirst = (int)first < (int)second;
         inputs = firstFirst ? 
@@ -24,4 +25,15 @@ internal class InputSet : IEquatable<InputSet>, IEnumerable<ActionInput>
     IEnumerator IEnumerable.GetEnumerator() => inputs.GetEnumerator();
     public ActionInput First => inputs[0];
     public ActionInput Second => inputs[1];
+    public override string ToString()
+    {
+        if (First == ActionInput.NoAction && Second == ActionInput.NoAction)
+            return "No action.";
+        else if (First == ActionInput.NoAction)
+            return Second.ToString();
+        else if (Second == ActionInput.NoAction)
+            return First.ToString();
+        else
+            return ($"{First} and {Second}");
+    }
 }
