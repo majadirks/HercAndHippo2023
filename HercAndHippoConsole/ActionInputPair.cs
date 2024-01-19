@@ -2,10 +2,10 @@
 using System.Collections;
 namespace HercAndHippoConsole;
 
-internal class ActionInputSet : IEquatable<ActionInputSet>, IEnumerable<ActionInput>
+internal class ActionInputPair : IEquatable<ActionInputPair>, IEnumerable<ActionInput>
 {
     private readonly ActionInput[] inputs;
-    public ActionInputSet(ActionInput first, ActionInput? secondOrNull = null)
+    public ActionInputPair(ActionInput first, ActionInput? secondOrNull = null)
     {
         ActionInput second = secondOrNull ?? ActionInput.NoAction;
         if (second == first) second = ActionInput.NoAction;
@@ -16,10 +16,10 @@ internal class ActionInputSet : IEquatable<ActionInputSet>, IEnumerable<ActionIn
             new ActionInput[] { second, first };
     }
     public override int GetHashCode() => 19 * (int)inputs[0] + 31 * (int)inputs[1];
-    public bool Equals(ActionInputSet? other) 
+    public bool Equals(ActionInputPair? other) 
         => other != null && inputs[0] == other.inputs[0] && inputs[1] == other.inputs[1];
     public override bool Equals(object? obj)
-     => obj != null && Equals(obj as ActionInputSet);
+     => obj != null && Equals(obj as ActionInputPair);
 
     public IEnumerator<ActionInput> GetEnumerator()
         => ((IEnumerable<ActionInput>)inputs).GetEnumerator();
