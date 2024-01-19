@@ -12,7 +12,7 @@ internal class DisplayLoop
     public Level State { get; private set; }
     private ScrollStatus scrollStatus;
     private DisplayPlan displayPlan;
-    private IEnumerable<ActionInput> lastActions;
+    private ActionInputPair lastActions;
     private IEnumerable<DisplayDiff> diffs;
     public DisplayLoop(Level state, int frequency_hz)
     {

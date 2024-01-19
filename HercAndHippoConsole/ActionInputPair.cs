@@ -2,7 +2,7 @@
 using System.Collections;
 namespace HercAndHippoConsole;
 
-internal class ActionInputPair : IEquatable<ActionInputPair>, IEnumerable<ActionInput>
+public class ActionInputPair : IEquatable<ActionInputPair>, IEnumerable<ActionInput>
 {
     private readonly ActionInput[] inputs;
     public ActionInputPair(ActionInput first, ActionInput? secondOrNull = null)

@@ -4,14 +4,14 @@ namespace HercAndHippoConsole;
 
 public abstract class GameController
 {
-    public abstract IEnumerable<ActionInput> NextAction(Level state);
+    public abstract ActionInputPair NextAction(Level state);
 }
 internal class KeyboardController : GameController
 {
-    public override IEnumerable<ActionInput> NextAction(Level state)
+    public override ActionInputPair NextAction(Level state)
     {
         ConsoleKeyInfo keyInfo = Console.KeyAvailable ? Console.ReadKey() : default;
-        return new ActionInput[] { keyInfo.ToActionInput() };
+        return new(keyInfo.ToActionInput());
     }
 }
 
@@ -22,9 +22,9 @@ public class EnumerableController : GameController
     {
         this.enumerator = actions.GetEnumerator();
     }
-    public override IEnumerable<ActionInput> NextAction(Level state)
+    public override ActionInputPair NextAction(Level state)
     {
         bool read = enumerator.MoveNext();
-        return new ActionInput[] { read ? enumerator.Current : ActionInput.NoAction };
+        return new ActionInputPair(read ? enumerator.Current: ActionInput.NoAction);
     }
 }
