@@ -25,7 +25,7 @@ internal class DisplayLoop
         bufferStats = new(bufferSizeChanged: true, bufferWidth: Console.BufferWidth, bufferHeight: Console.BufferHeight);
         displayPlan = new(state, scrollStatus, bufferStats);
         Console.OutputEncoding = System.Text.Encoding.UTF8;
-        lastActions = new ActionInput[] { ActionInput.NoAction };
+        lastActions = new(ActionInput.NoAction);
 
         // Initialize display
         ResetConsoleColors();

@@ -2,5 +2,5 @@
 using HercAndHippoConsole;
 
 GameController keyboard = new KeyboardController();
-DisplayLoop mainLoop = new(state: DemoLevels.Clones, frequency_hz: 40);
+DisplayLoop mainLoop = new(state: DemoLevels.IntroducingTheHippo, frequency_hz: 40);
 mainLoop.RunGame(controller: keyboard);

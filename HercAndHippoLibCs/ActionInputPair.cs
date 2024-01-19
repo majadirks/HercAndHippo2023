@@ -4,9 +4,21 @@ namespace HercAndHippoLibCs;
 public class ActionInputPair : IEquatable<ActionInputPair>, IEnumerable<ActionInput>
 {
     private readonly ActionInput[] inputs;
+    static ActionInputPair()
+    {
+        var actions = Enum.GetValues(typeof(ActionInput))
+                      .Cast<ActionInput>()
+                      .Where(ai => ai != ActionInput.Quit)
+                      .ToArray();
+        PossiblePairs = actions
+            .SelectMany(a => actions.Where(b => a != b).Select(b => new ActionInputPair(a, b)))
+            .Distinct()
+            .ToArray();
+    }
     public ActionInputPair(ActionInput first, ActionInput? secondOrNull = null)
     {
-        ActionInput second = secondOrNull ?? ActionInput.NoAction;
+        
+            ActionInput second = secondOrNull ?? ActionInput.NoAction;
         if (second == first) second = ActionInput.NoAction;
         // Put these in some deterministic order
         bool firstFirst = (int)first < (int)second;
@@ -36,4 +48,6 @@ public class ActionInputPair : IEquatable<ActionInputPair>, IEnumerable<ActionIn
         else
             return ($"{First} and {Second}");
     }
+    public static implicit operator ActionInputPair(ActionInput input) => new(input, null);
+    public static readonly ActionInputPair[] PossiblePairs;
 }
