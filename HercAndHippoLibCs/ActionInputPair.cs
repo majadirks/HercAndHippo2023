@@ -4,24 +4,12 @@ namespace HercAndHippoLibCs;
 public class ActionInputPair : IEquatable<ActionInputPair>, IEnumerable<ActionInput>
 {
     private readonly ActionInput[] inputs;
-    static ActionInputPair()
-    {
-        var actions = Enum.GetValues(typeof(ActionInput))
-                      .Cast<ActionInput>()
-                      .Where(ai => ai != ActionInput.Quit)
-                      .ToArray();
-        PossiblePairs = actions
-            .SelectMany(a => actions.Where(b => a != b).Select(b => new ActionInputPair(a, b)))
-            .Distinct()
-            .ToArray();
-    }
     public ActionInputPair(ActionInput first, ActionInput? secondOrNull = null)
     {
-        
-            ActionInput second = secondOrNull ?? ActionInput.NoAction;
-        if (second == first) second = ActionInput.NoAction;
-        // Put these in some deterministic order
-        bool firstFirst = (int)first < (int)second;
+        ActionInput second = secondOrNull ?? ActionInput.NoAction;
+        // Put these in some deterministic order.
+        // If NoAction is one of the two, it's second.
+        bool firstFirst = second == ActionInput.NoAction || (int)first < (int)second;
         inputs = firstFirst ? 
             new ActionInput[] { first, second } : 
             new ActionInput[] { second, first };
@@ -49,5 +37,29 @@ public class ActionInputPair : IEquatable<ActionInputPair>, IEnumerable<ActionIn
             return ($"{First} and {Second}");
     }
     public static implicit operator ActionInputPair(ActionInput input) => new(input, null);
-    public static readonly ActionInputPair[] PossiblePairs;
+    public static readonly ActionInputPair[] PossiblePairs = new ActionInputPair[]
+    {
+        new(ActionInput.NoAction),
+        new(ActionInput.MoveWest),
+        new(ActionInput.MoveEast),
+        new(ActionInput.MoveNorth),
+        new(ActionInput.MoveSouth),
+        new(ActionInput.ShootWest),
+        new(ActionInput.ShootEast),
+        new(ActionInput.ShootNorth),
+        new(ActionInput.ShootSouth),
+        new(ActionInput.DropHippo),
+
+        // Can east/west and north/south simultaneously
+        new(ActionInput.MoveWest, ActionInput.MoveNorth),
+        new(ActionInput.MoveWest, ActionInput.MoveSouth),
+        new(ActionInput.MoveEast, ActionInput.MoveNorth),
+        new(ActionInput.MoveEast, ActionInput.MoveSouth),
+
+        // Can move and drop hippo simultaneously
+        new(ActionInput.MoveWest, ActionInput.DropHippo),
+        new(ActionInput.MoveEast, ActionInput.DropHippo),
+        new(ActionInput.MoveNorth, ActionInput.DropHippo),
+        new(ActionInput.MoveSouth, ActionInput.DropHippo),
+    };
 }
