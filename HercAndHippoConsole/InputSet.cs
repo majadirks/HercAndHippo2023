@@ -1,0 +1,27 @@
+﻿using HercAndHippoLibCs;
+using System.Collections;
+namespace HercAndHippoConsole;
+
+internal class InputSet : IEquatable<InputSet>, IEnumerable<ActionInput>
+{
+    private readonly ActionInput[] inputs;
+    public InputSet(ActionInput first, ActionInput second)
+    {
+        // Put these in some deterministic order
+        bool firstFirst = (int)first < (int)second;
+        inputs = firstFirst ? 
+            new ActionInput[] { first, second } : 
+            new ActionInput[] { second, first };
+    }
+    public override int GetHashCode() => 19 * (int)inputs[0] + 31 * (int)inputs[1];
+    public bool Equals(InputSet? other) 
+        => other != null && inputs[0] == other.inputs[0] && inputs[1] == other.inputs[1];
+    public override bool Equals(object? obj)
+     => obj != null && Equals(obj as InputSet);
+
+    public IEnumerator<ActionInput> GetEnumerator()
+        => ((IEnumerable<ActionInput>)inputs).GetEnumerator();
+    IEnumerator IEnumerable.GetEnumerator() => inputs.GetEnumerator();
+    public ActionInput First => inputs[0];
+    public ActionInput Second => inputs[1];
+}

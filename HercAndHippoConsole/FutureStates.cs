@@ -93,7 +93,7 @@ internal class FutureStates
     /// <param name="mostRecentInput">Most recent input</param>
     /// <param name="averageCycleTime">Average time to calculate a cycle</param>
     /// <param name="msPerCycle">Ideal interval between cycles</param>
-    public FutureStates(DisplayPlan initialPlan, Level initialState, ScrollStatus scrollStatus, BufferStats bufferStats, ActionInput mostRecentInput)
+    public FutureStates(DisplayPlan initialPlan, Level initialState, ScrollStatus scrollStatus, BufferStats bufferStats, IEnumerable<ActionInput> mostRecentInputs)
     {
         futures = new();
         cts = null;
