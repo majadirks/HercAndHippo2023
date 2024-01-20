@@ -31,7 +31,7 @@ namespace HercAndHippoConsole
             Console.SetCursorPosition(0, Console.BufferHeight - margin);
             Player player = state.Player;
             OverwriteLine($"Health: {player.Health}, Ammo: {player.AmmoCount}, Velocity: {player.Velocity}, Energy: {player.KineticEnergy}");
-            OverwriteLine("Inventory: " + string.Join(", ", player.Inventory.Select(item => item.GetType().Name)));
+            OverwriteLine(player.Inventory.ToString());
 
             OverwriteLine($"Display plan stats: {FutureStates.GetCacheStats()}");
             if (state.GetMessage() is Message message)
