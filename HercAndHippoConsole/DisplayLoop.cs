@@ -26,7 +26,7 @@ internal class DisplayLoop
         displayPlan = new(state, scrollStatus, bufferStats);
         Console.OutputEncoding = System.Text.Encoding.UTF8;
         lastActions = new(ActionInput.NoAction);
-        statusBar = new(margin: 5);
+        statusBar = new(margin: 6);
         ThreadPool.SetMinThreads(workerThreads: 15, completionPortThreads: 0);
 
         // Initialize display

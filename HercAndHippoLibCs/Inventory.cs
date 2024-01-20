@@ -56,7 +56,10 @@ public readonly struct Inventory : IEnumerable<ITakeable>, IEquatable<Inventory>
     }
     public int Count => takeables.Count;
     public override string ToString()
-        => "Inventory: " + string.Join(", ", takeables.Select(item => item.ToString()));
+        => "Inventory: " + 
+        (takeables.Any() ? 
+        string.Join(", ", takeables.Select(item => item.ToString())) : 
+        "Empty.");
     
 }
 
