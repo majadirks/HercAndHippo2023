@@ -65,20 +65,13 @@ internal class DisplayLoop
             }
             statusBar.ShowStatus(State);
         }
-        ResetConsoleColors(); // Clean up
 
         if (State.WinState == WinState.Won)
-            Console.WriteLine("Huzzah! You have won!");
+            statusBar.ShowStatus(State, "Huzzah! You have won!");
         else
-            Console.WriteLine("You lost! Try again!");
+            statusBar.ShowStatus(State, "You lost! Try again!");
         Console.ReadLine();
-    }
 
-    private static void ClearCurrentConsoleLine()
-    {
-        int currentLineCursor = Console.CursorTop;
-        Console.SetCursorPosition(0, Console.CursorTop);
-        Console.Write(new string(' ', Console.WindowWidth));
-        Console.SetCursorPosition(0, currentLineCursor);
+        ResetConsoleColors(); // Clean up
     }
 }

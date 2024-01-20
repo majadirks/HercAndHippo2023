@@ -9,7 +9,7 @@ public class StatusBar
         this.margin = margin;
     }
 
-    public void ShowStatus(Level state)
+    public void ShowStatus(Level state, string? msg = null)
     {          
         Console.ForegroundColor = ConsoleColor.White;
         Console.BackgroundColor = ConsoleColor.Blue;
@@ -27,6 +27,8 @@ public class StatusBar
         OverwriteLine($"Display plan stats: {FutureStates.GetCacheStats()}");
         if (state.GetMessage() is Message message)
             OverwriteLine(message.Text);
+        else if (msg != null)
+            OverwriteLine(msg);
         else
             OverwriteLine(" ");
     }
