@@ -30,14 +30,19 @@ namespace HercAndHippoConsole
 
             Console.SetCursorPosition(0, Console.BufferHeight - margin);
             Player player = state.Player;
-            Console.WriteLine($"Health: {player.Health}, Ammo: {player.AmmoCount}, Velocity: {player.Velocity}, Energy: {player.KineticEnergy}");
-            string inventory = string.Join(", ", player.Inventory.Select(item => item.GetType().Name));
-            Console.WriteLine($"Inventory: {inventory}");
-            Console.WriteLine($"Display plan stats: {FutureStates.GetCacheStats()}");
+            OverwriteLine($"Health: {player.Health}, Ammo: {player.AmmoCount}, Velocity: {player.Velocity}, Energy: {player.KineticEnergy}");
+            OverwriteLine("Inventory: " + string.Join(", ", player.Inventory.Select(item => item.GetType().Name)));
+
+            OverwriteLine($"Display plan stats: {FutureStates.GetCacheStats()}");
             if (state.GetMessage() is Message message)
-            {
-                Console.WriteLine(message.Text);
-            }
+                OverwriteLine(message.Text);
+            else
+                OverwriteLine(" ");
+        }
+
+        private void OverwriteLine(string str)
+        {
+            Console.WriteLine(str + new string(' ', Console.WindowWidth - str.Length));
         }
     }
 }
