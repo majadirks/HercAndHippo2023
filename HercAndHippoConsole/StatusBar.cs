@@ -21,7 +21,9 @@ public class StatusBar
         OverwriteLine(player.Inventory.ToString());
         string hippoStr = hippo == null ?
             "No hippo present." :
-            hippo.LockedToPlayer ? $"Hippo locked, health = {hippo.Health}." : $"Hippo loose, health = {hippo.Health}.";
+            hippo.LockedToPlayer ? 
+            $"Hippo locked, health = {hippo.Health}." : 
+            $"Hippo loose, health = {hippo.Health}.";
         string levelStr = $"Level: gravity {state.Gravity}, cycle count {state.Cycles}.";
         OverwriteLine(hippoStr + " " + levelStr);
         OverwriteLine($"Display plan stats: {FutureStates.GetCacheStats()}");
