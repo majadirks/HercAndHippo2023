@@ -1,5 +1,4 @@
 ﻿using HercAndHippoLibCs;
-using HercAndHippoConsole;
 using static HercAndHippoConsole.DisplayUtilities;
 namespace HercAndHippoConsole;
 
