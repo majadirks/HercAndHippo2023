@@ -79,17 +79,17 @@ public class Level
     {
         CancellationToken token = cancellationToken ?? CancellationToken.None;
         Level nextState = this;
-        var doubleCyclePlayer = actionInputs.Second != ActionInput.NoAction;
+        bool comboAction = actionInputs.Second != ActionInput.NoAction;
         // First cycle player using first input
         nextState = nextState.Player.Cycle(nextState, actionInputs.First);
         // Then cycle player again using the second input
-        if (doubleCyclePlayer)
+        if (comboAction)
             nextState = nextState.Player.Cycle(nextState, actionInputs.Second);
         // Then cycle hippo if relevant
         if (nextState.Hippo != null)
             nextState = nextState.Hippo.Cycle(nextState, actionInputs.First);
         // Cycle a second time if locked to player
-        if (nextState.Hippo != null && nextState.Hippo.LockedToPlayer && doubleCyclePlayer)
+        if (nextState.Hippo != null && nextState.Hippo.LockedToPlayer && comboAction)
             nextState = nextState.Hippo.Cycle(nextState, actionInputs.Second);
         // Then cycle non-player objects
         nextState = SecondaryObjects // Do not refresh in parallel; this could cause objects to interfere with nearby copies of themselves, and can make updating slower
@@ -98,7 +98,7 @@ public class Level
             .TakeWhile(dummy => !token.IsCancellationRequested)
             .Aggregate(
             seed: nextState, 
-            func: (state, nextCyclable) => nextCyclable.Cycle(state, doubleCyclePlayer ? actionInputs.Second : actionInputs.First));
+            func: (state, nextCyclable) => nextCyclable.Cycle(state, comboAction ? actionInputs.Second : actionInputs.First));
 
         // Finally, if hippo is locked to player, hippo should move in response to any player motion
         Hippo? hippo = nextState.Hippo;

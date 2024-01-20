@@ -7,6 +7,8 @@ public class ActionInputPair : IEquatable<ActionInputPair>, IEnumerable<ActionIn
     public ActionInputPair(ActionInput first, ActionInput? secondOrNull = null)
     {
         ActionInput second = secondOrNull ?? ActionInput.NoAction;
+        if (second == first)
+            second = ActionInput.NoAction;
         // Put these in some deterministic order.
         // If NoAction is one of the two, it's second.
         bool firstFirst = second == ActionInput.NoAction || (int)first < (int)second;
