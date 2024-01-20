@@ -11,13 +11,13 @@ public class StatusBar
 
     public void ShowStatus(Level state)
     {          
-        Console.ForegroundColor = ConsoleColor.Yellow;
+        Console.ForegroundColor = ConsoleColor.White;
         Console.BackgroundColor = ConsoleColor.Blue;
 
         Console.SetCursorPosition(0, Console.BufferHeight - margin);
         Player player = state.Player;
         Hippo? hippo = state.Hippo;
-        OverwriteLine($"{player.Health}, {player.AmmoCount}, {player.Velocity}, Energy: {player.KineticEnergy}");
+        OverwriteLine($"{player.Health}, {player.AmmoCount}, Velocity: {player.Velocity.CurrentVelocity}, Energy: {player.KineticEnergy}");
         OverwriteLine(player.Inventory.ToString());
         string hippoStr = hippo == null ?
             "No hippo present." :
