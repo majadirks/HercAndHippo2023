@@ -79,7 +79,7 @@ public class Level
     {
         CancellationToken token = cancellationToken ?? CancellationToken.None;
         Level nextState = this;
-        bool comboAction = actionInputs.Second != ActionInput.NoAction;
+        bool comboAction = actionInputs.IsComboAction;
         // First cycle player using first input
         nextState = nextState.Player.Cycle(nextState, actionInputs.First);
         // Then cycle player again using the second input

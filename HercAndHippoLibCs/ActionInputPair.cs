@@ -27,6 +27,7 @@ public class ActionInputPair : IEquatable<ActionInputPair>, IEnumerable<ActionIn
     IEnumerator IEnumerable.GetEnumerator() => inputs.GetEnumerator();
     public ActionInput First => inputs[0];
     public ActionInput Second => inputs[1];
+    public bool IsComboAction => Second != ActionInput.NoAction;
     public override string ToString()
     {
         if (First == ActionInput.NoAction && Second == ActionInput.NoAction)
