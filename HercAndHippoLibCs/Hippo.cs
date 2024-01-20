@@ -49,7 +49,7 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
     public Level Cycle(Level level, ActionInput actionInput)
     {
         if (!Health.HasHealth)
-            return this.Die(level);
+            return this.Die(level).Lose();
         else if (LockedToPlayer && actionInput == ActionInput.DropHippo)
             return PutDown(level);
         else if (LockedToPlayer)
@@ -70,7 +70,12 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
 
             // If we are falling into the abyss, die, unless locked to a player,
             if (nextState.Hippo != null && !nextState.Hippo.LockedToPlayer)
-                nextState = Behaviors.FallIntoAbyssAtBottomRow(nextState, nextState.Hippo);
+            {
+                nextState =
+                    Behaviors.FallIntoAbyssAtBottomRow(nextState, nextState.Hippo);
+                if (nextState.Hippo == null)
+                    return nextState.Lose();
+            }
             
             return nextState;
         }

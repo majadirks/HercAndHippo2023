@@ -146,6 +146,8 @@ public record Player : HercAndHippoObj, ILocatable, IShootable, ICyclable, ITouc
                     }
                 }
             }
+            if (!nextState.Player.HasHealth)
+                nextState = nextState.Lose();
             return nextState;
         } 
     }
