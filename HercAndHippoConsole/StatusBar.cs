@@ -17,7 +17,7 @@ public class StatusBar
         Console.SetCursorPosition(0, Console.BufferHeight - margin);
         Player player = state.Player;
         Hippo? hippo = state.Hippo;
-        OverwriteLine($"{player.Health}, {player.AmmoCount}, Velocity: {player.Velocity.CurrentVelocity}, Energy: {player.KineticEnergy}");
+        OverwriteLine($"{player.Health}, {player.AmmoCount}, Velocity: {Math.Round(player.Velocity.CurrentVelocity,1)}, Energy: {player.KineticEnergy}");
         OverwriteLine(player.Inventory.ToString());
         string hippoStr = hippo == null ?
             "No hippo present." :
