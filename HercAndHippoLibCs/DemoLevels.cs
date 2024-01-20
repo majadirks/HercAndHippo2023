@@ -256,7 +256,7 @@ public static class DemoLevels
             new Wall(Color.Cyan, (29, 11)),
             new Wall(Color.Cyan, (30, 11)),
 
-            new Gem(Color.DarkMagenta, Location: (1,4), Health: 5),
+            new Key(Color.DarkMagenta, Location: (1,4)),
             new BreakableWall(Color.Green, (1, 5)),
             new BreakableWall(Color.Green, (2, 6)),
             new BreakableWall(Color.Green, (3, 7)),
@@ -292,6 +292,7 @@ public static class DemoLevels
             new BreakableWall(Color.Green,(48,8)),
             new BreakableWall(Color.Green,(49,8)),
             new Wall(Color.Green,(50,8)),
+            new Door(Color.DarkMagenta, (51,8)),
             new Wall(Color.Green,(52,8)),
             new Wall(Color.Green,(53,8)),
             new Wall(Color.Green,(54,8)),

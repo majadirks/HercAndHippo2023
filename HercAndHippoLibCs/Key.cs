@@ -19,4 +19,6 @@ public record Key(Color Color, Location Location) : HercAndHippoObj, ILocatable,
     }
     public Level OnTake(Level level) => level.Without(this); // Die after being taken
     public override bool BlocksMotion(Level level, ILocatable toBlock) => false;
+
+    public override string ToString() => $"{Color} Key";
 }

@@ -1,5 +1,4 @@
 ﻿using HercAndHippoLibCs;
-using HercAndHippoConsole;
 using static HercAndHippoConsole.DisplayUtilities;
 namespace HercAndHippoConsole;
 
@@ -8,7 +7,7 @@ internal class DisplayLoop
     public const int MESSAGE_MARGIN = 3;
     private readonly CycleTimer cycleTimer;
     private readonly BufferStats bufferStats;
-
+    private readonly StatusBar statusBar;
     public Level State { get; private set; }
     private ScrollStatus scrollStatus;
     private DisplayPlan displayPlan;
@@ -26,14 +25,13 @@ internal class DisplayLoop
         displayPlan = new(state, scrollStatus, bufferStats);
         Console.OutputEncoding = System.Text.Encoding.UTF8;
         lastActions = new(ActionInput.NoAction);
-
+        statusBar = new(margin: 6);
         ThreadPool.SetMinThreads(workerThreads: 15, completionPortThreads: 0);
 
         // Initialize display
         ResetConsoleColors();
         diffs = displayPlan.GetDiffs(displayPlan);
         displayPlan.RefreshDisplay(diffs);
-        ShowMessage("Use arrow keys to move, shift + arrow keys to shoot, 'q' to quit.");
     }
     public void RunGame(GameController controller)
     {
@@ -65,7 +63,7 @@ internal class DisplayLoop
                 diffs = displayPlan.GetDiffs(nextDisplayPlan);
                 refreshed = displayPlan.RefreshDisplay(diffs);
             }
-            UpdateMessageFromLevel(State);
+            statusBar.ShowStatus(State);
         }
         ResetConsoleColors(); // Clean up
 
@@ -74,27 +72,6 @@ internal class DisplayLoop
         else
             Console.WriteLine("You lost! Try again!");
         Console.ReadLine();
-    }
-
-    private static void ShowMessage(string message)
-    {
-        ResetConsoleColors();
-        Console.SetCursorPosition(1, Console.BufferHeight - MESSAGE_MARGIN);
-        ClearCurrentConsoleLine();
-        Console.WriteLine(message);
-    }
-
-    private static void UpdateMessageFromLevel(Level state)
-    {
-        if (state.GetMessage() is Message message)
-        {
-            ShowMessage(message.Text);
-        }
-        else
-        {
-            ShowMessage(FutureStates.GetCacheStats().ToString());
-            //ShowMessage("Use arrow keys to move, shift + arrow keys to shoot, 'q' to quit.");
-        }
     }
 
     private static void ClearCurrentConsoleLine()

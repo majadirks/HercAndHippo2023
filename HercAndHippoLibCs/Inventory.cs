@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Diagnostics.CodeAnalysis;
+using System.Text;
 
 namespace HercAndHippoLibCs;
 
@@ -54,6 +55,12 @@ public readonly struct Inventory : IEnumerable<ITakeable>, IEquatable<Inventory>
         }
     }
     public int Count => takeables.Count;
+    public override string ToString()
+        => "Inventory: " + 
+        (takeables.Any() ? 
+        string.Join(", ", takeables.Select(item => item.ToString())) : 
+        "Empty.");
+    
 }
 
 public static class InventoryExtensions
