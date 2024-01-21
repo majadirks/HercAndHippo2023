@@ -54,7 +54,7 @@ public class Level
             return new(player: this.Player, hippo: Hippo, secondaryObjects: SecondaryObjects.RemoveObject(toRemove), Width, Height, Cycles, Gravity, winSate: WinState);
     }
     public Level AddSecondaryObject(HercAndHippoObj toAdd) => new(player: this.Player, hippo: Hippo, secondaryObjects: SecondaryObjects.AddObject(toAdd), Width, Height, Cycles, Gravity, winSate: WinState);
-    public Level Replace(HercAndHippoObj toReplace, HercAndHippoObj toAdd)
+    public Level ReplaceIfPresent(HercAndHippoObj toReplace, HercAndHippoObj toAdd)
     {
         if (toReplace == null)
             throw new ArgumentNullException(nameof(toReplace));
@@ -64,6 +64,9 @@ public class Level
             throw new NotSupportedException();
         else if (toReplace is Hippo ^ toAdd is Hippo)
             throw new NotSupportedException();
+        // If object was removed, do not replace it
+        else if (!LevelObjects.Contains(toReplace))
+            return this;
         else if (toAdd is Player newPlayer) // from above logic, toReplace must also be a player
             return new Level(player: newPlayer, hippo: Hippo, gravity: Gravity, secondaryObjects: SecondaryObjects, width: Width, height: Height, cycles: Cycles, winSate: WinState);
         else if (toAdd is Hippo newHippo) // from aboveLogic, toReplace must also be a hippo
@@ -95,7 +98,7 @@ public class Level
         nextState = SecondaryObjects // Do not refresh in parallel; this could cause objects to interfere with nearby copies of themselves, and can make updating slower
             .Where(disp => disp.IsCyclable)
             .Cast<ICyclable>()
-            .TakeWhile(dummy => !token.IsCancellationRequested)
+            .TakeWhile(_ => !token.IsCancellationRequested)
             .Aggregate(
             seed: nextState, 
             func: (state, nextCyclable) => nextCyclable.Cycle(state, comboAction ? actionInputs.Second : actionInputs.First));

@@ -14,7 +14,7 @@ public record Message(string Text, int RemainingCycles = Message.DEFAULT_PERSIST
         {
 
             Message nextMessage = this with { RemainingCycles = RemainingCycles - 1};
-            return level.Replace(this, nextMessage);
+            return level.ReplaceIfPresent(this, nextMessage);
         }
     }
 

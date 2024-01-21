@@ -89,7 +89,7 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
         if (hippo.MotionBlockedTo(level, Direction.South))
             return level.NoReaction();
         Location nextLocation = new(hippo.Location.Col, hippo.Location.Row.NextSouth(level.Height));
-        return level.Replace(hippo, hippo with { Location = nextLocation, LockedToPlayer = nextLocation == level.Player.Location });
+        return level.ReplaceIfPresent(hippo, hippo with { Location = nextLocation, LockedToPlayer = nextLocation == level.Player.Location });
     }
 
     public static Level LockAbovePlayer(Level level)
@@ -98,7 +98,7 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
         Player player = level.Player;
         Location nextLocation = new(Col: player.Location.Col, Row: player.Location.Row.NextNorth());
         Hippo lockedHippo = hippo with { Location = nextLocation, LockedToPlayer = true };
-        Level withLockedHippo = level.Replace(hippo, lockedHippo);
+        Level withLockedHippo = level.ReplaceIfPresent(hippo, lockedHippo);
         return  withLockedHippo;
     }
 
@@ -113,7 +113,7 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
         if (!blockedEast && !blockedNE)
         {
             Location nextLocation = new(Col: player.Location.Col.NextEast(level.Width), Row: player.Location.Row);
-            Level nextState = level.Replace(hippo, hippo with { Location = nextLocation, LockedToPlayer = false });
+            Level nextState = level.ReplaceIfPresent(hippo, hippo with { Location = nextLocation, LockedToPlayer = false });
             return nextState;
         }
 
@@ -124,7 +124,7 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
         if (!blockedWest && !blockedNW)
         {
             Location nextLocation = new(Col: player.Location.Col.NextWest(), Row: player.Location.Row);
-            Level nextState = level.Replace(hippo, hippo with { Location = nextLocation, LockedToPlayer = false });
+            Level nextState = level.ReplaceIfPresent(hippo, hippo with { Location = nextLocation, LockedToPlayer = false });
             return nextState;
         }
 
@@ -133,7 +133,7 @@ public record Hippo(Location Location, Health Health, bool LockedToPlayer) : Her
     }
 
     public Level OnShot(Level level, Direction shotFrom, Bullet shotBy)
-        => level.Without(shotBy).Replace(this, this with { Health = this.Health - HEALTH_PENALTY_ON_SHOT });
+        => level.Without(shotBy).ReplaceIfPresent(this, this with { Health = this.Health - HEALTH_PENALTY_ON_SHOT });
 
     public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy) 
         => touchedBy is Player && !LockedToPlayer ? PickUp(level) : level.NoReaction();

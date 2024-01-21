@@ -187,7 +187,7 @@ namespace HercAndHippoLibCsTest
 
             // Act and assert
             #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-            Assert.ThrowsException<ArgumentNullException>(() => level.Replace(ammo, null));
+            Assert.ThrowsException<ArgumentNullException>(() => level.ReplaceIfPresent(ammo, null));
             #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
         }
 
@@ -208,7 +208,7 @@ namespace HercAndHippoLibCsTest
 
             // Act and assert
             #pragma warning disable CS8625 // Cannot convert null literal to non-nullable reference type.
-            Assert.ThrowsException<ArgumentNullException>(() => level.Replace(null, ammo));
+            Assert.ThrowsException<ArgumentNullException>(() => level.ReplaceIfPresent(null, ammo));
             #pragma warning restore CS8625 // Cannot convert null literal to non-nullable reference type.
         }
 
@@ -228,7 +228,7 @@ namespace HercAndHippoLibCsTest
                 });
 
             // Act and assert
-            Assert.ThrowsException<NotSupportedException>(() => level.Replace(level.Player, ammo));
+            Assert.ThrowsException<NotSupportedException>(() => level.ReplaceIfPresent(level.Player, ammo));
         }
 
         [TestMethod]
@@ -247,7 +247,7 @@ namespace HercAndHippoLibCsTest
                 });
 
             // Act and assert
-            Assert.ThrowsException<NotSupportedException>(() => level.Replace(ammo, level.Player));
+            Assert.ThrowsException<NotSupportedException>(() => level.ReplaceIfPresent(ammo, level.Player));
         }
 
         [TestMethod]
@@ -265,7 +265,7 @@ namespace HercAndHippoLibCsTest
 
             // Act and assert
             Assert.IsNotNull(level.Hippo);
-            Assert.ThrowsException<NotSupportedException>(() => level.Replace(level.Hippo, ammo));
+            Assert.ThrowsException<NotSupportedException>(() => level.ReplaceIfPresent(level.Hippo, ammo));
         }
 
         [TestMethod]
@@ -283,7 +283,7 @@ namespace HercAndHippoLibCsTest
             Hippo hippo = new((2, 2), 5, false);
 
             // Act and assert
-            Assert.ThrowsException<NotSupportedException>(() => level.Replace(ammo, hippo));
+            Assert.ThrowsException<NotSupportedException>(() => level.ReplaceIfPresent(ammo, hippo));
         }
 
         [TestMethod]
@@ -304,7 +304,7 @@ namespace HercAndHippoLibCsTest
                 );
             Player p2 = Player.Default(2, 1);
             // Act
-            Level fromReplace = level.Replace(p1, p2);
+            Level fromReplace = level.ReplaceIfPresent(p1, p2);
             Level fromWithPlayer = level.WithPlayer(p2);
             // Assert
             Assert.AreEqual(new Location(2,1), fromReplace.Player.Location);
@@ -330,7 +330,7 @@ namespace HercAndHippoLibCsTest
                 );
             Hippo h2 = new((3, 1), 5, false);
             // Act
-            Level fromReplace = level.Replace(h1, h2);
+            Level fromReplace = level.ReplaceIfPresent(h1, h2);
             // Assert
             Assert.IsNotNull(fromReplace.Hippo);
             Assert.AreEqual(new Location(3, 1), fromReplace.Hippo.Location);
@@ -355,7 +355,7 @@ namespace HercAndHippoLibCsTest
             Assert.IsFalse(level.Contains(bullet));
             
             // Act
-            level = level.Replace(ammo, bullet);
+            level = level.ReplaceIfPresent(ammo, bullet);
             // Assert
             Assert.IsFalse(level.Contains(ammo));
             Assert.IsTrue(level.Contains(bullet));

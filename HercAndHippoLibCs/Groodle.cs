@@ -34,13 +34,13 @@ public record Groodle(Location Location, Direction Whither, Slowness Slowness) :
             if (this.MotionBlockedTo(nextLevel, Direction.East))
             {
                 nextGroodle = this with { Whither = Direction.West };
-                nextLevel = nextLevel.Replace(this, nextGroodle);
+                nextLevel = nextLevel.ReplaceIfPresent(this, nextGroodle);
                 nextLevel = nextGroodle.MutualTouch(nextLevel, nextEast, touchFrom: Direction.West);
             }
             else 
             {
                 nextGroodle = this with { Location = nextEast };
-                nextLevel = nextLevel.Replace(this, nextGroodle);
+                nextLevel = nextLevel.ReplaceIfPresent(this, nextGroodle);
             }
         }
         else if (moving && Whither == Direction.West )
@@ -49,13 +49,13 @@ public record Groodle(Location Location, Direction Whither, Slowness Slowness) :
             if (this.MotionBlockedTo(nextLevel, Direction.West))
             {
                 nextGroodle = this with { Whither = Direction.East };
-                nextLevel = nextLevel.Replace(this, nextGroodle);
+                nextLevel = nextLevel.ReplaceIfPresent(this, nextGroodle);
                 nextLevel = nextGroodle.MutualTouch(nextLevel, nextWest, touchFrom: Direction.East);
             }
             else
             {
                 nextGroodle = this with { Location = nextWest };
-                nextLevel = nextLevel.Replace(this, nextGroodle);
+                nextLevel = nextLevel.ReplaceIfPresent(this, nextGroodle);
             }
         }
 
@@ -78,7 +78,7 @@ public record Groodle(Location Location, Direction Whither, Slowness Slowness) :
         {
             Health nextHealth = hippo.Health - 5;
             Hippo nextHippo = hippo with { Health = nextHealth };
-            return level.Replace(hippo, nextHippo).AddSecondaryObject(Message.Ouch);
+            return level.ReplaceIfPresent(hippo, nextHippo).AddSecondaryObject(Message.Ouch);
         }
         else
             return level.NoReaction();

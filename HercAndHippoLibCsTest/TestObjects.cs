@@ -7,7 +7,7 @@
 
         public override bool BlocksMotion(Level level, ILocatable toBlock) => false;
 
-        private Level IncreaseCount(Level level) => level.Replace(this, this with { Count = Count + 1 });
+        private Level IncreaseCount(Level level) => level.ReplaceIfPresent(this, this with { Count = Count + 1 });
         public Level Cycle(Level level, ActionInput actionInput) => IncreaseCount(level);
     }
 
@@ -15,7 +15,7 @@
     internal record ImpassableTouchCounter(Location Location,int Count) : HercAndHippoObj, ILocatable, ITouchable
     {
         public override bool BlocksMotion(Level level, ILocatable toBlock) => true;
-        private Level IncreaseCount(Level level) => level.Replace(this, this with { Count = Count + 1 });
+        private Level IncreaseCount(Level level) => level.ReplaceIfPresent(this, this with { Count = Count + 1 });
         public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy) => IncreaseCount(level);
     }
 
@@ -23,7 +23,7 @@
     internal record PassableTouchCounter(Location Location, int Count) : HercAndHippoObj, ILocatable, ITouchable
     {
         public override bool BlocksMotion(Level level, ILocatable toBlock) => false;
-        private Level IncreaseCount(Level level) => level.Replace(this, this with { Count = Count + 1 });
+        private Level IncreaseCount(Level level) => level.ReplaceIfPresent(this, this with { Count = Count + 1 });
         public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy) => IncreaseCount(level);
     }
 
@@ -34,7 +34,7 @@
 
         public override bool BlocksMotion(Level level, ILocatable toBlock) => false;
 
-        private Level IncreaseCount(Level level) => level.Replace(this, this with { Count = Count + 1 });
+        private Level IncreaseCount(Level level) => level.ReplaceIfPresent(this, this with { Count = Count + 1 });
         public Level OnShot(Level level, Direction shotFrom, Bullet shotBy) => IncreaseCount(level);
     }
 

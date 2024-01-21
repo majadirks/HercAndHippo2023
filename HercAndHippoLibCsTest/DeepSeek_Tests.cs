@@ -25,7 +25,7 @@ public class DeepSeek_Tests
 
         // Act
         DeepSeekResults results = initial.DeepSeek(level, depth, cameFrom: initial.Location);
-        level = level.Replace(initial, initial with { Location = results.Location });
+        level = level.ReplaceIfPresent(initial, initial with { Location = results.Location });
 
         // Assert: West and North are blocked, so went South
         Bullet iterated = FindBullet();
@@ -34,7 +34,7 @@ public class DeepSeek_Tests
 
         // Act
         results = iterated.DeepSeek(level, depth, cameFrom: iterated.Location);
-        level = level.Replace(iterated,
+        level = level.ReplaceIfPresent(iterated,
             iterated with { Location = results.Location });
         iterated = FindBullet();
 
@@ -44,7 +44,7 @@ public class DeepSeek_Tests
 
         // Act
         results = iterated.DeepSeek(level, depth, cameFrom: iterated.Location);
-        level = level.Replace(iterated,
+        level = level.ReplaceIfPresent(iterated,
             iterated with { Location = results.Location });
         iterated = FindBullet();
 
@@ -54,22 +54,22 @@ public class DeepSeek_Tests
 
         // Act
         results = iterated.DeepSeek(level, depth, cameFrom: iterated.Location);
-        level = level.Replace(iterated,
+        level = level.ReplaceIfPresent(iterated,
             iterated with { Location = results.Location });
         iterated = FindBullet();
 
         results = iterated.DeepSeek(level, depth, cameFrom: iterated.Location);
-        level = level.Replace(iterated,
+        level = level.ReplaceIfPresent(iterated,
             iterated with { Location = results.Location });
         iterated = FindBullet();
 
         results = iterated.DeepSeek(level, depth, cameFrom: iterated.Location);
-        level = level.Replace(iterated,
+        level = level.ReplaceIfPresent(iterated,
             iterated with { Location = results.Location });
         iterated = FindBullet();
 
         results = iterated.DeepSeek(level, depth, cameFrom: iterated.Location);
-        level = level.Replace(iterated,
+        level = level.ReplaceIfPresent(iterated,
             iterated with { Location = results.Location });
         iterated = FindBullet();
 
