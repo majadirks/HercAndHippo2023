@@ -7,6 +7,7 @@
 - Level editor
 - Implement and test "seek" behavior for bullet
 - Consider changing Level back to a record, and re-introducing multiple-replacement
+- Give Groodles a Speed stat for how quickly they move (CyclesPerMovement)
 
 Tests to write:
 	- Groodle tests:
@@ -51,7 +52,6 @@ Tests to write:
 - Music / sound effects
 - Saved games
 - Cheat codes
-- Converter to convert ZZT worlds (including ZZT-OOP) to Herc and Hippo worlds???
 - Look into Unity or MAUI for creating non-ASCII interface and mobile version
 
   -=Unit Test=-
