@@ -98,8 +98,8 @@ internal class FutureStates
         this.initialState = initialState;
         initialScrollStatus = scrollStatus;
         this.bufferStats = bufferStats;
-        
 
+        return;
         cts = new();
         Task<StateAndDiffs> fromMostRecent =
             Task.Run(() => GetDiffs(

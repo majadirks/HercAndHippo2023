@@ -12,7 +12,8 @@
 Tests to write:
 	- Groodle tests:
 		- Groodle removes health from hippo if groodle touches hippo
-			- Check case when Groodle approaches from West and Hippo is blocked East
+			- Check case when Groodle approaches from West and Hippo i
+			s blocked East
 		- Groodle removes health from hippo if hippo touches groodle
 		- Groodle removes health from player if groodle touches player
 		- Groodle removes health from player if player touches groodle
