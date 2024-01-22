@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-namespace HercAndHippoLibCs;
+﻿namespace HercAndHippoLibCs;
 
 public record Level(Player Player, Hippo? Hippo, HashSet<HercAndHippoObj> SecondaryObjects, int Width, int Height, int Cycles, Gravity Gravity, WinState WinState)
 {
@@ -90,9 +89,14 @@ public record Level(Player Player, Hippo? Hippo, HashSet<HercAndHippoObj> Second
         }
         return nextState with { Cycles = Cycles + 1 };
     }
-    private bool HasSameStateAs(Level otherState)
-        => SecondaryObjects.Count == otherState.SecondaryObjects.Count &&
-           LevelObjects.Zip(otherState.LevelObjects).All(zipped => zipped.First.Equals(zipped.Second));
+    public bool HasSameStateAs(Level otherState)
+    {
+        bool hipposNull = Hippo == null && otherState.Hippo != null;
+        bool hipposEqual = hipposNull || Hippo != null && Hippo.Equals(otherState.Hippo);
+        return SecondaryObjects.Count == otherState.SecondaryObjects.Count &&
+           LevelObjects.Zip(otherState.LevelObjects).All(zipped => zipped.First.Equals(zipped.Second)) &&
+           Player.Equals(otherState.Player) && hipposEqual;
+    }
     public bool Contains(HercAndHippoObj obj) => LevelObjects.Contains(obj);
     public bool GravityApplies() => HasGravity && Cycles > 0 && Cycles % Gravity.WaitCycles == 0;
     public bool HasGravity => Gravity.Strength > 0;

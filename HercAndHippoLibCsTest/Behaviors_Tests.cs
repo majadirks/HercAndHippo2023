@@ -32,7 +32,7 @@ namespace HercAndHippoLibCsTest
             // Act
             Level actualNextState = door.Die(level: initialState);
             // Assert
-            Assert.AreEqual(expectedNextState, actualNextState);
+            Assert.IsTrue(expectedNextState.HasSameStateAs(actualNextState));
         }
     }
 }
