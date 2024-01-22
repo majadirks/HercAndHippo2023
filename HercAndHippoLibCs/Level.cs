@@ -91,7 +91,7 @@ public record Level(Player Player, Hippo? Hippo, HashSet<HercAndHippoObj> Second
     }
     public bool HasSameStateAs(Level otherState)
     {
-        bool hipposNull = Hippo == null && otherState.Hippo != null;
+        bool hipposNull = Hippo == null && otherState.Hippo == null;
         bool hipposEqual = hipposNull || Hippo != null && Hippo.Equals(otherState.Hippo);
         return SecondaryObjects.Count == otherState.SecondaryObjects.Count &&
            LevelObjects.Zip(otherState.LevelObjects).All(zipped => zipped.First.Equals(zipped.Second)) &&
