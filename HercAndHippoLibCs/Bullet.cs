@@ -2,7 +2,7 @@
 
 namespace HercAndHippoLibCs;
 
-public record Bullet(Location Location, Direction Whither) : HercAndHippoObj, ILocatable, ICyclable, IConsoleDisplayable
+public record Bullet(Location Location, Direction Whither) : HercAndHippoObj, ILocatable, ITouchable, ICyclable, IConsoleDisplayable
 {
     public string ConsoleDisplayString => "○";
     public Color Color => Color.White;
@@ -63,4 +63,12 @@ public record Bullet(Location Location, Direction Whither) : HercAndHippoObj, IL
     }
 
     public override bool BlocksMotion(Level level, ILocatable toBlock) => false;
+
+    public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy)
+    {
+        if (touchedBy is IShootable toShoot)
+            return toShoot.OnShot(level, Direction.Idle, this).Without(this);
+        else
+            return Behaviors.NoReaction(level);
+    }
 }
