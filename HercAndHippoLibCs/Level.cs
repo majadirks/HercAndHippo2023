@@ -1,46 +1,25 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 namespace HercAndHippoLibCs;
 
-public class Level
+public record Level(Player Player, Hippo? Hippo, HashSet<HercAndHippoObj> SecondaryObjects, int Width, int Height, int Cycles, Gravity Gravity, WinState WinState)
 {
-    public Player Player { get; init; }
-    public Hippo? Hippo { get; init; }
-    public int Width { get; init; }
-    public int Height { get; init; }
-    public Gravity Gravity { get; init; }
-    public int Cycles { get; private set; }
-    public WinState WinState { get; private set; }
     public Level ForceSetCycles(int cycles)
-    {
-        Cycles = cycles;
-        return this;
-    }
-    private HashSet<HercAndHippoObj> SecondaryObjects { get; init; } // secondary, ie not the player or hippo
+    => this with { Cycles = cycles };
+    
     public Level(Player player, Gravity gravity, HashSet<HercAndHippoObj> secondaryObjects, Hippo? hippo = null)
-    {
-        Player = player;
-        Hippo = hippo;
-        SecondaryObjects = secondaryObjects;
-        Width = GetWidth(secondaryObjects);
-        Height = GetHeight(secondaryObjects);
-        Gravity = gravity;
-        Cycles = 0;
-        WinState = WinState.InProgress;
-    }
-    private Level(Player player, Hippo? hippo, HashSet<HercAndHippoObj> secondaryObjects, int width, int height, int cycles, Gravity gravity, WinState winSate)
-    {
-        Player = player;
-        Hippo = hippo;
-        SecondaryObjects = secondaryObjects;
-        Width = width;
-        Height = height;
-        Gravity = gravity;
-        Cycles = cycles;
-        WinState = winSate;
-    }
+    :this(
+        Player: player,
+        Hippo: hippo,
+        SecondaryObjects: secondaryObjects,
+        Width: GetWidth(secondaryObjects),
+        Height: GetHeight(secondaryObjects),
+        Gravity: gravity,
+        Cycles: 0,
+        WinState: WinState.InProgress)
+    { }
 
     public IEnumerable<HercAndHippoObj> LevelObjects => Hippo == null ? SecondaryObjects.Append(Player) : SecondaryObjects.Append(Hippo).Append(Player);
-    public Level WithPlayer(Player player) => new (player: player, hippo: Hippo, secondaryObjects: this.SecondaryObjects, width: Width, height: Height, cycles: Cycles, gravity: Gravity, winSate: WinState);
+    public Level WithPlayer(Player player) => new (Player: player, Hippo: Hippo, SecondaryObjects: this.SecondaryObjects, Width: Width, Height: Height, Cycles: Cycles, Gravity: Gravity, WinState: WinState);
     public IEnumerable<HercAndHippoObj> ObjectsAt(Location location) => LevelObjects.Where(d => d.IsLocatable && ((ILocatable)d).Location.Equals(location));
     public Level Without(HercAndHippoObj toRemove)
     {
@@ -49,11 +28,11 @@ public class Level
         else if (toRemove is Player)
             throw new NotSupportedException($"Cannot remove player from level using method '{nameof(Without)}'");
         else if (toRemove is Hippo)
-            return new Level(player: Player, gravity: Gravity, secondaryObjects: SecondaryObjects, hippo: null, width: Width, height: Height, cycles: Cycles, winSate: WinState);
+            return new Level(Player: Player, Gravity: Gravity, SecondaryObjects: SecondaryObjects, Hippo: null, Width: Width, Height: Height, Cycles: Cycles, WinState: WinState);
         else
-            return new(player: this.Player, hippo: Hippo, secondaryObjects: SecondaryObjects.RemoveObject(toRemove), Width, Height, Cycles, Gravity, winSate: WinState);
+            return this with { SecondaryObjects = SecondaryObjects.RemoveObject(toRemove) };
     }
-    public Level AddSecondaryObject(HercAndHippoObj toAdd) => new(player: this.Player, hippo: Hippo, secondaryObjects: SecondaryObjects.AddObject(toAdd), Width, Height, Cycles, Gravity, winSate: WinState);
+    public Level AddSecondaryObject(HercAndHippoObj toAdd) => new(Player: this.Player, Hippo: Hippo, SecondaryObjects: SecondaryObjects.AddObject(toAdd), Width, Height, Cycles, Gravity, WinState: WinState);
     public Level ReplaceIfPresent(HercAndHippoObj toReplace, HercAndHippoObj toAdd)
     {
         if (toReplace == null)
@@ -68,15 +47,14 @@ public class Level
         else if (!LevelObjects.Contains(toReplace))
             return this;
         else if (toAdd is Player newPlayer) // from above logic, toReplace must also be a player
-            return new Level(player: newPlayer, hippo: Hippo, gravity: Gravity, secondaryObjects: SecondaryObjects, width: Width, height: Height, cycles: Cycles, winSate: WinState);
+            return this with { Player = newPlayer };
         else if (toAdd is Hippo newHippo) // from aboveLogic, toReplace must also be a hippo
-            return new(player: Player, hippo: newHippo, gravity: Gravity, secondaryObjects: SecondaryObjects, cycles: Cycles, height: Height, width: Width, winSate: WinState);
+            return this with { Hippo = newHippo };
         else
         {
             var updatedSo = SecondaryObjects.Where(obj => obj != toReplace).Append(toAdd).ToHashSet();
-            return new(player: Player, hippo: Hippo, gravity: Gravity, secondaryObjects: updatedSo, width: Width, height: Height, cycles: Cycles, winSate: WinState);
-        }
-                 
+            return this with { SecondaryObjects = updatedSo };
+        }    
     }
     public Level RefreshCyclables(ActionInputPair actionInputs, CancellationToken? cancellationToken = null)
     {
@@ -110,8 +88,7 @@ public class Level
         {
             nextState = Hippo.LockAbovePlayer(nextState);
         }
-        nextState.Cycles = Cycles + 1;
-        return nextState;
+        return nextState with { Cycles = Cycles + 1 };
     }
     private bool HasSameStateAs(Level otherState)
         => SecondaryObjects.Count == otherState.SecondaryObjects.Count &&
@@ -119,9 +96,6 @@ public class Level
     public bool Contains(HercAndHippoObj obj) => LevelObjects.Contains(obj);
     public bool GravityApplies() => HasGravity && Cycles > 0 && Cycles % Gravity.WaitCycles == 0;
     public bool HasGravity => Gravity.Strength > 0;
-    public override bool Equals([NotNullWhen(true)] object? obj) => obj is Level other && other.HasSameStateAs(this);
-    public static bool operator ==(Level left, Level right) => left.Equals(right);
-    public static bool operator !=(Level left, Level right) => !(left == right);
     public override int GetHashCode()
     {
         unchecked
@@ -147,16 +121,8 @@ public class Level
         .Where(obj => obj is Message m && m.RemainingCycles > 0)
         .LastOrDefault();
 
-    public Level Win()
-    {
-        WinState = WinState.Won;
-        return this;
-    }
+    public Level Win() => this with { WinState = WinState.Won };
 
-    public Level Lose()
-    {
-        WinState = WinState.Lost;
-        return this;
-    }
+    public Level Lose() => this with { WinState = WinState.Lost };
 
 }
