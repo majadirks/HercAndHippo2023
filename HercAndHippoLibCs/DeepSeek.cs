@@ -50,28 +50,28 @@ public static class DeepSeekExtensions
         if (!hho.MotionBlockedTo(level, Direction.North) && cameFrom != nextNorth)
         {
             T newHho = hho with { Location = nextNorth };
-            Level newLevel = level.Replace(hho, newHho);
+            Level newLevel = level.ReplaceIfPresent(hho, newHho);
             var northResults = DeepSeek(newHho, newLevel, depth - 1, cameFrom: hho.Location);
             northDist = northResults.Metric;
         }
         if (!hho.MotionBlockedTo(level, Direction.East) && cameFrom != nextEast)
         {
             T newHho = hho with { Location = nextEast };
-            Level newLevel = level.Replace(hho, newHho);
+            Level newLevel = level.ReplaceIfPresent(hho, newHho);
             var eastResults = DeepSeek(newHho, newLevel, depth - 1, cameFrom: hho.Location);
             eastDist = eastResults.Metric;
         }
         if (!hho.MotionBlockedTo(level, Direction.South) && cameFrom != nextSouth)
         {
             T newHho = hho with { Location = nextSouth };
-            Level newLevel = level.Replace(hho, newHho);
+            Level newLevel = level.ReplaceIfPresent(hho, newHho);
             var southResults = DeepSeek(newHho, newLevel, depth - 1, cameFrom: hho.Location);
             southDist = southResults.Metric;
         }
         if (!hho.MotionBlockedTo(level, Direction.West) && cameFrom != nextWest)
         {
             T newHho = hho with { Location = nextWest };
-            Level newLevel = level.Replace(hho, newHho);
+            Level newLevel = level.ReplaceIfPresent(hho, newHho);
             var westResults = DeepSeek(newHho, newLevel, depth - 1, cameFrom: hho.Location);
             westDist = westResults.Metric;
         }

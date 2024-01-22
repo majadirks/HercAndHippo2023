@@ -42,7 +42,7 @@ public static class Behaviors
         Location newLocation = new(toFall.Location.Col, 1);
         if (level.ObjectsAt(newLocation).Where(bl => bl.BlocksMotion(level, toFall)).Any())
             return level;
-        return level.Replace(toFall, toFall with { Location = newLocation });
+        return level.ReplaceIfPresent(toFall, toFall with { Location = newLocation });
     }
 
     public static Level FallIntoAbyssAtBottomRow<T>(Level level, T toDie) where T : HercAndHippoObj, ILocatable
@@ -58,7 +58,7 @@ public static class Behaviors
         if (toFall.MotionBlockedTo(level, Direction.South))
             return level.NoReaction();
         Location nextLocation = new(toFall.Location.Col, toFall.Location.Row.NextSouth(level.Height));
-        return level.Replace(toFall, toFall with { Location = nextLocation});
+        return level.ReplaceIfPresent(toFall, toFall with { Location = nextLocation});
     }
 
     public static Level MutualTouch<T>(this T toucher, Level level, Location location, Direction touchFrom) where T : HercAndHippoObj, ILocatable, ITouchable

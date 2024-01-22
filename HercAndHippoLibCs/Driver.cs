@@ -22,7 +22,7 @@ public record Driver(Direction Whither, int Modulus, int Count = 0) : HercAndHip
         }
 
         if (Count % Modulus > 0)
-            nextState = nextState.Replace(this, this with { Count = nextCount, Modulus = nextMod} );
+            nextState = nextState.ReplaceIfPresent(this, this with { Count = nextCount, Modulus = nextMod} );
 
         ActionInput motion = Whither switch
         {
@@ -34,6 +34,6 @@ public record Driver(Direction Whither, int Modulus, int Count = 0) : HercAndHip
 
         };
 
-        return nextState.Player.Cycle(level, motion).Replace(this, this with { Count = nextCount, Modulus = nextMod });
+        return nextState.Player.Cycle(level, motion).ReplaceIfPresent(this, this with { Count = nextCount, Modulus = nextMod });
     }
 }

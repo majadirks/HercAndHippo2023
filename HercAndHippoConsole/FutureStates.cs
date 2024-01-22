@@ -98,7 +98,6 @@ internal class FutureStates
         this.initialState = initialState;
         initialScrollStatus = scrollStatus;
         this.bufferStats = bufferStats;
-        
 
         cts = new();
         Task<StateAndDiffs> fromMostRecent =

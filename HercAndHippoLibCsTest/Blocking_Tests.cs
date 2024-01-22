@@ -21,21 +21,21 @@
             Assert.IsFalse(player.ObjectLocatedTo(level, Direction.West));
 
             // Re-arrange and assert
-            Level blockEast = level.Replace(blocker, new Blocker((4, 3))); // blocker east of player
+            Level blockEast = level.ReplaceIfPresent(blocker, new Blocker((4, 3))); // blocker east of player
             Assert.IsFalse(player.ObjectLocatedTo(blockEast, Direction.North));
             Assert.IsTrue(player.ObjectLocatedTo(blockEast, Direction.East));
             Assert.IsFalse(player.ObjectLocatedTo(blockEast, Direction.South));
             Assert.IsFalse(player.ObjectLocatedTo(blockEast, Direction.West));
 
             // Re-arrange and assert
-            Level blockSouth = level.Replace(blocker, new Blocker((3, 4))); // blocker south of south
+            Level blockSouth = level.ReplaceIfPresent(blocker, new Blocker((3, 4))); // blocker south of south
             Assert.IsFalse(player.ObjectLocatedTo(blockSouth, Direction.North));
             Assert.IsFalse(player.ObjectLocatedTo(blockSouth, Direction.East));
             Assert.IsTrue(player.ObjectLocatedTo(blockSouth, Direction.South));
             Assert.IsFalse(player.ObjectLocatedTo(blockSouth, Direction.West));
 
             // Re-arrange and assert
-            Level blockWest = level.Replace(blocker, new Blocker((2, 3))); // blocker west of south
+            Level blockWest = level.ReplaceIfPresent(blocker, new Blocker((2, 3))); // blocker west of south
             Assert.IsFalse(player.ObjectLocatedTo(blockWest, Direction.North));
             Assert.IsFalse(player.ObjectLocatedTo(blockWest, Direction.East));
             Assert.IsFalse(player.ObjectLocatedTo(blockWest, Direction.South));

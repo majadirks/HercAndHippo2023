@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace HercAndHippoLibCs;
 
-public record Groodle(Location Location, Direction Whither) : HercAndHippoObj, IShootable, ITouchable, ILocatable, IConsoleDisplayable, ICyclable
+public record Groodle(Location Location, Direction Whither, Slowness Slowness) : HercAndHippoObj, IShootable, ITouchable, ILocatable, IConsoleDisplayable, ICyclable
 {
     public bool StopsBullet => true;
 
@@ -27,34 +27,35 @@ public record Groodle(Location Location, Direction Whither) : HercAndHippoObj, I
         if (Location == nextLevel.Hippo?.Location)
             nextLevel = OnTouch(nextLevel, Direction.Idle, nextLevel.Hippo);
 
-        if (Whither == Direction.East)
+        bool moving = Slowness.Applies(nextLevel);
+        if (moving && Whither == Direction.East)
         {
             Location nextEast = new(Location.Col.NextEast(nextLevel.Width), Location.Row);
             if (this.MotionBlockedTo(nextLevel, Direction.East))
             {
                 nextGroodle = this with { Whither = Direction.West };
-                nextLevel = nextLevel.Replace(this, nextGroodle);
+                nextLevel = nextLevel.ReplaceIfPresent(this, nextGroodle);
                 nextLevel = nextGroodle.MutualTouch(nextLevel, nextEast, touchFrom: Direction.West);
             }
-            else
+            else 
             {
                 nextGroodle = this with { Location = nextEast };
-                nextLevel = nextLevel.Replace(this, nextGroodle);
+                nextLevel = nextLevel.ReplaceIfPresent(this, nextGroodle);
             }
         }
-        else if (Whither == Direction.West)
+        else if (moving && Whither == Direction.West )
         {
             Location nextWest = new(Location.Col.NextWest(), Location.Row);
             if (this.MotionBlockedTo(nextLevel, Direction.West))
             {
                 nextGroodle = this with { Whither = Direction.East };
-                nextLevel = nextLevel.Replace(this, nextGroodle);
+                nextLevel = nextLevel.ReplaceIfPresent(this, nextGroodle);
                 nextLevel = nextGroodle.MutualTouch(nextLevel, nextWest, touchFrom: Direction.East);
             }
             else
             {
                 nextGroodle = this with { Location = nextWest };
-                nextLevel = nextLevel.Replace(this, nextGroodle);
+                nextLevel = nextLevel.ReplaceIfPresent(this, nextGroodle);
             }
         }
 
@@ -62,7 +63,8 @@ public record Groodle(Location Location, Direction Whither) : HercAndHippoObj, I
         return nextLevel;
     }
 
-    public Level OnShot(Level level, Direction shotFrom, Bullet shotBy) => this.Die(level);
+    public Level OnShot(Level level, Direction shotFrom, Bullet shotBy) 
+        => this.Die(level);
 
     public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy)
     {
@@ -76,7 +78,7 @@ public record Groodle(Location Location, Direction Whither) : HercAndHippoObj, I
         {
             Health nextHealth = hippo.Health - 5;
             Hippo nextHippo = hippo with { Health = nextHealth };
-            return level.Replace(hippo, nextHippo).AddSecondaryObject(Message.Ouch);
+            return level.ReplaceIfPresent(hippo, nextHippo).AddSecondaryObject(Message.Ouch);
         }
         else
             return level.NoReaction();

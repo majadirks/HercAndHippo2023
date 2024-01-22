@@ -2,7 +2,7 @@
 
 namespace HercAndHippoLibCs;
 
-public record Bullet(Location Location, Direction Whither) : HercAndHippoObj, ILocatable, ICyclable, IConsoleDisplayable
+public record Bullet(Location Location, Direction Whither) : HercAndHippoObj, ILocatable, ITouchable, ICyclable, IConsoleDisplayable
 {
     public string ConsoleDisplayString => "○";
     public Color Color => Color.White;
@@ -21,11 +21,9 @@ public record Bullet(Location Location, Direction Whither) : HercAndHippoObj, IL
 
         if (shootables.Any(s => s.StopsBullet))
             nextState = nextState.Without(this);
-
         // Die if at boundary
-        if (ReachedBoundary(nextState.Width, nextState.Height))
+        else if (ReachedBoundary(nextState.Width, nextState.Height))
             return nextState.Without(this);
-        
             
         // If direction is Seek or Flee, figure out which way that is and just go straight in that direction
         Direction dir = Whither;
@@ -36,7 +34,7 @@ public record Bullet(Location Location, Direction Whither) : HercAndHippoObj, IL
             
         // Continue moving in current direction if it hasn't been stopped
         nextState = nextState.Contains(this) ?
-            nextState.Replace(this, this with { Whither = dir, Location = NextLocation(Location, dir) }) :
+            nextState.ReplaceIfPresent(this, this with { Whither = dir, Location = NextLocation(Location, dir) }) :
             nextState; // If bullet was stopped, don't regenerate it
 
         return nextState;
@@ -65,4 +63,12 @@ public record Bullet(Location Location, Direction Whither) : HercAndHippoObj, IL
     }
 
     public override bool BlocksMotion(Level level, ILocatable toBlock) => false;
+
+    public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy)
+    {
+        if (touchedBy is IShootable toShoot)
+            return toShoot.OnShot(level, Direction.Idle, this).Without(this);
+        else
+            return Behaviors.NoReaction(level);
+    }
 }
