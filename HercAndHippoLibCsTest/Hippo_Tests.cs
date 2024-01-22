@@ -296,7 +296,7 @@ public class Hippo_Tests
                 new Wall(Color.White, (4,11)),
                 new Wall(Color.White, (5,11)),
             });
-        level.ForceSetCycles(1); // Gravity doesn't apply on cycle 0, so force set to 1
+        level = level.ForceSetCycles(1); // Gravity doesn't apply on cycle 0, so force set to 1
 
         // Act: Player falls
         level = level.RefreshCyclables(ActionInput.NoAction);
@@ -329,7 +329,7 @@ public class Hippo_Tests
                 new Wall(Color.White, (4,11)),
                 new Wall(Color.White, (5,11)),
             });
-        level.ForceSetCycles(1); // Gravity doesn't apply on cycle 0, so force set to 1
+        level = level.ForceSetCycles(1); // Gravity doesn't apply on cycle 0, so force set to 1
 
         // Act: Player falls
         level = level.RefreshCyclables(ActionInput.NoAction);
@@ -360,7 +360,7 @@ public class Hippo_Tests
                 new Wall(Color.White, (4,11)),
                 new Wall(Color.White, (5,11)),
             });
-        level.ForceSetCycles(1); // Gravity doesn't apply on cycle 0, so force set to 1
+        level = level.ForceSetCycles(1); // Gravity doesn't apply on cycle 0, so force set to 1
 
         // Act: Player falls into hippo
         level = level.RefreshCyclables(ActionInput.NoAction);
