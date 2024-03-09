@@ -4,6 +4,10 @@
 	* https://stackoverflow.com/questions/34266589/use-net-dll-in-python
 	* https://pypi.org/project/pythonnet/
 	* IronPython
+	* Could use Dijkstra's algorithm to measure distance between a given position and the trophy.
+		Create a class that does this on loop in a separate thread, with an IProgress
+		that "reports" newly calculated distances. These are stored in an array
+		(updated with each "report") that other code/threads can access.
 - Level editor
 - Export levels as text files
 - Implement and test "seek" behavior for bullet
