@@ -60,6 +60,7 @@ Tests to write:
 - Saved games
 - Cheat codes
 - Look into Unity or MAUI for creating non-ASCII interface and mobile version
+- Look into [Zookeeper](https://github.com/DrDos0016/zookeeper) for importing ZZT boards
 
   -=Unit Test=-
   If player moves for a while in a direction, player never hinders its own motion
