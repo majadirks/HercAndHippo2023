@@ -8,6 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\sample-data\**" />
+    <Content Remove="wwwroot\sample-data\**" />
+    <EmbeddedResource Remove="wwwroot\sample-data\**" />
+    <None Remove="wwwroot\sample-data\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Remove="Pages\Counter.razor" />
   </ItemGroup>
 
@@ -20,6 +27,10 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.3" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\HercAndHippoLibCs\HercAndHippoLibCs.csproj" />
   </ItemGroup>
 
   <ItemGroup>
