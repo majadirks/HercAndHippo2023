@@ -1,5 +1,6 @@
 ﻿@page "/playGame"
 @using HercAndHippoLibCs
+@using static ImageMapper
 @inject HttpClient Http
 
 <style>
@@ -21,7 +22,7 @@ else
     <div style="position: relative">
     @foreach ((int id, IConsoleDisplayable hho) in state)
     {
-        <div id="@id" style="position:absolute; color:@hho.Color; background-color:@hho.BackgroundColor; left:@(hho.Location.Col*16)px; top:@(hho.Location.Row*16)px; width:16px; height:16px">@hho.ConsoleDisplayString</div>
+        @hho.GetHtml()
     }
     </div>
 }
@@ -36,5 +37,6 @@ else
         var displayables = level.LevelObjects.Where(hho => hho is IConsoleDisplayable).Cast<IConsoleDisplayable>().ToArray();
         state = Enumerable.Range(0, displayables.Length).Zip(displayables, (id, hho) => new ObjWithId(id, hho)).ToArray();
     }
+
 
 }
