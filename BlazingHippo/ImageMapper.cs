@@ -8,14 +8,16 @@ namespace BlazingHippo
     {
         public const int WIDTH = 16;
         public const int HEIGHT = 32;
-        public static RenderFragment GetHtml(this IConsoleDisplayable hho)
+        public static RenderFragment GetHtml(this ObjWithId owi)
         {
+            int id = owi.Id;
+            IConsoleDisplayable hho = owi.Hho;
             string html = hho switch
             {
-                Hippo => $@"<img src = "".\img\hippo.jpeg"" style=""{hho.Location()}""/>",
-                Player => $@"<img src = "".\img\herc.jpeg"" style=""{hho.Location()}""/>",
-                Groodle => $@"<img src = "".\img\groodle.png"" style=""{hho.Location()}""/>",
-                _ => $@"<div style=""{hho.Location()} {hho.Color()}"">{hho.ConsoleDisplayString}</div>",
+                Hippo => $@"<img id=""{id}"" src = "".\img\hippo.jpeg"" style=""{hho.Location()}""/>",
+                Player => $@"<img id=""{id}"" src = "".\img\herc.jpeg"" style=""{hho.Location()}""/>",
+                Groodle => $@"<img id=""{id}"" src = "".\img\groodle.png"" style=""{hho.Location()}""/>",
+                _ => $@"<div id=""{id}"" style=""{hho.Location()} {hho.Color()}"">{hho.ConsoleDisplayString}</div>",
             };
             return new RenderFragment(b => b.AddMarkupContent(0, html));
         }

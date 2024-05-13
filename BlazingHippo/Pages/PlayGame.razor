@@ -20,17 +20,16 @@
 else
 {
     <div style="position: relative">
-    @foreach ((int id, IConsoleDisplayable hho) in state)
+    @foreach (ObjWithId owi in state)
     {
-        @hho.GetHtml()
+        @owi.GetHtml()
     }
     </div>
 }
 
 @code {
     private ObjWithId[]? state;
-    private record ObjWithId(int id, IConsoleDisplayable icd);
-
+    
     protected override void OnInitialized()
     {
         var level = HercAndHippoLibCs.DemoLevels.IntroducingTheHippo;
