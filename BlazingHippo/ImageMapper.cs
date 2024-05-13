@@ -14,6 +14,7 @@ namespace BlazingHippo
             {
                 Hippo => $@"<img src = "".\img\hippo.jpeg"" style=""{hho.Location()}""/>",
                 Player => $@"<img src = "".\img\herc.jpeg"" style=""{hho.Location()}""/>",
+                Groodle => $@"<img src = "".\img\groodle.png"" style=""{hho.Location()}""/>",
                 _ => $@"<div style=""{hho.Location()} {hho.Color()}"">{hho.ConsoleDisplayString}</div>",
             };
             return new RenderFragment(b => b.AddMarkupContent(0, html));
