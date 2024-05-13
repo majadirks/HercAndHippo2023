@@ -27,7 +27,7 @@ public class StatusBar
         string levelStr = $"Level: gravity {state.Gravity}, cycle count {state.Cycles}.";
         OverwriteLine(hippoStr + " " + levelStr);
         OverwriteLine($"Display plan stats: {FutureStates.GetCacheStats()}");
-        if (state.GetMessage() is Message message)
+        if (msg == null && state.GetMessage() is Message message)
             OverwriteLine(message.Text);
         else if (msg != null)
             OverwriteLine(msg);
