@@ -2,11 +2,15 @@
 @using HercAndHippoLibCs
 @inject HttpClient Http
 
+<style>
+    body {
+        background-color: black;
+    }
+</style>
+
 <PageTitle>Herc and Hippo</PageTitle>
 
-<h1>Herc and Hippo</h1>
-
-<p>This component demonstrates fetching data from the server.</p>
+<h1 style="color:white">Herc and Hippo</h1>
 
 @if (state == null)
 {
@@ -14,21 +18,23 @@
 }
 else
 {
-    <ul>
-        @foreach (var hho in state.SecondaryObjects.Where(so => so is IConsoleDisplayable).Cast<IConsoleDisplayable>())
-        {
-            <li>@hho.ConsoleDisplayString</li>
-        }
-    </ul>
-    
+    <div style="position: relative">
+    @foreach ((int id, IConsoleDisplayable hho) in state)
+    {
+        <div id="@id" style="position:absolute; color:@hho.Color; background-color:@hho.BackgroundColor; left:@(hho.Location.Col*16)px; top:@(hho.Location.Row*16)px; width:16px; height:16px">@hho.ConsoleDisplayString</div>
+    }
+    </div>
 }
 
 @code {
-    private Level state;
+    private ObjWithId[]? state;
+    private record ObjWithId(int id, IConsoleDisplayable icd);
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        state = await Task.Run(() => HercAndHippoLibCs.DemoLevels.IntroducingTheHippo);
+        var level = HercAndHippoLibCs.DemoLevels.IntroducingTheHippo;
+        var displayables = level.LevelObjects.Where(hho => hho is IConsoleDisplayable).Cast<IConsoleDisplayable>().ToArray();
+        state = Enumerable.Range(0, displayables.Length).Zip(displayables, (id, hho) => new ObjWithId(id, hho)).ToArray();
     }
 
 }
