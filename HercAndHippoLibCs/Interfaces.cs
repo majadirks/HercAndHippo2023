@@ -20,7 +20,7 @@
     public interface ICyclable { Level Cycle(Level level, ActionInput actionInput); }
     public interface ITakeable: ILocatable 
     { 
+        Color Color { get; }
         Level OnTake(Level level); 
-        string Id { get; } 
     }
 }

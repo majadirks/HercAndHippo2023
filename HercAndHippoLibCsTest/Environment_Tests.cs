@@ -160,12 +160,12 @@ namespace HercAndHippoLibCsTest
             // Act and Assert
             level = level.RefreshCyclables(ActionInput.MoveEast);
             Assert.AreEqual(secondPosition.Location, level.Player.Location); // Player is adjacent to to door after moving east
-            Assert.IsTrue(level.Player.Has<Key>("Cyan"));// Player has picked up the key
+            Assert.IsTrue(level.Player.Has<Key>(Color.Cyan));// Player has picked up the key
             level = level.RefreshCyclables(ActionInput.MoveEast);
             Assert.AreNotEqual(secondPosition.Location, level.Player.Location); // door has not blocked further eastward movement.
             Assert.AreEqual(playerAtDoor.Location, level.Player.Location); // Player has moved over door
             Assert.IsFalse(level.Contains(door)); // No more door!
-            Assert.IsFalse(level.Player.Has<Key>("Cyan")); // Player no longer has key
+            Assert.IsFalse(level.Player.Has<Key>(Color.Cyan)) ; // Player no longer has key
         }
 
         [TestMethod]

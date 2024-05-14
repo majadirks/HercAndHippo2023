@@ -19,27 +19,41 @@ public readonly struct Inventory : IEnumerable<ITakeable>, IEquatable<Inventory>
     public Inventory(ITakeable starterItem) => takeables = new HashSet<ITakeable>() { starterItem };
     public Inventory AddItem(ITakeable item)
     {
-        if (takeables.Where(extant => extant.Id == item.Id).Any())
+        Type t = item.GetType();
+        if (takeables.Where(extant => extant.GetType() == t && extant.Color == item.Color).Any())
             return this;
 
         HashSet<ITakeable> newSet = new(takeables) { item };
         return new Inventory(newSet);
     }
-    public (bool dropped, ITakeable? item, Inventory newInventoryState) DropItem<T>(string id)
+    public (bool dropped, ITakeable? item, Inventory newInventoryState) DropItem<T>(Color color)
     {
-        ITakeable? item = takeables.Where(item => item.MatchesId<T>(id)).FirstOrDefault();
+        ITakeable? item = takeables.Where(item => item.Matches<T>(color)).FirstOrDefault();
         if (item == default) return (false, item, this);
-        Inventory newState = this.Where(item => !item.MatchesId<T>(id)).ToInventory();
+        Inventory newState = this.Where(item => !item.Matches<T>(color)).ToInventory();
         return (true, item, newState);
     }
-    public bool Contains<T>(string id) => takeables.Where(item => item.MatchesId<T>(id)).Any();
+    public bool Contains<T>(Color color) => takeables.Where(item => item.Matches<T>(color)).Any();
     public IEnumerator<ITakeable> GetEnumerator() => takeables.GetEnumerator();
     IEnumerator IEnumerable.GetEnumerator() => takeables.GetEnumerator();
     public override bool Equals([NotNullWhen(true)] object? obj)
      => obj != null && obj is Inventory other && this.ContainsSameItemsAs(other);
     public bool Equals(Inventory other) => this.ContainsSameItemsAs(other);
     private bool ContainsSameItemsAs(Inventory other)
-        => takeables.IsSubsetOf(other.takeables) && other.takeables.IsSubsetOf(takeables);
+    {
+        var first = takeables
+            .Where(t => t is HercAndHippoObj hho)
+            .Cast<HercAndHippoObj>()
+            .Select(hho => hho.ForgetId())
+            .ToHashSet();
+        var second = other.takeables
+            .Where(t => t is HercAndHippoObj hho)
+            .Cast<HercAndHippoObj>()
+            .Select(hho => hho.ForgetId())
+            .ToHashSet();
+        return first.IsSubsetOf(second) && second.IsSubsetOf(first);
+    }
+   
     public static bool operator ==(Inventory left, Inventory right) => left.Equals(right);  
     public static bool operator !=(Inventory left, Inventory right) => !(left == right);
     public override int GetHashCode()
@@ -49,7 +63,8 @@ public readonly struct Inventory : IEnumerable<ITakeable>, IEquatable<Inventory>
             int hash = 19;
             foreach (var takeable in takeables)
             {
-                hash ^= takeable.GetHashCode();
+                var data = (takeable.GetType(), takeable.Color);
+                hash ^= data.GetHashCode();
             }
             return hash;
         }
@@ -66,6 +81,6 @@ public readonly struct Inventory : IEnumerable<ITakeable>, IEquatable<Inventory>
 public static class InventoryExtensions
 {
     ///<summary>Returns true if an ITakeable is of the given type and color</summary> 
-    public static bool MatchesId<T>(this ITakeable item, string id) => item is T && item.Id == id;
+    public static bool Matches<T>(this ITakeable item, Color color) => item is T && item.Color == color;
     public static Inventory ToInventory(this IEnumerable<ITakeable> enumerable) => new(enumerable);
 }

@@ -4,8 +4,6 @@ public record Key(Color Color, Location Location) : HercAndHippoObj, ILocatable,
     public string ConsoleDisplayString => "♀";
     public Color BackgroundColor => Color.Black;
 
-    public string Id => Color.ToString();
-
     public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy)
     {
         if (touchedBy is Player player)
