@@ -59,16 +59,17 @@ namespace HercAndHippoLibCsTest
             // Arrange
             Player player = new(new Location(Col: 1, Row: 1), health: 100, ammoCount: 5, inventory: EmptyInventory);
             int startCount = 0;
-            CycleCounter initialCounter = new((2, 2), startCount);
-            CycleCounter cycledCounter = new((2, 2), startCount + 1);
+            CycleCounter initialCounter = new CycleCounter((2, 2), startCount).ForgetId();
+            CycleCounter cycledCounter = new CycleCounter((2, 2), startCount + 1).ForgetId();
             Level level = new(player: player, hippo: null, gravity: Gravity.None, secondaryObjects: new HashSet<HercAndHippoObj>() { initialCounter });
+            level = level.ForgetIds();
 
             // Check that we set this up correctly
             Assert.IsTrue(level.Contains(initialCounter));
             Assert.IsFalse(level.Contains(cycledCounter));
 
             // Act
-            level = level.RefreshCyclables(ActionInput.NoAction);
+            level = level.RefreshCyclables(ActionInput.NoAction).ForgetIds();
 
             // Assert
             Assert.IsFalse(level.Contains(initialCounter));
