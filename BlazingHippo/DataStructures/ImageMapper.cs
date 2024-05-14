@@ -1,4 +1,5 @@
-﻿using HercAndHippoLibCs;
+﻿using HercAndHippoConsole;
+using HercAndHippoLibCs;
 using Microsoft.AspNetCore.Components;
 using System.Runtime.CompilerServices;
 
@@ -26,7 +27,7 @@ namespace BlazingHippo
             => $"position:absolute; left:{hho.Location.Col * WIDTH}px; top:{hho.Location.Row * HEIGHT}px; width:{WIDTH}px; height:{HEIGHT}px;";
 
         private static string Color(this IConsoleDisplayable hho) 
-            => $"color:{hho.Color}; background-color:{hho.BackgroundColor};";
+            => $"color:{hho.Color.ToHtmlColor()}; background-color:{hho.BackgroundColor.ToHtmlColor()};";
 
     }
 }
