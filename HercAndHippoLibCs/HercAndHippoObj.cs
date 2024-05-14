@@ -4,13 +4,16 @@ namespace HercAndHippoLibCs
 {
     public abstract record HercAndHippoObj 
     {
+        private static int lastId = 0;
         public HercAndHippoObj()
         {
             IsLocatable =  this is ILocatable;
             IsTouchable = this is ITouchable;
             IsShootable = this is IShootable;
             IsCyclable = this is ICyclable;
+            Id = ++lastId;
         }
+        public int Id { get; init; }
         public bool IsLocatable { get; init; }
         public bool IsTouchable { get; init; }
         public bool IsShootable { get; init; }
@@ -61,5 +64,13 @@ namespace HercAndHippoLibCs
             return blockers.Where(bl => bl.IsLocatable && !bl.Equals(locatable)).Any();
         }
 
+    }
+
+    public static class HhoExtensions
+    {
+        public static T ForgetId<T>(this T hho) where T : HercAndHippoObj
+        {
+            return hho with { Id = 0 };
+        }
     }
 }

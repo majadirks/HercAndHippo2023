@@ -49,7 +49,7 @@ namespace HercAndHippoLibCsTest
             // Arrange
             int initialCount = 0;
             Player player = new((3, 2), health: 100, ammoCount: 1, inventory: Inventory.EmptyInventory);
-            ShotCounter initialCounter = new((2, 2), Count: initialCount);
+            ShotCounter initialCounter = new ShotCounter((2, 2), Count: initialCount).ForgetId();
             ShotCounter cycledCounter = initialCounter with { Count = initialCount + 1 };
             Level level = new(player, 
                 gravity: Gravity.None, 
@@ -58,7 +58,9 @@ namespace HercAndHippoLibCsTest
                     initialCounter, 
                     new Wall(Color.Black, (20, 20)) 
                 });
-            Bullet bullet = new(initialCounter.Location, Direction.West);
+            level = level.ForgetIds();
+
+            Bullet bullet = new Bullet(initialCounter.Location, Direction.West).ForgetId();
             Assert.IsTrue(level.Contains(initialCounter));
             Assert.IsFalse(level.Contains(cycledCounter));
             Assert.IsFalse(level.Contains(bullet));
@@ -68,9 +70,9 @@ namespace HercAndHippoLibCsTest
             // If this behavior changes in the future (ie if I decide that the bullet should call OnShot
             // when it is first created), this test will still pass, which is fine; I just want to enforce
             // that OnShot is called at some point before the bullet moves past the object.
-            level = level.RefreshCyclables(ActionInput.ShootWest);
+            level = level.RefreshCyclables(ActionInput.ShootWest).ForgetIds();
             Assert.IsTrue(level.Contains(bullet));
-            level = level.RefreshCyclables(ActionInput.NoAction);
+            level = level.RefreshCyclables(ActionInput.NoAction).ForgetIds();
             // Assert: counter has cycled
             Assert.IsFalse(level.Contains(initialCounter));
             Assert.IsTrue(level.Contains(cycledCounter));
@@ -80,21 +82,21 @@ namespace HercAndHippoLibCsTest
         public void BulletMovesPastNonShootableObjects_Test()
         {
             // Arrange
-            Noninteractor nonshootable = new((3, 3));
-            Bullet initialBullet = new((2, 3), Direction.East);
-            Bullet bullet2 = new(nonshootable.Location, Direction.East);
-            Bullet bullet3 = new((4, 3), Direction.East);
+            Noninteractor nonshootable = new Noninteractor((3, 3)).ForgetId();
+            Bullet initialBullet = new Bullet((2, 3), Direction.East).ForgetId();
+            Bullet bullet2 = new Bullet(nonshootable.Location, Direction.East).ForgetId();
+            Bullet bullet3 = new Bullet((4, 3), Direction.East).ForgetId();
             Wall corner = new(Color.Yellow, (10, 10)); // Give bullet room in the level to move past the nonshootable
             Player player = new((3, 2), health: 100, ammoCount: 1, inventory: Inventory.EmptyInventory);
             Level level = new(player, gravity: Gravity.None, secondaryObjects: new HashSet<HercAndHippoObj> { initialBullet, nonshootable, corner });
-
+            
             // Act and assert
-            level = level.RefreshCyclables(ActionInput.NoAction);
+            level = level.RefreshCyclables(ActionInput.NoAction).ForgetIds();
             Assert.IsFalse(level.Contains(initialBullet));
             Assert.IsTrue(level.Contains(bullet2));
             Assert.IsTrue(level.Contains(nonshootable));
 
-            level = level.RefreshCyclables(ActionInput.NoAction);
+            level = level.RefreshCyclables(ActionInput.NoAction).ForgetIds();
             Assert.IsFalse(level.Contains(bullet2));
             Assert.IsTrue(level.Contains(bullet3));
             Assert.IsTrue(level.Contains(nonshootable));
@@ -118,13 +120,13 @@ namespace HercAndHippoLibCsTest
             Level level = new(player, gravity: Gravity.None, secondaryObjects: new HashSet<HercAndHippoObj>() { corner, initialEastward, initialWestward, initialNorthward, initialSouthward });
 
             // Act
-            level = level.RefreshCyclables(ActionInput.NoAction);
+            level = level.RefreshCyclables(ActionInput.NoAction).ForgetIds();
 
             // Assert
-            Assert.IsTrue(level.Contains(cycledEastward));
-            Assert.IsTrue(level.Contains(cycledNorthward));
-            Assert.IsTrue(level.Contains(cycledWestward));
-            Assert.IsTrue(level.Contains(cycledSouthward));     
+            Assert.IsTrue(level.Contains(cycledEastward.ForgetId()));
+            Assert.IsTrue(level.Contains(cycledNorthward.ForgetId()));
+            Assert.IsTrue(level.Contains(cycledWestward.ForgetId()));
+            Assert.IsTrue(level.Contains(cycledSouthward.ForgetId()));     
         }
 
         [TestMethod]

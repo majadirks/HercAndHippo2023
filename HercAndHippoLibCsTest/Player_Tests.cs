@@ -229,9 +229,9 @@ namespace HercAndHippoLibCsTest
             static Inventory GetNewInventory() => new(new HashSet<ITakeable>());
             // Arrange
             Inventory p1Inventory = GetNewInventory();
-            Player player1 = new((2, 2), health: 100, ammoCount: 0, inventory: p1Inventory);
+            Player player1 = new Player((2, 2), health: 100, ammoCount: 0, inventory: p1Inventory).ForgetId();
             Inventory p2Inventory = GetNewInventory();
-            Player player2 = new((2, 2), health: 100, ammoCount: 0, inventory: p2Inventory);
+            Player player2 = new Player((2, 2), health: 100, ammoCount: 0, inventory: p2Inventory).ForgetId();
             // Assert
             Assert.AreEqual(player1.Inventory.GetHashCode(), player2.Inventory.GetHashCode());
             Assert.AreEqual(player1, player2);
@@ -247,9 +247,9 @@ namespace HercAndHippoLibCsTest
             static Inventory GetNewInventory() => new Inventory(new HashSet<ITakeable>()).AddItem(GetNewKey());
             // Arrange
             Inventory p1Inventory = GetNewInventory();
-            Player player1 = new((2, 2), health: 100, ammoCount: 0, inventory: p1Inventory);
+            Player player1 = new Player((2, 2), health: 100, ammoCount: 0, inventory: p1Inventory).ForgetId();
             Inventory p2Inventory = GetNewInventory();
-            Player player2 = new((2, 2), health: 100, ammoCount: 0, inventory: p2Inventory);
+            Player player2 = new Player((2, 2), health: 100, ammoCount: 0, inventory: p2Inventory).ForgetId();
             // Assert
             Assert.AreEqual(player1, player2);
             Assert.AreEqual(player1.Inventory.GetHashCode(), player2.Inventory.GetHashCode());
@@ -321,18 +321,19 @@ namespace HercAndHippoLibCsTest
             ImpassableTouchCounter initialCounter = new((3, 2), startCount);
             ImpassableTouchCounter cycledCounter = new((3, 2), startCount + 1);
             Level level = new(player, gravity: Gravity.None, secondaryObjects: new HashSet<HercAndHippoObj>() { initialCounter });
+            level = level.ForgetIds();
 
-            Assert.IsTrue(level.Contains(initialCounter));
-            Assert.IsFalse(level.Contains(cycledCounter));
+            Assert.IsTrue(level.Contains(initialCounter.ForgetId()));
+            Assert.IsFalse(level.Contains(cycledCounter.ForgetId()));
             Assert.AreEqual(player.Location, level.Player.Location);
 
             // Act: player attempts to move east, but is blocked by counter, which increments
-            level = level.RefreshCyclables(ActionInput.MoveEast);
+            level = level.RefreshCyclables(ActionInput.MoveEast).ForgetIds();
 
             // Assert
             // Check that counter has incremented
-            Assert.IsFalse(level.Contains(initialCounter));
-            Assert.IsTrue(level.Contains(cycledCounter));
+            Assert.IsFalse(level.Contains(initialCounter.ForgetId()));
+            Assert.IsTrue(level.Contains(cycledCounter.ForgetId()));
             // Check that player has not moved
             Assert.AreEqual(player.Location, level.Player.Location);
         }
@@ -342,12 +343,13 @@ namespace HercAndHippoLibCsTest
         {
             // Arrange
             Player player = new((5, 5), health: 100, ammoCount: 5, inventory: EmptyInventory);
-            Bullet northBullet = new((5, 4), Direction.North);
-            Bullet eastBullet = new((6, 5), Direction.East);
-            Bullet southBullet = new((5, 6), Direction.South);
-            Bullet westBullet = new((4, 5), Direction.West);
+            Bullet northBullet = new Bullet((5, 4), Direction.North).ForgetId();
+            Bullet eastBullet = new Bullet((6, 5), Direction.East).ForgetId();
+            Bullet southBullet = new Bullet((5, 6), Direction.South).ForgetId();
+            Bullet westBullet = new Bullet((4, 5), Direction.West).ForgetId();
             Wall corner = new(Color.Yellow, (10, 10));
             Level level = new(player, gravity: Gravity.None, secondaryObjects: new HashSet<HercAndHippoObj>() { corner });
+            level = level.ForgetIds();
 
             Assert.IsFalse(level.Contains(northBullet));
             Assert.IsFalse(level.Contains(eastBullet));
@@ -355,13 +357,13 @@ namespace HercAndHippoLibCsTest
             Assert.IsFalse(level.Contains(westBullet));
 
             // Act and Assert
-            level = level.RefreshCyclables(ActionInput.ShootEast);
+            level = level.RefreshCyclables(ActionInput.ShootEast).ForgetIds();
             Assert.IsTrue(level.Contains(eastBullet));
-            level = level.RefreshCyclables(ActionInput.ShootWest);
+            level = level.RefreshCyclables(ActionInput.ShootWest).ForgetIds();
             Assert.IsTrue(level.Contains(westBullet));
-            level = level.RefreshCyclables(ActionInput.ShootNorth);
+            level = level.RefreshCyclables(ActionInput.ShootNorth).ForgetIds();
             Assert.IsTrue(level.Contains(northBullet));
-            level = level.RefreshCyclables(ActionInput.ShootSouth);
+            level = level.RefreshCyclables(ActionInput.ShootSouth).ForgetIds();
             Assert.IsTrue(level.Contains(southBullet));
         }
 
@@ -369,22 +371,23 @@ namespace HercAndHippoLibCsTest
         public void PlayerCanShootWhenOnBoundary_Test()
         {
             // Arrange
-            Bullet westBullet = new((9, 9), Direction.West);
+            Bullet westBullet = new Bullet((9, 9), Direction.West).ForgetId();
             Wall corner = new(Color.Yellow, (10, 10));
             Player player = new((10, 9), health: 100, ammoCount: 5, inventory: EmptyInventory);
             Level level = new(player, gravity: Gravity.None, secondaryObjects: new HashSet<HercAndHippoObj>() { corner });
+            level = level.ForgetIds();
             Assert.IsFalse(level.Contains(westBullet));
 
             // Act
-            level = level.RefreshCyclables(ActionInput.ShootWest);
+            level = level.RefreshCyclables(ActionInput.ShootWest).ForgetIds();
             // Assert
             Assert.IsTrue(level.Contains(westBullet));
 
             // Arrange
             level = level.WithPlayer(player with { Location = (9, 10) }); // west of corner
-            Bullet northBullet = new((9, 9), Direction.North);
+            Bullet northBullet = new Bullet((9, 9), Direction.North).ForgetId();
             // Act
-            level = level.RefreshCyclables(ActionInput.ShootNorth);
+            level = level.RefreshCyclables(ActionInput.ShootNorth).ForgetIds();
             //Assert
             Assert.IsTrue(level.Contains(northBullet));
 

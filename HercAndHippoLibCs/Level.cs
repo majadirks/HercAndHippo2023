@@ -4,7 +4,16 @@ public record Level(Player Player, Hippo? Hippo, HashSet<HercAndHippoObj> Second
 {
     public Level ForceSetCycles(int cycles)
     => this with { Cycles = cycles };
-    
+
+    public Level ForgetIds()
+    {
+        Player p2 = Player.ForgetId() as Player ?? throw new NullReferenceException();
+        Hippo? h2 = Hippo?.ForgetId() as Hippo;
+        HashSet<HercAndHippoObj> newSet = SecondaryObjects.Select(hho => hho.ForgetId()).ToHashSet();
+        return this with {Player = p2, Hippo = h2, SecondaryObjects = newSet};
+
+    }
+
     public Level(Player player, Gravity gravity, HashSet<HercAndHippoObj> secondaryObjects, Hippo? hippo = null)
     :this(
         Player: player,
@@ -107,7 +116,7 @@ public record Level(Player Player, Hippo? Hippo, HashSet<HercAndHippoObj> Second
             int hash = Player.GetHashCode() ^ Gravity.GetHashCode();
             if (Hippo != null) hash &= Hippo.GetHashCode();
             foreach (var hho in SecondaryObjects)
-                hash ^= hho.GetHashCode();
+                hash ^= hho.ForgetId().GetHashCode();
             return hash;
         }
     }
