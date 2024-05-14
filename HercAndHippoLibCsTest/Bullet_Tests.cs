@@ -49,7 +49,7 @@ namespace HercAndHippoLibCsTest
             // Arrange
             int initialCount = 0;
             Player player = new((3, 2), health: 100, ammoCount: 1, inventory: Inventory.EmptyInventory);
-            ShotCounter initialCounter = new((2, 2), Count: initialCount);
+            ShotCounter initialCounter = new ShotCounter((2, 2), Count: initialCount).ForgetId();
             ShotCounter cycledCounter = initialCounter with { Count = initialCount + 1 };
             Level level = new(player, 
                 gravity: Gravity.None, 
@@ -58,7 +58,9 @@ namespace HercAndHippoLibCsTest
                     initialCounter, 
                     new Wall(Color.Black, (20, 20)) 
                 });
-            Bullet bullet = new(initialCounter.Location, Direction.West);
+            level = level.ForgetIds();
+
+            Bullet bullet = new Bullet(initialCounter.Location, Direction.West).ForgetId();
             Assert.IsTrue(level.Contains(initialCounter));
             Assert.IsFalse(level.Contains(cycledCounter));
             Assert.IsFalse(level.Contains(bullet));
@@ -68,9 +70,9 @@ namespace HercAndHippoLibCsTest
             // If this behavior changes in the future (ie if I decide that the bullet should call OnShot
             // when it is first created), this test will still pass, which is fine; I just want to enforce
             // that OnShot is called at some point before the bullet moves past the object.
-            level = level.RefreshCyclables(ActionInput.ShootWest);
+            level = level.RefreshCyclables(ActionInput.ShootWest).ForgetIds();
             Assert.IsTrue(level.Contains(bullet));
-            level = level.RefreshCyclables(ActionInput.NoAction);
+            level = level.RefreshCyclables(ActionInput.NoAction).ForgetIds();
             // Assert: counter has cycled
             Assert.IsFalse(level.Contains(initialCounter));
             Assert.IsTrue(level.Contains(cycledCounter));
