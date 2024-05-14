@@ -120,13 +120,13 @@ namespace HercAndHippoLibCsTest
             Level level = new(player, gravity: Gravity.None, secondaryObjects: new HashSet<HercAndHippoObj>() { corner, initialEastward, initialWestward, initialNorthward, initialSouthward });
 
             // Act
-            level = level.RefreshCyclables(ActionInput.NoAction);
+            level = level.RefreshCyclables(ActionInput.NoAction).ForgetIds();
 
             // Assert
-            Assert.IsTrue(level.Contains(cycledEastward));
-            Assert.IsTrue(level.Contains(cycledNorthward));
-            Assert.IsTrue(level.Contains(cycledWestward));
-            Assert.IsTrue(level.Contains(cycledSouthward));     
+            Assert.IsTrue(level.Contains(cycledEastward.ForgetId()));
+            Assert.IsTrue(level.Contains(cycledNorthward.ForgetId()));
+            Assert.IsTrue(level.Contains(cycledWestward.ForgetId()));
+            Assert.IsTrue(level.Contains(cycledSouthward.ForgetId()));     
         }
 
         [TestMethod]
