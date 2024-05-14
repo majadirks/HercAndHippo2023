@@ -322,8 +322,8 @@ namespace HercAndHippoLibCsTest
             ImpassableTouchCounter cycledCounter = new((3, 2), startCount + 1);
             Level level = new(player, gravity: Gravity.None, secondaryObjects: new HashSet<HercAndHippoObj>() { initialCounter });
 
-            Assert.IsTrue(level.Contains(initialCounter));
-            Assert.IsFalse(level.Contains(cycledCounter));
+            Assert.IsTrue(level.ForgetIds().Contains(initialCounter.ForgetId()));
+            Assert.IsFalse(level.ForgetIds().Contains(cycledCounter.ForgetId()));
             Assert.AreEqual(player.Location, level.Player.Location);
 
             // Act: player attempts to move east, but is blocked by counter, which increments
@@ -331,8 +331,8 @@ namespace HercAndHippoLibCsTest
 
             // Assert
             // Check that counter has incremented
-            Assert.IsFalse(level.Contains(initialCounter));
-            Assert.IsTrue(level.Contains(cycledCounter));
+            Assert.IsFalse(level.ForgetIds().Contains(initialCounter.ForgetId()));
+            Assert.IsTrue(level.ForgetIds().Contains(cycledCounter.ForgetId()));
             // Check that player has not moved
             Assert.AreEqual(player.Location, level.Player.Location);
         }
