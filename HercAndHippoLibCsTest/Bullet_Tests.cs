@@ -82,21 +82,21 @@ namespace HercAndHippoLibCsTest
         public void BulletMovesPastNonShootableObjects_Test()
         {
             // Arrange
-            Noninteractor nonshootable = new((3, 3));
-            Bullet initialBullet = new((2, 3), Direction.East);
-            Bullet bullet2 = new(nonshootable.Location, Direction.East);
-            Bullet bullet3 = new((4, 3), Direction.East);
+            Noninteractor nonshootable = new Noninteractor((3, 3)).ForgetId();
+            Bullet initialBullet = new Bullet((2, 3), Direction.East).ForgetId();
+            Bullet bullet2 = new Bullet(nonshootable.Location, Direction.East).ForgetId();
+            Bullet bullet3 = new Bullet((4, 3), Direction.East).ForgetId();
             Wall corner = new(Color.Yellow, (10, 10)); // Give bullet room in the level to move past the nonshootable
             Player player = new((3, 2), health: 100, ammoCount: 1, inventory: Inventory.EmptyInventory);
             Level level = new(player, gravity: Gravity.None, secondaryObjects: new HashSet<HercAndHippoObj> { initialBullet, nonshootable, corner });
-
+            
             // Act and assert
-            level = level.RefreshCyclables(ActionInput.NoAction);
+            level = level.RefreshCyclables(ActionInput.NoAction).ForgetIds();
             Assert.IsFalse(level.Contains(initialBullet));
             Assert.IsTrue(level.Contains(bullet2));
             Assert.IsTrue(level.Contains(nonshootable));
 
-            level = level.RefreshCyclables(ActionInput.NoAction);
+            level = level.RefreshCyclables(ActionInput.NoAction).ForgetIds();
             Assert.IsFalse(level.Contains(bullet2));
             Assert.IsTrue(level.Contains(bullet3));
             Assert.IsTrue(level.Contains(nonshootable));
