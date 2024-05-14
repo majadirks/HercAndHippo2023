@@ -30,11 +30,11 @@ namespace HercAndHippoLibCsTest
             Wall wall = new(Color.White, (4, 2));
             Wall corner = new(Color.White, (10, 10));
             Level level = new(player, gravity: Gravity.None, secondaryObjects: new HashSet<HercAndHippoObj> { wall, corner });
-            Bullet initialBullet = new((3, 2), Direction.East);
-            Bullet bulletOverWall = new(wall.Location, Direction.East);
+            Bullet initialBullet = new Bullet((3, 2), Direction.East).ForgetId();
+            Bullet bulletOverWall = new Bullet(wall.Location, Direction.East).ForgetId();
 
             // Act
-            level = level.RefreshCyclables(ActionInput.ShootEast);
+            level = level.RefreshCyclables(ActionInput.ShootEast).ForgetIds();
             Assert.IsTrue(level.Contains(initialBullet)); // Bullet is between player and wall
             Assert.IsFalse(level.Contains(bulletOverWall));
             // On next cycle, bullet moves to overlap wall. On subsequent cycle, bullet is gone.
@@ -88,11 +88,11 @@ namespace HercAndHippoLibCsTest
             Door door = new(Color.DarkMagenta, (4, 2));
             Wall corner = new(Color.White, (10, 10));
             Level level = new(player, gravity: Gravity.None, secondaryObjects: new HashSet<HercAndHippoObj> { door, corner });
-            Bullet initialBullet = new((3, 2), Direction.East);
-            Bullet bulletOverWall = new(door.Location, Direction.East);
+            Bullet initialBullet = new Bullet((3, 2), Direction.East).ForgetId();
+            Bullet bulletOverWall = new Bullet(door.Location, Direction.East).ForgetId();
 
             // Act
-            level = level.RefreshCyclables(ActionInput.ShootEast);
+            level = level.RefreshCyclables(ActionInput.ShootEast).ForgetIds();
             Assert.IsTrue(level.Contains(initialBullet)); // Bullet is between player and wall
             Assert.IsFalse(level.Contains(bulletOverWall));
             // On next cycle, bullet moves to overlap wall. On subsequent cycle, bullet is gone.
