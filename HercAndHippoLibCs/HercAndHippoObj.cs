@@ -13,7 +13,6 @@ namespace HercAndHippoLibCs
             IsCyclable = this is ICyclable;
             Id = ++lastId;
         }
-        public HercAndHippoObj ForgetId() => this with { Id = 0 };
         public int Id { get; init; }
         public bool IsLocatable { get; init; }
         public bool IsTouchable { get; init; }
@@ -65,5 +64,13 @@ namespace HercAndHippoLibCs
             return blockers.Where(bl => bl.IsLocatable && !bl.Equals(locatable)).Any();
         }
 
+    }
+
+    public static class HhoExtensions
+    {
+        public static T ForgetId<T>(this T hho) where T : HercAndHippoObj
+        {
+            return hho with { Id = 0 };
+        }
     }
 }
