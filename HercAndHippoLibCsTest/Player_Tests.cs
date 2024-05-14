@@ -229,9 +229,9 @@ namespace HercAndHippoLibCsTest
             static Inventory GetNewInventory() => new(new HashSet<ITakeable>());
             // Arrange
             Inventory p1Inventory = GetNewInventory();
-            Player player1 = new((2, 2), health: 100, ammoCount: 0, inventory: p1Inventory);
+            Player player1 = new Player((2, 2), health: 100, ammoCount: 0, inventory: p1Inventory).ForgetId();
             Inventory p2Inventory = GetNewInventory();
-            Player player2 = new((2, 2), health: 100, ammoCount: 0, inventory: p2Inventory);
+            Player player2 = new Player((2, 2), health: 100, ammoCount: 0, inventory: p2Inventory).ForgetId();
             // Assert
             Assert.AreEqual(player1.Inventory.GetHashCode(), player2.Inventory.GetHashCode());
             Assert.AreEqual(player1, player2);
