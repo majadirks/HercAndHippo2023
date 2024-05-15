@@ -15,6 +15,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="DataStructures\FutureStates.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Remove="Pages\Counter.razor" />
   </ItemGroup>
 
