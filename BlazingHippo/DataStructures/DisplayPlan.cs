@@ -3,7 +3,7 @@ using static BlazingHippo.Constants;
 
 namespace BlazingHippo;
 
-internal record DisplayDiff(int Col, int Row, IConsoleDisplayable? OldDisplayable, IConsoleDisplayable? NewDisplayable)
+public record DisplayDiff(int Col, int Row, IConsoleDisplayable? OldDisplayable, IConsoleDisplayable? NewDisplayable)
 {
     public bool AppearanceChanged => NewDisplayable?.Color != OldDisplayable?.Color ||
         NewDisplayable?.BackgroundColor != OldDisplayable?.BackgroundColor ||

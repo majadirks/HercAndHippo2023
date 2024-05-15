@@ -19,23 +19,37 @@
 }
 else
 {
+    <p style="color:white">@x</p>
     <div style="position: relative">
-    @foreach (ObjWithId owi in state)
+    @foreach (HercAndHippoObj hho in state.GetDisplayables())
     {
-        @owi.GetHtml()
+        @hho.GetHtml()
     }
     </div>
+
 }
 
 @code {
-    private ObjWithId[]? state;
+    private Level state;
+    private DisplayLoop mainLoop;
+    private string x;
+
+    public PlayGame()
+    {
+        GameController controller = new DoNothingController();
+        mainLoop = new DisplayLoop(controller: controller, state: DemoLevels.IntroducingTheHippo, frequency_hz: 1, display: this);
+        state = HercAndHippoLibCs.DemoLevels.IntroducingTheHippo;
+        x = "Nothing to report";
+    }
     
     protected override void OnInitialized()
     {
-        var level = HercAndHippoLibCs.DemoLevels.IntroducingTheHippo;
-        var displayables = level.LevelObjects.Where(hho => hho is IConsoleDisplayable).Cast<IConsoleDisplayable>().ToArray();
-        state = Enumerable.Range(0, displayables.Length).Zip(displayables, (id, hho) => new ObjWithId(id, hho)).ToArray();
+        
     }
 
+    public void Update(IEnumerable<DisplayDiff> diffs)
+    {
+        x = "something to report";
+    }
 
 }

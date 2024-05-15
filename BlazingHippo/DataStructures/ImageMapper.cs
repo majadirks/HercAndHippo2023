@@ -9,16 +9,20 @@ namespace BlazingHippo
     {
         public const int WIDTH = 16;
         public const int HEIGHT = 32;
-        public static RenderFragment GetHtml(this ObjWithId owi)
+        public static IEnumerable<IConsoleDisplayable> GetDisplayables(this Level level)
+            => level.LevelObjects.Where(obj => obj is IConsoleDisplayable).Cast<IConsoleDisplayable>();
+        public static RenderFragment GetHtml(this HercAndHippoObj hho)
         {
-            int id = owi.Id;
-            IConsoleDisplayable hho = owi.Hho;
+            if (hho is not IConsoleDisplayable dhho)
+                return new RenderFragment(b => b.AddMarkupContent(0, ""));
+
+            int id = hho.Id;
             string html = hho switch
             {
-                Hippo => $@"<img id=""{id}"" src = "".\img\hippo.jpeg"" style=""{hho.Location()}""/>",
-                Player => $@"<img id=""{id}"" src = "".\img\herc.jpeg"" style=""{hho.Location()}""/>",
-                Groodle => $@"<img id=""{id}"" src = "".\img\groodle.png"" style=""{hho.Location()}""/>",
-                _ => $@"<div id=""{id}"" style=""{hho.Location()} {hho.Color()}"">{hho.ConsoleDisplayString}</div>",
+                Hippo => $@"<img id=""{id}"" src = "".\img\hippo.jpeg"" style=""{dhho.Location()}""/>",
+                Player => $@"<img id=""{id}"" src = "".\img\herc.jpeg"" style=""{dhho.Location()}""/>",
+                Groodle => $@"<img id=""{id}"" src = "".\img\groodle.png"" style=""{dhho.Location()}""/>",
+                _ => $@"<div id=""{id}"" style=""{dhho.Location()} {dhho.Color()}"">{dhho.ConsoleDisplayString}</div>",
             };
             return new RenderFragment(b => b.AddMarkupContent(0, html));
         }
