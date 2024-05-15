@@ -25,7 +25,8 @@ internal class DisplayLoop : IDisposable
         this.display = display;
         cts = new();
 
-        cycleTimer = new(callback: _ => Update(), state: null, dueTime: 1000 / frequency_hz, period: 1000 / frequency_hz);
+        async void callback(object? _) => await Update();
+        cycleTimer = new(callback: callback, state: null, dueTime: 1000 / frequency_hz, period: 1000 / frequency_hz);
         scrollStatus = ScrollStatus.Default(state.Player.Location); 
         displayPlan = new(state, scrollStatus);
         lastActions = new(ActionInput.NoAction);
@@ -33,7 +34,7 @@ internal class DisplayLoop : IDisposable
         diffs = displayPlan.GetDiffs(displayPlan);
     }
 
-    private void Update()
+    private async Task Update()
     {
         // ToDo: rethink this logical flow. Should update display first if possible.
         FutureStates futures = new(
@@ -47,7 +48,7 @@ internal class DisplayLoop : IDisposable
             if (lastActions.Where(a => a == ActionInput.Quit).Any())
                 return;
             (State, scrollStatus, diffs) = futures.GetFutureDiffs(lastActions);
-            display.Update(State); // Re-display anything that changed
+            await display.Update(State); // Re-display anything that changed
             statusBar.ShowStatus(State);
 
         if (State.WinState == WinState.Won)

@@ -36,13 +36,13 @@ else
     public PlayGame()
     {
         GameController controller = new DoNothingController();
-        mainLoop = new DisplayLoop(controller: controller, state: DemoLevels.IntroducingTheHippo, frequency_hz: 50, display: this);
+        mainLoop = new DisplayLoop(controller: controller, state: DemoLevels.IntroducingTheHippo, frequency_hz: 100, display: this);
         state = HercAndHippoLibCs.DemoLevels.IntroducingTheHippo;
     }
 
     public async Task Update(Level newState)
     {
-        state = newState;
+        state = newState; // can be much smarter about this! Currently very slow. Animate, etc.
         await InvokeAsync(StateHasChanged);
     }
 
