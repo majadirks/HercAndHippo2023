@@ -37,6 +37,7 @@ internal class DisplayLoop : IDisposable
     private async Task Update()
     {
         // ToDo: rethink this logical flow. Should update display first if possible.
+        // No FutureStates in this version of the display, since no threads.
         FutureStates futures = new(
                 initialPlan: displayPlan,
                 initialState: State,

@@ -96,28 +96,28 @@ internal class FutureStates
         initialScrollStatus = scrollStatus;
 
         cts = new();
-        Task<StateAndDiffs> fromMostRecent =
-            Task.Run(() => GetDiffs(
-                initialPlan: initialPlan,
-                initialState: initialState, 
-                actionInputs: mostRecentInputs, 
-                initialScrollStatus: initialScrollStatus));
-        futures.TryAdd(mostRecentInputs, fromMostRecent);
-
-        for (int i = 0; i < ActionInputPair.PossiblePairs.Length; i++)
-        {
-            var actionInput = ActionInputPair.PossiblePairs[i];
-            if (actionInput == mostRecentInputs) 
-                continue;
-            else
-                if (!futures.ContainsKey(actionInput))
-                    futures.TryAdd(actionInput, 
-                        Task.Run(() => GetDiffs(
-                            initialPlan: initialPlan,
-                            initialState: initialState, 
-                            actionInputs: actionInput, 
-                            initialScrollStatus: initialScrollStatus)));
-        }
+        //Task<StateAndDiffs> fromMostRecent =
+        //    Task.Run(() => GetDiffs(
+        //        initialPlan: initialPlan,
+        //        initialState: initialState, 
+        //        actionInputs: mostRecentInputs, 
+        //        initialScrollStatus: initialScrollStatus));
+        //futures.TryAdd(mostRecentInputs, fromMostRecent);
+        //
+        //for (int i = 0; i < ActionInputPair.PossiblePairs.Length; i++)
+        //{
+        //    var actionInput = ActionInputPair.PossiblePairs[i];
+        //    if (actionInput == mostRecentInputs) 
+        //        continue;
+        //    else
+        //        if (!futures.ContainsKey(actionInput))
+        //            futures.TryAdd(actionInput, 
+        //                Task.Run(() => GetDiffs(
+        //                    initialPlan: initialPlan,
+        //                    initialState: initialState, 
+        //                    actionInputs: actionInput, 
+        //                    initialScrollStatus: initialScrollStatus)));
+        //}
     }
 
     private static StateAndDiffs GetDiffs(DisplayPlan initialPlan, Level initialState, ActionInputPair actionInputs, ScrollStatus initialScrollStatus)
