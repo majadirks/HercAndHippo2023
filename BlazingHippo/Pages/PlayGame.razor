@@ -1,6 +1,7 @@
 ﻿@page "/playGame"
 @using HercAndHippoLibCs
 @using static ImageMapper
+@inject IJSRuntime JsRuntime
 @inject HttpClient Http
 
 <style>
@@ -19,23 +20,33 @@
 }
 else
 {
+    <p style="color:white">@x</p>
     <div style="position: relative">
-    @foreach (ObjWithId owi in state)
+    @foreach (HercAndHippoObj hho in state.GetDisplayables())
     {
-        @owi.GetHtml()
+        @hho.GetHtml()
     }
     </div>
+
 }
 
 @code {
-    private ObjWithId[]? state;
-    
-    protected override void OnInitialized()
+    private Level state;
+    private DisplayLoop mainLoop;
+    private int x;
+
+    public PlayGame()
     {
-        var level = HercAndHippoLibCs.DemoLevels.IntroducingTheHippo;
-        var displayables = level.LevelObjects.Where(hho => hho is IConsoleDisplayable).Cast<IConsoleDisplayable>().ToArray();
-        state = Enumerable.Range(0, displayables.Length).Zip(displayables, (id, hho) => new ObjWithId(id, hho)).ToArray();
+        GameController controller = new DoNothingController();
+        mainLoop = new DisplayLoop(controller: controller, state: DemoLevels.IntroducingTheHippo, frequency_hz: 1, display: this);
+        state = HercAndHippoLibCs.DemoLevels.IntroducingTheHippo;
+        x = 0;
     }
 
+    public async Task Update(IEnumerable<DisplayDiff> diffs)
+    {
+        x++;
+        await InvokeAsync(StateHasChanged);
+    }
 
 }

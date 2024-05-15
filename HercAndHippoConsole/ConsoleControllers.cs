@@ -1,13 +1,9 @@
 ﻿using HercAndHippoLibCs;
 using System.Runtime.InteropServices;
-using System.Windows;
 //using System.Windows.Input;
 namespace HercAndHippoConsole;
 
-public abstract class GameController
-{
-    public abstract ActionInputPair NextAction(Level state);
-}
+
 internal partial class KeyboardController : GameController
 {
     //https://learn.microsoft.com/en-us/windows/win32/inputdev/virtual-key-codes
