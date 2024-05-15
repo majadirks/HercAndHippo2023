@@ -20,7 +20,6 @@
 }
 else
 {
-    <p style="color:white">@x</p>
     <div style="position: relative">
     @foreach (HercAndHippoObj hho in state.GetDisplayables())
     {
@@ -33,19 +32,17 @@ else
 @code {
     private Level state;
     private DisplayLoop mainLoop;
-    private int x;
 
     public PlayGame()
     {
         GameController controller = new DoNothingController();
-        mainLoop = new DisplayLoop(controller: controller, state: DemoLevels.IntroducingTheHippo, frequency_hz: 1, display: this);
+        mainLoop = new DisplayLoop(controller: controller, state: DemoLevels.IntroducingTheHippo, frequency_hz: 50, display: this);
         state = HercAndHippoLibCs.DemoLevels.IntroducingTheHippo;
-        x = 0;
     }
 
-    public async Task Update(IEnumerable<DisplayDiff> diffs)
+    public async Task Update(Level newState)
     {
-        x++;
+        state = newState;
         await InvokeAsync(StateHasChanged);
     }
 

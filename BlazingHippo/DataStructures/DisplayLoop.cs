@@ -47,7 +47,7 @@ internal class DisplayLoop : IDisposable
             if (lastActions.Where(a => a == ActionInput.Quit).Any())
                 return;
             (State, scrollStatus, diffs) = futures.GetFutureDiffs(lastActions);
-            display.Update(diffs); // Re-display anything that changed
+            display.Update(State); // Re-display anything that changed
             statusBar.ShowStatus(State);
 
         if (State.WinState == WinState.Won)
