@@ -4,7 +4,7 @@ namespace BlazingHippo;
 internal class DisplayLoop
 {
     public const int MESSAGE_MARGIN = 3;
-    private readonly CycleTimer cycleTimer;
+    private readonly Cycler cycleTimer;
     private readonly StatusBar statusBar;
     public Level State { get; private set; }
     private ScrollStatus scrollStatus;
