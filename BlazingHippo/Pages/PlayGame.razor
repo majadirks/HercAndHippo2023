@@ -33,19 +33,19 @@ else
 @code {
     private Level state;
     private DisplayLoop mainLoop;
-    private string x;
+    private int x;
 
     public PlayGame()
     {
         GameController controller = new DoNothingController();
         mainLoop = new DisplayLoop(controller: controller, state: DemoLevels.IntroducingTheHippo, frequency_hz: 1, display: this);
         state = HercAndHippoLibCs.DemoLevels.IntroducingTheHippo;
-        x = "Nothing to report";
+        x = 0;
     }
 
     public async Task Update(IEnumerable<DisplayDiff> diffs)
     {
-        x = "something to report";
+        x++;
         await InvokeAsync(StateHasChanged);
     }
 
