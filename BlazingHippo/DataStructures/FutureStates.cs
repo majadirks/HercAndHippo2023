@@ -2,7 +2,6 @@
 using System.Collections.Concurrent;
 
 namespace BlazingHippo;
-
 internal record StateAndDiffs(Level State, ScrollStatus ScrollStatus, IEnumerable<DisplayDiff> Diffs);
 internal record CacheStats(double CachedCompleted, double CachedIncomplete, double AbInitio)
 {
@@ -121,11 +120,11 @@ internal class FutureStates
         }
     }
 
-    private static StateAndDiffs GetDiffs(DisplayPlan initialPlan, Level initialState, ActionInputPair actionInputs, ScrollStatus initialScrollStatus, BufferStats bufferStats)
+    private static StateAndDiffs GetDiffs(DisplayPlan initialPlan, Level initialState, ActionInputPair actionInputs, ScrollStatus initialScrollStatus)
     {
         Level nextState = initialState.RefreshCyclables(actionInputs);
-        ScrollStatus nextScrollStatus = initialScrollStatus.Update(nextState.Player.Location, bufferStats);
-        DisplayPlan newPlan = new(nextState, nextScrollStatus, bufferStats);
+        ScrollStatus nextScrollStatus = initialScrollStatus.Update(nextState.Player.Location);
+        DisplayPlan newPlan = new(nextState, nextScrollStatus);
         var diffs = initialPlan.GetDiffs(newPlan);
         return new(State: nextState, ScrollStatus: nextScrollStatus, Diffs: diffs);
     }
