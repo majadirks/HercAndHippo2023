@@ -32,8 +32,8 @@ internal class Cycler
         {
             while (!Cycled())
             {
-                token.ThrowIfCancellationRequested();
             }
+            token.ThrowIfCancellationRequested();
         }
     }
 }
