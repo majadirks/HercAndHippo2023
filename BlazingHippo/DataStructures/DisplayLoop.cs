@@ -2,11 +2,10 @@
 using HercAndHippoLibCs;
 namespace BlazingHippo;
 
-internal class DisplayLoop
+internal class DisplayLoop : IDisposable
 {
     public const int MESSAGE_MARGIN = 3;
     private readonly CancellationTokenSource cts;
-    private readonly IProgress<bool> cycleProgress;
     private readonly PlayGame display;
     private readonly StatusBar statusBar;
     private readonly GameController controller;
@@ -15,6 +14,7 @@ internal class DisplayLoop
     private DisplayPlan displayPlan;
     private ActionInputPair lastActions;
     private IEnumerable<DisplayDiff> diffs;
+    private readonly Timer cycleTimer;
     public DisplayLoop(GameController controller, Level state, int frequency_hz, PlayGame display)
     {
         if (frequency_hz < 1)
@@ -24,16 +24,13 @@ internal class DisplayLoop
         this.controller = controller;
         this.display = display;
         cts = new();
-        cycleProgress = new Progress<bool>(handler: _ => Update());
-        Cycler cycleTimer = new(frequencyHz: frequency_hz, cycleProgress, cts.Token); // Start a loop to call an update every few ms
 
+        cycleTimer = new(callback: _ => Update(), state: null, dueTime: 1000 / frequency_hz, period: 1000 / frequency_hz);
         scrollStatus = ScrollStatus.Default(state.Player.Location); 
         displayPlan = new(state, scrollStatus);
         lastActions = new(ActionInput.NoAction);
         statusBar = new(margin: 6);
-        //ThreadPool.SetMinThreads(workerThreads: 15, completionPortThreads: 0);
         diffs = displayPlan.GetDiffs(displayPlan);
-        display.Update(diffs);
     }
 
     private void Update()
@@ -59,5 +56,10 @@ internal class DisplayLoop
             statusBar.ShowStatus(State, "You lost! Try again!");
 
         cts.Token.ThrowIfCancellationRequested();
+    }
+
+    public void Dispose()
+    {
+        cts.Cancel();
     }
 }

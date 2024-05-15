@@ -1,6 +1,7 @@
 ﻿@page "/playGame"
 @using HercAndHippoLibCs
 @using static ImageMapper
+@inject IJSRuntime JsRuntime
 @inject HttpClient Http
 
 <style>
@@ -41,15 +42,11 @@ else
         state = HercAndHippoLibCs.DemoLevels.IntroducingTheHippo;
         x = "Nothing to report";
     }
-    
-    protected override void OnInitialized()
-    {
-        
-    }
 
-    public void Update(IEnumerable<DisplayDiff> diffs)
+    public async Task Update(IEnumerable<DisplayDiff> diffs)
     {
         x = "something to report";
+        await InvokeAsync(StateHasChanged);
     }
 
 }

@@ -12,7 +12,6 @@ internal class Cycler
         MillisecondsPerCycle = 1000 / frequencyHz;
         this.progress = progress;
         this.token = token;
-        Task.Run(Cycle, token);
     }
 
     private bool Cycled()
@@ -26,7 +25,7 @@ internal class Cycler
         return false;
     }
 
-    private void Cycle()
+    public void Cycle()
     {
         while (true)
         {
