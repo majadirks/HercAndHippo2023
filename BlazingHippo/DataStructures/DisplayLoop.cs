@@ -4,6 +4,8 @@ namespace BlazingHippo;
 internal class DisplayLoop
 {
     public const int MESSAGE_MARGIN = 3;
+    private readonly CancellationTokenSource cts;
+    private readonly IProgress<bool> progress;
     private readonly Cycler cycleTimer;
     private readonly StatusBar statusBar;
     public Level State { get; private set; }
@@ -11,16 +13,18 @@ internal class DisplayLoop
     private DisplayPlan displayPlan;
     private ActionInputPair lastActions;
     private IEnumerable<DisplayDiff> diffs;
+    private 
     public DisplayLoop(Level state, int frequency_hz)
     {
         if (frequency_hz < 1)
             throw new ArgumentException($"Frequency must be >=1, but was given {frequency_hz}");
         // Initialize data
         State = state;
-        cycleTimer = new(frequencyHz: frequency_hz);
-        scrollStatus = ScrollStatus.Default(state.Player.Location);
-        bufferStats = new(bufferSizeChanged: true, bufferWidth: Console.BufferWidth, bufferHeight: Console.BufferHeight);
-        displayPlan = new(state, scrollStatus, bufferStats);
+        cts = new();
+        progress = new Progress<bool>(handler: _ => Update());
+        cycleTimer = new(frequencyHz: frequency_hz, progress, cts.Token);
+        scrollStatus = ScrollStatus.Default(state.Player.Location); 
+        displayPlan = new(state, scrollStatus);
         Console.OutputEncoding = System.Text.Encoding.UTF8;
         lastActions = new(ActionInput.NoAction);
         statusBar = new(margin: 6);
@@ -31,6 +35,11 @@ internal class DisplayLoop
         diffs = displayPlan.GetDiffs(displayPlan);
         displayPlan.RefreshDisplay(diffs);
     }
+    private void Update()
+    {
+        Console.WriteLine(State.ToString());
+    }
+
     public void RunGame(GameController controller)
     {
         DisplayPlan nextDisplayPlan;
