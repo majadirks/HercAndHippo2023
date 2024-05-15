@@ -30,8 +30,9 @@ else
 }
 
 @code {
+
+    private readonly DisplayLoop mainLoop;
     private Level state;
-    private DisplayLoop mainLoop;
 
     public PlayGame()
     {
@@ -42,6 +43,7 @@ else
 
     public async Task Update(DisplayPlan displayPlan)
     {
+        // ToDo: deal with scrolling etc.
         state = displayPlan.State;
         await InvokeAsync(StateHasChanged);
     }
