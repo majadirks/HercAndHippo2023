@@ -7,8 +7,8 @@ public record Level(Player Player, Hippo? Hippo, HashSet<HercAndHippoObj> Second
 
     public Level ForgetIds()
     {
-        Player p2 = Player.ForgetId() as Player ?? throw new NullReferenceException();
-        Hippo? h2 = Hippo?.ForgetId() as Hippo;
+        Player p2 = Player.ForgetId();
+        Hippo? h2 = Hippo?.ForgetId();
         HashSet<HercAndHippoObj> newSet = SecondaryObjects.Select(hho => hho.ForgetId()).ToHashSet();
         return this with {Player = p2, Hippo = h2, SecondaryObjects = newSet};
 
