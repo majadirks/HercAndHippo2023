@@ -10,16 +10,17 @@ public record DisplayDiff(int Col, int Row, IConsoleDisplayable? OldDisplayable,
         NewDisplayable?.ConsoleDisplayString != OldDisplayable?.ConsoleDisplayString;
 }
 
-internal class DisplayPlan
+public class DisplayPlan
 {
     private readonly IConsoleDisplayable[,] planArray;
     private readonly IEnumerable<DisplayDiff>? diffs;
     private const int MAX_COL = GAME_WIDTH - VIEW_MARGIN;
     private const int MAX_ROW = GAME_HEIGHT - VIEW_MARGIN;
     public static readonly Location ScreenCenter = ((GAME_WIDTH - VIEW_MARGIN) / 2, (GAME_HEIGHT - VIEW_MARGIN) / 2);
-
+    public Level State { get; init; }
     public DisplayPlan(Level state, ScrollStatus scrollStatus)
     {
+        State = state;
         IConsoleDisplayable[,] planArray = new IConsoleDisplayable[GAME_WIDTH, GAME_HEIGHT];
         diffs = null;
         Location logicalCenter = scrollStatus.LogicalCenter;

@@ -13,7 +13,6 @@ internal class DisplayLoop : IDisposable
     private ScrollStatus scrollStatus;
     private DisplayPlan displayPlan;
     private ActionInputPair lastActions;
-    private IEnumerable<DisplayDiff> diffs;
     private readonly Timer cycleTimer;
     public DisplayLoop(GameController controller, Level state, int frequency_hz, PlayGame display)
     {
@@ -26,31 +25,23 @@ internal class DisplayLoop : IDisposable
         cts = new();
 
         async void callback(object? _) => await Update();
-        cycleTimer = new(callback: callback, state: null, dueTime: 1000 / frequency_hz, period: 1000 / frequency_hz);
+        cycleTimer = new Timer(callback: callback, state: null, dueTime: 1000 / frequency_hz, period: 1000 / frequency_hz);
         scrollStatus = ScrollStatus.Default(state.Player.Location); 
         displayPlan = new(state, scrollStatus);
         lastActions = new(ActionInput.NoAction);
         statusBar = new(margin: 6);
-        diffs = displayPlan.GetDiffs(displayPlan);
     }
 
     private async Task Update()
     {
-        // ToDo: rethink this logical flow. Should update display first if possible.
-        // No FutureStates in this version of the display, since no threads.
-        FutureStates futures = new(
-                initialPlan: displayPlan,
-                initialState: State,
-                scrollStatus: scrollStatus,
-                mostRecentInputs: lastActions); // plan for possible next states
-
-            displayPlan = new(State, scrollStatus); // save current screen layout
-            lastActions = controller.NextAction(State);
-            if (lastActions.Where(a => a == ActionInput.Quit).Any())
-                return;
-            (State, scrollStatus, diffs) = futures.GetFutureDiffs(lastActions);
-            await display.Update(State); // Re-display anything that changed
-            statusBar.ShowStatus(State);
+        lastActions = controller.NextAction(State);
+        if (lastActions.Where(a => a == ActionInput.Quit).Any())
+            return;
+        State = State.RefreshCyclables(lastActions, cts.Token);
+        scrollStatus = scrollStatus.Update(State.Player.Location);
+        displayPlan = new(State, scrollStatus);
+        await display.Update(displayPlan);
+        statusBar.ShowStatus(State);
 
         if (State.WinState == WinState.Won)
             statusBar.ShowStatus(State, "Huzzah! You have won!");

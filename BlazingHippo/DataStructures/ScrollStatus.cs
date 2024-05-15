@@ -4,7 +4,7 @@ using static System.Math;
 
 namespace BlazingHippo;
 
-internal record ScrollStatus(Direction Horizontal, Direction Vertical, Location LogicalCenter)
+public record ScrollStatus(Direction Horizontal, Direction Vertical, Location LogicalCenter)
 {
     public const double HORIZONTAL_RADIUS_RATIO = 0.1;  // Fairly small; small motion around center triggers left/right scroll
     public const double VERTICAL_RADIUS_RATIO = 0.3; // Larger; can get close to top or bottom of screen before up/down scroll kicks in
