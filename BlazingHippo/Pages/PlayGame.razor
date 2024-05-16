@@ -58,7 +58,23 @@ else
     [JSInvokable]
     public static void OnKeyDown(string keyCode)
     {
-        x = "key was pressed: " + keyCode;
+           /*
+           * a= 65 (west)
+           d = 68 (east)
+           w = 87 (north)
+           s= 83 (south)
+           shift = 16
+        */
+        int key = Convert.ToInt32(keyCode);
+        ActionInput actionInput = key switch
+        {
+            65 => ActionInput.MoveWest, // pressed "a"
+            68 => ActionInput.MoveEast, // "pressed d"
+            87 => ActionInput.MoveNorth, // "pressed w"
+            83 => ActionInput.MoveSouth, // pressed "s"
+            _ => ActionInput.NoAction
+        };
+        x = "key was pressed: " + actionInput.ToString();
     }
 
 }
