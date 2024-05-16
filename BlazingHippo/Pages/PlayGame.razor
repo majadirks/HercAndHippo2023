@@ -12,7 +12,7 @@
 
 <PageTitle>Herc and Hippo</PageTitle>
 
-<h1 style="color:white">Herc and Hippo</h1>
+<h1 style="color:white" onkeydown="e => DotNet.invokeMethodAsync('OnKeyDown')">Herc and Hippo</h1>
 
 @if (state == null)
 {
@@ -21,6 +21,7 @@
 else
 {
     <div style="position: relative">
+        <h3 style="color:white">@x</h3>
     @foreach (HercAndHippoObj hho in state.GetDisplayables())
     {
         @hho.GetHtml()
@@ -33,12 +34,14 @@ else
 
     private readonly DisplayLoop mainLoop;
     private Level state;
+    private ElementReference controlInput;
+    private static string x = "no key press detected yet...";
 
     public PlayGame()
     {
         GameController controller = new DoNothingController();
-        mainLoop = new DisplayLoop(controller: controller, state: DemoLevels.IntroducingTheHippo, frequency_hz: 35, display: this);
         state = HercAndHippoLibCs.DemoLevels.IntroducingTheHippo;
+        mainLoop = new DisplayLoop(controller: controller, state: state, frequency_hz: 35, display: this); 
     }
 
     public async Task Update(DisplayPlan displayPlan)
@@ -46,6 +49,12 @@ else
         // ToDo: deal with scrolling etc.
         state = displayPlan.State;
         await InvokeAsync(StateHasChanged);
+    }
+
+    [JSInvokable]
+    public static void OnKeyPress()
+    {
+        x = "key was pressed";
     }
 
 }
