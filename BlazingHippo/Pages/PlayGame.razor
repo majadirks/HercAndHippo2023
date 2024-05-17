@@ -40,12 +40,12 @@ else
     private readonly DisplayLoop mainLoop;
     private Level state;
     private ElementReference controlInput;
-    private static string status = "no key press detected yet...";
-    private static ActionInput lastAction = ActionInput.NoAction;
+    private static string status = "Use WASD to move, shift to shoot, q to quit.";
+    private static int lastKey = WasdController.NO_ACTION_KEY;
 
     public PlayGame()
     {
-        GameController controller = new SimpleController(() => lastAction);
+        GameController controller = new WasdController(() => lastKey);
         state = HercAndHippoLibCs.DemoLevels.IntroducingTheHippo;
         mainLoop = new DisplayLoop(controller: controller, state: state, frequency_hz: 35, display: this); 
     }
@@ -60,30 +60,14 @@ else
     [JSInvokable]
     public static void OnKeyDown(string keyCode)
     {
-        /*
-        * a= 65 (west)
-        d = 68 (east)
-        w = 87 (north)
-        s= 83 (south)
-        shift = 16
-        */
-        int key = Convert.ToInt32(keyCode);
-        ActionInput actionInput = key switch
-        {
-            65 => ActionInput.MoveWest, // pressed "a"
-            68 => ActionInput.MoveEast, // "pressed d"
-            87 => ActionInput.MoveNorth, // "pressed w"
-            83 => ActionInput.MoveSouth, // pressed "s"
-            _ => ActionInput.NoAction
-        };
-        status = $"key was pressed: {key} -> {actionInput}";
-        lastAction = actionInput;
+        lastKey = Convert.ToInt32(keyCode);
+        status = $"key was pressed: {lastKey}";
     }
 
     [JSInvokable]
     public static void OnKeyUp()
     {
-        lastAction = ActionInput.NoAction;
+        lastKey = WasdController.NO_ACTION_KEY;
         status = "key up";
     }
 
