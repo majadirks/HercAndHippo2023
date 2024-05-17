@@ -43,6 +43,7 @@ else
     private static string status = "Use WASD to move, shift to shoot, q to quit.";
     private static int lastKey = WasdController.NO_ACTION_KEY;
     private readonly GameController controller;
+    private const int QUIT_KEY_CODE = 81; // "q"
 
     public PlayGame()
     {
@@ -60,12 +61,12 @@ else
             status = "You win!";
             mainLoop.Stop();
         }
-        else if (state.WinState == WinState.Won)
+        else if (state.WinState == WinState.Lost)
         {
             status = "You lose!";
             mainLoop.Stop();
         }
-        else if (controller.NextAction(state) == ActionInput.Quit)
+        else if (lastKey == QUIT_KEY_CODE)
         {
             status = "Quit";
             mainLoop.Stop();
