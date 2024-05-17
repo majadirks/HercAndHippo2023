@@ -13,6 +13,7 @@ internal class DisplayLoop
     private ScrollStatus scrollStatus;
     private DisplayPlan displayPlan;
     private ActionInputPair lastActions;
+    private readonly Timer cycleTimer; // Removing this field seems to cause CORS errors ?!
     public DisplayLoop(GameController controller, Level state, int frequency_hz, PlayGame display)
     {
         if (frequency_hz < 1)
@@ -24,7 +25,7 @@ internal class DisplayLoop
         cts = new();
 
         async void callback(object? _) => await Update();
-        _ = new Timer(callback: callback, state: null, dueTime: 1000 / frequency_hz, period: 1000 / frequency_hz);
+        cycleTimer = new Timer(callback: callback, state: null, dueTime: 1000 / frequency_hz, period: 1000 / frequency_hz);
         scrollStatus = ScrollStatus.Default(state.Player.Location); 
         displayPlan = new(state, scrollStatus);
         lastActions = new(ActionInput.NoAction);
