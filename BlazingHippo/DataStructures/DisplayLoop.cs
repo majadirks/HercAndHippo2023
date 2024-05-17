@@ -2,7 +2,7 @@
 using HercAndHippoLibCs;
 namespace BlazingHippo;
 
-internal class DisplayLoop : IDisposable
+internal class DisplayLoop
 {
     public const int MESSAGE_MARGIN = 3;
     private readonly CancellationTokenSource cts;
@@ -13,7 +13,6 @@ internal class DisplayLoop : IDisposable
     private ScrollStatus scrollStatus;
     private DisplayPlan displayPlan;
     private ActionInputPair lastActions;
-    private readonly Timer cycleTimer;
     public DisplayLoop(GameController controller, Level state, int frequency_hz, PlayGame display)
     {
         if (frequency_hz < 1)
@@ -25,7 +24,7 @@ internal class DisplayLoop : IDisposable
         cts = new();
 
         async void callback(object? _) => await Update();
-        cycleTimer = new Timer(callback: callback, state: null, dueTime: 1000 / frequency_hz, period: 1000 / frequency_hz);
+        _ = new Timer(callback: callback, state: null, dueTime: 1000 / frequency_hz, period: 1000 / frequency_hz);
         scrollStatus = ScrollStatus.Default(state.Player.Location); 
         displayPlan = new(state, scrollStatus);
         lastActions = new(ActionInput.NoAction);
@@ -51,7 +50,7 @@ internal class DisplayLoop : IDisposable
         cts.Token.ThrowIfCancellationRequested();
     }
 
-    public void Dispose()
+    public void Stop()
     {
         cts.Cancel();
     }

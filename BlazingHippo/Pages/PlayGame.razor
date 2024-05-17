@@ -42,10 +42,11 @@ else
     private ElementReference controlInput;
     private static string status = "Use WASD to move, shift to shoot, q to quit.";
     private static int lastKey = WasdController.NO_ACTION_KEY;
+    private readonly GameController controller;
 
     public PlayGame()
     {
-        GameController controller = new WasdController(() => lastKey);
+        controller = new WasdController(() => lastKey);
         state = HercAndHippoLibCs.DemoLevels.IntroducingTheHippo;
         mainLoop = new DisplayLoop(controller: controller, state: state, frequency_hz: 35, display: this); 
     }
@@ -54,6 +55,21 @@ else
     {
         // ToDo: deal with scrolling etc.
         state = displayPlan.State;
+        if (state.WinState == WinState.Won)
+        {
+            status = "You win!";
+            mainLoop.Stop();
+        }
+        else if (state.WinState == WinState.Won)
+        {
+            status = "You lose!";
+            mainLoop.Stop();
+        }
+        else if (controller.NextAction(state) == (ActionInputPair)ActionInput.Quit)
+        {
+            status = "Quit";
+            mainLoop.Stop();
+        }
         await InvokeAsync(StateHasChanged);
     }
 
@@ -68,7 +84,6 @@ else
     public static void OnKeyUp()
     {
         lastKey = WasdController.NO_ACTION_KEY;
-        status = "key up";
     }
 
 }
