@@ -66,10 +66,15 @@ else
             status = "You lose!";
             mainLoop.Stop();
         }
-        else if (lastKey == QUIT_KEY_CODE)
+        else if (WasdController.ActionFromKey(lastKey) == ActionInput.Quit)
         {
+            // Not working yet...
             status = "Quit";
             mainLoop.Stop();
+        }
+        else
+        {
+            status = lastKey.ToString();
         }
         await InvokeAsync(StateHasChanged);
     }
@@ -78,13 +83,14 @@ else
     public static void OnKeyDown(string keyCode)
     {
         lastKey = Convert.ToInt32(keyCode);
-        status = $"key was pressed: {lastKey}";
+        //status = $"key was pressed: {lastKey}";
     }
 
     [JSInvokable]
     public static void OnKeyUp()
     {
-        lastKey = WasdController.NO_ACTION_KEY;
+        if (WasdController.ActionFromKey(lastKey) != ActionInput.Quit)
+            lastKey = WasdController.NO_ACTION_KEY;
     }
 
 }

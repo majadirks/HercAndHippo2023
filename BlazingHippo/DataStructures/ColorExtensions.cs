@@ -21,7 +21,7 @@ namespace HercAndHippoConsole
                 Color.DarkGreen => "#006600",
                 Color.DarkCyan => "#0066cc",
                 Color.DarkBlue => "#000099",
-                Color.DarkMagenta => "#660066",
+                Color.DarkMagenta => "#9933ff",
                 _ => "UNKNOWN"
                 //_ => throw new NotSupportedException($"No known conversion from {color} to ConsoleColor.")
             };

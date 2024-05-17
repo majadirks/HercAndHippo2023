@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <Compile Remove="DataStructures\FutureStates.cs" />
+    <Compile Remove="DataStructures\StatusBar.cs" />
   </ItemGroup>
 
   <ItemGroup>
