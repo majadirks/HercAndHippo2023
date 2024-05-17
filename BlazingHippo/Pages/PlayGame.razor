@@ -12,6 +12,7 @@
 
 <script>
     this.addEventListener("keydown", e => DotNet.invokeMethodAsync('BlazingHippo', 'OnKeyDown', String(e.keyCode)))
+    this.addEventListener("keyup", () => DotNet.invokeMethodAsync('BlazingHippo', 'OnKeyUp'))
 </script>
 
 <PageTitle>Herc and Hippo</PageTitle>
@@ -25,7 +26,7 @@
 else
 {
     <div style="position: relative">
-        <h3 style="color:white">@x</h3>
+        <h3 style="color:white">@status</h3>
     @foreach (HercAndHippoObj hho in state.GetDisplayables())
     {
         @hho.GetHtml()
@@ -39,7 +40,8 @@ else
     private readonly DisplayLoop mainLoop;
     private Level state;
     private ElementReference controlInput;
-    private static string x = "no key press detected yet...";
+    private static string status = "no key press detected yet...";
+    private static ActionInput lastAction = ActionInput.NoAction;
 
     public PlayGame()
     {
@@ -58,12 +60,12 @@ else
     [JSInvokable]
     public static void OnKeyDown(string keyCode)
     {
-           /*
-           * a= 65 (west)
-           d = 68 (east)
-           w = 87 (north)
-           s= 83 (south)
-           shift = 16
+        /*
+        * a= 65 (west)
+        d = 68 (east)
+        w = 87 (north)
+        s= 83 (south)
+        shift = 16
         */
         int key = Convert.ToInt32(keyCode);
         ActionInput actionInput = key switch
@@ -74,7 +76,15 @@ else
             83 => ActionInput.MoveSouth, // pressed "s"
             _ => ActionInput.NoAction
         };
-        x = "key was pressed: " + actionInput.ToString();
+        status = $"key was pressed: {key} -> {actionInput}";
+        lastAction = actionInput;
+    }
+
+    [JSInvokable]
+    public static void OnKeyUp()
+    {
+        lastAction = ActionInput.NoAction;
+        status = "key up";
     }
 
 }
