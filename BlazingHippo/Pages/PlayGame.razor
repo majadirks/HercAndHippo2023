@@ -45,7 +45,7 @@ else
 
     public PlayGame()
     {
-        GameController controller = new DoNothingController();
+        GameController controller = new SimpleController(() => lastAction);
         state = HercAndHippoLibCs.DemoLevels.IntroducingTheHippo;
         mainLoop = new DisplayLoop(controller: controller, state: state, frequency_hz: 35, display: this); 
     }

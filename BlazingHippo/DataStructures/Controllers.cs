@@ -9,3 +9,17 @@ public class DoNothingController : GameController
     }
 }
 
+public class SimpleController : GameController
+{
+    private readonly Func<ActionInput> getAction;
+    public SimpleController(Func<ActionInput> getAction)
+    {
+        this.getAction = getAction;
+    }
+
+    public override ActionInputPair NextAction(Level state)
+    {
+        return getAction();
+    }
+}
+
