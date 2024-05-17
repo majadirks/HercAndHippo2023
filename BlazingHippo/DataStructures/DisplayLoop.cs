@@ -13,7 +13,7 @@ internal class DisplayLoop
     private ScrollStatus scrollStatus;
     private DisplayPlan displayPlan;
     private ActionInputPair lastActions;
-    private readonly Timer cycleTimer; // Removing this field seems to cause CORS errors ?!
+    private readonly Timer cycleTimer; // Removing this field seems to cause cross-origin request errors ?!
     public DisplayLoop(GameController controller, Level state, int frequency_hz, PlayGame display)
     {
         if (frequency_hz < 1)
