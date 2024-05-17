@@ -65,7 +65,7 @@ else
             status = "You lose!";
             mainLoop.Stop();
         }
-        else if (controller.NextAction(state) == (ActionInputPair)ActionInput.Quit)
+        else if (controller.NextAction(state) == ActionInput.Quit)
         {
             status = "Quit";
             mainLoop.Stop();

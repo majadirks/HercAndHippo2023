@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Numerics;
 namespace HercAndHippoLibCs;
 
 public class ActionInputPair : IEquatable<ActionInputPair>, IEnumerable<ActionInput>
@@ -12,12 +13,12 @@ public class ActionInputPair : IEquatable<ActionInputPair>, IEnumerable<ActionIn
         // Put these in some deterministic order.
         // If NoAction is one of the two, it's second.
         bool firstFirst = second == ActionInput.NoAction || (int)first < (int)second;
-        inputs = firstFirst ? 
-            new ActionInput[] { first, second } : 
+        inputs = firstFirst ?
+            new ActionInput[] { first, second } :
             new ActionInput[] { second, first };
     }
     public override int GetHashCode() => 19 * (int)inputs[0] + 31 * (int)inputs[1];
-    public bool Equals(ActionInputPair? other) 
+    public bool Equals(ActionInputPair? other)
         => other != null && inputs[0] == other.inputs[0] && inputs[1] == other.inputs[1];
     public override bool Equals(object? obj)
      => obj != null && Equals(obj as ActionInputPair);
@@ -65,4 +66,14 @@ public class ActionInputPair : IEquatable<ActionInputPair>, IEnumerable<ActionIn
         new(ActionInput.MoveNorth, ActionInput.DropHippo),
         new(ActionInput.MoveSouth, ActionInput.DropHippo),
     };
+
+    public static bool operator ==(ActionInputPair left, ActionInput right)
+    {
+        return left == (ActionInputPair)right;
+    }
+
+    public static bool operator !=(ActionInputPair left, ActionInput right)
+    {
+        return !(left == right);
+    }
 }
