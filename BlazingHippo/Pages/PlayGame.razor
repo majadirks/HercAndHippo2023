@@ -10,9 +10,14 @@
     }
 </style>
 
+<script>
+    this.addEventListener("keydown", e => DotNet.invokeMethodAsync('BlazingHippo', 'OnKeyDown', String(e.keyCode)))
+    this.addEventListener("keyup", () => DotNet.invokeMethodAsync('BlazingHippo', 'OnKeyUp'))
+</script>
+
 <PageTitle>Herc and Hippo</PageTitle>
 
-<h1 style="color:white">Herc and Hippo</h1>
+<h1 style="color:white" >Herc and Hippo</h1>
 
 @if (state == null)
 {
@@ -21,6 +26,7 @@
 else
 {
     <div style="position: relative">
+        <h3 style="color:white">@status</h3>
     @foreach (HercAndHippoObj hho in state.GetDisplayables())
     {
         @hho.GetHtml()
@@ -33,19 +39,58 @@ else
 
     private readonly DisplayLoop mainLoop;
     private Level state;
+    private ElementReference controlInput;
+    private static string status = "Use WASD to move, shift to shoot, q to quit.";
+    private static int lastKey = WasdController.NO_ACTION_KEY;
+    private readonly GameController controller;
+    private const int QUIT_KEY_CODE = 81; // "q"
 
     public PlayGame()
     {
-        GameController controller = new DoNothingController();
-        mainLoop = new DisplayLoop(controller: controller, state: DemoLevels.IntroducingTheHippo, frequency_hz: 35, display: this);
+        controller = new WasdController(() => lastKey);
         state = HercAndHippoLibCs.DemoLevels.IntroducingTheHippo;
+        mainLoop = new DisplayLoop(controller: controller, state: state, frequency_hz: 35, display: this); 
     }
 
     public async Task Update(DisplayPlan displayPlan)
     {
         // ToDo: deal with scrolling etc.
         state = displayPlan.State;
+        if (state.WinState == WinState.Won)
+        {
+            status = "You win!";
+            mainLoop.Stop();
+        }
+        else if (state.WinState == WinState.Lost)
+        {
+            status = "You lose!";
+            mainLoop.Stop();
+        }
+        else if (WasdController.ActionFromKey(lastKey) == ActionInput.Quit)
+        {
+            // Not working yet...
+            status = "Quit";
+            mainLoop.Stop();
+        }
+        else
+        {
+            status = lastKey.ToString();
+        }
         await InvokeAsync(StateHasChanged);
+    }
+
+    [JSInvokable]
+    public static void OnKeyDown(string keyCode)
+    {
+        lastKey = Convert.ToInt32(keyCode);
+        //status = $"key was pressed: {lastKey}";
+    }
+
+    [JSInvokable]
+    public static void OnKeyUp()
+    {
+        if (WasdController.ActionFromKey(lastKey) != ActionInput.Quit)
+            lastKey = WasdController.NO_ACTION_KEY;
     }
 
 }
