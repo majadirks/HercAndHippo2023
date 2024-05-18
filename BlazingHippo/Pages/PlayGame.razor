@@ -83,14 +83,12 @@ else
     public static void OnKeyDown(string keyCode)
     {
         lastKey = Convert.ToInt32(keyCode);
-        //status = $"key was pressed: {lastKey}";
     }
 
     [JSInvokable]
     public static void OnKeyUp()
     {
-        if (WasdController.ActionFromKey(lastKey) != ActionInput.Quit)
-            lastKey = WasdController.NO_ACTION_KEY;
+        lastKey = WasdController.NO_ACTION_KEY;
     }
 
 }
