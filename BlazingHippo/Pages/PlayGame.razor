@@ -40,14 +40,13 @@ else
     private readonly DisplayLoop mainLoop;
     private Level state;
     private ElementReference controlInput;
-    private static string status = "Use WASD to move, shift to shoot, q to quit.";
-    private static int lastKey = WasdController.NO_ACTION_KEY;
-    private static bool shiftDown = false;
+    private static string status = "Use WASD to move, shift to shoot, x to drop hippo, q to quit.";
+    private static HashSet<int> keys = new HashSet<int>();
     private readonly GameController controller;
 
     public PlayGame()
     {
-        controller = new WasdController(getKey: () => lastKey, getModified: ()=> shiftDown);
+        controller = new WasdController(getKey: () => keys);
         state = HercAndHippoLibCs.DemoLevels.IntroducingTheHippo;
         mainLoop = new DisplayLoop(controller: controller, state: state, frequency_hz: 35, display: this); 
     }
@@ -83,17 +82,14 @@ else
     public static void OnKeyDown(string keyCode)
     {
         int key = Convert.ToInt32(keyCode);
-        if (key == 16)
-            shiftDown = true;
-        else
-            lastKey = key;
+        keys.Add(key);
+        //status = key.ToString();
     }
 
     [JSInvokable]
     public static void OnKeyUp()
     {
-        lastKey = WasdController.NO_ACTION_KEY;
-        shiftDown = false;
+        keys.Clear();
     }
 
 }
