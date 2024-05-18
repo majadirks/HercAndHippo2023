@@ -80,15 +80,4 @@ public class ActionInputPair : IEquatable<ActionInputPair>, IEquatable<ActionInp
         new(ActionInput.MoveNorth, ActionInput.DropHippo),
         new(ActionInput.MoveSouth, ActionInput.DropHippo),
     };
-
-    public static bool operator ==(ActionInputPair left, ActionInput right)
-    {
-        return left == (ActionInputPair)right;
-    }
-
-    public static bool operator !=(ActionInputPair left, ActionInput right)
-    {
-        return !(left == right);
-    }
-
 }
