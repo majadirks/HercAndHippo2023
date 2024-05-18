@@ -52,7 +52,7 @@ else
         mainLoop = new DisplayLoop(controller: controller, state: state, frequency_hz: 35, display: this); 
     }
 
-    public async Task Update(DisplayPlan displayPlan)
+    public async Task Update(DisplayPlan displayPlan, ActionInputPair aip)
     {
         // ToDo: deal with scrolling etc.
         state = displayPlan.State;
@@ -66,7 +66,7 @@ else
             status = "You lose!";
             mainLoop.Stop();
         }
-        else if (WasdController.ActionFromKey(lastKey) == ActionInput.Quit)
+        else if (aip == ActionInput.Quit)
         {
             // Not working yet...
             status = "Quit";

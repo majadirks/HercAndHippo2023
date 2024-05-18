@@ -32,16 +32,10 @@ internal class DisplayLoop
     private async Task Update()
     {
         lastActions = controller.NextAction(State);
-        if (lastActions == ActionInput.Quit)
-        {
-            cts.Cancel();
-            return;
-        }
         State = State.RefreshCyclables(lastActions, cts.Token);
         scrollStatus = scrollStatus.Update(State.Player.Location);
         displayPlan = new(State, scrollStatus);
-        await display.Update(displayPlan);
-        cts.Token.ThrowIfCancellationRequested();
+        await display.Update(displayPlan, lastActions);
     }
 
     public void Stop()
