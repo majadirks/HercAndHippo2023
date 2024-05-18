@@ -7,7 +7,7 @@ internal class DisplayLoop
     public const int MESSAGE_MARGIN = 3;
     private readonly CancellationTokenSource cts;
     private readonly PlayGame display;
-    private readonly GameController controller;
+    private GameController controller;
     public Level State { get; private set; }
     private ScrollStatus scrollStatus;
     private DisplayPlan displayPlan;
@@ -32,20 +32,16 @@ internal class DisplayLoop
     private async Task Update()
     {
         lastActions = controller.NextAction(State);
-        if (lastActions == ActionInput.Quit)
-        {
-            cts.Cancel();
-            return;
-        }
         State = State.RefreshCyclables(lastActions, cts.Token);
         scrollStatus = scrollStatus.Update(State.Player.Location);
         displayPlan = new(State, scrollStatus);
-        await display.Update(displayPlan);
-        cts.Token.ThrowIfCancellationRequested();
+        await display.Update(displayPlan, lastActions);
     }
 
     public void Stop()
     {
         cts.Cancel();
+        // Don't accept further keyboard input
+        controller = new DoNothingController();
     }
 }

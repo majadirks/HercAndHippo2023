@@ -13,12 +13,9 @@ public class WasdController : GameController
 {
     public const int NO_ACTION_KEY = -1;
     private readonly Func<int> getKey;
-    public ActionInputPair PreviousAction { get; private set; }
-
     public WasdController(Func<int> getKey)
     {
         this.getKey = getKey;
-        PreviousAction = ActionInput.NoAction;
     }
 
     public static ActionInputPair ActionFromKey(int key)
@@ -39,8 +36,8 @@ public class WasdController : GameController
     public override ActionInputPair NextAction(Level state)
     {
         int key = getKey();
-        PreviousAction = ActionFromKey(key);
-        return PreviousAction;
+        var action = ActionFromKey(key);
+        return action;
     }
 }
 

@@ -52,10 +52,10 @@ else
         mainLoop = new DisplayLoop(controller: controller, state: state, frequency_hz: 35, display: this); 
     }
 
-    public async Task Update(DisplayPlan displayPlan)
+    public async Task Update(DisplayPlan displayPlan, ActionInputPair aip)
     {
         // ToDo: deal with scrolling etc.
-        state = displayPlan.State;
+
         if (state.WinState == WinState.Won)
         {
             status = "You win!";
@@ -66,15 +66,15 @@ else
             status = "You lose!";
             mainLoop.Stop();
         }
-        else if (WasdController.ActionFromKey(lastKey) == ActionInput.Quit)
+        else if (aip.Equals(ActionInput.Quit))
         {
-            // Not working yet...
             status = "Quit";
             mainLoop.Stop();
         }
         else
         {
-            status = lastKey.ToString();
+            // Game is still ongoing, so update the state
+            state = displayPlan.State;
         }
         await InvokeAsync(StateHasChanged);
     }
@@ -83,14 +83,12 @@ else
     public static void OnKeyDown(string keyCode)
     {
         lastKey = Convert.ToInt32(keyCode);
-        //status = $"key was pressed: {lastKey}";
     }
 
     [JSInvokable]
     public static void OnKeyUp()
     {
-        if (WasdController.ActionFromKey(lastKey) != ActionInput.Quit)
-            lastKey = WasdController.NO_ACTION_KEY;
+        lastKey = WasdController.NO_ACTION_KEY;
     }
 
 }
