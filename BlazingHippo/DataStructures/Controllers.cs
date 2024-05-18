@@ -12,49 +12,58 @@ public class DoNothingController : GameController
 public class WasdController : GameController
 {
     public const int NO_ACTION_KEY = -1;
-    private readonly Func<int> getKey;
-    private readonly Func<bool> getModified;
-    public WasdController(Func<int> getKey, Func<bool> getModified)
+    public const int SHIFT_KEY = 16;
+    public const int W = 87;
+    public const int A = 65;
+    public const int S = 83;
+    public const int D = 68;
+    public const int Q = 81;
+    private readonly Func<HashSet<int>> getKeys;
+    public WasdController(Func<HashSet<int>> getKey)
     {
-        this.getKey = getKey;
-        this.getModified = getModified;
+        this.getKeys = getKey;
     }
 
-    public static ActionInputPair ActionFromKey(int key, bool modified)
+    public static ActionInputPair ActionFromKeys(HashSet<int> keys)
     {
+        bool modified = keys.Contains(SHIFT_KEY);
+        
         if (modified)
         {
-            ActionInputPair actionInput = key switch
-            {
-                65 => ActionInput.ShootWest, // pressed "a"
-                68 => ActionInput.ShootEast, // "pressed d"
-                87 => ActionInput.ShootNorth, // "pressed w"
-                83 => ActionInput.ShootSouth, // pressed "s"
-                _ => ActionInput.NoAction
-            };
-            return actionInput;
+            if (keys.Contains(A))
+                return ActionInput.ShootWest;
+            else if (keys.Contains(D))
+                return ActionInput.ShootEast;
+            else if (keys.Contains(W))
+                return ActionInput.ShootNorth;
+            else if (keys.Contains(S))
+                return ActionInput.ShootSouth;
+            else
+                return ActionInput.NoAction;
         }
-        else
+        else // no shift key
         {
-            ActionInputPair actionInput = key switch
-            {
-                65 => ActionInput.MoveWest, // pressed "a"
-                68 => ActionInput.MoveEast, // "pressed d"
-                87 => ActionInput.MoveNorth, // "pressed w"
-                83 => ActionInput.MoveSouth, // pressed "s"
-                81 => ActionInput.Quit, // pressed "q"
-                NO_ACTION_KEY => ActionInput.NoAction,
-                _ => ActionInput.NoAction
-            };
-            return actionInput;
+            if (keys.Contains(A))
+                return ActionInput.MoveWest;
+            else if (keys.Contains(D))
+                return ActionInput.MoveEast;
+            else if (keys.Contains(W))
+                return ActionInput.MoveNorth;
+            else if (keys.Contains(S))
+                return ActionInput.MoveSouth;
+            else if (keys.Contains(Q))
+                return ActionInput.Quit;
+            else
+                return ActionInput.NoAction;
         }
     }
 
     public override ActionInputPair NextAction(Level state)
     {
-        int key = getKey();
-        bool modified = getModified();
-        var action = ActionFromKey(key, modified);
+        var keys = getKeys();
+        if (!keys.Any())
+            return ActionInput.NoAction;
+        var action = ActionFromKeys(keys);
         return action;
     }
 }
