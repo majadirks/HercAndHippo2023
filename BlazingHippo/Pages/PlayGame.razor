@@ -68,13 +68,8 @@ else
         }
         else if (aip.Equals(ActionInput.Quit))
         {
-            // Not working yet...
             status = "Quit";
             mainLoop.Stop();
-        }
-        else
-        {
-            status = lastKey.ToString();
         }
         await InvokeAsync(StateHasChanged);
     }

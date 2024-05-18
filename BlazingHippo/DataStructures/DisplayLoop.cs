@@ -7,7 +7,7 @@ internal class DisplayLoop
     public const int MESSAGE_MARGIN = 3;
     private readonly CancellationTokenSource cts;
     private readonly PlayGame display;
-    private readonly GameController controller;
+    private GameController controller;
     public Level State { get; private set; }
     private ScrollStatus scrollStatus;
     private DisplayPlan displayPlan;
@@ -41,5 +41,7 @@ internal class DisplayLoop
     public void Stop()
     {
         cts.Cancel();
+        // Don't accept further keyboard input
+        controller = new DoNothingController();
     }
 }
