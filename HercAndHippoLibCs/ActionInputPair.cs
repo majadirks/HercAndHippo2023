@@ -2,7 +2,7 @@
 using System.Numerics;
 namespace HercAndHippoLibCs;
 
-public class ActionInputPair : IEquatable<ActionInputPair>, IEnumerable<ActionInput>
+public class ActionInputPair : IEquatable<ActionInputPair>, IEquatable<ActionInput>, IEnumerable<ActionInput>
 {
     private readonly ActionInput[] inputs;
     public ActionInputPair(ActionInput first, ActionInput? secondOrNull = null)
@@ -20,8 +20,17 @@ public class ActionInputPair : IEquatable<ActionInputPair>, IEnumerable<ActionIn
     public override int GetHashCode() => 19 * (int)inputs[0] + 31 * (int)inputs[1];
     public bool Equals(ActionInputPair? other)
         => other != null && inputs[0] == other.inputs[0] && inputs[1] == other.inputs[1];
-    public override bool Equals(object? obj)
-     => obj != null && Equals(obj as ActionInputPair);
+    public override bool Equals(object? obj)  
+    {
+        if (obj == null)
+            return false;
+        else if (obj is ActionInput ai)
+            return this.Equals(ai);
+        else if (obj is ActionInputPair aip)
+            return this.Equals(aip);
+        else
+            return false;
+    }
 
     public IEnumerator<ActionInput> GetEnumerator()
         => ((IEnumerable<ActionInput>)inputs).GetEnumerator();
@@ -40,6 +49,11 @@ public class ActionInputPair : IEquatable<ActionInputPair>, IEnumerable<ActionIn
         else
             return ($"{First} and {Second}");
     }
+
+    public bool Equals(ActionInput ai)
+        => this.Second == ActionInput.NoAction && this.First == ai;
+    
+
     public static implicit operator ActionInputPair(ActionInput input) => new(input, null);
     public static readonly ActionInputPair[] PossiblePairs = new ActionInputPair[]
     {
@@ -76,4 +90,5 @@ public class ActionInputPair : IEquatable<ActionInputPair>, IEnumerable<ActionIn
     {
         return !(left == right);
     }
+
 }
