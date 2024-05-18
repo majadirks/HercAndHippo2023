@@ -18,6 +18,7 @@ public class WasdController : GameController
     public const int S = 83;
     public const int D = 68;
     public const int Q = 81;
+    public const int X = 88;
     private readonly Func<HashSet<int>> getKeys;
     public WasdController(Func<HashSet<int>> getKey)
     {
@@ -26,36 +27,58 @@ public class WasdController : GameController
 
     public static ActionInputPair ActionFromKeys(HashSet<int> keys)
     {
-        bool modified = keys.Contains(SHIFT_KEY);
-        
-        if (modified)
+        bool shooting = keys.Contains(SHIFT_KEY);
+        bool north = keys.Contains(W);
+        bool south = keys.Contains(S);
+        bool east = keys.Contains(D);
+        bool west = keys.Contains(A);
+        bool droppingHippo = keys.Contains(X);
+        bool quitting = keys.Contains(Q);
+
+        if (shooting) // cannot shoot while doing something else
         {
-            if (keys.Contains(A))
+            if (west)
                 return ActionInput.ShootWest;
-            else if (keys.Contains(D))
+            else if (east)
                 return ActionInput.ShootEast;
-            else if (keys.Contains(W))
+            else if (north)
                 return ActionInput.ShootNorth;
-            else if (keys.Contains(S))
+            else if (south)
                 return ActionInput.ShootSouth;
             else
                 return ActionInput.NoAction;
         }
-        else // no shift key
+        if (north) // jumping
         {
-            if (keys.Contains(A))
-                return ActionInput.MoveWest;
-            else if (keys.Contains(D))
-                return ActionInput.MoveEast;
-            else if (keys.Contains(W))
+            if (east)
+                return new(ActionInput.MoveEast, ActionInput.MoveNorth);
+            else if (west)
+                return new(ActionInput.MoveWest, ActionInput.MoveNorth);
+            else // jumping, no horizontal motion
                 return ActionInput.MoveNorth;
-            else if (keys.Contains(S))
-                return ActionInput.MoveSouth;
-            else if (keys.Contains(Q))
-                return ActionInput.Quit;
-            else
-                return ActionInput.NoAction;
         }
+
+        if (south)
+        {
+            if (east)
+                return new(ActionInput.MoveEast, ActionInput.MoveSouth);
+            else if (west)
+                return new(ActionInput.MoveWest, ActionInput.MoveSouth);
+            else
+                return ActionInput.MoveSouth;
+        }
+        if (east)
+            return ActionInput.MoveEast;
+        else if (west)
+            return ActionInput.MoveWest;
+        else if (south)
+            return ActionInput.MoveSouth;
+        else if (droppingHippo)
+            return ActionInput.DropHippo;
+        else if (quitting)
+            return ActionInput.Quit;
+        else
+            return ActionInput.NoAction;
     }
 
     public override ActionInputPair NextAction(Level state)

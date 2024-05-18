@@ -40,7 +40,7 @@ else
     private readonly DisplayLoop mainLoop;
     private Level state;
     private ElementReference controlInput;
-    private static string status = "Use WASD to move, shift to shoot, q to quit.";
+    private static string status = "Use WASD to move, shift to shoot, x to drop hippo, q to quit.";
     private static HashSet<int> keys = new HashSet<int>();
     private readonly GameController controller;
 
@@ -83,6 +83,7 @@ else
     {
         int key = Convert.ToInt32(keyCode);
         keys.Add(key);
+        status = key.ToString();
     }
 
     [JSInvokable]
