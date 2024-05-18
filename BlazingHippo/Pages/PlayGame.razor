@@ -55,7 +55,7 @@ else
     public async Task Update(DisplayPlan displayPlan, ActionInputPair aip)
     {
         // ToDo: deal with scrolling etc.
-        state = displayPlan.State;
+
         if (state.WinState == WinState.Won)
         {
             status = "You win!";
@@ -70,6 +70,11 @@ else
         {
             status = "Quit";
             mainLoop.Stop();
+        }
+        else
+        {
+            // Game is still ongoing, so update the state
+            state = displayPlan.State;
         }
         await InvokeAsync(StateHasChanged);
     }
