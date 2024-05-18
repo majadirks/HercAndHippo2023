@@ -42,12 +42,12 @@ else
     private ElementReference controlInput;
     private static string status = "Use WASD to move, shift to shoot, q to quit.";
     private static int lastKey = WasdController.NO_ACTION_KEY;
+    private static bool shiftDown = false;
     private readonly GameController controller;
-    private const int QUIT_KEY_CODE = 81; // "q"
 
     public PlayGame()
     {
-        controller = new WasdController(() => lastKey);
+        controller = new WasdController(getKey: () => lastKey, getModified: ()=> shiftDown);
         state = HercAndHippoLibCs.DemoLevels.IntroducingTheHippo;
         mainLoop = new DisplayLoop(controller: controller, state: state, frequency_hz: 35, display: this); 
     }
@@ -82,13 +82,18 @@ else
     [JSInvokable]
     public static void OnKeyDown(string keyCode)
     {
-        lastKey = Convert.ToInt32(keyCode);
+        int key = Convert.ToInt32(keyCode);
+        if (key == 16)
+            shiftDown = true;
+        else
+            lastKey = key;
     }
 
     [JSInvokable]
     public static void OnKeyUp()
     {
         lastKey = WasdController.NO_ACTION_KEY;
+        shiftDown = false;
     }
 
 }
