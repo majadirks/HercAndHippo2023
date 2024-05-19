@@ -16,7 +16,7 @@ public static class ImageMapper
 
         string html = phho.Hho switch
         {
-            Hippo => $@"<img src = "".\img\hippo.jpeg"" style=""{phho.Location()}""/>",
+            Hippo => $@"<img src = "".\img\hippo.png"" style=""{phho.Location()}""/>",
             Player => $@"<img src = "".\img\herc.png"" style=""{phho.Location()}""/>",
             Groodle => $@"<img src = "".\img\groodle.png"" style=""{phho.Location()}""/>",
             Key => phho.Hho.Color == HercAndHippoLibCs.Color.DarkMagenta ?
