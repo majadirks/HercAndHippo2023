@@ -28,6 +28,7 @@ public static class ImageMapper
             Door => img("purple_door.png"),
                 //phho.Hho.Color == Color.DarkMagenta ? img("purple_door.png") :
                 //NoImageFile(),
+            Ammo => img("quiver.png"),
             _ => NoImageFile(),
         };
         return new RenderFragment(b => b.AddMarkupContent(0, html));
