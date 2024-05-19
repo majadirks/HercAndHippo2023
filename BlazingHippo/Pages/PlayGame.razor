@@ -19,7 +19,7 @@
 
 <h1 style="color:white" >Herc and Hippo</h1>
 
-@if (state == null)
+@if (plan == null)
 {
     <p><em>Loading...</em></p>
 }
@@ -27,7 +27,7 @@ else
 {
     <div style="position: relative">
         <h3 style="color:white">@status</h3>
-    @foreach (HercAndHippoObj hho in state.GetDisplayables())
+    @foreach (var hho in plan.Planned)
     {
         @hho.GetHtml()
     }
@@ -38,7 +38,7 @@ else
 @code {
 
     private readonly DisplayLoop mainLoop;
-    private Level state;
+    private DisplayPlan plan;
     private ElementReference controlInput;
     private static string status = "Use WASD to move, shift to shoot, x to drop hippo, q to quit.";
     private static HashSet<int> keys = new HashSet<int>();
@@ -47,14 +47,15 @@ else
     public PlayGame()
     {
         controller = new WasdController(getKey: () => keys);
-        state = HercAndHippoLibCs.DemoLevels.IntroducingTheHippo;
+        Level state = HercAndHippoLibCs.DemoLevels.IntroducingTheHippo;
+        ScrollStatus scrollStatus = ScrollStatus.Default(state.Player.Location);
+        plan = new DisplayPlan(state, scrollStatus);
         mainLoop = new DisplayLoop(controller: controller, state: state, frequency_hz: 35, display: this); 
     }
 
-    public async Task Update(DisplayPlan displayPlan, ActionInputPair aip)
+    public async Task Update(DisplayPlan newPlan, ActionInputPair aip)
     {
-        // ToDo: deal with scrolling etc.
-
+        Level state = newPlan.State;
         if (state.WinState == WinState.Won)
         {
             status = "You win!";
@@ -73,7 +74,7 @@ else
         else
         {
             // Game is still ongoing, so update the state
-            state = displayPlan.State;
+            plan = newPlan;
         }
         await InvokeAsync(StateHasChanged);
     }
