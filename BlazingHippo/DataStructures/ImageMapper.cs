@@ -21,23 +21,26 @@ public static class ImageMapper
             Player => img("herc.png"),
             Groodle => img("groodle.png"),
             Key => 
-                phho.Hho.Color == HercAndHippoLibCs.Color.DarkMagenta ? img("purple_key.png") : 
+                phho.Hho.Color == Color.DarkMagenta ? img("purple_key.png") : 
                 NoImageFile(),
             BreakableWall => img("lattice.png"),
             Wall => img("stone_wall.png"),
+            Door =>
+                phho.Hho.Color == Color.DarkMagenta ? img("purple_door.png") :
+                NoImageFile(),
             _ => NoImageFile(),
         };
         return new RenderFragment(b => b.AddMarkupContent(0, html));
 
         string img(string file)
-            => $@"<img src = "".\img\{file}"" style=""{phho.Location()}""/>";
+            => $@"<img src = "".\img\{file}"" style=""{phho.LocationStyle()}""/>";
         string NoImageFile()
-        => $@"<div style=""{phho.Location()} {phho.Color()}"">{phho.Hho.ConsoleDisplayString}</div>";
+        => $@"<div style=""{phho.LocationStyle()} {phho.ColorStyle()}"">{phho.Hho.ConsoleDisplayString}</div>";
     }
-    private static string Location(this PlannedHho phho)
+    private static string LocationStyle(this PlannedHho phho)
     => $"position:absolute; left:{phho.Col * WIDTH}px; top:{phho.Row * HEIGHT}px; width:{WIDTH}px; height:{HEIGHT}px;";
 
-    private static string Color(this PlannedHho hho)
+    private static string ColorStyle(this PlannedHho hho)
     => $"color:{hho.Hho.Color.ToHtmlColor()}; background-color:{hho.Hho.BackgroundColor.ToHtmlColor()};";
 
 }
