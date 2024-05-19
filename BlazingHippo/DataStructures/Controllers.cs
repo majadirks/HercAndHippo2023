@@ -19,6 +19,11 @@ public class WasdController : GameController
     public const int D = 68;
     public const int Q = 81;
     public const int X = 88;
+    public const int UP = 38;
+    public const int RIGHT = 39;
+    public const int DOWN = 40;
+    public const int LEFT = 37;
+    public const int SPACE = 32;
     private readonly Func<HashSet<int>> getKeys;
     public WasdController(Func<HashSet<int>> getKey)
     {
@@ -28,11 +33,11 @@ public class WasdController : GameController
     public static ActionInputPair ActionFromKeys(HashSet<int> keys)
     {
         bool shooting = keys.Contains(SHIFT_KEY);
-        bool north = keys.Contains(W);
-        bool south = keys.Contains(S);
-        bool east = keys.Contains(D);
-        bool west = keys.Contains(A);
-        bool droppingHippo = keys.Contains(X);
+        bool north = keys.Contains(W) || keys.Contains(UP);
+        bool south = keys.Contains(S) || keys.Contains(DOWN);
+        bool east = keys.Contains(D) || keys.Contains(RIGHT);
+        bool west = keys.Contains(A) || keys.Contains(LEFT);
+        bool droppingHippo = keys.Contains(X) || keys.Contains(SPACE);
         bool quitting = keys.Contains(Q);
 
         if (shooting) // cannot shoot while doing something else
