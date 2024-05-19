@@ -1,13 +1,12 @@
 ﻿using HercAndHippoConsole;
 using HercAndHippoLibCs;
 using Microsoft.AspNetCore.Components;
-using System.Runtime.CompilerServices;
+using static BlazingHippo.Constants;
 namespace BlazingHippo;
 
 public static class ImageMapper
 {
-    public const int WIDTH = 20;
-    public const int HEIGHT = 32;
+
     public static IEnumerable<IConsoleDisplayable> GetDisplayables(this Level level)
         => level.LevelObjects.Where(obj => obj is IConsoleDisplayable).Cast<IConsoleDisplayable>();
     public static RenderFragment GetHtml(this PlannedHho phho)
@@ -39,7 +38,7 @@ public static class ImageMapper
         => $@"<div style=""{phho.LocationStyle()} {phho.ColorStyle()}"">{phho.Hho.ConsoleDisplayString}</div>";
     }
     private static string LocationStyle(this PlannedHho phho)
-    => $"position:absolute; left:{phho.Col * WIDTH}px; top:{phho.Row * HEIGHT}px; width:{WIDTH}px; height:{HEIGHT}px;";
+    => $"position:absolute; left:{phho.Col * IMG_WIDTH}px; top:{phho.Row * IMG_HEIGHT}px; width:{IMG_WIDTH}px; height:{IMG_HEIGHT}px;";
 
     private static string ColorStyle(this PlannedHho hho)
     => $"color:{hho.Hho.Color.ToHtmlColor()}; background-color:{hho.Hho.BackgroundColor.ToHtmlColor()};";
