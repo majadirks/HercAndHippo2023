@@ -25,9 +25,9 @@ public static class ImageMapper
                 NoImageFile(),
             BreakableWall => img("lattice.png"),
             Wall => img("stone_wall.png"),
-            Door =>
-                phho.Hho.Color == Color.DarkMagenta ? img("purple_door.png") :
-                NoImageFile(),
+            Door => img("purple_door.png"),
+                //phho.Hho.Color == Color.DarkMagenta ? img("purple_door.png") :
+                //NoImageFile(),
             _ => NoImageFile(),
         };
         return new RenderFragment(b => b.AddMarkupContent(0, html));
