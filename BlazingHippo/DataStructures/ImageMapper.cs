@@ -13,23 +13,25 @@ public static class ImageMapper
     {
         if (phho == null || phho.Hho == null)
             throw new Exception("Unexpected null");
-
+        Color color = phho.Hho.Color;
         string html = phho.Hho switch
         {
             Hippo => img("hippo.png"),
             Player => img("herc.png"),
             Groodle => img("groodle.png"),
-            Key => 
-                phho.Hho.Color == Color.DarkMagenta ? img("purple_key.png") : 
+            Key =>
+                color == Color.DarkMagenta ? img("purple_key.png") :
                 NoImageFile(),
             BreakableWall => img("lattice.png"),
             Wall => img("stone_wall.png"),
             Door => img("purple_door.png"),
-                //phho.Hho.Color == Color.DarkMagenta ? img("purple_door.png") :
-                //NoImageFile(),
+            //color == Color.DarkMagenta ? img("purple_door.png") :
+            //NoImageFile(),
             Ammo => img("quiver.png"),
+            Gem =>
+                color == Color.Red ? img("red_gem.png") : NoImageFile(),
             _ => NoImageFile(),
-        };
+        }; ;
         return new RenderFragment(b => b.AddMarkupContent(0, html));
 
         string img(string file)
