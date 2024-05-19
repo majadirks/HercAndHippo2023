@@ -52,8 +52,9 @@ internal class DisplayLoop
             bufferStats.Refresh(); // Check if buffer size changed
             displayPlan = new(State, scrollStatus, bufferStats); // save current screen layout
             lastActions = controller.NextAction(State);
-            if (lastActions.Where(a => a == ActionInput.Quit).Any()) break;
             (State, scrollStatus, diffs) = futures.GetFutureDiffs(lastActions);
+            if (State.WinState != WinState.InProgress)
+                break;
             refreshed = displayPlan.RefreshDisplay(diffs); // Re-display anything that changed
 
             while (!refreshed)
@@ -68,8 +69,12 @@ internal class DisplayLoop
 
         if (State.WinState == WinState.Won)
             statusBar.ShowStatus(State, "Huzzah! You have won!");
-        else
+        else if (State.WinState == WinState.Lost)
             statusBar.ShowStatus(State, "You lost! Try again!");
+        else if (State.WinState == WinState.Quit)
+            statusBar.ShowStatus(State, "Quit");
+        else
+            throw new NotSupportedException($"Unexpected {nameof(WinState)} '{State.WinState}'");
         Console.ReadLine();
 
         ResetConsoleColors(); // Clean up

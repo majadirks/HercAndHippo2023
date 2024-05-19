@@ -6,4 +6,4 @@ using System.Threading.Tasks;
 
 namespace HercAndHippoLibCs;
 
-public enum WinState { InProgress, Lost, Won }
+public enum WinState { InProgress, Lost, Won, Quit }

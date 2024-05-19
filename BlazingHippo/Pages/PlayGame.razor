@@ -53,7 +53,7 @@ else
         mainLoop = new DisplayLoop(controller: controller, state: state, frequency_hz: 35, display: this); 
     }
 
-    public async Task Update(DisplayPlan newPlan, ActionInputPair aip)
+    public async Task Update(DisplayPlan newPlan)
     {
         Level state = newPlan.State;
         if (state.WinState == WinState.Won)
@@ -66,7 +66,7 @@ else
             status = "You lose!";
             mainLoop.Stop();
         }
-        else if (aip.Equals(ActionInput.Quit))
+        else if (state.WinState == WinState.Quit)
         {
             status = "Quit";
             mainLoop.Stop();
