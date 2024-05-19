@@ -30,8 +30,10 @@ public static class ImageMapper
             Ammo => img("quiver.png"),
             Gem =>
                 color == Color.Red ? img("red_gem.png") : NoImageFile(),
+            Trophy => img("trophy.png"),
             _ => NoImageFile(),
-        }; ;
+
+        }; 
         return new RenderFragment(b => b.AddMarkupContent(0, html));
 
         string img(string file)
