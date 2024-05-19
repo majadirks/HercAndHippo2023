@@ -31,7 +31,12 @@ public static class ImageMapper
             Gem =>
                 color == Color.Red ? img("red_gem.png") : NoImageFile(),
             Trophy => img("trophy.png"),
-            Bullet => img("arrow.png"),
+            Bullet b => 
+                b.Whither == Direction.East ? img("arrow_right.png") :
+                b.Whither == Direction.North ? img("arrow_up.png") :
+                b.Whither == Direction.South ? img("arrow_down.png") :
+                b.Whither == Direction.West ? img("arrow_left.png") :
+                NoImageFile(),
             _ => NoImageFile(),
 
         }; 
