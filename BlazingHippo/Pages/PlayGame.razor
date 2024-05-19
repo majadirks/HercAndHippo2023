@@ -55,7 +55,6 @@ else
 
     public async Task Update(DisplayPlan newPlan, ActionInputPair aip)
     {
-        // ToDo: deal with scrolling etc.
         Level state = newPlan.State;
         if (state.WinState == WinState.Won)
         {
