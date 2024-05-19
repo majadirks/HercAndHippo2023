@@ -1,6 +1,7 @@
 ﻿using HercAndHippoConsole;
 using HercAndHippoLibCs;
 using Microsoft.AspNetCore.Components;
+using System.Runtime.CompilerServices;
 namespace BlazingHippo;
 
 public static class ImageMapper
@@ -16,14 +17,18 @@ public static class ImageMapper
 
         string html = phho.Hho switch
         {
-            Hippo => $@"<img src = "".\img\hippo.png"" style=""{phho.Location()}""/>",
+            Hippo => img("hippo.png"),
             Player => $@"<img src = "".\img\herc.png"" style=""{phho.Location()}""/>",
             Groodle => $@"<img src = "".\img\groodle.png"" style=""{phho.Location()}""/>",
             Key => phho.Hho.Color == HercAndHippoLibCs.Color.DarkMagenta ?
                     $@"<img src = "".\img\purple_key.png"" style=""{phho.Location()}""/>" : "",
+            BreakableWall => img("lattice.png"),
             _ => $@"<div style=""{phho.Location()} {phho.Color()}"">{phho.Hho.ConsoleDisplayString}</div>",
         };
         return new RenderFragment(b => b.AddMarkupContent(0, html));
+
+        string img(string file)
+            => $@"<img src = "".\img\{file}"" style=""{phho.Location()}""/>";
     }
     private static string Location(this PlannedHho phho)
     => $"position:absolute; left:{phho.Col * WIDTH}px; top:{phho.Row * HEIGHT}px; width:{WIDTH}px; height:{HEIGHT}px;";
