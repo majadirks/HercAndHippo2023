@@ -31,6 +31,7 @@ public static class ImageMapper
             Gem =>
                 color == Color.Red ? img("red_gem.png") : NoImageFile(),
             Trophy => img("trophy.png"),
+            Bullet => img("arrow.png"),
             _ => NoImageFile(),
 
         }; 
