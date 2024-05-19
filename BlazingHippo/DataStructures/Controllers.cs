@@ -25,9 +25,9 @@ public class WasdController : GameController
     public const int LEFT = 37;
     public const int SPACE = 32;
     private readonly Func<HashSet<int>> getKeys;
-    public WasdController(Func<HashSet<int>> getKey)
+    public WasdController(Func<HashSet<int>> getKeys)
     {
-        this.getKeys = getKey;
+        this.getKeys = getKeys;
     }
 
     public static ActionInputPair ActionFromKeys(HashSet<int> keys)

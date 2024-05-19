@@ -46,7 +46,7 @@ else
 
     public PlayGame()
     {
-        controller = new WasdController(getKey: () => keys);
+        controller = new WasdController(getKeys: () => keys);
         Level state = HercAndHippoLibCs.DemoLevels.IntroducingTheHippo;
         ScrollStatus scrollStatus = ScrollStatus.Default(state.Player.Location);
         plan = new DisplayPlan(state, scrollStatus);
