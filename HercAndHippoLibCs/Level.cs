@@ -70,6 +70,9 @@ public record Level(Player Player, Hippo? Hippo, HashSet<HercAndHippoObj> Second
         Level nextState = this;
         bool comboAction = actionInputs.IsComboAction;
 
+        if (actionInputs.Equals(ActionInput.Quit))
+            return this with { WinState = WinState.Quit };
+          
         // First cycle non-player objects
         nextState = SecondaryObjects // Do not refresh in parallel; this could cause objects to interfere with nearby copies of themselves, and can make updating slower
             .Where(disp => disp.IsCyclable)

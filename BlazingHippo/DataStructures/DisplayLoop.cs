@@ -35,7 +35,7 @@ internal class DisplayLoop
         State = State.RefreshCyclables(lastActions, cts.Token);
         scrollStatus = scrollStatus.Update(State.Player.Location);
         displayPlan = new(State, scrollStatus);
-        await display.Update(displayPlan, lastActions);
+        await display.Update(displayPlan);
     }
 
     public void Stop()
