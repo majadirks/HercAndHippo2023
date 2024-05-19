@@ -25,10 +25,32 @@ public static class ImageMapper
         return new RenderFragment(b => b.AddMarkupContent(0, html));
     }
 
+    public static RenderFragment GetHtml(this PlannedHho phho)
+    {
+        if (phho == null || phho.Hho == null)
+            return new RenderFragment(b => b.AddMarkupContent(0, ""));
+
+        string html = phho.Hho switch
+        {
+            Hippo => $@"<img src = "".\img\hippo.jpeg"" style=""{phho.Location()}""/>",
+            Player => $@"<img src = "".\img\herc.jpeg"" style=""{phho.Location()}""/>",
+            Groodle => $@"<img src = "".\img\groodle.png"" style=""{phho.Location()}""/>",
+            _ => $@"<div style=""{phho.Location()} {phho.Color()}"">{phho.Hho.ConsoleDisplayString}</div>",
+        };
+        return new RenderFragment(b => b.AddMarkupContent(0, html));
+    }
+
     private static string Location(this IConsoleDisplayable hho)
         => $"position:absolute; left:{hho.Location.Col * WIDTH}px; top:{hho.Location.Row * HEIGHT}px; width:{WIDTH}px; height:{HEIGHT}px;";
 
+    private static string Location(this PlannedHho phho)
+    => $"position:absolute; left:{phho.Col * WIDTH}px; top:{phho.Row * HEIGHT}px; width:{WIDTH}px; height:{HEIGHT}px;";
+
+
     private static string Color(this IConsoleDisplayable hho) 
         => $"color:{hho.Color.ToHtmlColor()}; background-color:{hho.BackgroundColor.ToHtmlColor()};";
+
+    private static string Color(this PlannedHho hho)
+    => $"color:{hho.Hho.Color.ToHtmlColor()}; background-color:{hho.Hho.BackgroundColor.ToHtmlColor()};";
 
 }
