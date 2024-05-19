@@ -14,6 +14,7 @@ public static class ImageMapper
         if (phho == null || phho.Hho == null)
             throw new Exception("Unexpected null");
         Color color = phho.Hho.Color;
+        Color bg = phho.Hho.BackgroundColor;
         string html = phho.Hho switch
         {
             Hippo => img("hippo.png"),
@@ -24,9 +25,8 @@ public static class ImageMapper
                 NoImageFile(),
             BreakableWall => img("lattice.png"),
             Wall => img("stone_wall.png"),
-            Door => img("purple_door.png"),
-            //color == Color.DarkMagenta ? img("purple_door.png") :
-            //NoImageFile(),
+            Door =>
+                bg == Color.DarkMagenta ? img("purple_door.png") : NoImageFile(),
             Ammo => img("quiver.png"),
             Gem =>
                 color == Color.Red ? img("red_gem.png") : NoImageFile(),
