@@ -27,7 +27,7 @@ else
 {
     <div style="position: relative">
         <h3 style="color:white">@status</h3>
-    @foreach (var hho in plan.Planned)
+    @foreach (var hho in plan.Planned.Where(phho => phho != null && phho.Hho != null))
     {
         @hho.GetHtml()
     }
