@@ -27,7 +27,7 @@ else
 {
     <div style="position: relative">
         <h3 style="color:white">@status</h3>
-    @foreach (HercAndHippoObj hho in plan.State.GetDisplayables())
+    @foreach (var hho in plan.Planned)
     {
         @hho.GetHtml()
     }
