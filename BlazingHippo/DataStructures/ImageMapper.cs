@@ -5,7 +5,7 @@ namespace BlazingHippo;
 
 public static class ImageMapper
 {
-    public const int WIDTH = 16;
+    public const int WIDTH = 20;
     public const int HEIGHT = 32;
     public static IEnumerable<IConsoleDisplayable> GetDisplayables(this Level level)
         => level.LevelObjects.Where(obj => obj is IConsoleDisplayable).Cast<IConsoleDisplayable>();
@@ -19,6 +19,8 @@ public static class ImageMapper
             Hippo => $@"<img src = "".\img\hippo.jpeg"" style=""{phho.Location()}""/>",
             Player => $@"<img src = "".\img\herc.jpeg"" style=""{phho.Location()}""/>",
             Groodle => $@"<img src = "".\img\groodle.png"" style=""{phho.Location()}""/>",
+            Key => phho.Hho.Color == HercAndHippoLibCs.Color.DarkMagenta ?
+                    $@"<img src = "".\img\purple_key.png"" style=""{phho.Location()}""/>" : "",
             _ => $@"<div style=""{phho.Location()} {phho.Color()}"">{phho.Hho.ConsoleDisplayString}</div>",
         };
         return new RenderFragment(b => b.AddMarkupContent(0, html));
