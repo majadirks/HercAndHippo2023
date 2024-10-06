@@ -22,6 +22,10 @@ public record Groodle(Location Location, Direction Whither, Slowness Slowness) :
     {
         Level nextLevel = level;
         Groodle nextGroodle = this;
+
+        // If the groodle is at the same location as the player
+        // or the hippo, trigger OnTouch to inflict damage
+        // before moving
         if (Location == nextLevel.Player.Location)
             nextLevel = OnTouch(nextLevel, Direction.Idle, nextLevel.Player);
         if (Location == nextLevel.Hippo?.Location)
@@ -66,6 +70,10 @@ public record Groodle(Location Location, Direction Whither, Slowness Slowness) :
     public Level OnShot(Level level, Direction shotFrom, Bullet shotBy) 
         => this.Die(level);
 
+    /// <summary>
+    /// If the Groodle is touched by the player or hippo,
+    /// the player's health or hippo's health is decreased
+    /// </summary>
     public Level OnTouch(Level level, Direction touchedFrom, ITouchable touchedBy)
     {
         if (touchedBy is Player player)
