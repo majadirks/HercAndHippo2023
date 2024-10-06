@@ -9,7 +9,12 @@ public record BounceBuddy(Location Location, Direction Whither, Slowness Slownes
 
     public string ConsoleDisplayString => "o";
 
-    public override bool BlocksMotion(Level level, ILocatable toBlock) => false;
+    /// <summary>
+    /// A BounceBuddy blocks motion for anything coming from above,
+    /// but nothing else.
+    /// </summary>
+    public override bool BlocksMotion(Level level, ILocatable toBlock) 
+        => toBlock.Location.Row < this.Location.Row;
 
     public Level Cycle(Level level, ActionInput actionInput)
     {
