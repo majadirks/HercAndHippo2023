@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace HercAndHippoLibCs;
-
+﻿namespace HercAndHippoLibCs;
 public record Groodle(Location Location, Direction Whither, Slowness Slowness) : HercAndHippoObj, IShootable, ITouchable, ILocatable, IConsoleDisplayable, ICyclable
 {
     public bool StopsBullet => true;
@@ -41,13 +34,13 @@ public record Groodle(Location Location, Direction Whither, Slowness Slowness) :
                 nextLevel = nextLevel.ReplaceIfPresent(this, nextGroodle);
                 nextLevel = nextGroodle.MutualTouch(nextLevel, nextEast, touchFrom: Direction.West);
             }
-            else 
+            else
             {
                 nextGroodle = this with { Location = nextEast };
                 nextLevel = nextLevel.ReplaceIfPresent(this, nextGroodle);
             }
         }
-        else if (moving && Whither == Direction.West )
+        else if (moving && Whither == Direction.West)
         {
             Location nextWest = new(Location.Col.NextWest(), Location.Row);
             if (this.MotionBlockedTo(nextLevel, Direction.West))
@@ -67,7 +60,7 @@ public record Groodle(Location Location, Direction Whither, Slowness Slowness) :
         return nextLevel;
     }
 
-    public Level OnShot(Level level, Direction shotFrom, Bullet shotBy) 
+    public Level OnShot(Level level, Direction shotFrom, Bullet shotBy)
         => this.Die(level);
 
     /// <summary>
