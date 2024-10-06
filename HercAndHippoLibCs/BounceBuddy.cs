@@ -81,7 +81,7 @@ public record BounceBuddy(Location Location, Direction Whither, Slowness Slownes
         else if (touchedBy is Player abovePlayer && abovePlayer.Location.Row < this.Location.Row)
         {
             // Player touched from above, so bounce
-            Player nextPlayer = abovePlayer with { KineticEnergy = Math.Abs(abovePlayer.KineticEnergy) + abovePlayer.JumpStrength };
+            Player nextPlayer = abovePlayer with { KineticEnergy = Math.Abs(abovePlayer.KineticEnergy) + 2 * abovePlayer.JumpStrength };
             return level.WithPlayer(nextPlayer);
         }
         else if (touchedBy is Hippo hippo)
