@@ -24,6 +24,7 @@ Tests to write:
 		- Groodle is subject to gravity
 		- Groodle dies if it falls into abyss
 		- Groodle passes over ammo without interacting with it; ammo remains on level
+	- Similar test for BounceBuddy, plus tests for bouncing from above
 	- Gem tests:
 		- Gives health to player and removes self from level when touched
 		- Does not block player movement
