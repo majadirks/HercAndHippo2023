@@ -303,12 +303,12 @@ public static class DemoLevels
             new Wall(Color.Green,(59,8)),
             new Wall(Color.Green,(60,8)),
             // First vertical column
-            new Wall(Color.Green,(61,7)),
-            new Wall(Color.Green,(61,6)),
-            new Wall(Color.Green,(61,5)),
-            new Wall(Color.Green,(61,4)),
-            new Wall(Color.Green,(61,3)),
-            new Wall(Color.Green,(61,2)),
+            new BreakableWall(Color.Green,(61,7)),
+            new BreakableWall(Color.Green,(61,6)),
+            new BreakableWall(Color.Green,(61,5)),
+            new BreakableWall(Color.Green,(61,4)),
+            new BreakableWall(Color.Green,(61,3)),
+            new BreakableWall(Color.Green,(61,2)),
             // Horizontal continues
             new Wall(Color.Green, (62, 8)),
             new Wall(Color.Green, (63, 8)),
