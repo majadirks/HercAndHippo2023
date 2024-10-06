@@ -1,5 +1,8 @@
 ﻿namespace HercAndHippoLibCs;
 
+/// <summary>
+/// The slowness of an enemy is the number of cycles between each movement.
+/// </summary>
 public record Slowness(int CyclesPerMovement)
 {
     public const int MAX_SPEED = 10;

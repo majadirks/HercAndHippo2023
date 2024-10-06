@@ -24,6 +24,8 @@ Tests to write:
 		- Groodle is subject to gravity
 		- Groodle dies if it falls into abyss
 		- Groodle passes over ammo without interacting with it; ammo remains on level
+	- Similar test for BounceBuddy, plus tests for bouncing from above:
+		- No damage if bouncing from above
 	- Gem tests:
 		- Gives health to player and removes self from level when touched
 		- Does not block player movement
@@ -48,7 +50,7 @@ Tests to write:
 - Transporters
 - Torches and darkness
 - Boulders and pushables
-- Enemies: archers, bounce-buddies (damage if encounered horizontally, bounce of if touched from above)
+- Enemies: archers
 - Lives
 - Scrolls
 - Custom programmable objects (support a superset of ZZT-OOP)

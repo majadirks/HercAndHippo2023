@@ -61,6 +61,11 @@ public static class Behaviors
         return level.ReplaceIfPresent(toFall, toFall with { Location = nextLocation});
     }
 
+    /// <summary>
+    /// Trigger the <see cref="OnTouch"/> method for the toucher 
+    /// and for any touchables at the location
+    /// </summary>
+    /// <returns>The state resulting from all the <see cref="OnTouch"/> calls</returns>
     public static Level MutualTouch<T>(this T toucher, Level level, Location location, Direction touchFrom) where T : HercAndHippoObj, ILocatable, ITouchable
     {
         Level nextLevel = level;

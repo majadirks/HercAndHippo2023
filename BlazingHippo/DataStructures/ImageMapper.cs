@@ -37,6 +37,7 @@ public static class ImageMapper
                 b.Whither == Direction.South ? img("arrow_down.png") :
                 b.Whither == Direction.West ? img("arrow_left.png") :
                 NoImageFile(),
+            BounceBuddy => img("bouncebuddy.png"),
             _ => NoImageFile(),
 
         }; 
